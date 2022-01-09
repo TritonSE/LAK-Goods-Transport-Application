@@ -9,7 +9,7 @@ assignees: ''
 
 **Describe the feature to implement.**
 
-**Figma Link**
+**Figma Screenshot if applicable**
 
 **Additional context if applicable**
 Add any other context or screenshots about the feature request here.
