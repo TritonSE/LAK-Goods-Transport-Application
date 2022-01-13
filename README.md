@@ -3,9 +3,11 @@
 ## Project Setup
 
 Requires:
+
 - [Expo](https://docs.expo.dev/get-started/installation/)
 
-Using a terminal, cd to the LAKMobile directory, install packages, and start the frontend
+Using a terminal, cd to the LAKMobile directory, install packages, and start the frontend.
+
 ```
 cd LAKMobile
 npm install
