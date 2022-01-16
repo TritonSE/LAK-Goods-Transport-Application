@@ -1,29 +1,34 @@
-import { StyleSheet, Text, View, Button, TouchableOpacity } from 'react-native';
+import { StyleSheet, Text, View, Button, TouchableOpacity, StyleProp, ViewStyle } from 'react-native';
 import { COLORS } from '../../constants';
 
 type PrimaryButtonProps = {
-    onPress: () => void,
+    onPress?: () => void,
     title: string,
-    color: string,
+    style?: StyleProp<ViewStyle>,
+    type?: "link"| "default"
 }
 
-export default function PrimaryButton({title, color, onPress}: PrimaryButtonProps) {
-  return (
+export default function PrimaryButton({title, style, onPress, type}: PrimaryButtonProps) {
+    let buttonStyle;
+    if (type && type === "link") buttonStyle = {...linkStyle};
+    else buttonStyle = defaultStyle;
+
+    return (
     <TouchableOpacity 
         onPress={onPress} 
-        style={styles.container}>
-        <Text style={styles.text}>{title}</Text>
+        style={[buttonStyle.container, style]}>
+        <Text style={buttonStyle.text}>{title}</Text>
     </TouchableOpacity>
   )
 }
 
-const styles = StyleSheet.create({
+const defaultStyle = StyleSheet.create({
     container: {
         width: "80%",
+        height: '42px',
         elevation: 8,
-        backgroundColor: COLORS.maroon, //TODO: Should be from prop
-        paddingVertical: 10,
-        paddingHorizontal: 12
+        backgroundColor: COLORS.maroon,
+        padding: '10px'
     },
     text: {
         fontFamily: "Roboto",
@@ -32,4 +37,15 @@ const styles = StyleSheet.create({
         color: COLORS.white,
         alignSelf: "center",
     },
+})
+
+const linkStyle = StyleSheet.create({
+    container: {},
+    text: {
+        fontFamily: "Roboto",
+        fontWeight: "bold",
+        fontSize: 16,
+        color: COLORS.turquoise,
+        alignSelf: "center", 
+    }
 })

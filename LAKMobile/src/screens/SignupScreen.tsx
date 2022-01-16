@@ -5,41 +5,41 @@ import { COLORS } from '../../constants';
 export default function SignupScreen({}) {
   return (
     <View style={styles.container}>
-      <LabelledInput label='Name (First, Last)' style={styles.inputContainer}>
+      <LabelledInput label='Name (First, Last)'>
         <TextInput
-          style={styles.bigInput}
+          style={bigInputStyles}
           placeholder='Value'
           keyboardType="default"
         />
       </LabelledInput>
       
-      <LabelledInput label='Mobile Number' style={styles.inputContainer}>
+      <LabelledInput label='Mobile Number'>
         <TextInput
-          style={styles.bigInput}
+          style={bigInputStyles}
           placeholder='Value'
           keyboardType="default"
         />
       </LabelledInput>
 
-      <LabelledInput label='Location' style={styles.inputContainer}>
+      <LabelledInput label='Location'>
         <TextInput
-          style={styles.bigInput}
+          style={bigInputStyles}
           placeholder='Value'
           keyboardType="default"
         />
       </LabelledInput>
 
-      <LabelledInput label='4 digit pin password' style={styles.inputContainer}>
+      <LabelledInput label='4 digit pin password'>
         <TextInput
-          style={styles.smallInput}
+          style={smallInputStyles}
           placeholder='Value'
           keyboardType="default"
         />
       </LabelledInput>
 
-      <LabelledInput label='Confirm password' style={styles.inputContainer}>
+      <LabelledInput label='Confirm password'>
         <TextInput
-          style={styles.smallInput}
+          style={smallInputStyles}
           placeholder='Value'
           keyboardType="numeric"
         />
@@ -48,31 +48,58 @@ export default function SignupScreen({}) {
       <PrimaryButton
         title='Create Account'
         onPress={() => console.log('PrimaryButton callback')}
-        color={COLORS.maroon}
+        style={styles.submitButton}
         />
+
+      <Text>Already have an account? <PrimaryButton title='Log on here' type="link" /></Text>
     </View>
   );
 }
 
+// Page Styling
+
+const localColors = {
+  gray: '#8B8B8B',
+}
+
 const styles = StyleSheet.create({
   container: {
+    width: '100%',
+    padding: '32px',
     flex: 1,
     backgroundColor: COLORS.white,
     alignItems: 'flex-start',
     justifyContent: 'center',
   },
-  bigInput: {
-    height: '2h',
-    width: '300px',
-  },
-  smallInput: {
-    height: '2h',
-    width: '150px',
-  },
-  inputContainer: {
-    borderRadius: 4,
+  
+  input: {
     borderWidth: 1,
-    padding: '0.5rem',
-    marginBottom: '7px'
+    borderRadius: 2,
+    borderColor: localColors.gray,
+    padding: 10,
+    height: '5vh',
+    marginBottom: '2vh',
   },
+
+  bigInput: {
+    width: '100%',
+  },
+
+  smallInput: {
+    width: '45%'
+  },
+
+  submitButton: {
+    width: '100%',
+    marginTop: '5vh',
+    marginBottom: '1vh',
+  }
 });
+
+const bigInputStyles = StyleSheet.flatten([
+  styles.input, styles.bigInput
+]);
+
+const smallInputStyles = StyleSheet.flatten([
+  styles.input, styles.smallInput,
+])

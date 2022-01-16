@@ -9,22 +9,18 @@ type LabelledInputProps = {
 
 export default function LabelledInput({label, children, style}: LabelledInputProps) {
   return (
-    <View>
+    <View style={styles.container}>
         <Text style={styles.label}>{label}</Text>
-        <View style={style}>{children}</View>
+        {children}
     </View>
   )
 }
 
-const colors = {
-    white: "#ffffff",
-    maroon: "#94100C"
-}
-
 const styles = StyleSheet.create({
     container: {
+        width: '100%'
     },
     label: {
-        paddingBottom: '7px'
+        paddingBottom: '0.8vh'
     },
 })
