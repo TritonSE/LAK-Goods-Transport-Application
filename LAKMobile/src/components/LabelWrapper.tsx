@@ -1,13 +1,12 @@
 import React, { ReactNode } from 'react';
 import { StyleSheet, Text, View, StyleProp, ViewStyle } from 'react-native';
 
-type LabelledInputProps = {
+type LabelWrapperProps = {
     label: string,
     children?: ReactNode,
-    style?: StyleProp<ViewStyle>,
 }
 
-export default function LabelledInput({label, children, style}: LabelledInputProps) {
+export default function LabelWrapper({label, children}: LabelWrapperProps) {
   return (
     <View style={styles.container}>
         <Text style={styles.label}>{label}</Text>

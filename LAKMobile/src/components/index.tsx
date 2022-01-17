@@ -1,3 +1,3 @@
 import PrimaryButton from "./PrimaryButton";
-import LabelledInput from "./LabelledInput";
-export { PrimaryButton, LabelledInput }
+import LabelWrapper from "./LabelWrapper";
+export { PrimaryButton, LabelWrapper }

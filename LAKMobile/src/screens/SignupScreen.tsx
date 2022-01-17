@@ -1,44 +1,44 @@
 import { StyleSheet, Text, View, TextInput } from 'react-native';
-import { PrimaryButton, LabelledInput } from '../components';
+import { PrimaryButton, LabelWrapper } from '../components';
 import { COLORS } from '../../constants';
 
 export default function SignupScreen({}) {
   return (
     <View style={styles.container}>
-      <LabelledInput label='Name (First, Last)'>
+      <LabelWrapper label='Name (First, Last)'>
         <TextInput
           style={styles.input}
           keyboardType="default"
         />
-      </LabelledInput>
+      </LabelWrapper>
       
-      <LabelledInput label='Mobile Number'>
+      <LabelWrapper label='Mobile Number'>
         <TextInput
           style={bigInputStyle}
           keyboardType="default"
         />
-      </LabelledInput>
+      </LabelWrapper>
 
-      <LabelledInput label='Location'>
+      <LabelWrapper label='Location'>
         <TextInput
           style={bigInputStyle}
           keyboardType="default"
         />
-      </LabelledInput>
+      </LabelWrapper>
 
-      <LabelledInput label='4 digit pin password'>
+      <LabelWrapper label='4 digit pin password'>
         <TextInput
           style={smallInputStyle}
           keyboardType="default"
         />
-      </LabelledInput>
+      </LabelWrapper>
 
-      <LabelledInput label='Confirm password'>
+      <LabelWrapper label='Confirm password'>
         <TextInput
           style={smallInputStyle}
           keyboardType="numeric"
         />
-      </LabelledInput>
+      </LabelWrapper>
 
       <PrimaryButton
         type='primary'
