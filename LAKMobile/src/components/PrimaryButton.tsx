@@ -1,18 +1,20 @@
+
 import { StyleSheet, Text, View, Button, TouchableOpacity, StyleProp, ViewStyle } from 'react-native';
 import { COLORS } from '../../constants';
 
 type PrimaryButtonProps = {
+    type?: "link"| "primary" | "default",
     onPress?: () => void,
     title: string,
     style?: StyleProp<ViewStyle>,
-    type?: "link"| "default"
 }
 
 export default function PrimaryButton({title, style, onPress, type}: PrimaryButtonProps) {
     let buttonStyle;
-    if (type && type === "link") buttonStyle = {...linkStyle};
-    else buttonStyle = defaultStyle;
 
+    if (type && type in buttonStyleMap) buttonStyle = buttonStyleMap[type];
+    else buttonStyle = buttonStyleMap['default'];
+    
     return (
     <TouchableOpacity 
         onPress={onPress} 
@@ -22,30 +24,61 @@ export default function PrimaryButton({title, style, onPress, type}: PrimaryButt
   )
 }
 
+
+// Button Styling
 const defaultStyle = StyleSheet.create({
     container: {
+        // Shared
         width: "80%",
-        height: '42px',
+        height: 42,
+        padding: 10,
         elevation: 8,
-        backgroundColor: COLORS.maroon,
-        padding: '10px'
+
+        backgroundColor: COLORS.white,
     },
     text: {
-        fontFamily: "Roboto",
+        // Shared
         fontWeight: "bold",
-        fontSize: 18,
-        color: COLORS.white,
         alignSelf: "center",
+
+        color: COLORS.maroon
     },
-})
+});
+
+const primaryStyle = StyleSheet.create({
+    container: {
+        // Shared
+        width: "80%",
+        height: 42,
+        padding: 10,
+        elevation: 8,
+
+        backgroundColor: COLORS.maroon,
+    },
+    text: {
+        //Shared
+        fontWeight: "bold",
+        alignSelf: "center",
+
+        color: COLORS.white,
+    }
+});
 
 const linkStyle = StyleSheet.create({
-    container: {},
+    container: {
+        elevation: 8,
+    },
     text: {
-        fontFamily: "Roboto",
+        // Shared
         fontWeight: "bold",
-        fontSize: 16,
-        color: COLORS.turquoise,
         alignSelf: "center", 
+
+        color: COLORS.turquoise,
     }
-})
+});
+
+const buttonStyleMap = {
+    link: linkStyle,
+    primary: primaryStyle,
+    default: defaultStyle,
+}

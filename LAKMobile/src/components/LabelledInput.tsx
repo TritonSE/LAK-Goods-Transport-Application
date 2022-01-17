@@ -1,5 +1,5 @@
 import React, { ReactNode } from 'react';
-import { StyleSheet, Text, View, Button, TouchableOpacity, TextInput, TextInputComponent, StyleProp, ViewStyle } from 'react-native';
+import { StyleSheet, Text, View, StyleProp, ViewStyle } from 'react-native';
 
 type LabelledInputProps = {
     label: string,
@@ -21,6 +21,6 @@ const styles = StyleSheet.create({
         width: '100%'
     },
     label: {
-        paddingBottom: '0.8vh'
+        marginBottom: 4,
     },
 })
