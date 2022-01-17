@@ -51,7 +51,6 @@ const primaryStyle = StyleSheet.create({
         width: "80%",
         height: 42,
         padding: 10,
-        elevation: 8,
 
         backgroundColor: COLORS.maroon,
     },
