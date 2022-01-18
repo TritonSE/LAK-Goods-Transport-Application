@@ -1,5 +1,5 @@
 import React from 'react';
-import { StyleSheet, Text, View, Image } from 'react-native';
+import { StyleSheet, Text, View, Image, TouchableOpacity } from 'react-native';
 import { COLORS } from '../../constants';
 
 interface HeaderProps {
@@ -11,7 +11,13 @@ export default function ScreenHeader({children, showArrow = false}:HeaderProps) 
     return(
         <View style={styles.header}>
             <View style={styles.headerContent}>
-                {(showArrow) ? <Image style={styles.headerArrow} source={require('../../assets/header-arrow.png')} /> : null}
+
+                {(showArrow) ? 
+                    <TouchableOpacity onPress={() => console.log("Header Arrow Pressed")}>
+                        <Image style={styles.headerArrow} source={require('../../assets/header-arrow.png')} />
+                    </TouchableOpacity>
+                : null}
+
                 <Text style={styles.headerText}>{children}</Text>
             </View>
         </View>
