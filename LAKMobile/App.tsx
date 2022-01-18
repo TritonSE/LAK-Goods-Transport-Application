@@ -20,5 +20,10 @@ const styles = StyleSheet.create({
     backgroundColor: '#fff',
     alignItems: 'center',
     justifyContent: 'center',
+    
+    // Font styling accross application
+    fontFamily: 'Roboto',
+    fontSize: 18,
+    lineHeight: 18.75
   },
 });
