@@ -1,5 +1,6 @@
 import React from 'react';
 import { StyleSheet, Text, View, Image } from 'react-native';
+import { COLORS } from '../../constants';
 
 interface HeaderProps {
     children?: string,
@@ -25,7 +26,7 @@ const styles = StyleSheet.create({
         right: 0,
         flexDirection: "row",
         alignItems: "flex-end",
-        backgroundColor: "#94100C",
+        backgroundColor: COLORS.maroon,
         height: 95,
         paddingLeft: 30,
         paddingBottom: 15

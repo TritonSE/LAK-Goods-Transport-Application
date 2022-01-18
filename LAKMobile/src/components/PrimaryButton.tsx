@@ -40,6 +40,7 @@ const defaultStyle = StyleSheet.create({
         // Shared
         fontWeight: "bold",
         alignSelf: "center",
+        fontSize: 20,
 
         color: COLORS.maroon
     },
@@ -58,6 +59,7 @@ const primaryStyle = StyleSheet.create({
         //Shared
         fontWeight: "bold",
         alignSelf: "center",
+        fontSize: 20,
 
         color: COLORS.white,
     }
@@ -71,6 +73,7 @@ const linkStyle = StyleSheet.create({
         // Shared
         fontWeight: "bold",
         alignSelf: "center", 
+        fontSize: 16,
 
         color: COLORS.turquoise,
     }
