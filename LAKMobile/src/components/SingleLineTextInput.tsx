@@ -4,9 +4,10 @@ import { View, TextInput, StyleSheet } from 'react-native';
 interface Props {
     title: string,
     placeholder: string,
+    footer: string,
 }
 
-export default function SingleLineTextInput({ title, placeholder } : Props) {
+export default function SingleLineTextInput({ title, placeholder, footer } : Props) {
 
 
   return (
@@ -21,9 +22,17 @@ export default function SingleLineTextInput({ title, placeholder } : Props) {
         value=""
         placeholder={placeholder}
       />
+
+        <View style={styles.footer}>
+            {footer}
+        </View>
     </View>
   );
 }
+
+SingleLineTextInput.defaultProps = {
+    footer: ""
+  };
 
 const styles = StyleSheet.create({
   container: {
@@ -31,6 +40,7 @@ const styles = StyleSheet.create({
   },
   inputLabel: {
     marginLeft: 10,
+    fontWeight: 'bold'
   },
   inputBox: {
     borderWidth: 1,
@@ -40,4 +50,7 @@ const styles = StyleSheet.create({
     borderRadius: 2,
     paddingHorizontal: 5,
   },
+  footer: {
+    marginLeft: 10,
+  }
 });

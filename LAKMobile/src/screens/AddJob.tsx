@@ -19,8 +19,15 @@ export default function AddJob() {
 
       <SingleLineTextInput
         title = "Client Name"
-        placeholder = "Gabby Gibson"
+        placeholder = "Ex: Gabby Gibson"
       />
+
+      <SingleLineTextInput
+        title = "Date to be delivered"
+        placeholder = "Ex. MM/DD/YYYY"
+        footer = "(put N/A if not applicable)"
+      />
+
       <View style = {styles.center}>
         <View style = {styles.postJobButton}>
         <Button 
