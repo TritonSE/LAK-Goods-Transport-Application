@@ -24,7 +24,7 @@ export default function AddJob() {
       <View style = {styles.center}>
         <View style = {styles.postJobButton}>
         <Button 
-            title = "replace w reusable button"
+            title = "replace with reusable button"
             onPress={addJob}
             color = "#DA5C5C"
             >
