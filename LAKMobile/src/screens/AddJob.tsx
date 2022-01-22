@@ -1,9 +1,11 @@
 import React from 'react';
 import { useState } from "react";
-import { Button, StyleSheet, Text, TextInput, View} from 'react-native';
+import { Button, StyleSheet, Text, TextInput, TouchableOpacity, View} from 'react-native';
 import { Picker } from "@react-native-picker/picker";
 import SingleLineTextInput from '../components/SingleLineTextInput';
-
+import MultilineTextInput from '../components/MultilineTextInput';
+import {launchCamera, launchImageLibrary} from 'react-native-image-picker';
+import Icon  from 'react-native-vector-icons/MaterialCommunityIcons';
 
 export default function AddJob() {
 
@@ -20,6 +22,35 @@ export default function AddJob() {
 
       {/* TODO: Add screen header component */}
 
+    <TouchableOpacity style={styles.photos}>
+
+      <View style={styles.photoBox}>
+        <Icon name="camera-plus" size={30} color="black" />
+
+        <Text style = {styles.photoText}>Upload or take a photo.</Text>
+      </View>
+
+      <View style={styles.photoBox}>
+        <Icon name="camera-plus" size={30} color="black" />
+
+        <Text style = {styles.photoText}>Upload or take a photo.</Text>
+      </View>
+
+      <View style={styles.photoBox}>
+        <Icon name="camera-plus" size={30} color="black" />
+
+        <Text style = {styles.photoText}>Upload or take a photo.</Text>
+      </View>
+
+        
+    </TouchableOpacity>
+
+      <View style={styles.photoInstructions}>
+            At least one photo of the package is required.
+            <br/>
+            Note: The first photo will be the thumbnail of the job listing.
+      </View>
+
       <SingleLineTextInput
         title = "Job Title"
         placeholder = "Ex. Box of apples"
@@ -27,7 +58,7 @@ export default function AddJob() {
 
       <SingleLineTextInput
         title = "Client Name"
-        placeholder = "Ex: Gabby Gibson"
+        placeholder = "Ex. Gabby Gibson"
       />
 
       <SingleLineTextInput
@@ -37,7 +68,7 @@ export default function AddJob() {
       />
 
 
-      <SingleLineTextInput
+      <MultilineTextInput
         title = "Description"
         placeholder = {"Tell us about your package. Add any extra detail about its size. \n\n Ex. Package will fill up 1/3 of a truck."}
       />
@@ -53,20 +84,20 @@ export default function AddJob() {
 
       <SingleLineTextInput
         title = "Package Quantity"
-        placeholder = "Ex: 6"
+        placeholder = "Ex. 6"
       />
       {/* TODO: Edit Width */}
 
       <SingleLineTextInput
         title = "Estimated price of delivery"
-        placeholder = "Ex: $$"
+        placeholder = "Ex. $$"
       />
       {/* TODO: Edit Width */}
 
 
       <SingleLineTextInput
         title = "Pick-up location"
-        placeholder = "Ex: Insert address or landmark"
+        placeholder = "Ex. Insert address or landmark"
       />
       <Picker
         selectedValue={pickupDistrict}
@@ -104,7 +135,7 @@ export default function AddJob() {
 
       <SingleLineTextInput
         title = "Drop-off location"
-        placeholder = "Ex: Insert address or landmark"
+        placeholder = "Ex. Insert address or landmark"
       />
       <Picker
         selectedValue={dropoffDistrict}
@@ -141,7 +172,7 @@ export default function AddJob() {
 
       <SingleLineTextInput
         title = "Phone number"
-        placeholder = "Ex: 17113456"
+        placeholder = "Ex. 17113456"
       />
       {/* TODO: Add phone icon to text box */}
 
@@ -168,6 +199,27 @@ const styles = StyleSheet.create({
     backgroundColor: '#fff',
     fontFamily: 'Arial',
     padding: 10,
+  },
+  photoText: {
+    fontSize: 10, 
+    textAlign: 'center'
+  },
+  photoBox: {
+    margin: 15,
+    padding: 5,
+    fontSize: 12, 
+    width: 80,
+    height: 80,
+    borderWidth: 1,
+    flexDirection: 'column',
+    alignItems: 'center',
+  },
+  photos: {
+      flexDirection: 'row',
+  },
+  photoInstructions: {
+    margin: 15,
+    fontSize: 12,
   },
   inputBox: {
     borderWidth: 1,

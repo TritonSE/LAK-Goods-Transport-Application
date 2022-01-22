@@ -7,13 +7,12 @@ interface Props {
     footer: string,
 }
 
-export default function SingleLineTextInput({ title, placeholder, footer } : Props) {
+export default function MultilineTextInput({ title, placeholder, footer } : Props) {
 
 
   return (
       
     <View style={styles.container}>
-
         <View style={styles.inputLabel}>
             {title}
         </View>
@@ -23,6 +22,7 @@ export default function SingleLineTextInput({ title, placeholder, footer } : Pro
         value=""
         textAlign = {'center'}
         placeholder={placeholder}
+        multiline={true}
       />
 
         <View style={styles.footer}>
@@ -32,7 +32,7 @@ export default function SingleLineTextInput({ title, placeholder, footer } : Pro
   );
 }
 
-SingleLineTextInput.defaultProps = {
+MultilineTextInput.defaultProps = {
     footer: ""
   };
 
@@ -40,15 +40,13 @@ const styles = StyleSheet.create({
   container: {
     margin: 5,
   },
-
   inputLabel: {
     marginLeft: 10,
-    fontWeight: 'bold',
-    fontSize: 16,
+    fontWeight: 'bold'
   },
   inputBox: {
     borderWidth: 1,
-    height: 35,
+    height: 75,
     width: '80%',
     margin: 10,
     borderRadius: 4,
@@ -57,6 +55,5 @@ const styles = StyleSheet.create({
   },
   footer: {
     marginLeft: 10,
-    fontSize: 12,
   }
 });
