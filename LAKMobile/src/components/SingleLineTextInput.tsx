@@ -20,6 +20,7 @@ export default function SingleLineTextInput({ title, placeholder, footer } : Pro
         <TextInput
         style={styles.inputBox}
         value=""
+        textAlign = {'center'}
         placeholder={placeholder}
       />
 
@@ -44,11 +45,12 @@ const styles = StyleSheet.create({
   },
   inputBox: {
     borderWidth: 1,
-    height: 30,
+    height: 35,
     width: '80%',
     margin: 10,
-    borderRadius: 2,
+    borderRadius: 4,
     paddingHorizontal: 5,
+    borderColor: "#8B8B8B",
   },
   footer: {
     marginLeft: 10,
