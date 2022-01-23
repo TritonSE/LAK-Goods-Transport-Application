@@ -5,7 +5,7 @@ import JobThumbnail from './src/components/JobThumbnail';
 export default function App() {
   return (
     <View style={styles.container}>
-      <JobThumbnail title="Box of apples" pickup="Location" dropoff="Location" deliver="MM/DD/YYYY" quantity="Amount" image={require("./assets/abble.png")} inProgress />
+      <JobThumbnail title="Box of apples" pickup="Location" dropoff="Location" deliver="MM/DD/YYYY" quantity="Amount" days={1} applicants={1} image={require("./assets/abble.png")} inProgress />
       <StatusBar style="auto" />
     </View>
   );

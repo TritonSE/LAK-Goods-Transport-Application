@@ -43,12 +43,12 @@ export default function JobThumbnail({title, image, pickup, dropoff, deliver, qu
                     <TouchableOpacity onPress={() => console.log("Edit Button Pressed")}>
                         <Image style={styles.edit} source={require("../../assets/edit.png")}/>
                     </TouchableOpacity>
-                    <Text style={styles.applicants}>{applicants} applicants</Text>
+                    <Text style={styles.applicants}>{applicants} {(applicants == 1) ? "applicant" : "applicants"}</Text>
                 </> : null}
 
                 {inProgress ?
                 <>
-                    <Text style={styles.days}>Started {days} days ago</Text>
+                    <Text style={styles.days}>Started {days} {(days == 1) ? "day" : "days"} ago</Text>
                     <View style={styles.inProgress}>
                         <Text style={styles.inProgressText}>In Progress</Text>
                     </View>
