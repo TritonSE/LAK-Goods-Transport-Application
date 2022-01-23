@@ -29,7 +29,7 @@ export default function SignupScreen({}) {
       <LabelWrapper label='4 digit pin password'>
         <TextInput
           style={smallInputStyle}
-          keyboardType="default"
+          keyboardType="numeric"
         />
       </LabelWrapper>
 
