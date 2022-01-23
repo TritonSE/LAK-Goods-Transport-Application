@@ -17,7 +17,7 @@ export default function LoginScreen() {
             <LabelWrapper label='4 Digit PIN'>
                 <TextInput
                 style={smallInputStyle}
-                keyboardType="default"
+                keyboardType="numeric"
                 />
             </LabelWrapper>
             <PrimaryButton 
