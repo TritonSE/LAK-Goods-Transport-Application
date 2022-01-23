@@ -51,8 +51,8 @@ export default function SignupScreen({}) {
         <Text>Already have an account?</Text>
         <PrimaryButton 
           type='link' 
-          title='Log on here' 
-          onPress={() => console.log('Log on here pressed')}
+          title='Log in here' 
+          onPress={() => console.log('Log in here pressed')}
           style={styles.loginLink}
           />
       </View>
@@ -87,7 +87,7 @@ const styles = StyleSheet.create({
     marginBottom: 1,
   },
 
-  // Styling for "Log on here" components
+  // Styling for "Log in here" components
   loginLinkContainer: {
     display: 'flex',
     flexDirection: 'row',
