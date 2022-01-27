@@ -1,5 +1,6 @@
 
-import { StyleSheet, Text, View, Button, TouchableOpacity, StyleProp, ViewStyle } from 'react-native';
+import { StyleSheet, TouchableOpacity, StyleProp, ViewStyle } from 'react-native';
+import AppText from './AppText';
 import { COLORS } from '../../constants';
 
 type PrimaryButtonProps = {
@@ -19,7 +20,7 @@ export default function PrimaryButton({title, style, onPress, type}: PrimaryButt
     <TouchableOpacity 
         onPress={onPress} 
         style={[buttonStyle.container, style]}>
-        <Text style={buttonStyle.text}>{title}</Text>
+        <AppText style={buttonStyle.text}>{title}</AppText>
     </TouchableOpacity>
   )
 }
@@ -40,7 +41,6 @@ const defaultStyle = StyleSheet.create({
         // Shared
         fontWeight: "bold",
         alignSelf: "center",
-        fontSize: 20,
 
         color: COLORS.maroon
     },
@@ -59,7 +59,6 @@ const primaryStyle = StyleSheet.create({
         //Shared
         fontWeight: "bold",
         alignSelf: "center",
-        fontSize: 20,
 
         color: COLORS.white,
     }
@@ -73,7 +72,6 @@ const linkStyle = StyleSheet.create({
         // Shared
         fontWeight: "bold",
         alignSelf: "center", 
-        fontSize: 16,
 
         color: COLORS.turquoise,
     }

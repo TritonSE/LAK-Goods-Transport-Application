@@ -1,5 +1,6 @@
 import React from 'react';
 import { StyleSheet, Text, View, Image, TouchableOpacity } from 'react-native';
+import AppText from './AppText';
 import { COLORS } from '../../constants';
 
 interface HeaderProps {
@@ -18,7 +19,7 @@ export default function ScreenHeader({children, showArrow = false}:HeaderProps) 
                     </TouchableOpacity>
                 : null}
 
-                <Text style={styles.headerText}>{children}</Text>
+                <AppText style={styles.headerText}>{children}</AppText>
             </View>
         </View>
     )
