@@ -16,13 +16,17 @@ export default function AddJob() {
         console.log("temp ");
     }
 
+    const photoPress = () => {
+      console.log("temp ");
+  }
+
   return (
       
     <View style={styles.container}>
 
       {/* TODO: Add screen header component */}
 
-    <TouchableOpacity style={styles.photos}>
+    <TouchableOpacity style={styles.photos} onPress={photoPress}>
 
       <View style={styles.photoBox}>
         <Icon name="camera-plus" size={30} color="black" />
@@ -67,7 +71,6 @@ export default function AddJob() {
         footer = "(put N/A if not applicable)"
       />
 
-
       <MultilineTextInput
         title = "Description"
         placeholder = {"Tell us about your package. Add any extra detail about its size. \n\n Ex. Package will fill up 1/3 of a truck."}
@@ -98,6 +101,7 @@ export default function AddJob() {
       <SingleLineTextInput
         title = "Pick-up location"
         placeholder = "Ex. Insert address or landmark"
+        icon = "location-pin"
       />
       <Picker
         selectedValue={pickupDistrict}
@@ -136,6 +140,7 @@ export default function AddJob() {
       <SingleLineTextInput
         title = "Drop-off location"
         placeholder = "Ex. Insert address or landmark"
+        icon = "location-pin"
       />
       <Picker
         selectedValue={dropoffDistrict}
@@ -169,10 +174,10 @@ export default function AddJob() {
       TODO: Should we add google-places-autocomplete for Drop-off location TextInput?
       */}
       
-
       <SingleLineTextInput
         title = "Phone number"
         placeholder = "Ex. 17113456"
+        icon = "phone-in-talk"
       />
       {/* TODO: Add phone icon to text box */}
 

@@ -1,14 +1,18 @@
 import React from 'react';
 import { View, TextInput, StyleSheet } from 'react-native';
+import MaterialCommunityIcon  from 'react-native-vector-icons/MaterialCommunityIcons';
+import MaterialIcon  from 'react-native-vector-icons/MaterialIcons';
 
 interface Props {
     title: string,
     placeholder: string,
+    icon: string,
     footer: string,
+    maxLength: number,
+    isNumber: boolean,
 }
 
-export default function SingleLineTextInput({ title, placeholder, footer } : Props) {
-
+export default function SingleLineTextInput({ title, placeholder, icon, footer, maxLength, isNumber } : Props) {
 
   return (
       
@@ -18,11 +22,20 @@ export default function SingleLineTextInput({ title, placeholder, footer } : Pro
             {title}
         </View>
 
-        <TextInput
+          {icon !== null && 
+          <View style={styles.icon}>
+            <MaterialCommunityIcon name="phone-in-talk" size={20} color="gray"/>
+            <MaterialIcon name="location-pin" size={20} color="gray"/>
+          </View>
+          }
+
+      <TextInput
         style={styles.inputBox}
         value=""
         textAlign = {'center'}
         placeholder={placeholder}
+        maxLength={maxLength}
+        keyboardType={isNumber ? 'numeric' : 'default'}
       />
 
         <View style={styles.footer}>
@@ -33,18 +46,23 @@ export default function SingleLineTextInput({ title, placeholder, footer } : Pro
 }
 
 SingleLineTextInput.defaultProps = {
-    footer: ""
+  icon: null,  
+  footer: "",
+  maxLength: 1000,
+  isNumber: false,
   };
 
 const styles = StyleSheet.create({
   container: {
     margin: 5,
   },
-
   inputLabel: {
     marginLeft: 10,
     fontWeight: 'bold',
     fontSize: 16,
+  },
+  icon: {
+    
   },
   inputBox: {
     borderWidth: 1,
@@ -52,7 +70,7 @@ const styles = StyleSheet.create({
     width: '80%',
     margin: 10,
     borderRadius: 4,
-    paddingHorizontal: 5,
+    paddingHorizontal: 10,
     borderColor: "#8B8B8B",
   },
   footer: {
