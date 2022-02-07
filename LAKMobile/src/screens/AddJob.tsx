@@ -4,7 +4,7 @@ import { Button, StyleSheet, Text, TextInput, TouchableOpacity, View} from 'reac
 import { Picker } from "@react-native-picker/picker";
 import SingleLineTextInput from '../components/SingleLineTextInput';
 import MultilineTextInput from '../components/MultilineTextInput';
-import {launchCamera, launchImageLibrary} from 'react-native-image-picker';
+import {launchCamera, launchImageLibrary, MediaType} from 'react-native-image-picker';
 import Icon  from 'react-native-vector-icons/MaterialCommunityIcons';
 
 export default function AddJob() {
@@ -18,6 +18,20 @@ export default function AddJob() {
 
     const photoPress = () => {
       console.log("temp ");
+
+      const mediaType = 'photo' as MediaType;
+
+      const options = {
+        storageOptions: {
+          path: "images",
+        },
+        mediaType: mediaType,
+        includeBase64: true,
+      }
+
+      launchCamera(options, response => {
+        console.log("res");
+      })
   }
 
   return (
