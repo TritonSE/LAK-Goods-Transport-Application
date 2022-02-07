@@ -5,9 +5,10 @@ interface Props {
     title: string,
     placeholder: string,
     footer: string,
+    maxLength: number,
 }
 
-export default function MultilineTextInput({ title, placeholder, footer } : Props) {
+export default function MultilineTextInput({ title, placeholder, footer, maxLength } : Props) {
 
 
   return (
@@ -23,6 +24,7 @@ export default function MultilineTextInput({ title, placeholder, footer } : Prop
         textAlign = {'center'}
         placeholder={placeholder}
         multiline={true}
+        maxLength={maxLength}
       />
 
         <View style={styles.footer}>
@@ -33,7 +35,8 @@ export default function MultilineTextInput({ title, placeholder, footer } : Prop
 }
 
 MultilineTextInput.defaultProps = {
-    footer: ""
+    footer: "",
+    maxLength: 1000,
   };
 
 const styles = StyleSheet.create({

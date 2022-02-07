@@ -6,6 +6,7 @@ import SingleLineTextInput from '../components/SingleLineTextInput';
 import MultilineTextInput from '../components/MultilineTextInput';
 import {launchCamera, launchImageLibrary, MediaType} from 'react-native-image-picker';
 import Icon  from 'react-native-vector-icons/MaterialCommunityIcons';
+import { PrimaryButton } from '../components';
 
 export default function AddJob() {
 
@@ -72,29 +73,29 @@ export default function AddJob() {
       <SingleLineTextInput
         title = "Job Title"
         placeholder = "Ex. Box of apples"
+        maxLength={100}
       />
 
       <SingleLineTextInput
         title = "Client Name"
         placeholder = "Ex. Gabby Gibson"
+        maxLength={100}
       />
 
       <SingleLineTextInput
         title = "Date to be delivered"
         placeholder = "Ex. MM/DD/YYYY"
         footer = "(put N/A if not applicable)"
+        maxLength={10}
       />
 
       <MultilineTextInput
         title = "Description"
         placeholder = {"Tell us about your package. Add any extra detail about its size. \n\n Ex. Package will fill up 1/3 of a truck."}
+        maxLength={1000}
       />
       {/*  
       TODO:  
-      (1) Add:   multiline = {true}   so that placeholder text can have newline characters.
-      If this is added in SingleLineTextInput component, it messes up centering for placeholder
-      text in TextInput without newline in placeholder text.
-
       (2) Edit: size of the TextInput box so that it shows all the placeholder text. 
       Right now you need to scroll down to see all the text.
        */}
@@ -102,12 +103,14 @@ export default function AddJob() {
       <SingleLineTextInput
         title = "Package Quantity"
         placeholder = "Ex. 6"
+        maxLength={10}
       />
       {/* TODO: Edit Width */}
 
       <SingleLineTextInput
         title = "Estimated price of delivery"
         placeholder = "Ex. $$"
+        maxLength={20}
       />
       {/* TODO: Edit Width */}
 
@@ -116,6 +119,7 @@ export default function AddJob() {
         title = "Pick-up location"
         placeholder = "Ex. Insert address or landmark"
         icon = "location-pin"
+        maxLength={100}
       />
       <Picker
         selectedValue={pickupDistrict}
@@ -155,6 +159,7 @@ export default function AddJob() {
         title = "Drop-off location"
         placeholder = "Ex. Insert address or landmark"
         icon = "location-pin"
+        maxLength={100}
       />
       <Picker
         selectedValue={dropoffDistrict}
@@ -198,16 +203,12 @@ export default function AddJob() {
 
       <View style = {styles.center}>
         <View style = {styles.postJobButton}>
-        <Button 
-            title = "Post Job"
-            onPress={addJob}
-            color = "#DA5C5C"
-            >
-            </Button>
+
+          <PrimaryButton title="Post Job" type='primary'/>
+    
         </View>
       </View>
       
-        
       </View>
   );
 }

@@ -6,7 +6,7 @@ export default function App() {
     // Thumbnail Demo
 
     <View style={styles.container}>
-      <AddJob/>
+      <AddJob></AddJob>
     </View>
 
     // <SignupScreen />
