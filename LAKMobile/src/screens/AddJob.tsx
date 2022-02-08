@@ -64,49 +64,59 @@ export default function AddJob() {
       <View style={styles.photoBox}>
         <Icon name="camera-plus" size={30} color="black" />
 
-        {/*<AppText style = {styles.photoText}>Upload or take a photo.</AppText> */}
+        <AppText style = {styles.photoText}>Upload or take a photo.</AppText>
       </View>
 
       <View style={styles.photoBox}>
         <Icon name="camera-plus" size={30} color="black" />
 
-        {/* <AppText style = {styles.photoText}>Upload or take a photo.</AppText> */}
+        <AppText style = {styles.photoText}>Upload or take a photo.</AppText>
       </View>
 
       <View style={styles.photoBox}>
         <Icon name="camera-plus" size={30} color="black" />
 
-        {/* <AppText style = {styles.photoText}>Upload or take a photo.</AppText> */}
+        <AppText style = {styles.photoText}>Upload or take a photo.</AppText>
       </View>
 
         
     </TouchableOpacity>
 
       <View style={styles.photoInstructions}>
-        {/* <AppText style = {styles.photoInstructions}>At least one photo of the package is required.</AppText> */}
-        {/* <AppText style = {styles.photoInstructions}>Note: The first photo will be the thumbnail of the job listing.</AppText> */}
+        <AppText style = {styles.photoInstructions}>At least one photo of the package is required.</AppText>
+        <AppText style = {styles.photoInstructions}>Note: The first photo will be the thumbnail of the job listing.</AppText>
       </View>
 
       <SingleLineTextInput
         title = "Job Title"
         placeholder = "Ex. Box of apples"
         maxLength={100}
-      /> */}
+        onChange={onTextInputChange}
+        value={addJobInformation.jobTitle}
+        id={"jobTitle"}
+        width='60%'
+      />
 
       <SingleLineTextInput
         title="Client Name"
         placeholder="Ex. Gabby Gibson"
         maxLength={100}
-        onChange={onTextInputChange} 
-        value={undefined}      />
+        onChange={onTextInputChange}
+        value={addJobInformation.clientName}
+        id={"clientName"}
+        width='60%'
+      />
 
       <SingleLineTextInput
         title="Date to be delivered"
         placeholder="Ex. MM/DD/YYYY"
         footer="(put N/A if not applicable)"
         maxLength={10}
-        onChange={onTextInputChange} 
-        value={undefined}      />
+        onChange={onTextInputChange}
+        value={addJobInformation.deliveryDate}
+        id={"deliveryDate"}
+        width='60%'
+      />
 
       <MultilineTextInput
         title = "Description"
@@ -124,16 +134,24 @@ export default function AddJob() {
         title="Package Quantity"
         placeholder="Ex. 6"
         maxLength={10}
-        onChange={onTextInputChange} 
-        value={undefined}      />
+        onChange={onTextInputChange}
+        value={addJobInformation.packageQuantity}
+        id={"packageQuantity"}
+        width='40%'
+      />
+
       {/* TODO: Edit Width */}
 
       <SingleLineTextInput
         title="Estimated price of delivery"
         placeholder="Ex. $$"
         maxLength={20}
-        onChange={onTextInputChange} 
-        value={undefined}      />
+        onChange={onTextInputChange}
+        value={addJobInformation.estimatedPrice}
+        id={"estimatedPrice"}
+        width='40%'
+      />
+
       {/* TODO: Edit Width */}
 
 
@@ -142,8 +160,12 @@ export default function AddJob() {
         placeholder="Ex. Insert address or landmark"
         icon="location-pin"
         maxLength={100}
-        onChange={onTextInputChange} 
-        value={undefined}      />
+        onChange={onTextInputChange}
+        value={addJobInformation.pickUpLocation}
+        id={"pickUpLocation"}
+        width='80%'
+      />
+
       <Picker
         selectedValue={pickupDistrict}
         onValueChange={(value, index) => setPickupDistrict(value)}
@@ -183,8 +205,12 @@ export default function AddJob() {
         placeholder="Ex. Insert address or landmark"
         icon="location-pin"
         maxLength={100}
-        onChange={onTextInputChange} 
-        value={undefined}      /> 
+        onChange={onTextInputChange}
+        value={addJobInformation.dropOffLocation}
+        id={"dropOffLocation"}
+        width='80%'
+      />
+
       <Picker
         selectedValue={dropoffDistrict}
         onValueChange={(value, index) => setDropoffDistrict(value)}
@@ -218,13 +244,15 @@ export default function AddJob() {
       */}
       
       <SingleLineTextInput
-        title="Phone number"
-        placeholder="Ex. 17113456"
-        icon="phone-in-talk"
-        onChange={onTextInputChange} 
-        value={undefined}      />
-      {/* TODO: Add phone icon to text box */}
-
+        title = "Phone number"
+        placeholder = "Ex. 17113456"
+        icon = "phone-in-talk"
+        onChange={onTextInputChange}
+        value={addJobInformation.phoneNumber}
+        id={"phoneNumber"}
+        maxLength={20}
+        width='80%'
+      />
 
       <View style = {styles.center}>
         <View style = {styles.postJobButton}>

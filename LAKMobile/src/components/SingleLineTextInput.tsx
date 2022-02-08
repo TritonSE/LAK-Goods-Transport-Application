@@ -13,9 +13,10 @@ interface Props {
     onChange: (inputValue: any, id: string) => any,
     value: string,
     id: string,
+    width: string,
 }
 
-export default function SingleLineTextInput({ title, placeholder, icon, footer, maxLength, isNumber, onChange, value, id } : Props) {
+export default function SingleLineTextInput({ title, placeholder, icon, footer, maxLength, isNumber, onChange, value, id, width } : Props) {
 
   return (
       
@@ -31,15 +32,16 @@ export default function SingleLineTextInput({ title, placeholder, icon, footer, 
           </View>
           : null}
 
-      <TextInput
-        style={styles.inputBox}
-        value={value}
-        textAlign = {'center'}
-        placeholder={placeholder}
-        maxLength={maxLength}
-        keyboardType={isNumber ? 'numeric' : 'default'}
-        onChange={(inputValue) => onChange(inputValue, id)}
-      />
+        <TextInput
+          style={adjustableStyle({width: width, paddingHorizontal: icon ? 25: 5}).inputBox}
+          value={value}
+          textAlign = {'center'}
+          placeholder={placeholder}
+          maxLength={maxLength}
+          keyboardType={isNumber ? 'numeric' : 'default'}
+          onChange={(inputValue) => onChange(inputValue, id)}
+        />
+      </View>
 
         <View style={styles.footer}>
             {footer}
@@ -65,9 +67,8 @@ const styles = StyleSheet.create({
     fontSize: 16,
   },
   icon: {
-    // marginTop: 20,
-    // marginBottom: -40,
-    // marginLeft: 10,
+    marginRight: -35,
+    marginLeft: 15,
   },
   inputBox: {
     borderWidth: 1,
@@ -75,11 +76,37 @@ const styles = StyleSheet.create({
     width: '80%',
     margin: 10,
     borderRadius: 4,
-    paddingHorizontal: 20,
+    paddingHorizontal: 25,
     borderColor: "#8B8B8B",
+  },
+  textInputWrapper: {
+    display: 'flex',
+    flexDirection: 'row',
+    alignItems: 'center',
+    // borderColor: 'gray',
+    // borderWidth: 1,
+    // height: 40,
+    // width: '80%'
   },
   footer: {
     marginLeft: 10,
     fontSize: 12,
   }
 });
+
+interface AdjustableStyles {
+  width: string,
+  paddingHorizontal: number
+}
+
+const adjustableStyle = (props: AdjustableStyles) => StyleSheet.create({
+  inputBox: {
+    borderWidth: 1,
+    height: 35,
+    width: props.width,
+    margin: 10,
+    borderRadius: 4,
+    paddingHorizontal: props.paddingHorizontal,
+    borderColor: "#8B8B8B",
+  },
+})
