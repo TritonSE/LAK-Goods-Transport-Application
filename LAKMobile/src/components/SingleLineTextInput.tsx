@@ -10,10 +10,11 @@ interface Props {
     footer: string,
     maxLength: number,
     isNumber: boolean,
-    onChange: () => any,
+    onChange: (inputValue: any) => any,
+    value: string,
 }
 
-export default function SingleLineTextInput({ title, placeholder, icon, footer, maxLength, isNumber, onChange } : Props) {
+export default function SingleLineTextInput({ title, placeholder, icon, footer, maxLength, isNumber, onChange, value } : Props) {
 
   return (
       
@@ -25,19 +26,18 @@ export default function SingleLineTextInput({ title, placeholder, icon, footer, 
 
           {icon !== null ? 
           <View style={styles.icon}>
-            <MaterialCommunityIcon name="phone-in-talk" size={20} color="gray"/>
-            <MaterialIcon name="location-pin" size={20} color="gray"/>
+            <MaterialIcon name={icon} size={20} color="gray"/>
           </View>
           : null}
 
       <TextInput
         style={styles.inputBox}
-        value=""
+        value={value}
         textAlign = {'center'}
         placeholder={placeholder}
         maxLength={maxLength}
         keyboardType={isNumber ? 'numeric' : 'default'}
-        onChange={onChange}
+        onChange={(inputValue) => onChange(inputValue)}
       />
 
         <View style={styles.footer}>
@@ -64,7 +64,9 @@ const styles = StyleSheet.create({
     fontSize: 16,
   },
   icon: {
-    
+    marginTop: 20,
+    marginBottom: -40,
+    marginLeft: 10,
   },
   inputBox: {
     borderWidth: 1,
@@ -72,7 +74,7 @@ const styles = StyleSheet.create({
     width: '80%',
     margin: 10,
     borderRadius: 4,
-    paddingHorizontal: 10,
+    paddingHorizontal: 20,
     borderColor: "#8B8B8B",
   },
   footer: {

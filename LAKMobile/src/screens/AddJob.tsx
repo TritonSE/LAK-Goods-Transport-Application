@@ -14,15 +14,15 @@ export default function AddJob() {
   const [pickupDistrict, setPickupDistrict] = useState('Unknown'); 
   const [dropoffDistrict, setDropoffDistrict] = useState('Unknown');
   const [addJobInformation, setAddJobInformation] = useState({
-    jobTitle: null,
-    clientName: null,
-    deliveryDate: null,
-    description: null,
-    packageQuantity: null,
-    estimatedPrice: null,
-    pickUpLocation: null,
-    dropOffLocation: null,
-    phoneNumber: null,
+    jobTitle: "",
+    clientName: "",
+    deliveryDate: "",
+    description: "",
+    packageQuantity: "",
+    estimatedPrice: "",
+    pickUpLocation: "",
+    dropOffLocation: "",
+    phoneNumber: "",
   });
 
     const addJob = () => {
@@ -30,7 +30,6 @@ export default function AddJob() {
     }
 
     const photoPress = () => {
-      console.log("temp ");
 
       const mediaType = 'photo' as MediaType;
 
@@ -47,8 +46,8 @@ export default function AddJob() {
       })
   }
 
-  const onTextInputChange = () => {
-
+  const onTextInputChange = (e: any) => {
+    setAddJobInformation({...addJobInformation, jobTitle: e.target.value});
   }
 
   return (
@@ -90,6 +89,7 @@ export default function AddJob() {
         placeholder = "Ex. Box of apples"
         maxLength={100}
         onChange={onTextInputChange}
+        value={addJobInformation.jobTitle}
       />
 
       <SingleLineTextInput
@@ -262,7 +262,8 @@ const styles = StyleSheet.create({
       flexDirection: 'row',
   },
   photoInstructions: {
-    margin: 15,
+    marginBottom: 10,
+    marginLeft: 10,
     fontSize: 12,
   },
   inputBox: {
