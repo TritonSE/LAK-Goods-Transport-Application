@@ -4,6 +4,7 @@ import { Button, StyleSheet, Text, TextInput, TouchableOpacity, View} from 'reac
 import { Picker } from "@react-native-picker/picker";
 import SingleLineTextInput from '../components/SingleLineTextInput';
 import MultilineTextInput from '../components/MultilineTextInput';
+import AppText from '../components/AppText';
 import {launchCamera, launchImageLibrary, MediaType} from 'react-native-image-picker';
 import Icon  from 'react-native-vector-icons/MaterialCommunityIcons';
 import { PrimaryButton } from '../components';
@@ -61,28 +62,27 @@ export default function AddJob() {
       <View style={styles.photoBox}>
         <Icon name="camera-plus" size={30} color="black" />
 
-        <Text style = {styles.photoText}>Upload or take a photo.</Text>
+        <AppText style = {styles.photoText}>Upload or take a photo.</AppText>
       </View>
 
       <View style={styles.photoBox}>
         <Icon name="camera-plus" size={30} color="black" />
 
-        <Text style = {styles.photoText}>Upload or take a photo.</Text>
+        <AppText style = {styles.photoText}>Upload or take a photo.</AppText>
       </View>
 
       <View style={styles.photoBox}>
         <Icon name="camera-plus" size={30} color="black" />
 
-        <Text style = {styles.photoText}>Upload or take a photo.</Text>
+        <AppText style = {styles.photoText}>Upload or take a photo.</AppText>
       </View>
 
         
     </TouchableOpacity>
 
       <View style={styles.photoInstructions}>
-            At least one photo of the package is required.
-            <br/>
-            Note: The first photo will be the thumbnail of the job listing.
+        <AppText style = {styles.photoInstructions}>At least one photo of the package is required.</AppText>
+        <AppText style = {styles.photoInstructions}>Note: The first photo will be the thumbnail of the job listing.</AppText>
       </View>
 
       <SingleLineTextInput
