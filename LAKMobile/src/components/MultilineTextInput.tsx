@@ -1,5 +1,5 @@
 import React from 'react';
-import { View, TextInput, StyleSheet } from 'react-native';
+import { View, TextInput, Text, StyleSheet } from 'react-native';
 
 interface Props {
     title: string,
@@ -17,7 +17,7 @@ export default function MultilineTextInput({ title, placeholder, footer, maxLeng
       
     <View style={styles.container}>
         <View style={styles.inputLabel}>
-            {title}
+            <Text> {title} </Text>
         </View>
 
         <TextInput
@@ -31,7 +31,7 @@ export default function MultilineTextInput({ title, placeholder, footer, maxLeng
       />
 
         <View style={styles.footer}>
-            {footer}
+            <Text> {footer} </Text>
         </View>
     </View>
   );

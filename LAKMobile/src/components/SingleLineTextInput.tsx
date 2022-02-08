@@ -1,5 +1,5 @@
 import React from 'react';
-import { View, TextInput, StyleSheet } from 'react-native';
+import { View, TextInput, Text, StyleSheet } from 'react-native';
 import MaterialCommunityIcon  from 'react-native-vector-icons/MaterialCommunityIcons';
 import MaterialIcon  from 'react-native-vector-icons/MaterialIcons';
 
@@ -23,7 +23,7 @@ export default function SingleLineTextInput({ title, placeholder, icon, footer, 
     <View style={styles.container}>
 
         <View style={styles.inputLabel}>
-            {title}
+            <Text> {title} </Text>
         </View>
 
           {icon !== null ? 
@@ -44,7 +44,7 @@ export default function SingleLineTextInput({ title, placeholder, icon, footer, 
       </View>
 
         <View style={styles.footer}>
-            {footer}
+            <Text> {footer} </Text>
         </View>
     </View>
   );
