@@ -64,102 +64,80 @@ export default function AddJob() {
       <View style={styles.photoBox}>
         <Icon name="camera-plus" size={30} color="black" />
 
-        <AppText style = {styles.photoText}>Upload or take a photo.</AppText>
+        {/*<AppText style = {styles.photoText}>Upload or take a photo.</AppText> */}
       </View>
 
       <View style={styles.photoBox}>
         <Icon name="camera-plus" size={30} color="black" />
 
-        <AppText style = {styles.photoText}>Upload or take a photo.</AppText>
+        {/* <AppText style = {styles.photoText}>Upload or take a photo.</AppText> */}
       </View>
 
       <View style={styles.photoBox}>
         <Icon name="camera-plus" size={30} color="black" />
 
-        <AppText style = {styles.photoText}>Upload or take a photo.</AppText>
+        {/* <AppText style = {styles.photoText}>Upload or take a photo.</AppText> */}
       </View>
 
         
     </TouchableOpacity>
 
       <View style={styles.photoInstructions}>
-        <AppText style = {styles.photoInstructions}>At least one photo of the package is required.</AppText>
-        <AppText style = {styles.photoInstructions}>Note: The first photo will be the thumbnail of the job listing.</AppText>
+        {/* <AppText style = {styles.photoInstructions}>At least one photo of the package is required.</AppText> */}
+        {/* <AppText style = {styles.photoInstructions}>Note: The first photo will be the thumbnail of the job listing.</AppText> */}
       </View>
 
-      <SingleLineTextInput
+      {/* <SingleLineTextInput
         title = "Job Title"
         placeholder = "Ex. Box of apples"
         maxLength={100}
-        onChange={onTextInputChange}
-        value={addJobInformation.jobTitle}
-        id={"jobTitle"}
-      />
+      /> */}
 
-      <SingleLineTextInput
+      {/* <SingleLineTextInput
         title = "Client Name"
         placeholder = "Ex. Gabby Gibson"
         maxLength={100}
-        onChange={onTextInputChange}
-        value={addJobInformation.clientName}
-        id={"clientName"}
-      />
+      /> */}
 
-      <SingleLineTextInput
+      {/* <SingleLineTextInput
         title = "Date to be delivered"
         placeholder = "Ex. MM/DD/YYYY"
         footer = "(put N/A if not applicable)"
         maxLength={10}
-        onChange={onTextInputChange}
-        value={addJobInformation.deliveryDate}
-        id={"deliveryDate"}
-      />
+      /> */}
 
-      <MultilineTextInput
+      {/* <MultilineTextInput
         title = "Description"
         placeholder = {"Tell us about your package. Add any extra detail about its size. \n\n Ex. Package will fill up 1/3 of a truck."}
         maxLength={1000}
-        onChange={onTextInputChange}
-        value={addJobInformation.packageDescription}
-        id={"packageDescription"}
-      />
+      /> */}
       {/*  
       TODO:  
       (2) Edit: size of the TextInput box so that it shows all the placeholder text. 
       Right now you need to scroll down to see all the text.
        */}
 
-      <SingleLineTextInput
+      {/* <SingleLineTextInput
         title = "Package Quantity"
         placeholder = "Ex. 6"
         maxLength={10}
-        onChange={onTextInputChange}
-        value={addJobInformation.packageQuantity}
-        id={"packageQuantity"}
-      />
+      /> */}
       {/* TODO: Edit Width */}
 
-      <SingleLineTextInput
+      {/* <SingleLineTextInput
         title = "Estimated price of delivery"
         placeholder = "Ex. $$"
         maxLength={20}
-        onChange={onTextInputChange}
-        value={addJobInformation.estimatedPrice}
-        id={"estimatedPrice"}
-      />
+      /> */}
       {/* TODO: Edit Width */}
 
 
-      <SingleLineTextInput
+      {/* <SingleLineTextInput
         title = "Pick-up location"
         placeholder = "Ex. Insert address or landmark"
         icon = "location-pin"
         maxLength={100}
-        onChange={onTextInputChange}
-        value={addJobInformation.pickUpLocation}
-        id={"pickUpLocation"}
-      />
-      
+      /> */}
       <Picker
         selectedValue={pickupDistrict}
         onValueChange={(value, index) => setPickupDistrict(value)}
@@ -194,15 +172,12 @@ export default function AddJob() {
       */}
 
 
-      <SingleLineTextInput
+      {/* <SingleLineTextInput
         title = "Drop-off location"
         placeholder = "Ex. Insert address or landmark"
         icon = "location-pin"
         maxLength={100}
-        onChange={onTextInputChange}
-        value={addJobInformation.dropOffLocation}
-        id={"dropOffLocation"}
-      />
+      /> */}
       <Picker
         selectedValue={dropoffDistrict}
         onValueChange={(value, index) => setDropoffDistrict(value)}
@@ -235,15 +210,13 @@ export default function AddJob() {
       TODO: Should we add google-places-autocomplete for Drop-off location TextInput?
       */}
       
-      <SingleLineTextInput
+      {/* <SingleLineTextInput
         title = "Phone number"
         placeholder = "Ex. 17113456"
         icon = "phone-in-talk"
-        onChange={onTextInputChange}
-        value={addJobInformation.phoneNumber}
-        id={"phoneNumber"}
-        maxLength={20}
-      />
+      /> */}
+      {/* TODO: Add phone icon to text box */}
+
 
       <View style = {styles.center}>
         <View style = {styles.postJobButton}>
