@@ -6,11 +6,12 @@ interface Props {
     placeholder: string,
     footer: string,
     maxLength: number,
-    onChange: () => any,
+    onChange: (inputValue: any, id: string) => any,
+    value: string,
+    id: string,
 }
 
-export default function MultilineTextInput({ title, placeholder, footer, maxLength, onChange } : Props) {
-
+export default function MultilineTextInput({ title, placeholder, footer, maxLength, onChange, value, id } : Props) {
 
   return (
       
@@ -21,11 +22,12 @@ export default function MultilineTextInput({ title, placeholder, footer, maxLeng
 
         <TextInput
         style={styles.inputBox}
-        value=""
+        value={value}
         textAlign = {'center'}
         placeholder={placeholder}
         multiline={true}
         maxLength={maxLength}
+        onChange={(inputValue) => onChange(inputValue, id)}
       />
 
         <View style={styles.footer}>

@@ -7,7 +7,7 @@ import MultilineTextInput from '../components/MultilineTextInput';
 import AppText from '../components/AppText';
 import {launchCamera, launchImageLibrary, MediaType} from 'react-native-image-picker';
 import Icon  from 'react-native-vector-icons/MaterialCommunityIcons';
-import { PrimaryButton } from '../components';
+import { PrimaryButton, ScreenHeader } from '../components';
 
 export default function AddJob() {
 
@@ -17,7 +17,7 @@ export default function AddJob() {
     jobTitle: "",
     clientName: "",
     deliveryDate: "",
-    description: "",
+    packageDescription: "",
     packageQuantity: "",
     estimatedPrice: "",
     pickUpLocation: "",
@@ -46,15 +46,18 @@ export default function AddJob() {
       })
   }
 
-  const onTextInputChange = (e: any) => {
-    setAddJobInformation({...addJobInformation, jobTitle: e.target.value});
+  const onTextInputChange = (e: any, id: string) => {
+    setAddJobInformation({...addJobInformation, [id]: e.target.value});
+    console.log(e);
   }
 
   return (
       
     <View style={styles.container}>
 
-      {/* TODO: Add screen header component */}
+    <View style = {styles.header}>
+      <ScreenHeader showArrow>Add Job</ScreenHeader>
+    </View>
 
     <TouchableOpacity style={styles.photos} onPress={photoPress}>
 
@@ -90,6 +93,7 @@ export default function AddJob() {
         maxLength={100}
         onChange={onTextInputChange}
         value={addJobInformation.jobTitle}
+        id={"jobTitle"}
       />
 
       <SingleLineTextInput
@@ -97,6 +101,8 @@ export default function AddJob() {
         placeholder = "Ex. Gabby Gibson"
         maxLength={100}
         onChange={onTextInputChange}
+        value={addJobInformation.clientName}
+        id={"clientName"}
       />
 
       <SingleLineTextInput
@@ -105,6 +111,8 @@ export default function AddJob() {
         footer = "(put N/A if not applicable)"
         maxLength={10}
         onChange={onTextInputChange}
+        value={addJobInformation.deliveryDate}
+        id={"deliveryDate"}
       />
 
       <MultilineTextInput
@@ -112,6 +120,8 @@ export default function AddJob() {
         placeholder = {"Tell us about your package. Add any extra detail about its size. \n\n Ex. Package will fill up 1/3 of a truck."}
         maxLength={1000}
         onChange={onTextInputChange}
+        value={addJobInformation.packageDescription}
+        id={"packageDescription"}
       />
       {/*  
       TODO:  
@@ -124,6 +134,8 @@ export default function AddJob() {
         placeholder = "Ex. 6"
         maxLength={10}
         onChange={onTextInputChange}
+        value={addJobInformation.packageQuantity}
+        id={"packageQuantity"}
       />
       {/* TODO: Edit Width */}
 
@@ -132,6 +144,8 @@ export default function AddJob() {
         placeholder = "Ex. $$"
         maxLength={20}
         onChange={onTextInputChange}
+        value={addJobInformation.estimatedPrice}
+        id={"estimatedPrice"}
       />
       {/* TODO: Edit Width */}
 
@@ -142,7 +156,10 @@ export default function AddJob() {
         icon = "location-pin"
         maxLength={100}
         onChange={onTextInputChange}
+        value={addJobInformation.pickUpLocation}
+        id={"pickUpLocation"}
       />
+      
       <Picker
         selectedValue={pickupDistrict}
         onValueChange={(value, index) => setPickupDistrict(value)}
@@ -183,6 +200,8 @@ export default function AddJob() {
         icon = "location-pin"
         maxLength={100}
         onChange={onTextInputChange}
+        value={addJobInformation.dropOffLocation}
+        id={"dropOffLocation"}
       />
       <Picker
         selectedValue={dropoffDistrict}
@@ -221,9 +240,10 @@ export default function AddJob() {
         placeholder = "Ex. 17113456"
         icon = "phone-in-talk"
         onChange={onTextInputChange}
+        value={addJobInformation.phoneNumber}
+        id={"phoneNumber"}
+        maxLength={20}
       />
-      {/* TODO: Add phone icon to text box */}
-
 
       <View style = {styles.center}>
         <View style = {styles.postJobButton}>
@@ -243,6 +263,9 @@ const styles = StyleSheet.create({
     backgroundColor: '#fff',
     fontFamily: 'Arial',
     padding: 10,
+  },
+  header: {
+    marginBottom: 100,
   },
   photoText: {
     fontSize: 10, 

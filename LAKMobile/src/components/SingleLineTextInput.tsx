@@ -10,11 +10,12 @@ interface Props {
     footer: string,
     maxLength: number,
     isNumber: boolean,
-    onChange: (inputValue: any) => any,
+    onChange: (inputValue: any, id: string) => any,
     value: string,
+    id: string,
 }
 
-export default function SingleLineTextInput({ title, placeholder, icon, footer, maxLength, isNumber, onChange, value } : Props) {
+export default function SingleLineTextInput({ title, placeholder, icon, footer, maxLength, isNumber, onChange, value, id } : Props) {
 
   return (
       
@@ -37,7 +38,7 @@ export default function SingleLineTextInput({ title, placeholder, icon, footer, 
         placeholder={placeholder}
         maxLength={maxLength}
         keyboardType={isNumber ? 'numeric' : 'default'}
-        onChange={(inputValue) => onChange(inputValue)}
+        onChange={(inputValue) => onChange(inputValue, id)}
       />
 
         <View style={styles.footer}>
@@ -64,9 +65,9 @@ const styles = StyleSheet.create({
     fontSize: 16,
   },
   icon: {
-    marginTop: 20,
-    marginBottom: -40,
-    marginLeft: 10,
+    // marginTop: 20,
+    // marginBottom: -40,
+    // marginLeft: 10,
   },
   inputBox: {
     borderWidth: 1,
