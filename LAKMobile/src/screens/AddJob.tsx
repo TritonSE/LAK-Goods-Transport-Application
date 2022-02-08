@@ -87,57 +87,63 @@ export default function AddJob() {
         {/* <AppText style = {styles.photoInstructions}>Note: The first photo will be the thumbnail of the job listing.</AppText> */}
       </View>
 
-      {/* <SingleLineTextInput
+      <SingleLineTextInput
         title = "Job Title"
         placeholder = "Ex. Box of apples"
         maxLength={100}
       /> */}
 
-      {/* <SingleLineTextInput
-        title = "Client Name"
-        placeholder = "Ex. Gabby Gibson"
+      <SingleLineTextInput
+        title="Client Name"
+        placeholder="Ex. Gabby Gibson"
         maxLength={100}
-      /> */}
+        onChange={onTextInputChange} 
+        value={undefined}      />
 
-      {/* <SingleLineTextInput
-        title = "Date to be delivered"
-        placeholder = "Ex. MM/DD/YYYY"
-        footer = "(put N/A if not applicable)"
+      <SingleLineTextInput
+        title="Date to be delivered"
+        placeholder="Ex. MM/DD/YYYY"
+        footer="(put N/A if not applicable)"
         maxLength={10}
-      /> */}
+        onChange={onTextInputChange} 
+        value={undefined}      />
 
-      {/* <MultilineTextInput
+      <MultilineTextInput
         title = "Description"
         placeholder = {"Tell us about your package. Add any extra detail about its size. \n\n Ex. Package will fill up 1/3 of a truck."}
         maxLength={1000}
-      /> */}
+        {/* onChange={onTextInputChange} */}
+      />
       {/*  
       TODO:  
       (2) Edit: size of the TextInput box so that it shows all the placeholder text. 
       Right now you need to scroll down to see all the text.
        */}
 
-      {/* <SingleLineTextInput
-        title = "Package Quantity"
-        placeholder = "Ex. 6"
+      <SingleLineTextInput
+        title="Package Quantity"
+        placeholder="Ex. 6"
         maxLength={10}
-      /> */}
+        onChange={onTextInputChange} 
+        value={undefined}      />
       {/* TODO: Edit Width */}
 
-      {/* <SingleLineTextInput
-        title = "Estimated price of delivery"
-        placeholder = "Ex. $$"
+      <SingleLineTextInput
+        title="Estimated price of delivery"
+        placeholder="Ex. $$"
         maxLength={20}
-      /> */}
+        onChange={onTextInputChange} 
+        value={undefined}      />
       {/* TODO: Edit Width */}
 
 
-      {/* <SingleLineTextInput
-        title = "Pick-up location"
-        placeholder = "Ex. Insert address or landmark"
-        icon = "location-pin"
+      <SingleLineTextInput
+        title="Pick-up location"
+        placeholder="Ex. Insert address or landmark"
+        icon="location-pin"
         maxLength={100}
-      /> */}
+        onChange={onTextInputChange} 
+        value={undefined}      />
       <Picker
         selectedValue={pickupDistrict}
         onValueChange={(value, index) => setPickupDistrict(value)}
@@ -172,12 +178,13 @@ export default function AddJob() {
       */}
 
 
-      {/* <SingleLineTextInput
-        title = "Drop-off location"
-        placeholder = "Ex. Insert address or landmark"
-        icon = "location-pin"
+      <SingleLineTextInput
+        title="Drop-off location"
+        placeholder="Ex. Insert address or landmark"
+        icon="location-pin"
         maxLength={100}
-      /> */}
+        onChange={onTextInputChange} 
+        value={undefined}      /> 
       <Picker
         selectedValue={dropoffDistrict}
         onValueChange={(value, index) => setDropoffDistrict(value)}
@@ -210,11 +217,12 @@ export default function AddJob() {
       TODO: Should we add google-places-autocomplete for Drop-off location TextInput?
       */}
       
-      {/* <SingleLineTextInput
-        title = "Phone number"
-        placeholder = "Ex. 17113456"
-        icon = "phone-in-talk"
-      /> */}
+      <SingleLineTextInput
+        title="Phone number"
+        placeholder="Ex. 17113456"
+        icon="phone-in-talk"
+        onChange={onTextInputChange} 
+        value={undefined}      />
       {/* TODO: Add phone icon to text box */}
 
 
