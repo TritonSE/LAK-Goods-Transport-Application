@@ -12,6 +12,17 @@ export default function AddJob() {
 
   const [pickupDistrict, setPickupDistrict] = useState('Unknown'); 
   const [dropoffDistrict, setDropoffDistrict] = useState('Unknown');
+  const [addJobInformation, setAddJobInformation] = useState({
+    jobTitle: null,
+    clientName: null,
+    deliveryDate: null,
+    description: null,
+    packageQuantity: null,
+    estimatedPrice: null,
+    pickUpLocation: null,
+    dropOffLocation: null,
+    phoneNumber: null,
+  });
 
     const addJob = () => {
         console.log("temp ");
@@ -33,6 +44,10 @@ export default function AddJob() {
       launchCamera(options, response => {
         console.log("res");
       })
+  }
+
+  const onTextInputChange = () => {
+
   }
 
   return (
@@ -74,12 +89,14 @@ export default function AddJob() {
         title = "Job Title"
         placeholder = "Ex. Box of apples"
         maxLength={100}
+        onChange={onTextInputChange}
       />
 
       <SingleLineTextInput
         title = "Client Name"
         placeholder = "Ex. Gabby Gibson"
         maxLength={100}
+        onChange={onTextInputChange}
       />
 
       <SingleLineTextInput
@@ -87,12 +104,14 @@ export default function AddJob() {
         placeholder = "Ex. MM/DD/YYYY"
         footer = "(put N/A if not applicable)"
         maxLength={10}
+        onChange={onTextInputChange}
       />
 
       <MultilineTextInput
         title = "Description"
         placeholder = {"Tell us about your package. Add any extra detail about its size. \n\n Ex. Package will fill up 1/3 of a truck."}
         maxLength={1000}
+        onChange={onTextInputChange}
       />
       {/*  
       TODO:  
@@ -104,6 +123,7 @@ export default function AddJob() {
         title = "Package Quantity"
         placeholder = "Ex. 6"
         maxLength={10}
+        onChange={onTextInputChange}
       />
       {/* TODO: Edit Width */}
 
@@ -111,6 +131,7 @@ export default function AddJob() {
         title = "Estimated price of delivery"
         placeholder = "Ex. $$"
         maxLength={20}
+        onChange={onTextInputChange}
       />
       {/* TODO: Edit Width */}
 
@@ -120,6 +141,7 @@ export default function AddJob() {
         placeholder = "Ex. Insert address or landmark"
         icon = "location-pin"
         maxLength={100}
+        onChange={onTextInputChange}
       />
       <Picker
         selectedValue={pickupDistrict}
@@ -160,6 +182,7 @@ export default function AddJob() {
         placeholder = "Ex. Insert address or landmark"
         icon = "location-pin"
         maxLength={100}
+        onChange={onTextInputChange}
       />
       <Picker
         selectedValue={dropoffDistrict}
@@ -197,6 +220,7 @@ export default function AddJob() {
         title = "Phone number"
         placeholder = "Ex. 17113456"
         icon = "phone-in-talk"
+        onChange={onTextInputChange}
       />
       {/* TODO: Add phone icon to text box */}
 

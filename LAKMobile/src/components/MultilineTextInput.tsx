@@ -6,9 +6,10 @@ interface Props {
     placeholder: string,
     footer: string,
     maxLength: number,
+    onChange: () => any,
 }
 
-export default function MultilineTextInput({ title, placeholder, footer, maxLength } : Props) {
+export default function MultilineTextInput({ title, placeholder, footer, maxLength, onChange } : Props) {
 
 
   return (

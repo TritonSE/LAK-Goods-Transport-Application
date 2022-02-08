@@ -10,9 +10,10 @@ interface Props {
     footer: string,
     maxLength: number,
     isNumber: boolean,
+    onChange: () => any,
 }
 
-export default function SingleLineTextInput({ title, placeholder, icon, footer, maxLength, isNumber } : Props) {
+export default function SingleLineTextInput({ title, placeholder, icon, footer, maxLength, isNumber, onChange } : Props) {
 
   return (
       
@@ -22,12 +23,12 @@ export default function SingleLineTextInput({ title, placeholder, icon, footer, 
             {title}
         </View>
 
-          {icon !== null && 
+          {icon !== null ? 
           <View style={styles.icon}>
             <MaterialCommunityIcon name="phone-in-talk" size={20} color="gray"/>
             <MaterialIcon name="location-pin" size={20} color="gray"/>
           </View>
-          }
+          : null}
 
       <TextInput
         style={styles.inputBox}
@@ -36,6 +37,7 @@ export default function SingleLineTextInput({ title, placeholder, icon, footer, 
         placeholder={placeholder}
         maxLength={maxLength}
         keyboardType={isNumber ? 'numeric' : 'default'}
+        onChange={onChange}
       />
 
         <View style={styles.footer}>
