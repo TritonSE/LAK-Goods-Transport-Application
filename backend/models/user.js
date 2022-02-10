@@ -1,18 +1,18 @@
-const bcrypt = require("bcrypt");
+// const bcrypt = require("bcrypt"); Import when needed
 const mongoose = require("mongoose");
 
 const { Schema } = mongoose;
 
 const UserSchema = new Schema({
-    password: {
-        type: String,
-        required: true,
-    },
     firstName: {
         type: String,
         required: true,
     },
     lastName: {
+        type: String,
+        required: true,
+    },
+    password: {
         type: String,
         required: true,
     },
@@ -36,6 +36,7 @@ const UserSchema = new Schema({
 /**
  * Sniped from Octavian, may use later for auth
  *
+ Following code can be used when implementing user authentication
 UserSchema.pre("save", function preSave(next) {
     const user = this;
     if (user.isModified("password")) {
@@ -57,4 +58,7 @@ UserSchema.set("toJSON", {
     },
 });*/
 
+/**
+ * Model to represent User data
+ */
 module.exports = mongoose.model("User", UserSchema);

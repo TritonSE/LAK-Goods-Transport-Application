@@ -1,23 +1,22 @@
 const routes = require('express').Router();
-const { MongoClient } = require('mongodb');
-let client;
+const User = require('../models/user');
 
-routes.get('/api', (req, res) => {
+routes.get('/hello', (req, res) => { // Only for testing
+  res.json({message: 'Hello world! Lakta here'})
+})
 
-  const uri = "mongodb+srv://admin:admin@lak.yacf5.mongodb.net/myFirstDatabase?retryWrites=true&w=majority";
-  client = new MongoClient(uri, { useNewUrlParser: true, useUnifiedTopology: true });
-  client.connect(async err => {
-    await createAccount("testUsername2", "testPin");
+routes.post('/add-user', (req, res) => { // Only for testing
+  // TODO Remove this endpoint when starting API development
+  const sampleUser = User({
+    firstName: 'Sample',
+    lastName: 'User',
+    password: 'password',
+    phone: 'number',
+  });  
+  sampleUser.save((err) => {
+    console.error('Error occured while saving', err);
   });
-  res.status(200).json({ message: 'Connected!' });
+  res.json({message: 'Created Sample User', data: sampleUser})
 });
-
-async function createAccount(un, pw) {
-  const users = client.db("LAK").collection("users");
-  return await users.insertOne({
-    username: un,
-    password: pw
-  });
-}
 
 module.exports = routes;
