@@ -5,9 +5,25 @@ const mongoose = require("mongoose");
 const { Schema } = mongoose;
 
 const JobSchema = new Schema({
+    title: {
+        type: String, 
+        required: true,
+    },
+    clientName: { // TODO Confirm - Client Name should not be same as client logged in?
+        type: String,
+        required: true,
+    },
+    phoneNumber: { // TODO Confirm - Do we need a seperate phone or should it the number on record for the client?
+        type: String,
+        required: true,
+    },
     client: {
         type: mongoose.Types.ObjectId,
         ref: "User",
+        required: true,
+    },
+    deliveryDate: {
+        type: String,
         required: true,
     },
     pickupLocation: {
@@ -18,19 +34,15 @@ const JobSchema = new Schema({
         type: String,
         required: true,
     },
-    deliveryDate: {
-        type: String,
-        required: true,
-    },
     description: {
         type: String,
         required: true,
     },
-    price: {
+    packageQuantity: {
         type: Number,
         required: true,
     },
-    packageQuantity: {
+    price: {
         type: Number,
         required: true,
     },
