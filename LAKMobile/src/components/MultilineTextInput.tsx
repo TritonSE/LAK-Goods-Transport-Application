@@ -23,7 +23,7 @@ export default function MultilineTextInput({ title, placeholder, footer, maxLeng
         <TextInput
         style={styles.inputBox}
         value={value}
-        textAlign = {'center'}
+        textAlign = {'left'}
         placeholder={placeholder}
         multiline={true}
         maxLength={maxLength}

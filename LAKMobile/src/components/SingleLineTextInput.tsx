@@ -33,9 +33,9 @@ export default function SingleLineTextInput({ title, placeholder, icon, footer, 
           : null}
 
         <TextInput
-          style={adjustableStyle({width: width, paddingHorizontal: icon ? 25: 5}).inputBox}
+          style={adjustableStyle({width: width, paddingHorizontal: icon ? 30: 10}).inputBox}
           value={value}
-          textAlign = {'center'}
+          textAlign = {'left'}
           placeholder={placeholder}
           maxLength={maxLength}
           keyboardType={isNumber ? 'numeric' : 'default'}

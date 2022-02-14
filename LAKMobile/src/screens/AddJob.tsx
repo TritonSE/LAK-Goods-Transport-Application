@@ -1,11 +1,12 @@
 import React from 'react';
 import { useState } from "react";
-import { Button, StyleSheet, Text, TextInput, TouchableOpacity, View} from 'react-native';
+import { Button, PermissionsAndroid, ScrollView, StyleSheet, Text, TextInput, TouchableOpacity, View} from 'react-native';
 import { Picker } from "@react-native-picker/picker";
 import SingleLineTextInput from '../components/SingleLineTextInput';
 import MultilineTextInput from '../components/MultilineTextInput';
 import AppText from '../components/AppText';
-import {launchCamera, launchImageLibrary, MediaType} from 'react-native-image-picker';
+import {launchCamera, launchImageLibrary} from 'react-native-image-picker';
+import {MediaType} from 'react-native-image-picker';
 import Icon  from 'react-native-vector-icons/MaterialCommunityIcons';
 import { PrimaryButton, ScreenHeader } from '../components';
 import PickerItem from '../components/PickerItem';
@@ -34,21 +35,51 @@ export default function AddJob() {
         console.log("temp ");
     }
 
-    const photoPress = () => {
+    const requestCameraAccess = async () => {
+      try {
+        const granted = await PermissionsAndroid.request(
+          PermissionsAndroid.PERMISSIONS.CAMERA,
+          {
+            title: "LAK Mobile Permissions",
+            message:
+              "LAK Mobile needs your permission to access your camera",
+            buttonNeutral: "Ask Me Later",
+            buttonNegative: "Cancel",
+            buttonPositive: "OK"
+          }
+        );
+        if (granted === PermissionsAndroid.RESULTS.GRANTED) {
+          
+        } else {
+          
+        }
+      } catch (err) {
+        console.warn(err);
+      }
+    };
+
+    const photoPress = async () => {
+
+      await requestCameraAccess();
 
       const mediaType = 'photo' as MediaType;
 
       const options = {
         storageOptions: {
-          path: "images",
+            path: "images",
         },
         mediaType: mediaType,
         includeBase64: true,
-      }
+    }
 
-      launchCamera(options, response => {
-        console.log("res");
-      })
+    try {
+      const result = await launchImageLibrary(options);
+    }
+    catch(e){
+     console.log(e); 
+    }
+
+    
   }
 
   const onTextInputChange = (e: any, id: string) => {
@@ -58,13 +89,13 @@ export default function AddJob() {
 
   return (
       
-    <View style={styles.container}>
+    <ScrollView style={styles.container} contentContainerStyle={{paddingBottom: 60}}>
 
     <View style = {styles.header}>
       <ScreenHeader showArrow>Add Job</ScreenHeader>
     </View>
 
-    <TouchableOpacity style={styles.photos} onPress={photoPress}>
+    <TouchableOpacity style={styles.photos} onPress={() => {photoPress();}}>
 
       <View style={styles.photoBox}>
         <Icon name="camera-plus" size={30} color="black" />
@@ -220,7 +251,7 @@ export default function AddJob() {
         </View>
       </View>
       
-      </View>
+      </ScrollView>
   );
 }
 
@@ -228,8 +259,7 @@ const styles = StyleSheet.create({
   container: {
     flex: 1,
     backgroundColor: '#fff',
-    fontFamily: 'Arial',
-    padding: 10,
+    fontFamily: 'Roboto',
   },
   header: {
     marginBottom: 100,

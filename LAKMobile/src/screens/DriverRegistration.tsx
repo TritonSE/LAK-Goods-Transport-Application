@@ -89,7 +89,7 @@ const styles = StyleSheet.create({
   container: {
     flex: 1,
     backgroundColor: '#fff',
-    fontFamily: 'Arial',
+    fontFamily: 'Roboto',
     padding: 10,
   },
   inputBox: {
