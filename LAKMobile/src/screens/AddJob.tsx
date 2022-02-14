@@ -8,9 +8,14 @@ import AppText from '../components/AppText';
 import {launchCamera, launchImageLibrary, MediaType} from 'react-native-image-picker';
 import Icon  from 'react-native-vector-icons/MaterialCommunityIcons';
 import { PrimaryButton, ScreenHeader } from '../components';
+import PickerItem from '../components/PickerItem';
+
+const LOCATIONS = ["-- Select a district --", "Bumthang", "Chhukha", "Dagana", "Gasa", "Haa",
+  "Lhuentse", "Mongar", "Paro", "Pema Gatshel", "Punakha", "Samdrup Jongkhar",
+  "Samtse", "Sarpang", "Thimphu", "Trashigang", "Trashi Yangtse", "Trongsa",
+  "Tsirang", "Wangdue Phodrang", "Zhemgang"];
 
 export default function AddJob() {
-
   const [pickupDistrict, setPickupDistrict] = useState('Unknown'); 
   const [dropoffDistrict, setDropoffDistrict] = useState('Unknown');
   const [addJobInformation, setAddJobInformation] = useState({
@@ -172,32 +177,8 @@ export default function AddJob() {
         mode="dropdown" // Android only
         style={styles.picker}
       >
-        <Picker.Item label="-- Select a district --" value="Unknown" />
-        <Picker.Item label="Bumthang" value="Bumthang" />
-        <Picker.Item label="Chhukha" value="Chhukha" />
-        <Picker.Item label="Dagana" value="Dagana" />
-        <Picker.Item label="Gasa" value="Gasa" />
-        <Picker.Item label="Haa" value="Haa" />
-        <Picker.Item label="Lhuentse" value="Lhuentse" />
-        <Picker.Item label="Mongar" value="Mongar" />
-        <Picker.Item label="Paro" value="Paro" />
-        <Picker.Item label="Pema Gatshel" value="Pema Gatshel" />
-        <Picker.Item label="Punakha" value="Punakha" />
-        <Picker.Item label="Samdrup Jongkhar" value="Samdrup Jongkhar" />
-        <Picker.Item label="Samtse" value="Samtse" />
-        <Picker.Item label="Sarpang" value="Sarpang" />
-        <Picker.Item label="Thimphu" value="Thimphu" />
-        <Picker.Item label="Trashigang" value="Trashigang" />
-        <Picker.Item label="Trashi Yangtse" value="Trashi Yangtse" />
-        <Picker.Item label="Trongsa" value="Trongsa" />
-        <Picker.Item label="Tsirang" value="Tsirang" />
-        <Picker.Item label="Wangdue Phodrang" value="Wangdue Phodrang" />
-        <Picker.Item label="Zhemgang" value="Zhemgang" />
+        {LOCATIONS.map(location => <PickerItem label={location} value={location}/>)}
       </Picker>
-      {/*
-      Districts for dropdown: https://en.wikipedia.org/wiki/Districts_of_Bhutan
-      TODO: Do we need to add google-places-autocomplete for Pick-up location TextInput?
-      */}
 
 
       <SingleLineTextInput
@@ -217,32 +198,9 @@ export default function AddJob() {
         mode="dropdown" // Android only
         style={styles.picker}
       >
-        <Picker.Item label="-- Select a district --" value="Unknown" />
-        <Picker.Item label="Bumthang" value="Bumthang" />
-        <Picker.Item label="Chhukha" value="Chhukha" />
-        <Picker.Item label="Dagana" value="Dagana" />
-        <Picker.Item label="Gasa" value="Gasa" />
-        <Picker.Item label="Haa" value="Haa" />
-        <Picker.Item label="Lhuentse" value="Lhuentse" />
-        <Picker.Item label="Mongar" value="Mongar" />
-        <Picker.Item label="Paro" value="Paro" />
-        <Picker.Item label="Pema Gatshel" value="Pema Gatshel" />
-        <Picker.Item label="Punakha" value="Punakha" />
-        <Picker.Item label="Samdrup Jongkhar" value="Samdrup Jongkhar" />
-        <Picker.Item label="Samtse" value="Samtse" />
-        <Picker.Item label="Sarpang" value="Sarpang" />
-        <Picker.Item label="Thimphu" value="Thimphu" />
-        <Picker.Item label="Trashigang" value="Trashigang" />
-        <Picker.Item label="Trashi Yangtse" value="Trashi Yangtse" />
-        <Picker.Item label="Trongsa" value="Trongsa" />
-        <Picker.Item label="Tsirang" value="Tsirang" />
-        <Picker.Item label="Wangdue Phodrang" value="Wangdue Phodrang" />
-        <Picker.Item label="Zhemgang" value="Zhemgang" />
+        {LOCATIONS.map(location => <PickerItem label={location} value={location}/>)}
       </Picker>
-      {/*
-      TODO: Should we add google-places-autocomplete for Drop-off location TextInput?
-      */}
-      
+
       <SingleLineTextInput
         title = "Phone number"
         placeholder = "Ex. 17113456"
