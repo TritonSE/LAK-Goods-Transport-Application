@@ -12,8 +12,10 @@ const Error = (status, code, message) => ({
 });
 
 const INVALID_JOB_RECEIVED = 0;
+const JOB_NOT_FOUND = 1;
 
-module.exports = [
+module.exports = {
     Error,
-    INVALID_JOB_RECEIVED
-]
+    INVALID_JOB_RECEIVED,
+    JOB_NOT_FOUND
+}
