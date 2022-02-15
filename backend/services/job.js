@@ -29,7 +29,7 @@ async function updateJob(id, jobData, jobImages) {
 
     //TODO Validate request fields like delievryDate, etc.
     //TODO Consider best way to store images - (practice is to store in a FS like GridFS)
-    job.updateOne({_id: id}, job).then((err) => {
+    job.updateOne({_id: ObjectId(id)}, job).then((err) => {
         console.error('Error while updating job', err)
         if (err !== null) throw errors.Error(400, errors.INVALID_JOB_RECEIVED, err);
     })
@@ -39,7 +39,7 @@ async function updateJob(id, jobData, jobImages) {
 async function deleteJob(id) {
     let job = JobModel({});
 
-    job.deleteOne({_id: id}).then((err) => {
+    job.deleteOne({_id: ObjectId(id)}).then((err) => {
         console.error('Error while deleting job', err)
         if (err !== null) throw errors.Error(400, errors.JOB_NOT_FOUND, err);
     });
