@@ -3,7 +3,7 @@ import AppText from './AppText';
 import { COLORS } from '../../constants';
 import React from 'react';
 import { PrimaryButton } from '.';
-import Icon  from 'react-native-vector-icons/MaterialCommunityIcons';
+import Icon  from 'react-native-vector-icons/Feather';
 
 type JobListingProps = {
     name: string,
@@ -18,6 +18,14 @@ export default function JobListing({name, pickUp, dropOff, deliverBy, packageQua
  
     return (
         <View style={styles.container}>
+
+            <View style={styles.topRow}>
+                <PrimaryButton style={styles.addJobButton} title ="Add a Job" type="primary"></PrimaryButton>
+                <PrimaryButton style={styles.addJobButton} title ="Add a Job" type="primary"></PrimaryButton>
+            </View>
+
+            <View style={styles.jobsContainer}>
+
             <View style={styles.text}>
                 <AppText style={styles.title}><b>{name}</b></AppText>
 
@@ -29,22 +37,19 @@ export default function JobListing({name, pickUp, dropOff, deliverBy, packageQua
 
                 <AppText><b>Package Quantity:</b> {packageQuantity}</AppText>
 
-                <PrimaryButton title ="In Progress"></PrimaryButton>
+                <PrimaryButton style={styles.statusButton} title ="In Progress" type="link"></PrimaryButton>
             </View>
 
             <View style={styles.imageContainer}>
-                
+                <Image source={{
+                    uri: image,    
+                }}
+                style={{ width: 100, height: 100 }}
+                />
+
+                <Icon style={styles.icon} name="edit" size={30} color="black" />
+            </View> 
             </View>
-
-            <Image source={{
-                uri: image,
-                
-            }}
-            style={{ width: 100, height: 100 }}
-             />
-
-             
-
         </View>
     )
 }
@@ -55,6 +60,18 @@ JobListing.defaultProps = {
 
 const styles = StyleSheet.create({
     container: {
+        flex: 1,
+        flexDirection: 'column',
+    },
+    topRow: {
+        flexDirection: 'row',
+        justifyContent: 'space-around',
+        marginBottom: 20,
+    },
+    addJobButton: {
+        width: '40%',
+    },
+    jobsContainer: {
         flex: 1,
         // backgroundColor: 'lightgray',
         flexDirection: 'row',
@@ -70,10 +87,18 @@ const styles = StyleSheet.create({
         alignItems: 'flex-start',
     },
     imageContainer: {
+        flexDirection: 'column',
+        alignItems: 'flex-end',
         margin: 10,
+    },
+    icon: {
+        marginTop: 20,
     },
     image: {
         height: 20,
         width: 10,
+    },
+    statusButton: {
+        marginTop: 20,
     }
 });
