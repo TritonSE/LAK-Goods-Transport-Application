@@ -3,6 +3,7 @@ import AppText from './AppText';
 import { COLORS } from '../../constants';
 import React from 'react';
 import { PrimaryButton } from '.';
+import Icon  from 'react-native-vector-icons/MaterialCommunityIcons';
 
 type JobListingProps = {
     name: string,
@@ -32,7 +33,7 @@ export default function JobListing({name, pickUp, dropOff, deliverBy, packageQua
             </View>
 
             <View style={styles.imageContainer}>
-
+                
             </View>
 
             <Image source={{
