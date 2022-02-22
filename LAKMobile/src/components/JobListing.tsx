@@ -4,6 +4,8 @@ import { COLORS } from '../../constants';
 import React from 'react';
 import { PrimaryButton } from '.';
 import Icon  from 'react-native-vector-icons/Feather';
+import { Picker } from "@react-native-picker/picker";
+// import PickerItem from '../components/PickerItem'; 
 
 type JobListingProps = {
     name: string,
@@ -19,8 +21,17 @@ export default function JobListing({name, pickUp, dropOff, deliverBy, packageQua
     return (
         <View style={styles.container}>
 
+            
+
             <View style={styles.topRow}>
-                <PrimaryButton style={styles.addJobButton} title ="Add a Job" type="primary"></PrimaryButton>
+                <Picker
+                    selectedValue="Current Jobs"
+                    mode="dropdown" // Android only
+                    style={styles.picker}
+                    >
+                    {/* <PickerItem label="Current Jobs" value="Current Jobs"/> */}
+                </Picker>
+
                 <PrimaryButton style={styles.addJobButton} title ="Add a Job" type="primary"></PrimaryButton>
             </View>
 
@@ -67,6 +78,9 @@ const styles = StyleSheet.create({
         flexDirection: 'row',
         justifyContent: 'space-around',
         marginBottom: 20,
+    },
+    picker: {
+        // marginTop: 20,
     },
     addJobButton: {
         width: '40%',
