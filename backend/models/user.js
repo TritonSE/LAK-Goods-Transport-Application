@@ -1,7 +1,11 @@
-// const bcrypt = require("bcrypt"); Import when needed
-const mongoose = require("mongoose");
 
-const { Schema } = mongoose;
+/**
+ * Model to represent User data
+ */
+
+// const bcrypt = require("bcrypt"); Import when needed
+import mongoose from "mongoose";
+const { Schema, model } = mongoose;
 
 const UserSchema = new Schema({
     firstName: {
@@ -33,6 +37,9 @@ const UserSchema = new Schema({
     ],
 });
 
+const UserModel = model('User', UserSchema);
+
+export default UserModel;
 /**
  * Sniped from Octavian, may use later for auth
  *
@@ -57,8 +64,3 @@ UserSchema.set("toJSON", {
         return ret;
     },
 });*/
-
-/**
- * Model to represent User data
- */
-module.exports = mongoose.model("User", UserSchema);

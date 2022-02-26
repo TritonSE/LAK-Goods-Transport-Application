@@ -1,12 +1,11 @@
-const mongoose = require('mongoose');
-const express = require('express');
-const bodyParser = require('body-parser');
+import mongoose from 'mongoose';
+import express from 'express';
+import bodyParser from 'body-parser';
+import dotenv from 'dotenv';
+import jobRoutes from './routes/job';
+import { MONGO_URI, PORT } from './config';
 
-const { MONGO_URI, PORT } = require('./config');
-const routes = require('./routes');
-const jobRoutes = require('./routes/job');
-
-require('dotenv').config()
+dotenv.config()
 
 /**
  * Database connection

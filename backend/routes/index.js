@@ -1,5 +1,8 @@
-const routes = require('express').Router();
-const User = require('../models/user');
+import express from 'express';
+
+import User from '../models/user';
+
+const routes = express.Router();
 
 routes.get('/hello', (req, res) => { // Only for testing
   res.json({message: 'Hello world! Lakta here'})
@@ -20,4 +23,4 @@ routes.post('/user', (req, res) => { // Only for testing
   res.json({message: 'Created Sample User', data: sampleUser})
 });
 
-module.exports = routes;
+export default routes;
