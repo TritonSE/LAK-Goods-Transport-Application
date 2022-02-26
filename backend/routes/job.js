@@ -1,21 +1,23 @@
-const routes = require('express').Router();
-const multer  = require('multer'); // Parse multipart/form-data requests
+import express from 'express';
+import mongoose from 'mongoose';
 
-const uploadImage = require('../middlewares/upload');
+import uploadImage from '../middlewares/upload';
+import {
+    createJob,
+    updateJob,
+    getJob
+} from '../services/job';
+import { INVALID_OBJECT_ID_RECEIVED_MSG } from './errors';
+import { SAMPLE_USER } from '../constants';
 
-const {SAMPLE_USER} = require('../constants');
-const JobService = require('../services/job');
-const errors = require('./errors');
-const { Types } = require('mongoose');
-
-const upload = multer({ dest: 'images/' }) // Uploads files to images/<path>
+const routes = express.Router();
 
 routes.post('/jobs', uploadImage, (req, res) => { // Create a new job
     console.info('Posting new Job')
     // console.log('req: ', req.body); // Request text parameters  
     // console.log('req:', req.files) // Images in request
     console.log(SAMPLE_USER);
-    JobService.createJob(
+    createJob(
         SAMPLE_USER,
         req.body,
         req.files,
@@ -23,13 +25,13 @@ routes.post('/jobs', uploadImage, (req, res) => { // Create a new job
 });
 
 routes.put('/jobs/:jobid', uploadImage, (req, res) => {
-    if (!Types.ObjectId.isValid(req.params.jobid)) {
-        res.status(400).json({message: errors.INVALID_OBJECT_ID_RECEIVED_MSG})
+    if (!mongoose.Types.ObjectId.isValid(req.params.jobid)) {
+        res.status(400).json({message: INVALID_OBJECT_ID_RECEIVED_MSG})
     }
-    const jobId = Types.ObjectId(req.params.jobid);
+    const jobId = mongoose.Types.ObjectId(req.params.jobid);
     console.info('Updating job with ID: ', jobId);
 
-    JobService.updateJob(
+    updateJob(
         SAMPLE_USER,
         jobId,
         req.body,
@@ -38,13 +40,13 @@ routes.put('/jobs/:jobid', uploadImage, (req, res) => {
 });
 
 routes.get('/jobs/:jobid', (req, res) => {
-    if (!Types.ObjectId.isValid(req.params.jobid)) {
-        res.status(400).json({message: errors.INVALID_OBJECT_ID_RECEIVED_MSG})
+    if (!mongoose.Types.ObjectId.isValid(req.params.jobid)) {
+        res.status(400).json({message: INVALID_OBJECT_ID_RECEIVED_MSG})
     }
-    const jobId = Types.ObjectId(req.params.jobid);
+    const jobId = mongoose.Types.ObjectId(req.params.jobid);
     console.info('Getting job with ID: ', jobId);
-    JobService.getJob(jobId).then((job) => res.status(200).send(job));
-})
+    getJob(jobId).then((job) => res.status(200).send(job));
+});
 
 routes.delete('/jobs/:jobid', (req, res) => { // Delete an existing job
     console.info('Deleting a job');
@@ -52,4 +54,4 @@ routes.delete('/jobs/:jobid', (req, res) => { // Delete an existing job
     // JobService.deleteJob(id).then((job) => {res.status(200).json({ job })})
 });
 
-module.exports = routes;
+export default routes;

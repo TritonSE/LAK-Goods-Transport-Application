@@ -1,7 +1,11 @@
-const util = require("util");
-const multer = require("multer");
-const { GridFsStorage } = require("multer-gridfs-storage");
-const { MONGO_URI, GRID_FS_IMG_BUCKET } = require("../config");
+/**
+ * Middleware to save files from multipart/form-data requests
+ */
+
+import util from 'util';
+import multer from 'multer';
+import { GridFsStorage } from 'multer-gridfs-storage';
+import { MONGO_URI, GRID_FS_IMG_BUCKET } from '../config.js';
 
 let storage = GridFsStorage({
   url: MONGO_URI,
@@ -19,10 +23,7 @@ let storage = GridFsStorage({
   }
 });
 
-let uploadFiles = multer({ storage: storage }).array("images");
-let uploadFilesMiddleware = util.promisify(uploadFiles);
+const uploadFiles = multer({ storage: storage }).array("images");
+const uploadFilesMiddleware = util.promisify(uploadFiles);
 
-/**
- * Middleware to save files from multipart/form-data requests
- */
-module.exports = uploadFilesMiddleware;
+export default uploadFilesMiddleware;

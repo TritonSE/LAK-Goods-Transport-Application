@@ -1,7 +1,10 @@
-const errors = require('./errors');
-const JobModel = require('../models/job');
+/**
+ * JobService that interacts with the job documents in the database
+ */
+import { INVALID_JOB_RECEIVED, Error } from './errors';
+import JobModel from '../models/job';
 
-async function createJob(user, jobData, jobImages) {
+export async function createJob(user, jobData, jobImages) {
     console.log('Images:', jobImages);
     console.log('Data: ', jobData);
     
@@ -15,13 +18,15 @@ async function createJob(user, jobData, jobImages) {
     //TODO Validate request fields like delievryDate, etc.
     //TODO Consider best way to store images - (practice is to store in a FS like GridFS)
     job.save((err) => {
-        console.error('Error while saving job', err)
-        if (err !== null) throw errors.Error(400, errors.INVALID_JOB_RECEIVED, err);
+        if (err !== null) {
+            console.error('Error while saving job:', err);
+            throw Error(400, INVALID_JOB_RECEIVED, err);
+        }
     })
     return job;
 }
 
-async function updateJob(user, jobId, jobData, jobImages) {
+export async function updateJob(user, jobId, jobData, jobImages) {
     // TODO Authenticate user owns the job
     // TODO Think about a plan for updating images
     console.info('updateJob service triggered')
@@ -32,18 +37,9 @@ async function updateJob(user, jobId, jobData, jobImages) {
     return originalJob;
 }
 
-async function getJob(jobId) {
+export async function getJob(jobId) {
     // TODO Confirm if any auth is required
     // TODO Send images
     
     return JobModel.findById(jobId);
-}
-
-/**
- * JobService that interacts with the job documents in the database
- */
-module.exports = {
-    createJob,
-    updateJob,
-    getJob
 }

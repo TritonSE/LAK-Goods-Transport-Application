@@ -1,8 +1,5 @@
-// noinspection SpellCheckingInspection
-
-const mongoose = require("mongoose");
-
-const { Schema } = mongoose;
+import mongoose from "mongoose";
+const { Schema, model } = mongoose;
 
 const JobSchema = new Schema({
     title: {
@@ -65,4 +62,6 @@ const JobSchema = new Schema({
     ],
 });
 
-module.exports = mongoose.model("Job", JobSchema);
+const JobModel = model('Job', JobSchema);
+export default JobModel;
+
