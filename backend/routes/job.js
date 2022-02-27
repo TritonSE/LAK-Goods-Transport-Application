@@ -16,8 +16,9 @@ const routes = express.Router();
 const upload = multer({ storage: multer.memoryStorage() }).array("images");
 
 routes.post('/jobs', upload, (req, res, next) => {
-    console.debug('Posting new Job')
-    // console.log(SAMPLE_USER);
+    console.info('Posting new Job')
+
+    // TODO Add user auth
 
     createJob(
         SAMPLE_USER,
@@ -28,39 +29,39 @@ routes.post('/jobs', upload, (req, res, next) => {
     .catch(next);
 });
 
+
 routes.put('/jobs/:jobid', upload, (req, res, next) => {
-    console.debug('Updating job:', req.params.jobid)
+    console.info('Updating job:', req.params.jobid)
+    
+    // TODO Add user auth
 
     if (!mongoose.Types.ObjectId.isValid(req.params.jobid)) {
         next(ValidationError.INVALID_OBJECT_ID); 
         return;
     }
     const jobId = mongoose.Types.ObjectId(req.params.jobid);
-
+    const payload = req.body;
+        
     updateJob(
         SAMPLE_USER,
         jobId,
-        req.body,
+        payload,
         req.files,
     ).then(() => {res.status(200).send('Job successfully updated')})
     .catch(next);
 });
 
-routes.get('/jobs/:jobid', (req, res) => {
-    console.debug('Getting job:', req.params.jobid);
+routes.get('/jobs/:jobid', (req, res, next) => {
+    console.info('Getting job:', req.params.jobid);
 
     if (!mongoose.Types.ObjectId.isValid(req.params.jobid)) {
         next(ValidationError.INVALID_OBJECT_ID);
     }
     const jobId = mongoose.Types.ObjectId(req.params.jobid);
-    console.info('Getting job with ID: ', jobId);
-    getJob(jobId).then((job) => res.status(200).send(job));
-});
-
-routes.delete('/jobs/:jobid', (req, res) => { // Delete an existing job
-    console.info('Deleting a job');
-    let id = 0;
-    // JobService.deleteJob(id).then((job) => {res.status(200).json({ job })})
+    
+    getJob(jobId)
+    .then((job) => res.status(200).send(job))
+    .catch(next);
 });
 
 export default routes;

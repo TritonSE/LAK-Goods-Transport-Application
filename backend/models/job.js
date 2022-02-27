@@ -62,6 +62,9 @@ const JobSchema = new Schema({
     ],
 });
 
+// Stored for validation during update request
+export const FIELDS_OWNER_PERMITTED_TO_UPDATE = ['title', 'clientName', 'phoneNumber', 'deliveryDate', 'pickupLocation', 'dropoffLocation', 'description', 'packageQuantity', 'price'];
+
 const JobModel = model('Job', JobSchema);
 export default JobModel;
 
