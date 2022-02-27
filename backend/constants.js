@@ -5,8 +5,10 @@ export const SAMPLE_USER = User({
   lastName: 'User',
   password: 'password',
   phone: 'number',
-  location: 'location'
+  location: 'location',
+  _id: '621bda9026575a70d82448c1',
 });
+
 export const SAMPLE_USER2 = User({
   firstName: 'Test2',
   lastName: 'User2',
