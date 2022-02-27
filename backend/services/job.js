@@ -1,45 +1,69 @@
 /**
  * JobService that interacts with the job documents in the database
  */
-import { INVALID_JOB_RECEIVED, Error } from './errors';
+import { InternalError, ServiceError } from '../errors';
 import JobModel from '../models/job';
+import {
+    saveImage
+} from './image';
 
 export async function createJob(user, jobData, jobImages) {
-    console.log('Images:', jobImages);
-    console.log('Data: ', jobData);
-    
-    let job = JobModel({
-        ...jobData, //TODO Sanitize input
-        client: user._id,
-        applicants: [],
-        imageIds: jobImages.map((image) => image.filename)
-    });
+    console.debug('createJob service running')
+    const imageIds = [];
+
+    for (let image of jobImages) {
+        let imageId = await saveImage(image);
+        imageIds.push(imageId);
+    }
+
+    let job = null;
+    try {
+        job = await JobModel({
+            ...jobData, //TODO Sanitize input
+            client: user._id,
+            applicants: [],
+            imageIds: imageIds,
+        });
+    } catch (e) {
+        throw ServiceError.INVALID_JOB_RECEIVED.addContext(e.stack);
+    }
     
     //TODO Validate request fields like delievryDate, etc.
-    //TODO Consider best way to store images - (practice is to store in a FS like GridFS)
-    job.save((err) => {
-        if (err !== null) {
-            console.error('Error while saving job:', err);
-            throw Error(400, INVALID_JOB_RECEIVED, err);
-        }
-    })
-    return job;
+
+    try {
+        const newJob = await job.save();
+        return newJob;
+    } catch (e) {
+        throw ServiceError.INVALID_JOB_RECEIVED.addContext(e.stack);
+    }
 }
 
 export async function updateJob(user, jobId, jobData, jobImages) {
-    // TODO Authenticate user owns the job
-    // TODO Think about a plan for updating images
-    console.info('updateJob service triggered')
-    console.log('Images:', jobImages);
-    console.log('Data: ', jobData);
+    console.debug('updateJob service runnning');
 
-    let originalJob = JobModel.findByIdAndUpdate(jobId, jobData);
-    return originalJob;
+    let originalJob = null;
+    try {
+        originalJob = await JobModel.findById(jobId);
+    } catch (e) {
+        throw ServiceError.JOB_NOT_FOUND.addContext(e.stack);
+    }
+
+    if (!originalJob.client.equals(user._id)) {
+        throw ServiceError.JOB_EDIT_PERMISSION_DENIED;
+    }
+
+    //TODO Update images (remove and restore images for now)
+    try {
+        await JobModel.findOneAndUpdate({'_id': jobId}, jobData)
+    } catch (e) {
+        throw ServiceError.INVALID_JOB_UPDATE.addContext(e.stack);
+    }
 }
 
 export async function getJob(jobId) {
-    // TODO Confirm if any auth is required
-    // TODO Send images
+    console.debug('getJob service running');
+    //TODO Confirm if any auth is required
+    //TODO Send images -- or just send image IDs and then send images through seperate request (preferred)
     
     return JobModel.findById(jobId);
 }
