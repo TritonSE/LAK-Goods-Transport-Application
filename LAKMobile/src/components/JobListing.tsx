@@ -21,8 +21,6 @@ export default function JobListing({name, pickUp, dropOff, deliverBy, packageQua
     return (
         <View style={styles.container}>
 
-            
-
             <View style={styles.topRow}>
                 <Picker
                     selectedValue="Current Jobs"
@@ -80,16 +78,24 @@ const styles = StyleSheet.create({
         marginBottom: 20,
     },
     picker: {
-        // marginTop: 20,
+        marginRight: 10, 
+    
+        borderWidth: 1,
+        borderRadius: 4,
+        borderColor: "#8B8B8B",
+
+        width: '80%',
+        height: 40,
     },
     addJobButton: {
         width: '40%',
     },
     jobsContainer: {
-        flex: 1,
         // backgroundColor: 'lightgray',
+        borderRadius: 5,
         flexDirection: 'row',
         justifyContent: 'center',
+        elevation: 20,
     },
     title: {
         fontSize: 24,
