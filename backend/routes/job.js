@@ -62,7 +62,7 @@ routes.delete('/jobs/:jobid', (req, res, next) => {
     deleteJob(
         jobId,
     ).then(() => {res.status(200).send('Job successfully deleted')})
-        .catch(next);
+    .catch(next);
 });
 
 routes.get('/jobs/:jobid', (req, res, next) => {

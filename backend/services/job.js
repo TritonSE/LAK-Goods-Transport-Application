@@ -96,6 +96,14 @@ export async function deleteJob(jobId) {
         throw ServiceError.JOB_NOT_FOUND;
     }
 
+    // TODO Validate client job ownership
+
+    // Delete existing images
+    let existingImageIds = originalJob.imageIds;
+    for (let imageId of existingImageIds) {
+        await deleteImage(imageId);
+    }
+
     try {
         await JobModel.deleteOne({'_id': jobId}, null)
     } catch (e) {
