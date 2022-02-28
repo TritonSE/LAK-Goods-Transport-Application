@@ -5,7 +5,7 @@ import multer from 'multer';
 import {
     createJob,
     updateJob,
-    getJob
+    getJob, deleteJob
 } from '../services/job';
 import { ValidationError } from '../errors';
 import { SAMPLE_USER } from '../constants';
@@ -16,7 +16,7 @@ const routes = express.Router();
 const upload = multer({ storage: multer.memoryStorage() }).array("images");
 
 routes.post('/jobs', upload, (req, res, next) => {
-    console.info('Posting new Job')
+    console.info('Posting new Job');
 
     // TODO Add user auth
 
@@ -29,9 +29,8 @@ routes.post('/jobs', upload, (req, res, next) => {
     .catch(next);
 });
 
-
 routes.put('/jobs/:jobid', upload, (req, res, next) => {
-    console.info('Updating job:', req.params.jobid)
+    console.info('Updating job:', req.params.jobid);
     
     // TODO Add user auth
 
@@ -49,6 +48,21 @@ routes.put('/jobs/:jobid', upload, (req, res, next) => {
         req.files,
     ).then(() => {res.status(200).send('Job successfully updated')})
     .catch(next);
+});
+
+routes.delete('/jobs/:jobid', (req, res, next) => {
+    console.info('Deleting job:', req.params.jobid);
+
+    if (!mongoose.Types.ObjectId.isValid(req.params.jobid)) {
+        next(ValidationError.INVALID_OBJECT_ID);
+        return;
+    }
+    const jobId = mongoose.Types.ObjectId(req.params.jobid);
+
+    deleteJob(
+        jobId,
+    ).then(() => {res.status(200).send('Job successfully deleted')})
+        .catch(next);
 });
 
 routes.get('/jobs/:jobid', (req, res, next) => {
