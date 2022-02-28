@@ -29,8 +29,7 @@ export async function createJob(user, jobData, jobImages) {
     //TODO Validate request fields like delievryDate, etc.
 
     try {
-        const newJob = await job.save();
-        return newJob;
+        return await job.save();
     } catch (e) {
         throw ServiceError.INVALID_JOB_RECEIVED.addContext(e.stack);
     }
@@ -53,7 +52,6 @@ export async function updateJob(user, jobId, jobData, jobImages) {
         throw ServiceError.JOB_NOT_FOUND;
     }
 
-
     // Validate client job ownership
     if (!originalJob.client.equals(user._id)) {
         throw ServiceError.JOB_EDIT_PERMISSION_DENIED;
@@ -67,7 +65,7 @@ export async function updateJob(user, jobId, jobData, jobImages) {
     // Delete existing images
     let existingImageIds = originalJob.imageIds;
     for (let imageId of existingImageIds) {
-        let res = await deleteImage(imageId);
+        await deleteImage(imageId);
     }
 
     // Add new images
@@ -83,7 +81,23 @@ export async function updateJob(user, jobId, jobData, jobImages) {
     }
     
     try {
-        let res = await JobModel.findOneAndUpdate({'_id': jobId}, jobData)
+        await JobModel.findOneAndUpdate({'_id': jobId}, jobData)
+    } catch (e) {
+        throw ServiceError.INVALID_JOB_RECEIVED.addContext(e.stack);
+    }
+}
+
+export async function deleteJob(jobId) {
+    console.debug('deleteJob service running')
+
+    // Retrieve job
+    let originalJob = await JobModel.findById(jobId);
+    if (!originalJob) {
+        throw ServiceError.JOB_NOT_FOUND;
+    }
+
+    try {
+        await JobModel.deleteOne({'_id': jobId}, null)
     } catch (e) {
         throw ServiceError.INVALID_JOB_RECEIVED.addContext(e.stack);
     }
