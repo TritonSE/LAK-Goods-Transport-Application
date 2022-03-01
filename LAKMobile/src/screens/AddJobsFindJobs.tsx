@@ -12,18 +12,21 @@ const CURRENT_JOBS = ["Job 1", "Job 2", "Job 3"];
 
 export default function AddJobsFindJobs() {
 
-    const [selectedJob, setSelectedJob] = useState("Select Job");
+    const [selectedJob, setSelectedJob] = useState("Current Jobs");
  
     return (
         <View style={styles.container}>
+            
 
             <View style={styles.topRow}>
 
+                <View style ={styles.pickerWrapper}>
+
                 <Picker
-                    selectedValue="Current Jobs"
+                    selectedValue={selectedJob}
                     mode="dropdown" // Android only
                     style={styles.picker}
-                    
+                    onValueChange={(value) => setSelectedJob(value)}
                     >
 
                     {CURRENT_JOBS.map((currentJob) => 
@@ -31,6 +34,8 @@ export default function AddJobsFindJobs() {
                     )}
 
                 </Picker>
+                </View>
+
 
 
                 <PrimaryButton style={styles.addJobButton} title ="Add a Job" type="primary"></PrimaryButton>
@@ -50,22 +55,25 @@ const styles = StyleSheet.create({
         alignItems: 'center',
     },
     topRow: {
+        marginTop: 50,
         flexDirection: 'row',
         justifyContent: 'space-around',
         marginBottom: 20,
     },
     pickerWrapper: {
-        // borderWidth: 1,
-        // borderRadius: 4,
-        // borderColor: "#8B8B8B",
+        width: '40%',
+        borderWidth: 1,
+        borderRadius: 4,
+        borderColor: "#8B8B8B",
     },
     picker: {
         marginRight: 10, 
 
-        width: '60%',
+        width: '100%',
         height: 40,
     },
     addJobButton: {
+        marginLeft: 20,
         width: '40%',
         borderRadius: 5,
     },
