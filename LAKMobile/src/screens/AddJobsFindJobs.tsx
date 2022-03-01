@@ -1,7 +1,7 @@
 import { StyleSheet, TouchableOpacity, StyleProp, ViewStyle, View, Image } from 'react-native';
 import { AppText } from '../components';
 import { COLORS } from '../../constants';
-import React from 'react';
+import React, { useState } from 'react';
 import { PrimaryButton } from '../components';
 import Icon  from 'react-native-vector-icons/Feather';
 import { Picker } from "@react-native-picker/picker";
@@ -11,6 +11,8 @@ import PickerItem from '../components/PickerItem';
 const CURRENT_JOBS = ["Job 1", "Job 2", "Job 3"];
 
 export default function AddJobsFindJobs() {
+
+    const [selectedJob, setSelectedJob] = useState("Select Job");
  
     return (
         <View style={styles.container}>
@@ -21,6 +23,7 @@ export default function AddJobsFindJobs() {
                     selectedValue="Current Jobs"
                     mode="dropdown" // Android only
                     style={styles.picker}
+                    
                     >
 
                     {CURRENT_JOBS.map((currentJob) => 
@@ -44,6 +47,7 @@ const styles = StyleSheet.create({
     container: {
         flex: 1,
         flexDirection: 'column',
+        alignItems: 'center',
     },
     topRow: {
         flexDirection: 'row',

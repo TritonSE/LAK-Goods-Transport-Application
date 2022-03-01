@@ -10,6 +10,7 @@ export default function App() {
   return (
     <View style={styles.container}>
       <AddJobsFindJobs></AddJobsFindJobs>
+
       <StatusBar style="auto" />
     </View>
   );
