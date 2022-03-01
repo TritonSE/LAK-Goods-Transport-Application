@@ -16,7 +16,6 @@ export default function AddJobsFindJobs() {
         <View style={styles.container}>
 
             <View style={styles.topRow}>
-                {/* <View style={styles.pickerWrapper}> */}
 
                 <Picker
                     selectedValue="Current Jobs"
@@ -24,13 +23,12 @@ export default function AddJobsFindJobs() {
                     style={styles.picker}
                     >
 
-                    {CURRENT_JOBS.map((currentJob => 
-                        <PickerItem label="Current Jobs" value={currentJob}/>
-                    ))}
+                    {CURRENT_JOBS.map((currentJob) => 
+                        <PickerItem label={currentJob} value={currentJob}/>
+                    )}
 
                 </Picker>
 
-                {/* </View> */}
 
                 <PrimaryButton style={styles.addJobButton} title ="Add a Job" type="primary"></PrimaryButton>
             </View>
