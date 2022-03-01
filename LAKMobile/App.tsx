@@ -2,12 +2,13 @@ import { StatusBar } from 'expo-status-bar';
 import React from 'react';
 import { StyleSheet, View } from 'react-native';
 import { ScreenHeader } from './src/components';
+import JobThumbnail from './src/components/JobThumbnail';
 import { SignupScreen, LoginScreen } from './src/screens';
 
 export default function App() {
   return (
     <View style={styles.container}>
-      <JobThumbnail title="Box of apples" pickup="Location" dropoff="Location" deliver="MM/DD/YYYY" quantity="Amount" days={1} applicants={1} image={require("./assets/abble.png")} inProgress />
+      <JobThumbnail title="Box of apples" pickup="Location" dropoff="Location" deliver="MM/DD/YYYY" quantity="Amount" days={1} applicants={1} image={require("./assets/apple.png")} inProgress />
       <StatusBar style="auto" />
     </View>
   );
