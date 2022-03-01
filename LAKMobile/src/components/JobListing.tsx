@@ -5,7 +5,7 @@ import React from 'react';
 import { PrimaryButton } from '.';
 import Icon  from 'react-native-vector-icons/Feather';
 import { Picker } from "@react-native-picker/picker";
-// import PickerItem from '../components/PickerItem'; 
+import PickerItem from '../components/PickerItem'; 
 
 type JobListingProps = {
     name: string,

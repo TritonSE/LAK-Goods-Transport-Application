@@ -4,7 +4,7 @@ import { COLORS } from '../../constants';
 
 interface HeaderProps {
     title: string,
-    image: ImageSourcePropType,
+    // image: ImageSourcePropType,
     pickup: string,
     dropoff: string,
     deliver: string,
@@ -16,7 +16,7 @@ interface HeaderProps {
     days?: number
 }
 
-export default function JobThumbnail({title, image, pickup, dropoff, deliver, quantity, pending = false, inProgress = false, dead = false, applicants = 0, days = 0}:HeaderProps) {
+export default function JobThumbnail({title, pickup, dropoff, deliver, quantity, pending = false, inProgress = false, dead = false, applicants = 0, days = 0}:HeaderProps) {
 
     // Just returning null if you try to have multiple jobs statuses or have no status
     if((dead && pending) || (pending && inProgress) || (inProgress && dead)) return null
@@ -34,7 +34,7 @@ export default function JobThumbnail({title, image, pickup, dropoff, deliver, qu
                     <Text style={styles.info}><Text style={styles.bold}>Package Quantity: </Text>{quantity}</Text>
                 </View>
 
-                <Image style={styles.image} source={image}/>
+                {/* <Image style={styles.image} source={image}/> */}
             </View>
 
             <View style={styles.bottom}>
