@@ -6,7 +6,9 @@ import { PrimaryButton } from '../components';
 import Icon  from 'react-native-vector-icons/Feather';
 import { Picker } from "@react-native-picker/picker";
 import JobThumbnail from '../components/JobThumbnail';
-// import PickerItem from '../components/PickerItem'; 
+import PickerItem from '../components/PickerItem'; 
+
+const CURRENT_JOBS = ["Job 1", "Job 2", "Job 3"];
 
 export default function AddJobsFindJobs() {
  
@@ -14,13 +16,21 @@ export default function AddJobsFindJobs() {
         <View style={styles.container}>
 
             <View style={styles.topRow}>
+                {/* <View style={styles.pickerWrapper}> */}
+
                 <Picker
                     selectedValue="Current Jobs"
                     mode="dropdown" // Android only
                     style={styles.picker}
                     >
-                    {/* <PickerItem label="Current Jobs" value="Current Jobs"/> */}
+
+                    {CURRENT_JOBS.map((currentJob => 
+                        <PickerItem label="Current Jobs" value={currentJob}/>
+                    ))}
+
                 </Picker>
+
+                {/* </View> */}
 
                 <PrimaryButton style={styles.addJobButton} title ="Add a Job" type="primary"></PrimaryButton>
             </View>
@@ -42,18 +52,20 @@ const styles = StyleSheet.create({
         justifyContent: 'space-around',
         marginBottom: 20,
     },
+    pickerWrapper: {
+        // borderWidth: 1,
+        // borderRadius: 4,
+        // borderColor: "#8B8B8B",
+    },
     picker: {
         marginRight: 10, 
-    
-        borderWidth: 1,
-        borderRadius: 4,
-        borderColor: "#8B8B8B",
 
-        width: '80%',
+        width: '60%',
         height: 40,
     },
     addJobButton: {
         width: '40%',
+        borderRadius: 5,
     },
     jobsContainer: {
         // backgroundColor: 'lightgray',
