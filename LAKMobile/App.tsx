@@ -1,7 +1,7 @@
 import { StatusBar } from 'expo-status-bar';
 import { StyleSheet, View } from 'react-native';
-import ScreenHeader from './src/components/ScreenHeader';
-import LoginScreen from './src/screens/LoginScreen';
+import { ScreenHeader } from './src/components';
+import { SignupScreen, LoginScreen } from './src/screens';
 
 export default function App() {
   return (

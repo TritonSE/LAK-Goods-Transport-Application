@@ -1,5 +1,5 @@
-import { StyleSheet, Text, View, TextInput } from 'react-native';
-import { PrimaryButton, LabelWrapper } from '../components';
+import { StyleSheet, View, TextInput } from 'react-native';
+import { PrimaryButton, LabelWrapper, AppText } from '../components';
 import { COLORS } from '../../constants';
 
 export default function SignupScreen({}) {
@@ -29,7 +29,7 @@ export default function SignupScreen({}) {
       <LabelWrapper label='4 digit pin password'>
         <TextInput
           style={smallInputStyle}
-          keyboardType="default"
+          keyboardType="numeric"
         />
       </LabelWrapper>
 
@@ -48,11 +48,11 @@ export default function SignupScreen({}) {
         />
 
       <View style={styles.loginLinkContainer}>
-        <Text>Already have an account?</Text>
+        <AppText>Already have an account?</AppText>
         <PrimaryButton 
           type='link' 
-          title='Log on here' 
-          onPress={() => console.log('Log on here pressed')}
+          title='Log in here' 
+          onPress={() => console.log('Log in here pressed')}
           style={styles.loginLink}
           />
       </View>
@@ -87,7 +87,7 @@ const styles = StyleSheet.create({
     marginBottom: 1,
   },
 
-  // Styling for "Log on here" components
+  // Styling for "Log in here" components
   loginLinkContainer: {
     display: 'flex',
     flexDirection: 'row',

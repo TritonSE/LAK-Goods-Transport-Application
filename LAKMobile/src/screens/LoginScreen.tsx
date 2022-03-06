@@ -1,7 +1,6 @@
 import React from 'react';
-import { StyleSheet, Text, TextInput, View } from 'react-native';
-import LabelWrapper from '../components/LabelWrapper';
-import PrimaryButton from '../components/PrimaryButton';
+import { StyleSheet, TextInput, View } from 'react-native';
+import { AppText, LabelWrapper, PrimaryButton } from '../components';
 import { COLORS } from '../../constants';
 
 export default function LoginScreen() {
@@ -35,7 +34,7 @@ export default function LoginScreen() {
             />
 
             <View style={styles.signupPrompt}>
-                <Text style={styles.signupText}>Don't have an account?</Text>
+                <AppText>Don't have an account?</AppText>
                 <PrimaryButton 
                     type='link' 
                     title='Sign up here.' 
@@ -81,10 +80,6 @@ const styles = StyleSheet.create({
         flexDirection: "row",
         alignItems: "center",
         justifyContent: "flex-start"
-    },
-
-    signupText: {
-        fontSize: 18,
     },
 
     signupLink: {

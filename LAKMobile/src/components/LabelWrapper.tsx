@@ -1,5 +1,6 @@
 import React, { ReactNode } from 'react';
-import { StyleSheet, Text, View, StyleProp, ViewStyle } from 'react-native';
+import { StyleSheet, View } from 'react-native';
+import AppText from './AppText';
 
 type LabelWrapperProps = {
     label: string,
@@ -9,7 +10,7 @@ type LabelWrapperProps = {
 export default function LabelWrapper({label, children}: LabelWrapperProps) {
   return (
     <View style={styles.container}>
-        <Text style={styles.label}>{label}</Text>
+        <AppText style={styles.label}>{label}</AppText>
         {children}
     </View>
   )
@@ -20,7 +21,6 @@ const styles = StyleSheet.create({
         width: '100%'
     },
     label: {
-        marginBottom: 4,
-        fontSize: 18
+        marginBottom: 8,
     },
 })
