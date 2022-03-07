@@ -42,6 +42,15 @@ Here is the backend repo structure
 └── index.js (Main script to run the server and use routes)
 ```
 
+# Practices
+- To maintain consistency, lets try to create response matching the following format:
+```json
+{
+    "message" : "Resource with $id was created",
+    "id": "<some-id>"
+}
+```
+
 # Error handling
 
 Error handling is especially important in backend programming because you cannot let the server exit because of an unhandled exception. Therefore, our error handling uses ES6 classes to classify between different types of errors (mainly client facing and internal errors)
