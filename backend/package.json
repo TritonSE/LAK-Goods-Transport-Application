@@ -4,8 +4,8 @@
   "description": "Hosts the backend for LAKTA Mobile App",
   "main": "index.js",
   "scripts": {
-    "start": "node ./index.js",
-    "dev": "nodemon ./index.js",
+    "start": "node --experimental-specifier-resolution=node ./index.js",
+    "dev": "nodemon --experimental-specifier-resolution=node ./index.js",
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "author": "Triton Software Engineering",
@@ -17,9 +17,12 @@
     "express": "^4.17.2",
     "mongodb": "^4.3.1",
     "mongoose": "^6.1.8",
+    "multer": "^1.4.4",
+    "multer-gridfs-storage": "^5.0.2",
     "pine": "^1.1.1"
   },
   "devDependencies": {
     "nodemon": "^2.0.15"
-  }
+  },
+  "type": "module"
 }
