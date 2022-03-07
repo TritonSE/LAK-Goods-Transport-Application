@@ -11,7 +11,7 @@ import { saveImage, deleteImage } from './image';
 import { deregisterAppliedJob } from './user';
 
 export async function createJob(userId, jobData, jobImages) {
-    console.debug('createJob service running')
+    console.debug('createJob service running');
     const imageIds = [];
 
     // Store images

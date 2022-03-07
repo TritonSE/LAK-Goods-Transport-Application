@@ -39,7 +39,7 @@ routes.post('/', upload, async (req, res, next) => {
         job = await createJob(
             userId,
             req.body,
-            req.files,
+            req.files || [],
         );
         
         // Update User document
@@ -49,7 +49,10 @@ routes.post('/', upload, async (req, res, next) => {
         return;
     }
 
-    res.status(200).send(`Job ID ${job._id} successfully created`) 
+    res.status(200).json({
+        message: 'Job ID ${jobId} was successfully created',
+        jobId: job._id,
+    });
 });
 
 /**
@@ -72,7 +75,12 @@ routes.put('/:jobid', upload, (req, res, next) => {
         jobId,
         payload,
         req.files,
-    ).then(() => {res.status(200).send(`Job ID ${jobId} successfully updated`)})
+    ).then(() => {
+        res.status(200).json({
+            message: 'Job ID ${jobId} was successfully updated',
+            jobId: jobId,
+        });
+    })
     .catch(next);
 });
 
@@ -98,7 +106,10 @@ routes.delete('/:jobid', async (req, res, next) => {
         await deleteJob(userId, jobId);
     } catch (e) { next(e) }
     
-    res.status(200).send('Job successfully deleted')
+    res.status(200).json({
+        message: 'Job ID ${jobId} was successfully deleted',
+        jobId: jobId,
+    });
 });
 
 /**
@@ -114,7 +125,10 @@ routes.get('/:jobid', (req, res, next) => {
     const jobId = mongoose.Types.ObjectId(req.params.jobid);
     
     getJob(jobId)
-    .then((job) => res.status(200).send(job))
+    .then((job) => res.status(200).json({
+        message: 'Job document sent as ${job}',
+        job: job
+    }))
     .catch(next);
 });
 
