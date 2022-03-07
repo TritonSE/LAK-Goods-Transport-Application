@@ -4,7 +4,7 @@ import bodyParser from 'body-parser';
 import dotenv from 'dotenv';
 import jobRoutes from './routes/job';
 import { MONGO_URI, PORT } from './config';
-import { CustomError } from './errors';
+import { CustomError, InternalError } from './errors';
 import imageRoutes from './routes/image';
 
 dotenv.config()
@@ -25,13 +25,17 @@ mongoose.connection.on('error', dbConnectionFailure);
  * Error handler
  */
 const errorHandler = (err, req, res, next) => {
+    if (!err) return;
     if (!(err instanceof CustomError)) { 
-        // Catch all that directs errors to default error handler
-        next(err);
-        return;
+        // All unhandled errors are marked as unknown internal errors
+        err = InternalError.UNKNOWN.addContext(err.stack)
     }
-    console.error(err.format(false)); // Internal Error Logging
-    res.status(err.statusCode).send(err.format(true));
+    if (err instanceof InternalError) // Internal Error Logging
+        console.error(err.format(false)); 
+    res.status(err.statusCode).json({
+        message: err.format(true),
+        error: true, 
+    });
 }
 
 /**
