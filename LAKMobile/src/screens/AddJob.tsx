@@ -88,12 +88,13 @@ export default function AddJob() {
   }
 
   return (
-      
-    <ScrollView style={styles.container} contentContainerStyle={{paddingBottom: 60}}>
+    <View>
 
     <View style = {styles.header}>
       <ScreenHeader showArrow>Add Job</ScreenHeader>
     </View>
+      
+    <ScrollView style={styles.container} contentContainerStyle={{paddingBottom: 60, }}>
 
     <TouchableOpacity style={styles.photos} onPress={() => {photoPress();}}>
 
@@ -245,19 +246,22 @@ export default function AddJob() {
     
         </View>
       </View>
-      
       </ScrollView>
+      </View>
   );
 }
 
 const styles = StyleSheet.create({
   container: {
-    flex: 1,
+    // flex: 1,
     backgroundColor: '#fff',
     fontFamily: 'Roboto',
   },
   header: {
     marginBottom: 100,
+  },
+  insideScroll: {
+    display: 'flex',
   },
   photoText: {
     fontSize: 10, 
