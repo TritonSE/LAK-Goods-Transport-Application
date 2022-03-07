@@ -1,5 +1,6 @@
 import React from 'react';
-import { View, TextInput, Text, StyleSheet } from 'react-native';
+import { View, TextInput, StyleSheet } from 'react-native';
+import AppText from '../components/AppText';
 
 interface Props {
     title: string,
@@ -17,7 +18,7 @@ export default function MultilineTextInput({ title, placeholder, footer, maxLeng
       
     <View style={styles.container}>
         <View style={styles.inputLabel}>
-            <Text> {title} </Text>
+            <AppText> {title} </AppText>
         </View>
 
         <TextInput
@@ -30,15 +31,16 @@ export default function MultilineTextInput({ title, placeholder, footer, maxLeng
         onChange={(inputValue) => onChange(inputValue, id)}
       />
 
-        <View style={styles.footer}>
-            <Text> {footer} </Text>
+        {footer ? <View style={styles.footer}>
+            <AppText> {footer} </AppText>
         </View>
+        : null}
     </View>
   );
 }
 
 MultilineTextInput.defaultProps = {
-    footer: "",
+    footer: null,
     maxLength: 1000,
   };
 

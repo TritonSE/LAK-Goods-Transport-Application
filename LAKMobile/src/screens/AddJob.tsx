@@ -176,8 +176,6 @@ export default function AddJob() {
         width='40%'
       />
 
-      {/* TODO: Edit Width */}
-
       <SingleLineTextInput
         title="Estimated price of delivery"
         placeholder="Ex. $$"
@@ -187,9 +185,6 @@ export default function AddJob() {
         id={"estimatedPrice"}
         width='40%'
       />
-
-      {/* TODO: Edit Width */}
-
 
       <SingleLineTextInput
         title="Pick-up location"

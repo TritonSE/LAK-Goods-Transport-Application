@@ -1,4 +1,7 @@
-import { StyleSheet, Text, View } from 'react-native';
+import { StatusBar } from 'expo-status-bar';
+import { StyleSheet, View } from 'react-native';
+import { ScreenHeader } from './src/components';
+import { SignupScreen, LoginScreen } from './src/screens';
 import AddJob from './src/screens/AddJob';
 
 export default function App() {

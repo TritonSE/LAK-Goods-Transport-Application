@@ -2,6 +2,7 @@ import React from 'react';
 import { View, TextInput, Text, StyleSheet } from 'react-native';
 import MaterialCommunityIcon  from 'react-native-vector-icons/MaterialCommunityIcons';
 import MaterialIcon  from 'react-native-vector-icons/MaterialIcons';
+import AppText from '../components/AppText';
 
 interface Props {
     title: string,
@@ -23,7 +24,7 @@ export default function SingleLineTextInput({ title, placeholder, icon, footer, 
     <View style={styles.container}>
 
         <View style={styles.inputLabel}>
-            <Text> {title} </Text>
+            <AppText> {title} </AppText>
         </View>
 
           {icon !== null ? 
@@ -43,16 +44,17 @@ export default function SingleLineTextInput({ title, placeholder, icon, footer, 
         />
       </View>
 
-        <View style={styles.footer}>
-            <Text> {footer} </Text>
+        {footer ? <View style={styles.footer}>
+            <AppText> {footer} </AppText>
         </View>
+        : null}
     </View>
   );
 }
 
 SingleLineTextInput.defaultProps = {
   icon: null,  
-  footer: "",
+  footer: null,
   maxLength: 1000,
   isNumber: false,
   };
@@ -83,10 +85,6 @@ const styles = StyleSheet.create({
     display: 'flex',
     flexDirection: 'row',
     alignItems: 'center',
-    // borderColor: 'gray',
-    // borderWidth: 1,
-    // height: 40,
-    // width: '80%'
   },
   footer: {
     marginLeft: 10,
