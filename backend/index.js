@@ -3,6 +3,7 @@ import express from 'express';
 import bodyParser from 'body-parser';
 import dotenv from 'dotenv';
 import jobRoutes from './routes/job';
+import userRoutes from './routes/user';
 import { MONGO_URI, PORT } from './config';
 import { CustomError, InternalError } from './errors';
 import imageRoutes from './routes/image';
@@ -50,8 +51,9 @@ app.use(bodyParser.urlencoded({
 // Parse application/json requests
 app.use(bodyParser.json()); 
 
-app.use('/api/', jobRoutes); // Job related routes
-app.use('/api/', imageRoutes); // Image retrieval routes for relevant jobs
+app.use('/api/users/', userRoutes)
+app.use('/api/jobs/', jobRoutes); // Job related routes
+app.use('/api/images/', imageRoutes); // Image retrieval routes for relevant jobs
 
 app.use(errorHandler);
 

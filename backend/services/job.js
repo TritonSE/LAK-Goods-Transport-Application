@@ -1,26 +1,34 @@
 /**
  * JobService that interacts with the job documents in the database
  */
-import { CustomError, InternalError, ServiceError } from '../errors';
-import JobModel, { FIELDS_OWNER_PERMITTED_TO_UPDATE } from '../models/job';
+import { ServiceError, InternalError } from '../errors';
+import { filterUpdatePayload } from '../helpers';
+import JobModel, { 
+    FIELDS_OWNER_PERMITTED_TO_UPDATE, 
+    JOB_STATUS_CREATED,
+} from '../models/job';
 import { saveImage, deleteImage } from './image';
+import { deregisterAppliedJob } from './user';
 
-export async function createJob(user, jobData, jobImages) {
+export async function createJob(userId, jobData, jobImages) {
     console.debug('createJob service running')
     const imageIds = [];
 
+    // Store images
     for (let image of jobImages) {
         let imageId = await saveImage(image);
         imageIds.push(imageId);
     }
 
+    // Create Job
     let job = null;
     try {
         job = await JobModel({
             ...jobData, //TODO Sanitize input
-            client: user._id,
+            client: userId,
             applicants: [],
             imageIds: imageIds,
+            status: JOB_STATUS_CREATED,
         });
     } catch (e) {
         throw ServiceError.INVALID_JOB_RECEIVED.addContext(e.stack);
@@ -28,6 +36,7 @@ export async function createJob(user, jobData, jobImages) {
     
     //TODO Validate request fields like delievryDate, etc.
 
+    // Save Job
     try {
         return await job.save();
     } catch (e) {
@@ -35,15 +44,7 @@ export async function createJob(user, jobData, jobImages) {
     }
 }
 
-function filterUpdatePayload(payload, allowedFields) {
-    const filtered = {}  
-    allowedFields.forEach(field => {
-      if (field in payload) filtered[field] = payload[field];
-    });
-    return filtered;
-}
-
-export async function updateJob(user, jobId, jobData, jobImages) {
+export async function updateJob(userId, jobId, jobData, jobImages) {
     console.debug('updateJob service runnning');
 
     // Retrieve original job
@@ -53,7 +54,7 @@ export async function updateJob(user, jobId, jobData, jobImages) {
     }
 
     // Validate client job ownership
-    if (!originalJob.client.equals(user._id)) {
+    if (!originalJob.client.equals(userId)) {
         throw ServiceError.JOB_EDIT_PERMISSION_DENIED;
     }
 
@@ -87,7 +88,7 @@ export async function updateJob(user, jobId, jobData, jobImages) {
     }
 }
 
-export async function deleteJob(jobId) {
+export async function deleteJob(userId, jobId) {
     console.debug('deleteJob service running')
 
     // Retrieve job
@@ -96,7 +97,10 @@ export async function deleteJob(jobId) {
         throw ServiceError.JOB_NOT_FOUND;
     }
 
-    // TODO Validate client job ownership
+    // Validate client job ownership
+    if (!originalJob.client.equals(userId)) {
+        throw ServiceError.JOB_EDIT_PERMISSION_DENIED;
+    }
 
     // Delete existing images
     let existingImageIds = originalJob.imageIds;
@@ -104,6 +108,10 @@ export async function deleteJob(jobId) {
         await deleteImage(imageId);
     }
 
+    // Dergister applied user documents
+    originalJob.applicants.forEach(async applicantId => await deregisterAppliedJob(applicantId, originalJob._id));
+    
+    // Delete Job document
     try {
         await JobModel.deleteOne({'_id': jobId}, null)
     } catch (e) {
@@ -114,12 +122,29 @@ export async function deleteJob(jobId) {
 
 export async function getJob(jobId) {
     console.debug('getJob service running');
-    //TODO Confirm if any auth is required
-    //TODO Send images -- or just send image IDs and then send images through seperate request (preferred)
     
     let res = await JobModel.findById(jobId);
     if (!res) {
         throw ServiceError.JOB_NOT_FOUND
     }
     return res;
+}
+
+export async function addJobApplicant(jobId, userId) {
+    console.debug('addJobApplicant service running');
+
+    let job = await JobModel.findById(jobId);
+    if (!job) throw ServiceError.JOB_NOT_FOUND;
+
+    if (userId in job.applicants) {
+        throw ServiceError.DUPLICATE_JOB_APPLICATION_ATTEMPTED;
+    }
+    
+    job.applicants.push({
+        userId: userId,
+        applyDate: new Date()
+    });
+    
+    try { await job.save() }
+    catch (e) { throw InternalError.DOCUMENT_UPLOAD_ERROR.addContext(e.stack)}
 }
