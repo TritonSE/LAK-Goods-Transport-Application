@@ -15,7 +15,7 @@ import {
     getJobIds
 } from '../services/user';
 import { InternalError, ValidationError } from '../errors';
-import { SAMPLE_USER_ID } from '../constants';
+import { DUMMY_IN_SESSION_USER } from '../constants';
 import { stringToBoolean } from '../helpers';
 
 const routes = express.Router();
@@ -23,7 +23,7 @@ const routes = express.Router();
 // Middleware that parses multipart/form-data request and extracts images into memory storage
 const upload = multer({ storage: multer.memoryStorage() }).array("images");
 
-const getSessionUserId = () => SAMPLE_USER_ID; //TODO: Remove hardcoded SAMPLE_USER once user auth is setup
+const getSessionUserId = () => DUMMY_IN_SESSION_USER; //TODO: Remove hardcoded SAMPLE_USER once user auth is setup
 
 /**
  * POST a new job
@@ -123,8 +123,9 @@ routes.get('/:jobid', (req, res, next) => {
         return;
     }
     const jobId = mongoose.Types.ObjectId(req.params.jobid);
-    
-    getJob(jobId)
+    const userId = getSessionUserId();
+
+    getJob(jobId, userId)
     .then((job) => res.status(200).json({
         message: 'Job document sent as ${job}',
         job: job
@@ -137,7 +138,7 @@ routes.get('/:jobid', (req, res, next) => {
  * @params owned (boolean), completed (boolean), [page_number (int)], [page_size (int)]
  * @returns List of jobs according to pagination properties (if any)
  */
- routes.get('/', async (req, res, next) => {
+routes.get('/', async (req, res, next) => {
     console.info('Getting jobs', req.query);
 
     // Get request parameters

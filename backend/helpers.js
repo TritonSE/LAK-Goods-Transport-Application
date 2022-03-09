@@ -11,15 +11,15 @@ export const stringToBoolean = (str) => {
 }
 
 /**
- * Returns a new object from payload containing only fields specified in allowedFields
- * @param {*} payload 
- * @param {*} allowedFields 
+ * Returns a new `object` from existing one containing only fields specified in `fields`
+ * @param {*} object 
+ * @param {*} fields 
  * @returns {object} filtered object
  */
-export function filterUpdatePayload(payload, allowedFields) {
+export function filterObject(object, fields) {
     const filtered = {}  
-    allowedFields.forEach(field => {
-      if (field in payload) filtered[field] = payload[field];
+    fields.forEach(field => {
+      if (field in object) filtered[field] = object[field];
     });
     return filtered;
 }

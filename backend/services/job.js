@@ -1,15 +1,24 @@
 /**
  * JobService that interacts with the job documents in the database
  */
+import mongoose from 'mongoose';
 import { ServiceError, InternalError } from '../errors';
-import { filterUpdatePayload } from '../helpers';
+import { filterObject } from '../helpers';
 import JobModel, { 
     FIELDS_OWNER_PERMITTED_TO_UPDATE, 
+    OWNER_LIMITED_FIELDS,
     JOB_STATUS_CREATED,
 } from '../models/job';
 import { saveImage, deleteImage } from './image';
 import { deregisterAppliedJob } from './user';
 
+/**
+ * Responsible for creating a job with `userId` as owner
+ * @param {mongoose.Types.ObjectId} userId 
+ * @param {object} jobData 
+ * @param {list} jobImages 
+ * @returns created job document
+ */
 export async function createJob(userId, jobData, jobImages) {
     console.debug('createJob service running');
     const imageIds = [];
@@ -44,6 +53,15 @@ export async function createJob(userId, jobData, jobImages) {
     }
 }
 
+/**
+ * Updates the existing job document. 
+ * Throws an error if `userid` is not the job owner
+ * Extracts fields allowed to update from the `jobData` payload to update
+ * @param {mongoose.Types.ObjectId} userId 
+ * @param {mongoose.Types.ObjectId} jobId 
+ * @param {object} jobData 
+ * @param {list} jobImages 
+ */
 export async function updateJob(userId, jobId, jobData, jobImages) {
     console.debug('updateJob service runnning');
 
@@ -59,7 +77,7 @@ export async function updateJob(userId, jobId, jobData, jobImages) {
     }
 
     // Ensure updated fields are only getting updated
-    jobData = filterUpdatePayload(jobData, FIELDS_OWNER_PERMITTED_TO_UPDATE);
+    jobData = filterObject(jobData, FIELDS_OWNER_PERMITTED_TO_UPDATE);
 
     //TODO Find a better way of updating images
 
@@ -88,6 +106,12 @@ export async function updateJob(userId, jobId, jobData, jobImages) {
     }
 }
 
+/**
+ * Deletes a job document `jobId` and also erases its respective images
+ * Throws error if `userId` does not own the job
+ * @param {mongoose.Types.ObjectId} userId 
+ * @param {mongoose.Types.ObjectId} jobId 
+ */
 export async function deleteJob(userId, jobId) {
     console.debug('deleteJob service running')
 
@@ -119,17 +143,38 @@ export async function deleteJob(userId, jobId) {
     }
 }
 
-
-export async function getJob(jobId) {
+/**
+ * Gets the job document using `jobId`.
+ * Uses `userId` to identify whether the request is coming from 
+ * owner/trucker to ensure relevant data is returned
+ * @param {mongoose.Types.ObjectId} jobId 
+ * @param {mongoose.Types.ObjectId} userId 
+ * @returns job document with relevant fields
+ */
+export async function getJob(jobId, userId) {
     console.debug('getJob service running');
     
-    let res = await JobModel.findById(jobId);
-    if (!res) {
+    let job = await JobModel.findById(jobId);
+    if (!job) {
         throw ServiceError.JOB_NOT_FOUND
     }
-    return res;
+
+    job = job.toObject();
+
+    // Extract parameters only relevant for the request
+    if (!job.client.equals(userId)) { 
+        // If owner did not perform request
+        OWNER_LIMITED_FIELDS.forEach(field => delete job[field]);
+    }
+    
+    return job;
 }
 
+/**
+ * Adds an applicant `userId` to job `jobId`
+ * @param {mongoose.Types.ObjectId} jobId 
+ * @param {mongoose.Types.ObjectId} userId 
+ */
 export async function addJobApplicant(jobId, userId) {
     console.debug('addJobApplicant service running');
 
@@ -142,7 +187,7 @@ export async function addJobApplicant(jobId, userId) {
     
     job.applicants.push({
         userId: userId,
-        applyDate: new Date()
+        applyDate: new Date() // Uses current date as application date
     });
     
     try { await job.save() }
