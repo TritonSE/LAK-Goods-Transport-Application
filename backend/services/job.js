@@ -193,3 +193,35 @@ export async function addJobApplicant(jobId, userId) {
     try { await job.save() }
     catch (e) { throw InternalError.DOCUMENT_UPLOAD_ERROR.addContext(e.stack)}
 }
+
+/**
+ * Assigns driver to `jobId`.
+ * Throws error if userId does not own jobId
+ * @param {mongoose.Types.ObjectId} jobId 
+ * @param {mongoose.Types.ObjectId} userId 
+ * @param {mongoose.Types.ObjectId} driverId 
+ */
+export async function assignDriver(jobId, userId, driverId) {
+    console.debug('assignDriver service running');
+
+    let job = await JobModel.findById(jobId);
+    if (!job) throw ServiceError.JOB_NOT_FOUND;
+
+    // Validate client job ownership
+    if (!job.client.equals(userId)) {
+        throw ServiceError.JOB_EDIT_PERMISSION_DENIED;
+    }
+
+    if (job.assignedDriverId !== null && job.assignedDriverId !== undefined) {
+        throw ServiceError.DRIVER_ALREADY_ASSIGNED;
+    }
+
+    if (!driverId in job.applicants) {
+        throw ServiceError.DRIVER_MUST_BE_APPLICANT;
+    }
+
+    job.assignedDriverId = mongoose.Types.ObjectId(driverId);
+
+    try { await job.save() }
+    catch (e) { throw InternalError.DOCUMENT_UPLOAD_ERROR.addContext(e.stack)}
+}

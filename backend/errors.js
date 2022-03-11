@@ -59,6 +59,8 @@ const JOB_NOT_FOUND_MSG = 'Job ID you specified does not exist';
 const IMAGE_NOT_FOUND_MSG = 'Image ID you specified does not exist, please check job for latest image IDs';
 const JOB_EDIT_PERMISSION_DENIED_MSG = 'You do not have the right permissions to edit the requested job';
 const DUPLICATE_JOB_APPLICATION_ATTEMPTED_MSG = 'You have already applied for the job, multiple applications not allowed';
+const DRIVER_ALREADY_ASSIGNED_MSG = 'Driver is already assigned for this job, please repost the job to assign a new driver';
+const DRIVER_MUST_BE_APPLICANT_MSG = 'Driver must be an applicant to be assigned as driver';
 export class ServiceError extends CustomError {
     static INVALID_JOB_RECEIVED = new ServiceError(0, 400, INVALID_JOB_RECEIVED_MSG)
     static JOB_NOT_FOUND = new ServiceError(1, 404, JOB_NOT_FOUND_MSG)
@@ -66,6 +68,8 @@ export class ServiceError extends CustomError {
     static INVALID_JOB_UPDATE = new ServiceError(3, 400, INVALID_JOB_RECEIVED_MSG);
     static IMAGE_NOT_FOUND = new ServiceError(4, 404, IMAGE_NOT_FOUND_MSG);
     static DUPLICATE_JOB_APPLICATION_ATTEMPTED = new ServiceError(5, 403, DUPLICATE_JOB_APPLICATION_ATTEMPTED_MSG)
+    static DRIVER_ALREADY_ASSIGNED = new ServiceError(6, 409, DRIVER_ALREADY_ASSIGNED_MSG);
+    static DRIVER_MUST_BE_APPLICANT = new ServiceError(7, 403, DRIVER_MUST_BE_APPLICANT_MSG)
 }
 
 /**

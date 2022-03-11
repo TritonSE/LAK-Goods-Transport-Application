@@ -8,6 +8,7 @@ import {
     getJob,
     deleteJob,
     addJobApplicant,
+    assignDriver
 } from '../services/job';
 import {
     registerJob,
@@ -19,6 +20,7 @@ import { DUMMY_IN_SESSION_USER } from '../constants';
 import { stringToBoolean } from '../helpers';
 
 const routes = express.Router();
+const isValidId = mongoose.Types.ObjectId.isValid;
 
 // Middleware that parses multipart/form-data request and extracts images into memory storage
 const upload = multer({ storage: multer.memoryStorage() }).array("images");
@@ -63,7 +65,7 @@ routes.put('/:jobid', upload, (req, res, next) => {
 
     const userId = getSessionUserId();
 
-    if (!mongoose.Types.ObjectId.isValid(req.params.jobid)) {
+    if (!isValidId(req.params.jobid)) {
         next(ValidationError.INVALID_OBJECT_ID); 
         return;
     }
@@ -92,7 +94,7 @@ routes.delete('/:jobid', async (req, res, next) => {
 
     const userId = getSessionUserId();
 
-    if (!mongoose.Types.ObjectId.isValid(req.params.jobid)) {
+    if (!isValidId(req.params.jobid)) {
         next(ValidationError.INVALID_OBJECT_ID);
         return;
     }
@@ -118,7 +120,7 @@ routes.delete('/:jobid', async (req, res, next) => {
 routes.get('/:jobid', (req, res, next) => {
     console.info('Getting job:', req.params.jobid);
 
-    if (!mongoose.Types.ObjectId.isValid(req.params.jobid)) {
+    if (!isValidId(req.params.jobid)) {
         next(ValidationError.INVALID_OBJECT_ID);
         return;
     }
@@ -167,7 +169,7 @@ routes.get('/', async (req, res, next) => {
 routes.patch('/:jobid/apply', async (req, res, next) => {
     console.info('Applying to job, job -', req.params.jobid);
 
-    if (!mongoose.isValidObjectId(req.params.jobid)) {
+    if (!isValidId(req.params.jobid)) {
         next(ValidationError.INVALID_OBJECT_ID);
         return;
     }
@@ -189,4 +191,30 @@ routes.patch('/:jobid/apply', async (req, res, next) => {
         userId: userId,
     });
 })
+
+routes.patch('/:jobid/assign-driver', async (req, res, next) => {
+    console.info('Assigning driver for the job, jobId:', req.params.jobid, 'driverId:', req.body.driverId)
+
+    if (!isValidId(req.params.jobid) || !isValidId(req.body.driverId)) {
+        next(ValidationError.INVALID_OBJECT_ID);
+        return;
+    }
+    const jobId = req.params.jobid;
+    const userId = getSessionUserId();
+    const driverId = req.body.driverId;
+
+    try {
+        await assignDriver(jobId, userId, driverId);
+    } catch (e) {
+        next(e);
+        return;
+    }
+
+    return res.status(200).json({
+        message: 'Driver $driverId successfully assigned to $jobId',
+        driverId: driverId,
+        jobId: jobId,
+    })
+})
+
 export default routes;

@@ -85,7 +85,7 @@ const JobSchema = new Schema(
                 required: true,
             }
         ],
-        assignedDriver: {
+        assignedDriverId: {
             type: mongoose.Types.ObjectId,
             ref: "User",
             required: false,
