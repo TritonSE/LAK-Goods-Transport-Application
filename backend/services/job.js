@@ -8,9 +8,10 @@ import JobModel, {
     FIELDS_OWNER_PERMITTED_TO_UPDATE, 
     OWNER_LIMITED_FIELDS,
     JOB_STATUS_CREATED,
+    JOB_STATUS_COMPLETED
 } from '../models/job';
 import { saveImage, deleteImage } from './image';
-import { deregisterAppliedJob } from './user';
+import { deregisterAppliedJob, updateJobStatus } from './user';
 
 /**
  * Responsible for creating a job with `userId` as owner
@@ -224,4 +225,30 @@ export async function assignDriver(jobId, userId, driverId) {
 
     try { await job.save() }
     catch (e) { throw InternalError.DOCUMENT_UPLOAD_ERROR.addContext(e.stack)}
+}
+
+export async function completeJob(jobId, userId) {
+    console.debug('updateJobStatus service running');
+
+    let job = await JobModel.findById(jobId);
+    if (!job) throw ServiceError.JOB_NOT_FOUND;
+
+    console.log(job)
+    // Validate client job ownership
+    if (!job.client.equals(userId)) {
+        throw ServiceError.JOB_EDIT_PERMISSION_DENIED;
+    }
+    
+    if (job.assignedDriverId == null) { // Soft null check
+        throw ServiceError.DRIVER_NOT_ASSIGNED;
+    }
+    
+    // Update user documents of job owner and driver
+    await updateJobStatus(job.client, job._id, true, true);
+    await updateJobStatus(job.assignedDriverId, job._id, false, true);
+
+    // Update job status
+    job.status = JOB_STATUS_COMPLETED;
+    try { await job.save() }
+    catch (e) { throw InternalError.DOCUMENT_UPLOAD_ERROR.addContext(e.stack) }
 }

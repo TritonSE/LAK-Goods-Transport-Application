@@ -13,6 +13,7 @@ export async function registerJob(userId, jobId, owned) {
     }
 
     if (owned) {
+        //TODO Fix use of in operator (use includes instead)
         if (!(jobId in user.ongoingOwnedJobs))
             user.ongoingOwnedJobs.push(jobId);
         else return false;
@@ -28,6 +29,7 @@ export async function registerJob(userId, jobId, owned) {
     return true;
 };
 
+//TODO Combine deregisterOwnedJob and deregisterAppliedJob
 export async function deregisterOwnedJob(userId, jobId) {
     console.debug('deregisterOwnedJob service running');
 
@@ -74,6 +76,38 @@ export async function deregisterAppliedJob(userId, jobId) {
         catch (e) { throw InternalError.DOCUMENT_UPLOAD_ERROR.addContext(e.stack)}
         return;
     }
+}
+
+export async function updateJobStatus(userId, jobId, owned, setComplete) {
+    console.debug('updateJobStatus service running');
+
+    const user = await UserModel.findById(userId);
+    if (!user) { throw InternalError.USER_NOT_FOUND.addContext(userId) }
+
+    let fromList, toList;
+    if (owned && setComplete) {
+        fromList = user.ongoingOwnedJobs;
+        toList = user.finishedOwnedJobs;
+    } else if (!owned && setComplete) {
+        fromList = user.ongoingAppliedJobs;
+        toList = user.finishedAppliedJobs;
+    } else { 
+        throw InternalError.OTHER.addContext('UserService: Possibly attempted to mark a job incomplete')
+    }
+
+    // Move from fromList to toList
+    let index = fromList.indexOf(jobId);
+    if (index !== -1) {
+        fromList.splice(index, 1);
+    }
+
+    if (!toList.includes(jobId)) {
+        toList.push(jobId);
+    }
+
+    try { await user.save() }
+    catch (e) { throw InternalError.DOCUMENT_UPLOAD_ERROR.addContext(e.stack) }
+    console.debug('exiting updateJobStatus normally');
 }
 
 export async function getJobIds(userId, owned, finished) {

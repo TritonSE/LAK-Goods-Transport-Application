@@ -61,6 +61,7 @@ const JOB_EDIT_PERMISSION_DENIED_MSG = 'You do not have the right permissions to
 const DUPLICATE_JOB_APPLICATION_ATTEMPTED_MSG = 'You have already applied for the job, multiple applications not allowed';
 const DRIVER_ALREADY_ASSIGNED_MSG = 'Driver is already assigned for this job, please repost the job to assign a new driver';
 const DRIVER_MUST_BE_APPLICANT_MSG = 'Driver must be an applicant to be assigned as driver';
+const DRIVER_NOT_ASSIGNED_MSG = 'Driver not assigned for the job but was expected to be assigned';
 export class ServiceError extends CustomError {
     static INVALID_JOB_RECEIVED = new ServiceError(0, 400, INVALID_JOB_RECEIVED_MSG)
     static JOB_NOT_FOUND = new ServiceError(1, 404, JOB_NOT_FOUND_MSG)
@@ -70,6 +71,7 @@ export class ServiceError extends CustomError {
     static DUPLICATE_JOB_APPLICATION_ATTEMPTED = new ServiceError(5, 403, DUPLICATE_JOB_APPLICATION_ATTEMPTED_MSG)
     static DRIVER_ALREADY_ASSIGNED = new ServiceError(6, 409, DRIVER_ALREADY_ASSIGNED_MSG);
     static DRIVER_MUST_BE_APPLICANT = new ServiceError(7, 403, DRIVER_MUST_BE_APPLICANT_MSG)
+    static DRIVER_NOT_ASSIGNED = new ServiceError(8, 409, DRIVER_NOT_ASSIGNED_MSG)
 }
 
 /**

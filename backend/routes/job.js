@@ -8,7 +8,8 @@ import {
     getJob,
     deleteJob,
     addJobApplicant,
-    assignDriver
+    assignDriver,
+    completeJob
 } from '../services/job';
 import {
     registerJob,
@@ -192,6 +193,9 @@ routes.patch('/:jobid/apply', async (req, res, next) => {
     });
 })
 
+/**
+ * PATCH Assign driver for a job
+ */
 routes.patch('/:jobid/assign-driver', async (req, res, next) => {
     console.info('Assigning driver for the job, jobId:', req.params.jobid, 'driverId:', req.body.driverId)
 
@@ -215,6 +219,33 @@ routes.patch('/:jobid/assign-driver', async (req, res, next) => {
         driverId: driverId,
         jobId: jobId,
     })
+})
+
+/**
+ * PATCH Mark job as complete
+ */
+routes.patch('/:jobid/complete', async (req, res, next) => {
+    console.info('Marking job as complete. jobId:', req.params.jobid);
+
+    if (!isValidId(req.params.jobid)) {
+        next(ValidationError.INVALID_OBJECT_ID);
+        return;
+    }
+
+    const jobId = req.params.jobid;
+    const userId = getSessionUserId();
+
+    try {
+        await completeJob(jobId, userId);
+    } catch (e) {
+        next(e);
+        return;
+    }
+
+    return res.status(200).json({
+        message: 'Job $jobId marked as completed',
+        jobId: jobId
+    });
 })
 
 export default routes;
