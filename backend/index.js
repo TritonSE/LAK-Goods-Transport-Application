@@ -6,7 +6,8 @@ import jobRoutes from './routes/job';
 import { MONGO_URI, PORT } from './config';
 import { CustomError } from './errors';
 import imageRoutes from './routes/image';
-
+import authRoutes from './routes/auth';
+import { initializeApp } from 'firebase/app';
 dotenv.config()
 
 /**
@@ -34,6 +35,21 @@ const errorHandler = (err, req, res, next) => {
     res.status(err.statusCode).send(err.format(true));
 }
 
+export function initFirebase() {
+
+    const firebaseConfig = {
+        apiKey: "AIzaSyAHrRD9SL3wnoVUM9yzG8lxScWf92pWL38",
+        authDomain: "laakta-ucsd.firebaseapp.com",
+        projectId: "laakta-ucsd",
+        storageBucket: "laakta-ucsd.appspot.com",
+        messagingSenderId: "892160174879",
+        appId: "1:892160174879:web:d58d800b0b7cd700b25e2a",
+        measurementId: "G-ZFLMC1NS04"
+    };
+
+    initializeApp(firebaseConfig);
+}
+
 /**
  * Create and run app
  */
@@ -48,6 +64,7 @@ app.use(bodyParser.json());
 
 app.use('/api/', jobRoutes); // Job related routes
 app.use('/api/', imageRoutes); // Image retrieval routes for relevant jobs
+app.use('/api/', authRoutes); // Auth routes
 
 app.use(errorHandler);
 
