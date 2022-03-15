@@ -59,9 +59,9 @@ routes.post('/', upload, async (req, res, next) => {
 });
 
 /**
- * PUT Update job attributes
+ * PATCH Update job attributes
  */
-routes.put('/:jobid', upload, (req, res, next) => {
+routes.patch('/:jobid', upload, (req, res, next) => {
     console.info('Updating job:', req.params.jobid);
 
     const userId = getSessionUserId();

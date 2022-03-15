@@ -99,7 +99,7 @@ export async function updateJob(userId, jobId, jobData, jobImages) {
         ...jobData,
         imageIds: newImageIds,
     }
-    
+
     try {
         await JobModel.findOneAndUpdate({'_id': jobId}, jobData)
     } catch (e) {
