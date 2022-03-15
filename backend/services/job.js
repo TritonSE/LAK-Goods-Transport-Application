@@ -8,6 +8,7 @@ import JobModel, {
     FIELDS_OWNER_PERMITTED_TO_UPDATE, 
     OWNER_LIMITED_FIELDS,
     JOB_STATUS_CREATED,
+    JOB_STATUS_ASSIGNED,
     JOB_STATUS_COMPLETED
 } from '../models/job';
 import { saveImage, deleteImage } from './image';
@@ -21,7 +22,7 @@ import { deregisterAppliedJob, updateJobStatus } from './user';
  * @returns created job document
  */
 export async function createJob(userId, jobData, jobImages) {
-    console.debug('createJob service running');
+    console.debug(`SERVICE: createJob service running: userId - ${userId}, jobData - payload`);
     const imageIds = [];
 
     // Store images
@@ -64,7 +65,7 @@ export async function createJob(userId, jobData, jobImages) {
  * @param {list} jobImages 
  */
 export async function updateJob(userId, jobId, jobData, jobImages) {
-    console.debug('updateJob service runnning');
+    console.debug(`SERVICE: updateJob service runnning: jobId - ${jobId}, userId - ${userId}, jobData - payload, jobImages - files`);
 
     // Retrieve original job
     let originalJob = await JobModel.findById(jobId);
@@ -114,7 +115,7 @@ export async function updateJob(userId, jobId, jobData, jobImages) {
  * @param {mongoose.Types.ObjectId} jobId 
  */
 export async function deleteJob(userId, jobId) {
-    console.debug('deleteJob service running')
+    console.debug(`SERVICE: deleteJob service running: jobId - ${jobId}, userId - ${userId}`)
 
     // Retrieve job
     let originalJob = await JobModel.findById(jobId);
@@ -134,8 +135,10 @@ export async function deleteJob(userId, jobId) {
     }
 
     // Dergister applied user documents
-    originalJob.applicants.forEach(async applicantId => await deregisterAppliedJob(applicantId, originalJob._id));
-    
+    for (let applicantId of originalJob.applicants) {
+        await deregisterAppliedJob(applicantId.userId, originalJob._id);
+    }
+
     // Delete Job document
     try {
         await JobModel.deleteOne({'_id': jobId}, null)
@@ -153,7 +156,7 @@ export async function deleteJob(userId, jobId) {
  * @returns job document with relevant fields
  */
 export async function getJob(jobId, userId) {
-    console.debug('getJob service running');
+    console.debug(`SERVICE: getJob service running: jobId - ${jobId}, userId - ${userId}`);
     
     let job = await JobModel.findById(jobId);
     if (!job) {
@@ -177,12 +180,16 @@ export async function getJob(jobId, userId) {
  * @param {mongoose.Types.ObjectId} userId 
  */
 export async function addJobApplicant(jobId, userId) {
-    console.debug('addJobApplicant service running');
+    console.debug(`SERVICE: addJobApplicant service running: jobId - ${jobId}, userId - ${userId}`);
 
     let job = await JobModel.findById(jobId);
     if (!job) throw ServiceError.JOB_NOT_FOUND;
 
-    if (userId in job.applicants) {
+    if (job.status !== JOB_STATUS_CREATED) {
+        throw ServiceError.JOB_CLOSED_FOR_APPLICATION;
+    }
+    
+    if (job.applicants.find(applicant => applicant.userId.equals(userId))) {
         throw ServiceError.DUPLICATE_JOB_APPLICATION_ATTEMPTED;
     }
     
@@ -203,7 +210,7 @@ export async function addJobApplicant(jobId, userId) {
  * @param {mongoose.Types.ObjectId} driverId 
  */
 export async function assignDriver(jobId, userId, driverId) {
-    console.debug('assignDriver service running');
+    console.debug(`SERVICE: assignDriver service running: jobId - ${jobId}, userId - ${userId}, driverId - ${driverId}`);
 
     let job = await JobModel.findById(jobId);
     if (!job) throw ServiceError.JOB_NOT_FOUND;
@@ -213,27 +220,27 @@ export async function assignDriver(jobId, userId, driverId) {
         throw ServiceError.JOB_EDIT_PERMISSION_DENIED;
     }
 
-    if (job.assignedDriverId !== null && job.assignedDriverId !== undefined) {
+    if (job.status !== JOB_STATUS_CREATED) {
         throw ServiceError.DRIVER_ALREADY_ASSIGNED;
     }
 
-    if (!driverId in job.applicants) {
+    if (!job.applicants.find(applicant => applicant.userId.equals(driverId))) {
         throw ServiceError.DRIVER_MUST_BE_APPLICANT;
     }
 
     job.assignedDriverId = mongoose.Types.ObjectId(driverId);
+    job.status = JOB_STATUS_ASSIGNED;
 
     try { await job.save() }
     catch (e) { throw InternalError.DOCUMENT_UPLOAD_ERROR.addContext(e.stack)}
 }
 
 export async function completeJob(jobId, userId) {
-    console.debug('updateJobStatus service running');
+    console.debug(`SERVICE: updateJobStatus service running: jobId - ${jobId}, userId - ${userId}`);
 
     let job = await JobModel.findById(jobId);
     if (!job) throw ServiceError.JOB_NOT_FOUND;
 
-    console.log(job)
     // Validate client job ownership
     if (!job.client.equals(userId)) {
         throw ServiceError.JOB_EDIT_PERMISSION_DENIED;

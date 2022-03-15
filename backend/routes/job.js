@@ -1,5 +1,4 @@
 import express from 'express';
-import mongoose from 'mongoose';
 import multer from 'multer'; 
 
 import {
@@ -17,27 +16,25 @@ import {
     getJobIds
 } from '../services/user';
 import { InternalError, ValidationError } from '../errors';
-import { DUMMY_IN_SESSION_USER } from '../constants';
-import { stringToBoolean } from '../helpers';
+import { getSessionUserId } from '../constants';
+import { stringToBoolean, validateId } from '../helpers';
 
 const routes = express.Router();
-const isValidId = mongoose.Types.ObjectId.isValid;
+
 
 // Middleware that parses multipart/form-data request and extracts images into memory storage
 const upload = multer({ storage: multer.memoryStorage() }).array("images");
-
-const getSessionUserId = () => DUMMY_IN_SESSION_USER; //TODO: Remove hardcoded SAMPLE_USER once user auth is setup
 
 /**
  * POST a new job
  */
 routes.post('/', upload, async (req, res, next) => {
-    console.info('Posting new Job');
-
-    const userId = getSessionUserId();
-
+    console.info('ROUTE: Posting new Job');
+    
     let job = null;
     try {
+        const userId = getSessionUserId(req);
+
         // Create Job
         job = await createJob(
             userId,
@@ -53,7 +50,7 @@ routes.post('/', upload, async (req, res, next) => {
     }
 
     res.status(200).json({
-        message: 'Job ID ${jobId} was successfully created',
+        message: 'Job ID $jobId was successfully created',
         jobId: job._id,
     });
 });
@@ -61,56 +58,56 @@ routes.post('/', upload, async (req, res, next) => {
 /**
  * PATCH Update job attributes
  */
-routes.patch('/:jobid', upload, (req, res, next) => {
-    console.info('Updating job:', req.params.jobid);
+routes.patch('/:jobid', upload, async (req, res, next) => {
+    console.info('ROUTE: Updating job:', req.params.jobid);
+    
+    let jobId = null;
+    try {
+        jobId = validateId(req.params.jobid);
+        const payload = req.body;
 
-    const userId = getSessionUserId();
+        const userId = getSessionUserId(req);
 
-    if (!isValidId(req.params.jobid)) {
-        next(ValidationError.INVALID_OBJECT_ID); 
+        await updateJob(
+            userId,
+            jobId,
+            payload,
+            req.files,
+        );
+    } catch (e) {
+        next(e);
         return;
     }
-    const jobId = mongoose.Types.ObjectId(req.params.jobid);
-    const payload = req.body;
-        
-    updateJob(
-        userId,
-        jobId,
-        payload,
-        req.files,
-    ).then(() => {
-        res.status(200).json({
-            message: 'Job ID ${jobId} was successfully updated',
-            jobId: jobId,
-        });
-    })
-    .catch(next);
+
+    res.status(200).json({
+        message: 'Job ID $jobId was successfully updated',
+        jobId: jobId,
+    });
 });
 
 /**
  * DELETE Job by ID
  */
 routes.delete('/:jobid', async (req, res, next) => {
-    console.info('Deleting job:', req.params.jobid);
+    console.info('ROUTE: Deleting job:', req.params.jobid);
 
-    const userId = getSessionUserId();
-
-    if (!isValidId(req.params.jobid)) {
-        next(ValidationError.INVALID_OBJECT_ID);
-        return;
-    }
-    const jobId = mongoose.Types.ObjectId(req.params.jobid);
-
+    let jobId = null;
     try {
+        const userId = getSessionUserId(req);
+        jobId = validateId(req.params.jobid);
+        
         // Update job owner document
         await deregisterOwnedJob(userId, jobId);
-        
+    
         // Remove Job document (updates applicants documents)
         await deleteJob(userId, jobId);
-    } catch (e) { next(e) }
-    
+    } catch (e) { 
+        next(e) 
+        return;
+    }
+
     res.status(200).json({
-        message: 'Job ID ${jobId} was successfully deleted',
+        message: 'Job ID $jobId was successfully deleted',
         jobId: jobId,
     });
 });
@@ -118,22 +115,24 @@ routes.delete('/:jobid', async (req, res, next) => {
 /**
  * GET Job by ID
  */
-routes.get('/:jobid', (req, res, next) => {
-    console.info('Getting job:', req.params.jobid);
+routes.get('/:jobid', async (req, res, next) => {
+    console.info('ROUTE: Getting job:', req.params.jobid);
 
-    if (!isValidId(req.params.jobid)) {
-        next(ValidationError.INVALID_OBJECT_ID);
+    let job = null;
+    try {
+        const jobId = validateId(req.params.jobid);
+        const userId = getSessionUserId(req);
+
+        job = await getJob(jobId, userId)
+    } catch (e) {
+        next(e);
         return;
     }
-    const jobId = mongoose.Types.ObjectId(req.params.jobid);
-    const userId = getSessionUserId();
-
-    getJob(jobId, userId)
-    .then((job) => res.status(200).json({
+    
+    res.status(200).json({
         message: 'Job document sent as ${job}',
         job: job
-    }))
-    .catch(next);
+    })
 });
 
 /**
@@ -142,45 +141,49 @@ routes.get('/:jobid', (req, res, next) => {
  * @returns List of jobs according to pagination properties (if any)
  */
 routes.get('/', async (req, res, next) => {
-    console.info('Getting jobs', req.query);
+    console.info('ROUTE: Getting jobs', req.query);
 
-    // Get request parameters
-    const owned = stringToBoolean(req.query.owned);
-    const finished = stringToBoolean(req.query.finished); 
-    if (owned === null || finished === null) { // Invalid Boolean found
-        next(ValidationError.INVALID_BOOLEAN_VALUE);
+    let jobIds = null;
+    try {
+        // Get request parameters
+        const owned = stringToBoolean(req.query.owned);
+        const finished = stringToBoolean(req.query.finished); 
+        if (owned === null || finished === null) { // Invalid Boolean found
+            throw ValidationError.INVALID_BOOLEAN_VALUE;
+        }
+
+        const userId = getSessionUserId(req);
+        // TODO: Add user auth
+
+        jobIds = await getJobIds(userId, owned, finished)
+
+    } catch (e) {
+        next(e);
         return;
     }
-
-    const userId = getSessionUserId();
-    // TODO: Add user auth
     
-    getJobIds(userId, owned, finished)
-    .then((jobs) => {res.status(200).json({
-        message: 'Find $count job IDs in $jobs',
-        count: jobs.length,
-        jobs: jobs
-    })})
-    .catch(next);
+    res.status(200).json({
+        message: 'Find $count job IDs in $jobIds',
+        count: jobIds.length,
+        jobIds: jobIds
+    })
 });
 
 /**
  * PATCH Apply to a job
  */
 routes.patch('/:jobid/apply', async (req, res, next) => {
-    console.info('Applying to job, job -', req.params.jobid);
+    console.info('ROUTE: Applying to job, job -', req.params.jobid);
 
-    if (!isValidId(req.params.jobid)) {
-        next(ValidationError.INVALID_OBJECT_ID);
-        return;
-    }
-    const jobId = req.params.jobid;
-    const userId = getSessionUserId();
-    
+    let jobId, userId;
     try {
+        jobId = validateId(req.params.jobid);
+        userId = getSessionUserId(req);
+
         await addJobApplicant(jobId, userId);
         let registered = await registerJob(userId, jobId, false);
         if (!registered) throw InternalError.OTHER.addContext('User job registration failed, despite valid application')
+
     } catch (e) {
         next(e);
         return;
@@ -197,24 +200,22 @@ routes.patch('/:jobid/apply', async (req, res, next) => {
  * PATCH Assign driver for a job
  */
 routes.patch('/:jobid/assign-driver', async (req, res, next) => {
-    console.info('Assigning driver for the job, jobId:', req.params.jobid, 'driverId:', req.body.driverId)
+    console.info('ROUTE: Assigning driver for the job, jobId:', req.params.jobid, 'driverId:', req.body.driverId)
 
-    if (!isValidId(req.params.jobid) || !isValidId(req.body.driverId)) {
-        next(ValidationError.INVALID_OBJECT_ID);
-        return;
-    }
-    const jobId = req.params.jobid;
-    const userId = getSessionUserId();
-    const driverId = req.body.driverId;
-
+    let driverId, jobId;
     try {
+        jobId = validateId(req.params.jobid);
+        driverId = validateId(req.body.driverId);
+        const userId = getSessionUserId(req);
+
         await assignDriver(jobId, userId, driverId);
     } catch (e) {
+        console.log('error', e)
         next(e);
         return;
     }
 
-    return res.status(200).json({
+    res.status(200).json({
         message: 'Driver $driverId successfully assigned to $jobId',
         driverId: driverId,
         jobId: jobId,
@@ -225,24 +226,20 @@ routes.patch('/:jobid/assign-driver', async (req, res, next) => {
  * PATCH Mark job as complete
  */
 routes.patch('/:jobid/complete', async (req, res, next) => {
-    console.info('Marking job as complete. jobId:', req.params.jobid);
+    console.info('ROUTE: Marking job as complete. jobId:', req.params.jobid);
 
-    if (!isValidId(req.params.jobid)) {
-        next(ValidationError.INVALID_OBJECT_ID);
-        return;
-    }
-
-    const jobId = req.params.jobid;
-    const userId = getSessionUserId();
-
+    let jobId;
     try {
+        jobId = validateId(req.params.jobid);
+        const userId = getSessionUserId(req);
+
         await completeJob(jobId, userId);
     } catch (e) {
         next(e);
         return;
     }
 
-    return res.status(200).json({
+    res.status(200).json({
         message: 'Job $jobId marked as completed',
         jobId: jobId
     });

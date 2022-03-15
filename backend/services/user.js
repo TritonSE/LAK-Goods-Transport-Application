@@ -5,7 +5,7 @@ import UserModel from "../models/user";
 import { InternalError } from "../errors";
 
 export async function registerJob(userId, jobId, owned) {
-    console.debug('registerJob service running');
+    console.debug(`SERVICE: registerJob service running: userId - ${userId}, jobId - ${jobId}, owned - ${owned}`);
 
     const user = await UserModel.findById(userId);
     if (!user) {
@@ -14,11 +14,11 @@ export async function registerJob(userId, jobId, owned) {
 
     if (owned) {
         //TODO Fix use of in operator (use includes instead)
-        if (!(jobId in user.ongoingOwnedJobs))
+        if (!user.ongoingOwnedJobs.includes(jobId))
             user.ongoingOwnedJobs.push(jobId);
         else return false;
     } else {
-        if (!(jobId in user.ongoingAppliedJobs))
+        if (!user.ongoingAppliedJobs.includes(jobId))
             user.ongoingAppliedJobs.push(jobId);
         else return false;
     }
@@ -31,7 +31,7 @@ export async function registerJob(userId, jobId, owned) {
 
 //TODO Combine deregisterOwnedJob and deregisterAppliedJob
 export async function deregisterOwnedJob(userId, jobId) {
-    console.debug('deregisterOwnedJob service running');
+    console.debug(`SERVICE: deregisterOwnedJob service running: userId - ${userId}, jobId - ${jobId}`);
 
     const user = await UserModel.findById(userId);
     if (!user) {
@@ -56,7 +56,7 @@ export async function deregisterOwnedJob(userId, jobId) {
 }
 
 export async function deregisterAppliedJob(userId, jobId) {
-    console.debug('deregisterAppliedJob service running');
+    console.debug(`SERVICE: deregisterAppliedJob service running: userId - ${userId}, jobId - ${jobId}`);
 
     const user = await UserModel.findById(userId);
     if (!user) { throw InternalError.USER_NOT_FOUND }
@@ -79,7 +79,7 @@ export async function deregisterAppliedJob(userId, jobId) {
 }
 
 export async function updateJobStatus(userId, jobId, owned, setComplete) {
-    console.debug('updateJobStatus service running');
+    console.debug(`SERVICE: updateJobStatus service running: userId - ${userId}, jobId - ${jobId}, owned - ${owned}, setComplete - ${setComplete}`);
 
     const user = await UserModel.findById(userId);
     if (!user) { throw InternalError.USER_NOT_FOUND.addContext(userId) }
@@ -107,11 +107,10 @@ export async function updateJobStatus(userId, jobId, owned, setComplete) {
 
     try { await user.save() }
     catch (e) { throw InternalError.DOCUMENT_UPLOAD_ERROR.addContext(e.stack) }
-    console.debug('exiting updateJobStatus normally');
 }
 
 export async function getJobIds(userId, owned, finished) {
-    console.debug('getJobIds service running', owned, finished);
+    console.debug(`SERVICE: getJobIds service running: userId - ${userId}, owned - ${owned}, finished - ${finished}`);
 
     const user = await UserModel.findById(userId);
     if (!user) { throw InternalError.USER_NOT_FOUND }
@@ -125,6 +124,6 @@ export async function getJobIds(userId, owned, finished) {
         jobIds = user.finishedAppliedJobs;
     else 
         jobIds = user.ongoingAppliedJobs;
-    
+
     return jobIds;
 }
