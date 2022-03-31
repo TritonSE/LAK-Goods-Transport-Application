@@ -94,7 +94,7 @@ export default function AddJob() {
       <ScreenHeader showArrow>Add Job</ScreenHeader>
     </View>
       
-    <ScrollView style={styles.container} contentContainerStyle={{paddingBottom: 60, }}>
+    <ScrollView style={styles.container} contentContainerStyle={{paddingBottom: 150, }}>
 
     <TouchableOpacity style={styles.photos} onPress={() => {photoPress();}}>
 
@@ -198,15 +198,16 @@ export default function AddJob() {
         width='80%'
       />
 
-      <Picker
-        selectedValue={pickupDistrict}
-        onValueChange={(value, index) => setPickupDistrict(value)}
-        mode="dropdown" // Android only
-        style={styles.picker}
-      >
-        {LOCATIONS.map(location => <PickerItem label={location} value={location}/>)}
-      </Picker>
-
+      <View style={styles.pickerWrapper}>
+          <Picker
+            selectedValue={pickupDistrict}
+            onValueChange={(value, index) => setPickupDistrict(value)}
+            mode="dropdown" // Android only
+            style={styles.picker}
+          >
+            {LOCATIONS.map(location => <PickerItem label={location} value={location}/>)}
+          </Picker>
+      </View>
 
       <SingleLineTextInput
         title="Drop-off location"
@@ -219,14 +220,16 @@ export default function AddJob() {
         width='80%'
       />
 
-      <Picker
-        selectedValue={dropoffDistrict}
-        onValueChange={(value, index) => setDropoffDistrict(value)}
-        mode="dropdown" // Android only
-        style={styles.picker}
-      >
-        {LOCATIONS.map(location => <PickerItem label={location} value={location}/>)}
-      </Picker>
+      <View style={styles.pickerWrapper}>
+        <Picker
+          selectedValue={dropoffDistrict}
+          onValueChange={(value, index) => setDropoffDistrict(value)}
+          mode="dropdown" // Android only
+          style={styles.picker}
+        >
+          {LOCATIONS.map(location => <PickerItem label={location} value={location}/>)}
+        </Picker>
+      </View>
 
       <SingleLineTextInput
         title = "Phone number"
@@ -313,20 +316,24 @@ const styles = StyleSheet.create({
   center: {
       alignItems: 'center',
   },
+  pickerWrapper: {
+    flex: 1,
+    justifyContent: 'center',
+    alignItems: 'center',
+    alignSelf: 'auto',
+    borderWidth: 1,
+    borderRadius: 5,
+    borderColor: 'gray',
+    width: '78%',
+    marginLeft: 15,
+  },
   picker: {   
-    marginTop: -10, 
-    marginBottom: 10,
-    marginLeft: 15, 
-  
     borderWidth: 1,
     borderRadius: 4,
     borderColor: "#8B8B8B",
 
-    width: '80%',
+    width: '100%',
     height: 35,
-
-    paddingHorizontal: 5,
-    paddingVertical: 5,
   },
   
 });
