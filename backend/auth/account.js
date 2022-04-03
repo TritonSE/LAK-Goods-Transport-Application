@@ -1,4 +1,4 @@
-import { getAuth, createUserWithEmailAndPassword, signInWithEmailAndPassword } from "firebase/auth";
+import { getAuth, createUserWithEmailAndPassword, signInWithEmailAndPassword, signOut } from "firebase/auth";
 
 export async function createAccount(phone, password) {
     let email = phoneNumberToEmail(phone);
@@ -23,6 +23,20 @@ export async function signIn(phone, password) {
     return await signInWithEmailAndPassword(auth, email, password)
         .then((userCredential) => {
             return userCredential.user;
+        })
+        .catch((error) => {
+            return {
+                errorCode: error.code,
+                errorMessage: error.message
+            };
+        });
+}
+
+export async function logOut() {
+    const auth = getAuth();
+    return await signOut(auth)
+        .then(() => {
+            return true;
         })
         .catch((error) => {
             return {
