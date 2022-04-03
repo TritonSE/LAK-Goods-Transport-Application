@@ -1,7 +1,7 @@
 import express from 'express';
 
 import {
-    createAccount, signIn, logOut
+    createAccount, signIn, logOut, changePassword
 } from '../auth/account.js';
 import {
     initFirebase
@@ -32,6 +32,15 @@ routes.get('/auth/signout', (req, res, next) => {
     console.info('Signing out of account');
 
     logOut()
+        .then((ret) => res.status(200).send(ret))
+        .catch(next);
+});
+
+routes.put('/auth/changepass/:password', (req, res, next) => {
+    initFirebase();
+    console.info('Changing password to: ' + req.params.password);
+
+    changePassword(req.params.password)
         .then((ret) => res.status(200).send(ret))
         .catch(next);
 });

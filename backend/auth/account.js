@@ -1,4 +1,4 @@
-import { getAuth, createUserWithEmailAndPassword, signInWithEmailAndPassword, signOut } from "firebase/auth";
+import { getAuth, createUserWithEmailAndPassword, signInWithEmailAndPassword, signOut, updatePassword } from "firebase/auth";
 
 export async function createAccount(phone, password) {
     let email = phoneNumberToEmail(phone);
@@ -44,6 +44,21 @@ export async function logOut() {
                 errorMessage: error.message
             };
         });
+}
+export async function changePassword(pin) {
+    const auth = getAuth();
+    let user = auth.currentUser;
+    if (!user)
+        return false;
+    let pass = pinToPass(pin);
+    return await updatePassword(user, pass).then(() => {
+        return true;
+    }, (error) => {
+        return {
+            errorCode: error.code,
+            errorMessage: error.message
+        };
+    });
 }
 
 function phoneNumberToEmail(phone) {
