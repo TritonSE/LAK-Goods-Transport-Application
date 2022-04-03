@@ -1,5 +1,7 @@
 import React from 'react';
-import { StyleSheet, Text, View, Image, ImageSourcePropType, TouchableOpacity, TouchableHighlight } from 'react-native';
+import { StyleSheet, View, Image, ImageSourcePropType, TouchableOpacity, TouchableHighlight } from 'react-native';
+
+import { AppText } from '../components';
 import { COLORS } from '../../constants';
 
 interface HeaderProps {
@@ -27,11 +29,11 @@ export default function JobThumbnail({title, image, pickup, dropoff, deliver, qu
             <View style={styles.top}>
 
                 <View style={styles.left}>
-                    <Text style={styles.title}>{title}</Text>
-                    <Text style={styles.info}><Text style={styles.bold}>Pick-up: </Text>{pickup}</Text>
-                    <Text style={styles.info}><Text style={styles.bold}>Drop-off: </Text>{dropoff}</Text>
-                    <Text style={styles.info}><Text style={styles.bold}>Deliver by: </Text>{deliver}</Text>
-                    <Text style={styles.info}><Text style={styles.bold}>Package Quantity: </Text>{quantity}</Text>
+                    <AppText style={styles.title}>{title}</AppText>
+                    <AppText style={styles.info}><AppText style={styles.bold}>Pick-up: </AppText>{pickup}</AppText>
+                    <AppText style={styles.info}><AppText style={styles.bold}>Drop-off: </AppText>{dropoff}</AppText>
+                    <AppText style={styles.info}><AppText style={styles.bold}>Deliver by: </AppText>{deliver}</AppText>
+                    <AppText style={styles.info}><AppText style={styles.bold}>Package Quantity: </AppText>{quantity}</AppText>
                 </View>
 
                 <Image style={styles.image} source={image}/>
@@ -43,21 +45,21 @@ export default function JobThumbnail({title, image, pickup, dropoff, deliver, qu
                     <TouchableOpacity onPress={() => console.log("Edit Button Pressed")}>
                         <Image style={styles.edit} source={require("../../assets/edit.png")}/>
                     </TouchableOpacity>
-                    <Text style={styles.applicants}>{applicants} {(applicants == 1) ? "applicant" : "applicants"}</Text>
+                    <AppText style={styles.applicants}>{applicants} {(applicants == 1) ? "applicant" : "applicants"}</AppText>
                 </> : null}
 
                 {inProgress ?
                 <>
-                    <Text style={styles.days}>Started {days} {(days == 1) ? "day" : "days"} ago</Text>
+                    <AppText style={styles.days}>Started {days} {(days == 1) ? "day" : "days"} ago</AppText>
                     <View style={styles.inProgress}>
-                        <Text style={styles.inProgressText}>In Progress</Text>
+                        <AppText style={styles.inProgressText}>In Progress</AppText>
                     </View>
                 </> : null}
 
                 {dead ?
                 <TouchableHighlight onPress={() => console.log("Repost Button Pressed")} underlayColor={"#fff"}>
                     <View style={styles.repost}>
-                        <Text style={styles.repostText}>Repost</Text>
+                        <AppText style={styles.repostText}>Repost</AppText>
                     </View>
                 </TouchableHighlight> : null}
             </View>
