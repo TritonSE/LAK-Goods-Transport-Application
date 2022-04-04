@@ -1,174 +1,190 @@
-import React from 'react';
-import { StyleSheet, View, Image, ImageSourcePropType, TouchableOpacity, TouchableHighlight } from 'react-native';
+import React, { PropsWithChildren } from 'react';
+import { StyleSheet, View, Image, ImageSourcePropType, TouchableOpacity, TouchableHighlight, StyleProp, ViewStyle, Button, ButtonProps, TouchableOpacityProps } from 'react-native';
 
 import { AppText } from '../components';
 import { COLORS } from '../../constants';
+import { JobData } from '../../types';
+import { EditIcon, PhoneIcon } from '../icons';
 
-interface HeaderProps {
-    title: string,
-    image: ImageSourcePropType,
-    pickup: string,
-    dropoff: string,
-    deliver: string,
-    quantity: string,
-    pending?: boolean,
-    inProgress?: boolean,
-    dead?: boolean,
-    applicants?: number,
-    days?: number
+/**
+ * Button Wrapper
+ */
+type ButtonWrapperProps = PropsWithChildren<TouchableOpacityProps> & {
+    style?: StyleProp<ViewStyle>;
+}
+function ButtonWrapper({ onPress, style, children }: ButtonWrapperProps) {
+    return (
+        <TouchableOpacity onPress={onPress} style={style}>
+            {children}
+        </TouchableOpacity>
+    )
 }
 
-export default function JobThumbnail({title, image, pickup, dropoff, deliver, quantity, pending = false, inProgress = false, dead = false, applicants = 0, days = 0}:HeaderProps) {
-
-    // Just returning null if you try to have multiple jobs statuses or have no status
-    if((dead && pending) || (pending && inProgress) || (inProgress && dead)) return null
-    if(!dead && !inProgress && !pending) return null
-
-    return(
-        <View style={styles.card}>
-            <View style={styles.top}>
-
-                <View style={styles.left}>
-                    <AppText style={styles.title}>{title}</AppText>
-                    <AppText style={styles.info}><AppText style={styles.bold}>Pick-up: </AppText>{pickup}</AppText>
-                    <AppText style={styles.info}><AppText style={styles.bold}>Drop-off: </AppText>{dropoff}</AppText>
-                    <AppText style={styles.info}><AppText style={styles.bold}>Deliver by: </AppText>{deliver}</AppText>
-                    <AppText style={styles.info}><AppText style={styles.bold}>Package Quantity: </AppText>{quantity}</AppText>
-                </View>
-
-                <Image style={styles.image} source={image}/>
-            </View>
-
-            <View style={styles.bottom}>
-                {pending ? 
-                <>
-                    <TouchableOpacity onPress={() => console.log("Edit Button Pressed")}>
-                        <Image style={styles.edit} source={require("../../assets/edit.png")}/>
-                    </TouchableOpacity>
-                    <AppText style={styles.applicants}>{applicants} {(applicants == 1) ? "applicant" : "applicants"}</AppText>
-                </> : null}
-
-                {inProgress ?
-                <>
-                    <AppText style={styles.days}>Started {days} {(days == 1) ? "day" : "days"} ago</AppText>
-                    <View style={styles.inProgress}>
-                        <AppText style={styles.inProgressText}>In Progress</AppText>
-                    </View>
-                </> : null}
-
-                {dead ?
-                <TouchableHighlight onPress={() => console.log("Repost Button Pressed")} underlayColor={"#fff"}>
-                    <View style={styles.repost}>
-                        <AppText style={styles.repostText}>Repost</AppText>
-                    </View>
-                </TouchableHighlight> : null}
-            </View>
+/**
+ * Status Indicator
+ */
+interface StatusIndicatorProps {
+    text: string;
+    color: string;
+}
+const StatusIndicatorStyles = StyleSheet.create({
+    container: {
+        width: 76, 
+        height: 20, 
+        paddingTop: 3,
+        paddingBottom: 3,
+        alignItems: 'center',
+        borderRadius: 2,
+    },
+    text: {
+        fontSize: 10,
+        fontWeight: 'bold'
+    }
+})
+function StatusIndicator({text, color}: StatusIndicatorProps) {
+    return (
+        <View style={[StatusIndicatorStyles.container, {backgroundColor: color}]}>
+            <AppText style={StatusIndicatorStyles.text}>{text}</AppText>
         </View>
     )
 }
 
-const styles = StyleSheet.create({
+/**
+ * Job thumbnail component
+ */
+interface JobThumbnailProps {
+    job: JobData;
+    image: ImageSourcePropType;
+    displayStatus: 'In Progress' | 'Finished' | 'Accepted' | 'Denied' | 'Not Started' | 'Applied',
+    isJobOwner?: boolean;
+    daysAgo?: number;
+}
+const STATUS_DISPLAY_COLOR = {
+    'In Progress': '#FFE587',
+    'Finished': '#E8E8E8',
+    'Accepted': '#BCF19C',
+    'Denied': '#DA5C5C',
+    'Not Started': null,
+    'Applied': null,
+}
 
+export default function JobThumbnail({job, image, displayStatus, isJobOwner, daysAgo}: JobThumbnailProps) {
+    // Just returning null if you try to have no status
+    if (!job.status) return null;
+
+    const statusDisplayColor = STATUS_DISPLAY_COLOR[displayStatus];
+
+    return (
+        <View style={CardStyles.card}>
+            <View style={[CardStyles.row, CardStyles.header]}>
+                <AppText style={CardStyles.title}>Box of apples</AppText>
+            </View>
+            
+            <ButtonWrapper style={JobThumbnailStyles.editButton} onPress={() => console.log("Edit Button Pressed")}>
+                <EditIcon />
+            </ButtonWrapper>
+
+            <Image style={JobThumbnailStyles.jobImage} source={image}/>
+            <View style={[CardStyles.row]}>
+                {statusDisplayColor && <StatusIndicator text={displayStatus} color={statusDisplayColor} /> }
+                { displayStatus === 'In Progress' && <AppText style={[JobThumbnailStyles.daysText, {marginLeft: 10}]}>Started {daysAgo} {(daysAgo == 1) ? "day" : "days"} ago</AppText>}
+                { displayStatus === 'Applied' && <AppText style={JobThumbnailStyles.daysText}>Applied {daysAgo} {(daysAgo == 1) ? "day" : "days"} ago</AppText>}
+                { displayStatus === 'Not Started' && isJobOwner && <AppText style={JobThumbnailStyles.ownerApplicantsText}>{job.applicants} {(job.applicants == 1) ? "applicant" : "applicants"}</AppText>}
+                { displayStatus === 'Not Started' && !isJobOwner && <AppText style={JobThumbnailStyles.clientApplicantsText}>{job.applicants} {(job.applicants == 1) ? "person has" : "people have"} applied</AppText>}
+            </View>
+            <View>
+                <AppText style={JobThumbnailStyles.bodyText}><AppText style={JobThumbnailStyles.bodyHeading}>Deliver by: </AppText>{job.deliveryDate}</AppText>
+                <AppText style={JobThumbnailStyles.bodyText}><AppText style={JobThumbnailStyles.bodyHeading}>Pick-up: </AppText>{job.pickupLocation}</AppText>
+                <AppText style={JobThumbnailStyles.bodyText}><AppText style={JobThumbnailStyles.bodyHeading}>Drop-off: </AppText>{job.dropoffLocation}</AppText>
+                { job.packageQuantity && <AppText style={JobThumbnailStyles.bodyText}><AppText style={JobThumbnailStyles.bodyHeading}>Package Quantity: </AppText>{job.packageQuantity}</AppText>}
+            </View>
+            {
+                !isJobOwner &&
+                <View style={{marginTop: 5}}>
+                    <ButtonWrapper style={JobThumbnailStyles.rowFlexBox} onPress={() => console.log('Call client button pressed')}>
+                        <PhoneIcon />
+                        <AppText style={[JobThumbnailStyles.callClientText, { marginLeft: 5}]}>Call {job.clientName}</AppText>
+                    </ButtonWrapper>
+                </View>
+            }
+        </View>
+    )
+}
+
+const CardStyles = StyleSheet.create({
     card: {
-        width: 350,
-        
-        padding: 15,
-        flexDirection: "column",
+        width: 303,
+        padding: 13,
+        backgroundColor: COLORS.white,
 
-        backgroundColor: "#fff",
-        shadowColor: "black",
+        margin: 10,
+
+        shadowColor: 'black',
         shadowOffset: {width: 0, height: 2},
         shadowOpacity: 0.35,
         shadowRadius: 10,
         elevation: 7
     },
 
-    top: {
-        flexDirection: "row",
-        justifyContent: "space-between",
-        position: "relative"
+    row: {
+        display: 'flex',
+        flexDirection: 'row',
+        marginBottom: 5,
+        padding: 0
     },
 
-    left: {
-        justifyContent: "flex-start"
+    header: {
+        justifyContent: 'space-between',
+        marginBottom: 7,
     },
 
     title: {
-        fontSize: 18,
-        fontWeight: "bold",
-        marginBottom: 5
-    },
-
-    bold: {
-        fontWeight: "bold"
-    },
-
-    info: {
-        fontSize: 14
-    },
-
-    image: {
-        height: 110,
-        width: 110
-    },
-
-    bottom: {
-        width: "100%",
-        marginTop: 15,
-        flexDirection: "row-reverse",
-        justifyContent: "space-between"
-    },
-
-    edit: {
-        height: 22,
-        width: 22
-    },
-
-    applicants: {
-        fontSize: 14,
-        fontWeight: "bold",
-        color: COLORS.turquoise
-    },
-
-    days: {
-        fontSize: 14,
-        color: "#DA5C5C",
-        fontWeight: "bold"
-    },
-    
-    inProgress: {
-        width: 90,
-        height: 22,
-        backgroundColor: "#FFE587",
-        justifyContent: "center",
-        alignItems: "center",
-        borderRadius: 4
-    },
-    
-    inProgressText: {
-        color: "black",
-        fontSize: 12,
-        fontWeight: "bold"
-    },
-
-    repost: {
-        width: 110,
-        height: 30,
-        justifyContent: "center",
-        alignItems: "center",
-        borderRadius: 5,
-
-        backgroundColor: "#fff",
-        shadowColor: "black",
-        shadowOffset: {width: 0, height: 0},
-        shadowOpacity: 0.2,
-        shadowRadius: 5,
-        elevation: 3
-    },
-
-    repostText: {
         fontSize: 16,
-        color: COLORS.maroon
+        fontWeight: "bold",
     }
+})
 
-});
+const JobThumbnailStyles = StyleSheet.create({
+    bodyText: {
+        fontSize: 12,
+    },
+    bodyHeading: {
+        fontSize: 12,
+        fontWeight: 'bold'
+    },
+    daysText: {
+        fontSize: 12,
+        fontWeight: 'bold',
+        color: '#DA5C5C',
+    },
+    editButton: {
+        position: 'absolute',
+        top: 13,
+        right: 88
+    },
+    jobImage: {
+        position: 'absolute',
+        top: 13,
+        right: 13,
+        height: 65,
+        width: 65
+    },
+    ownerApplicantsText: {
+        fontSize: 12,
+        color: '#3A9A89',
+        fontWeight: 'bold'
+    },
+    clientApplicantsText: {
+        fontSize: 12,
+        color: '#8B8B8B'
+    },
+    callClientText: {
+        fontSize: 12,
+        color: '#335BC2',
+        fontWeight: 'bold',
+    },
+    rowFlexBox: {
+        display: 'flex',
+        flexDirection: 'row'
+    }
+})
