@@ -6,7 +6,7 @@ import { ValidationError } from '../errors';
 
 const routes = express.Router();
 
-routes.get('/images/:imageid', (req, res, next) => {
+routes.get('/:imageid', (req, res, next) => {
     // TODO Do we need some sort of authentication here? 
     if (!mongoose.Types.ObjectId.isValid(req.params.imageid)) {
         next(ValidationError.INVALID_OBJECT_ID); 

@@ -1,6 +1,6 @@
 
 /**
- * Model to represent User data
+ * Schema for User document
  */
 
 // const bcrypt = require("bcrypt"); Import when needed
@@ -28,7 +28,28 @@ const UserSchema = new Schema({
         type: String,
         required: true,
     },
-    jobIds: [
+    finishedAppliedJobs: [
+        {
+            type: mongoose.Types.ObjectId,
+            ref: "Job",
+            required: false,
+        },
+    ],
+    ongoingAppliedJobs: [
+        {
+            type: mongoose.Types.ObjectId,
+            ref: "Job",
+            required: false,
+        },
+    ],
+    finishedOwnedJobs: [
+        {
+            type: mongoose.Types.ObjectId,
+            ref: "Job",
+            required: false,
+        },
+    ],
+    ongoingOwnedJobs: [
         {
             type: mongoose.Types.ObjectId,
             ref: "Job",
