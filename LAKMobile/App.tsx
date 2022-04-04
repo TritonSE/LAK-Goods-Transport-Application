@@ -3,21 +3,17 @@ import { NavigationContainer } from '@react-navigation/native';
 import { StatusBar } from 'expo-status-bar';
 import { StyleSheet, View } from 'react-native';
 import { AppText, ScreenHeader } from './src/components';
-import TabHeader from './src/components/TabHeader';
 import { SignupScreen, LoginScreen } from './src/screens';
 
 export default function App() {
   return (
     <NavigationContainer>
       <View style={styles.container}>
-        {/* <ScreenHeader showArrow>Login</ScreenHeader>
+        <ScreenHeader showArrow>Login</ScreenHeader>
 
         <LoginScreen/>
 
-        <StatusBar style="auto" /> */}
-
-        <TabHeader></TabHeader>
-        
+        <StatusBar style="auto" />
       </View>
     </NavigationContainer>
   );
