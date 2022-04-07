@@ -1,6 +1,6 @@
 import React from 'react';
-import { StyleSheet, View, Image, TouchableOpacity } from 'react-native';
-import AppText from './AppText';
+import { StyleSheet, Text, View, Image, TouchableOpacity } from 'react-native';
+import { AppText } from './AppText';
 import { COLORS } from '../../constants';
 
 interface HeaderProps {
@@ -8,7 +8,7 @@ interface HeaderProps {
     showArrow?: boolean
 }
 
-export default function ScreenHeader({children, showArrow = false}:HeaderProps) {
+export function ScreenHeader({children, showArrow = false}:HeaderProps) {
     return(
         <View style={styles.header}>
             <View style={styles.headerContent}>

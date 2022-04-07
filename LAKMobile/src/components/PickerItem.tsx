@@ -7,7 +7,7 @@ interface Props {
     value: string,
 }
 
-export default function PickerItem({ label, value } : Props) {
+export function PickerItem({ label, value } : Props) {
 
   return (
     <Picker.Item label={label} value={value}/>

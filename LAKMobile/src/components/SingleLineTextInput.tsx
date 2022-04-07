@@ -1,8 +1,7 @@
 import React from 'react';
-import { View, TextInput, Text, StyleSheet } from 'react-native';
-import MaterialCommunityIcon  from 'react-native-vector-icons/MaterialCommunityIcons';
+import { View, TextInput, StyleSheet } from 'react-native';
 import MaterialIcon  from 'react-native-vector-icons/MaterialIcons';
-import AppText from '../components/AppText';
+import { AppText } from './AppText';
 
 interface Props {
     title: string,
@@ -17,7 +16,7 @@ interface Props {
     width: string,
 }
 
-export default function SingleLineTextInput({ title, placeholder, icon, footer, maxLength, isNumber, onChange, value, id, width } : Props) {
+export function SingleLineTextInput({ title, placeholder, icon, footer, maxLength, isNumber, onChange, value, id, width } : Props) {
 
   return (
       

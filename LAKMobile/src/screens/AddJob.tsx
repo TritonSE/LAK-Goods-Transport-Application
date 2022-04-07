@@ -1,22 +1,25 @@
 import React from 'react';
 import { useState } from "react";
-import { Button, PermissionsAndroid, ScrollView, StyleSheet, Text, TextInput, TouchableOpacity, View} from 'react-native';
+import { PermissionsAndroid, ScrollView, StyleSheet, TouchableOpacity, View } from 'react-native';
 import { Picker } from "@react-native-picker/picker";
-import SingleLineTextInput from '../components/SingleLineTextInput';
-import MultilineTextInput from '../components/MultilineTextInput';
-import AppText from '../components/AppText';
-import {launchCamera, launchImageLibrary} from 'react-native-image-picker';
+import { launchCamera, launchImageLibrary} from 'react-native-image-picker';
 import {MediaType} from 'react-native-image-picker';
 import Icon  from 'react-native-vector-icons/MaterialCommunityIcons';
-import { PrimaryButton, ScreenHeader } from '../components';
-import PickerItem from '../components/PickerItem';
+import { 
+  AppText,
+  PrimaryButton, 
+  ScreenHeader,
+  PickerItem,
+  SingleLineTextInput,
+  MultilineTextInput,
+} from '../components';
 
 const LOCATIONS = ["-- Select a district --", "Bumthang", "Chhukha", "Dagana", "Gasa", "Haa",
   "Lhuentse", "Mongar", "Paro", "Pema Gatshel", "Punakha", "Samdrup Jongkhar",
   "Samtse", "Sarpang", "Thimphu", "Trashigang", "Trashi Yangtse", "Trongsa",
   "Tsirang", "Wangdue Phodrang", "Zhemgang"];
 
-export default function AddJob() {
+export function AddJob() {
   const [pickupDistrict, setPickupDistrict] = useState('Unknown'); 
   const [dropoffDistrict, setDropoffDistrict] = useState('Unknown');
   const [addJobInformation, setAddJobInformation] = useState({
@@ -243,11 +246,7 @@ export default function AddJob() {
       />
 
       <View style = {styles.center}>
-        <View style = {styles.postJobButton}>
-
           <PrimaryButton title="Post Job" type='primary'/>
-    
-        </View>
       </View>
       </ScrollView>
       </View>
@@ -298,12 +297,6 @@ const styles = StyleSheet.create({
     borderBottomWidth: 1,
     width: '90%',
     margin: 10
-  },
-  postJobButton: {
-    width: '80%',
-    margin: 10,
-    color: 'white',
-    alignItems: 'center',
   },
   title: {
     fontSize: 16,

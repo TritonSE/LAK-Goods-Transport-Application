@@ -1,6 +1,6 @@
 import React from 'react';
 import { View, TextInput, StyleSheet } from 'react-native';
-import AppText from '../components/AppText';
+import { AppText } from './AppText';
 
 interface Props {
     title: string,
@@ -12,7 +12,7 @@ interface Props {
     id: string,
 }
 
-export default function MultilineTextInput({ title, placeholder, footer, maxLength, onChange, value, id } : Props) {
+export function MultilineTextInput({ title, placeholder, footer, maxLength, onChange, value, id } : Props) {
 
   return (
       

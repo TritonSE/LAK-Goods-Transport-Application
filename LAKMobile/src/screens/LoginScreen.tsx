@@ -3,7 +3,7 @@ import { StyleSheet, TextInput, View } from 'react-native';
 import { AppText, LabelWrapper, AppButton } from '../components';
 import { COLORS } from '../../constants';
 
-export default function LoginScreen() {
+export function LoginScreen() {
     return(
         <View style={styles.container}>
             <LabelWrapper label='Mobile Number'>
