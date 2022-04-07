@@ -17,10 +17,6 @@ export function MultilineTextInput({ title, placeholder, footer, maxLength, onCh
   return (
       
     <View style={styles.container}>
-        <View style={styles.inputLabel}>
-            <AppText> {title} </AppText>
-        </View>
-
         <TextInput
         style={styles.inputBox}
         value={value}

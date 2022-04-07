@@ -22,5 +22,6 @@ const styles = StyleSheet.create({
     },
     label: {
         marginBottom: 8,
+        fontSize: 16
     },
 })

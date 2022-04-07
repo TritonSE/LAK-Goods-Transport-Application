@@ -44,7 +44,7 @@ export function SingleLineTextInput({ title, placeholder, icon, footer, maxLengt
       </View>
 
         {footer ? <View style={styles.footer}>
-            <AppText style={{fontFamily: 'Roboto', fontSize: 12 }}> {footer} </AppText>
+            <AppText style={{ fontSize: 12 }}> {footer} </AppText>
         </View>
         : null}
     </View>

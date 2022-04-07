@@ -1,5 +1,4 @@
-import React from 'react';
-import { useState } from "react";
+import React, { useState } from 'react';
 import { PermissionsAndroid, ScrollView, StyleSheet, TouchableOpacity, View } from 'react-native';
 import { Picker } from "@react-native-picker/picker";
 import { launchCamera, launchImageLibrary} from 'react-native-image-picker';
@@ -7,12 +6,14 @@ import {MediaType} from 'react-native-image-picker';
 import Icon  from 'react-native-vector-icons/MaterialCommunityIcons';
 import { 
   AppText,
+  LabelWrapper,
   PrimaryButton, 
   ScreenHeader,
   PickerItem,
-  SingleLineTextInput,
-  MultilineTextInput,
+  AppTextInput,
 } from '../components';
+import { COLORS } from '../../constants';
+
 
 const LOCATIONS = ["-- Select a district --", "Bumthang", "Chhukha", "Dagana", "Gasa", "Haa",
   "Lhuentse", "Mongar", "Paro", "Pema Gatshel", "Punakha", "Samdrup Jongkhar",
@@ -86,10 +87,13 @@ export function AddJob() {
   }
 
   const onTextInputChange = (e: any, id: string) => {
+    // NOTE Pass in the id that will be the attribute we need to change
     setAddJobInformation({...addJobInformation, [id]: e.target.value});
     console.log(e);
   }
 
+  // TODO Implement state manipulations once data managenement is setup on frontend
+  
   return (
     <View>
 
@@ -97,7 +101,7 @@ export function AddJob() {
       <ScreenHeader showArrow>Add Job</ScreenHeader>
     </View>
       
-    <ScrollView style={styles.container} contentContainerStyle={{paddingBottom: 150, }}>
+    <ScrollView contentContainerStyle={styles.container}>
 
     <TouchableOpacity style={styles.photos} onPress={() => {photoPress();}}>
 
@@ -122,149 +126,151 @@ export function AddJob() {
         
     </TouchableOpacity>
 
-      <View style={styles.photoInstructions}>
+      <View style={[styles.spacer]}>
         <AppText style = {styles.photoInstructions}>At least one photo of the package is required.</AppText>
         <AppText style = {styles.photoInstructions}>Note: The first photo will be the thumbnail of the job listing.</AppText>
       </View>
 
-      <SingleLineTextInput
-        title = "Job Title"
-        placeholder = "Ex. Box of apples"
-        maxLength={100}
-        onChange={onTextInputChange}
-        value={addJobInformation.jobTitle}
-        id={"jobTitle"}
-        width='60%'
-      />
+      <LabelWrapper label='Job Title'>
+        <AppTextInput
+          style={[inputStyle2, styles.spacer]}
+          placeholder = "Ex. Box of apples"
+          maxLength={100}
+          keyboardType="default"
+        />
+      </LabelWrapper>
 
-      <SingleLineTextInput
-        title="Client Name"
-        placeholder="Ex. Gabby Gibson"
-        maxLength={100}
-        onChange={onTextInputChange}
-        value={addJobInformation.clientName}
-        id={"clientName"}
-        width='60%'
-      />
+      <LabelWrapper label='Client Name'>
+        <AppTextInput
+          style={[inputStyle2, styles.spacer]}
+          placeholder = 'Ex. Gabby Gibson'
+          maxLength={100}
+          keyboardType="default"
+        />
+      </LabelWrapper>
 
-      <SingleLineTextInput
-        title="Date to be delivered"
-        placeholder="Ex. MM/DD/YYYY"
-        footer="(put N/A if not applicable)"
-        maxLength={10}
-        onChange={onTextInputChange}
-        value={addJobInformation.deliveryDate}
-        id={"deliveryDate"}
-        width='60%'
-      />
+      <LabelWrapper label='Date to be delivered'>
+        <AppTextInput
+          style={inputStyle2}
+          placeholder = 'Ex. MM/DD/YYYY'
+          maxLength={10}
+          keyboardType="default"
+        />
+        <AppText style={[styles.inputFooterText, styles.spacer]}>(put N/A if not applicable)</AppText>
+      </LabelWrapper>
 
-      <MultilineTextInput
-        title = "Description"
-        placeholder = {"Tell us about your package. Add any extra detail about its size. \n\n Ex. Package will fill up 1/3 of a truck."}
-        maxLength={1000}
-        {/* onChange={onTextInputChange} */}
-      />
+      <LabelWrapper label='Description'>
+        <AppTextInput
+          multiline
+          style={[styles.multilineInput, styles.spacer]}
+          maxLength={1000}
+          placeholder = {"Tell us about your package. Add any extra detail about its size. \n\n Ex. Package will fill up 1/3 of a truck."}
+        />
+      </LabelWrapper>
+
       {/*  
       TODO:  
       (2) Edit: size of the TextInput box so that it shows all the placeholder text. 
       Right now you need to scroll down to see all the text.
        */}
 
-      <SingleLineTextInput
-        title="Package Quantity"
-        placeholder="Ex. 6"
-        maxLength={10}
-        onChange={onTextInputChange}
-        value={addJobInformation.packageQuantity}
-        id={"packageQuantity"}
-        width='40%'
-      />
+      <LabelWrapper label='Package Quantity'>
+        <AppTextInput
+          style={[inputStyle1, styles.spacer]}
+          placeholder='Ex. 6'
+          maxLength={10}
+        />
+      </LabelWrapper>
 
-      <SingleLineTextInput
-        title="Estimated price of delivery"
-        placeholder="Ex. $$"
-        maxLength={20}
-        onChange={onTextInputChange}
-        value={addJobInformation.estimatedPrice}
-        id={"estimatedPrice"}
-        width='40%'
-      />
+      <LabelWrapper label='Estimated price of delivery'>
+        <AppTextInput 
+          placeholder='Ex. $$'
+          maxLength={20}
+          style={[inputStyle1, styles.spacer]}
+        />
+      </LabelWrapper>
 
-      <SingleLineTextInput
-        title="Pick-up location"
-        placeholder="Ex. Insert address or landmark"
-        icon="location-pin"
-        maxLength={100}
-        onChange={onTextInputChange}
-        value={addJobInformation.pickUpLocation}
-        id={"pickUpLocation"}
-        width='80%'
-      />
-
-      <View style={styles.pickerWrapper}>
+      <LabelWrapper label='Pick-up location'>
+        <AppTextInput
+          style={inputStyleFull}
+          placeholder="Ex. Insert address or landmark"
+          maxLength={100}
+          icon='location-pin'
+        />
+        
+        <View style={[styles.pickerWrapper, styles.spacer]}>
           <Picker
             selectedValue={pickupDistrict}
             onValueChange={(value, index) => setPickupDistrict(value)}
             mode="dropdown" // Android only
-            style={styles.picker}
           >
-            {LOCATIONS.map(location => <PickerItem label={location} value={location}/>)}
+            {LOCATIONS.map((location, index) => <Picker.Item key={index} label={location} value={location}/>)}
           </Picker>
-      </View>
+        </View>
+      </LabelWrapper>
+      
+      <LabelWrapper label='Drop-off location'>
+        <AppTextInput
+          style={inputStyleFull}
+          placeholder="Ex. Insert address or landmark"
+          maxLength={100}
+          icon='location-pin'
+        />
+        <View style={[styles.pickerWrapper, styles.spacer]}>
+          <Picker
+            selectedValue={pickupDistrict}
+            onValueChange={(value, index) => setDropoffDistrict(value)}
+            mode="dropdown" // Android only
+          >
+            {LOCATIONS.map((location, index) => <Picker.Item key={index} label={location} value={location}/>)}
+          </Picker>
+        </View>
+      </LabelWrapper>
 
-      <SingleLineTextInput
-        title="Drop-off location"
-        placeholder="Ex. Insert address or landmark"
-        icon="location-pin"
-        maxLength={100}
-        onChange={onTextInputChange}
-        value={addJobInformation.dropOffLocation}
-        id={"dropOffLocation"}
-        width='80%'
-      />
+      <LabelWrapper label='Phone number'>
+        <AppTextInput 
+          style={[inputStyleFull, styles.spacer]}
+          placeholder = "Ex. 17113456"
+          icon = "phone-in-talk"        
+        />
+      </LabelWrapper>
 
-      <View style={styles.pickerWrapper}>
-        <Picker
-          selectedValue={dropoffDistrict}
-          onValueChange={(value, index) => setDropoffDistrict(value)}
-          mode="dropdown" // Android only
-          style={styles.picker}
-        >
-          {LOCATIONS.map(location => <PickerItem label={location} value={location}/>)}
-        </Picker>
-      </View>
-
-      <SingleLineTextInput
-        title = "Phone number"
-        placeholder = "Ex. 17113456"
-        icon = "phone-in-talk"
-        onChange={onTextInputChange}
-        value={addJobInformation.phoneNumber}
-        id={"phoneNumber"}
-        maxLength={20}
-        width='80%'
-      />
-
-      <View style = {styles.center}>
-          <PrimaryButton title="Post Job" type='primary'/>
-      </View>
+      <PrimaryButton style={[styles.center, { width: '100%'}]} title="Post Job" type='primary'/>
       </ScrollView>
       </View>
   );
 }
 
 const styles = StyleSheet.create({
-  container: {
-    // flex: 1,
-    backgroundColor: '#fff',
-    fontFamily: 'Roboto',
+  input: {
+    borderWidth: 1,
+    borderRadius: 4,
+    borderColor: COLORS.mediumGrey,
+    height: 40,
   },
+  
+  inputFooterText: {
+    fontSize: 12
+  },
+
+  multilineInput: {
+    borderWidth: 1,
+    height: 75,
+    width: '80%',
+    borderRadius: 4,
+    paddingHorizontal: 5,
+    borderColor: COLORS.mediumGrey,
+  },
+  
+  container: {
+    padding: 32,
+    paddingBottom: 140,
+  },
+
   header: {
     marginBottom: 100,
   },
-  insideScroll: {
-    display: 'flex',
-  },
+
   photoText: {
     fontSize: 10, 
     textAlign: 'center'
@@ -273,61 +279,53 @@ const styles = StyleSheet.create({
     margin: 15,
     padding: 5,
     fontSize: 12, 
-    width: 80,
-    height: 80,
+    width: 90,
+    height: 90,
     borderWidth: 1,
     flexDirection: 'column',
     alignItems: 'center',
   },
   photos: {
       flexDirection: 'row',
+      alignSelf: 'center'
   },
   photoInstructions: {
-    marginBottom: 10,
-    marginLeft: 10,
     fontSize: 12,
   },
-  inputBox: {
-    borderWidth: 1,
-    margin: 10,
-    borderRadius: 2,
-  },
-  horizontalLine: {
-    borderBottomColor: 'black',
-    borderBottomWidth: 1,
-    width: '90%',
-    margin: 10
-  },
-  title: {
-    fontSize: 16,
-    color: '#8B8B8B',
-  },
-  inputLabel: {
-    margin: 5,
-    fontSize: 14,
-  },
+
   center: {
-      alignItems: 'center',
+      alignSelf: 'center',
   },
   pickerWrapper: {
-    flex: 1,
-    justifyContent: 'center',
-    alignItems: 'center',
-    alignSelf: 'auto',
+    padding: 0,
+    margin: 0,
+    marginTop: 8,
     borderWidth: 1,
     borderRadius: 5,
-    borderColor: 'gray',
-    width: '78%',
-    marginLeft: 15,
-    marginBottom: 15,
+    borderColor: COLORS.mediumGrey,
   },
-  picker: {   
-    borderWidth: 1,
-    borderRadius: 4,
-    borderColor: "#8B8B8B",
-
-    width: '100%',
-    height: 35,
-  },
-  
+  spacer: {
+    marginBottom: 20
+  }
 });
+
+const inputStyle1 = StyleSheet.flatten([
+  styles.input, 
+  {
+    width: '40%'
+  }
+])
+
+const inputStyle2 = StyleSheet.flatten([
+  styles.input, 
+  {
+    width: '60%'
+  }
+]);
+
+const inputStyleFull = StyleSheet.flatten([
+  styles.input, 
+  {
+    width: '100%',
+  }
+]);

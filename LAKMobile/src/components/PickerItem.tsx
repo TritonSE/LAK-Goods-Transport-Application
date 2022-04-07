@@ -8,7 +8,6 @@ interface Props {
 }
 
 export function PickerItem({ label, value } : Props) {
-
   return (
     <Picker.Item label={label} value={value}/>
   );
