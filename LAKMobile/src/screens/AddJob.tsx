@@ -9,7 +9,6 @@ import {
   LabelWrapper,
   PrimaryButton, 
   ScreenHeader,
-  PickerItem,
   AppTextInput,
 } from '../components';
 import { COLORS } from '../../constants';
