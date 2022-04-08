@@ -1,7 +1,7 @@
 import React, { PropsWithChildren } from 'react';
 import { StyleSheet, View, Image, ImageSourcePropType, TouchableOpacity, TouchableHighlight, StyleProp, ViewStyle, Button, ButtonProps, TouchableOpacityProps } from 'react-native';
 
-import { AppText } from '../components';
+import { AppText, AppButton } from '../components';
 import { COLORS } from '../../constants';
 import { JobData } from '../../types';
 import { EditIcon, PhoneIcon } from '../icons';
@@ -58,6 +58,7 @@ interface JobThumbnailProps {
     displayStatus: 'In Progress' | 'Finished' | 'Accepted' | 'Denied' | 'Not Started' | 'Applied',
     isJobOwner?: boolean;
     daysAgo?: number;
+    repostAllowed?: boolean;
 }
 const STATUS_DISPLAY_COLOR = {
     'In Progress': '#FFE587',
@@ -68,7 +69,7 @@ const STATUS_DISPLAY_COLOR = {
     'Applied': null,
 }
 
-export default function JobThumbnail({job, image, displayStatus, isJobOwner, daysAgo}: JobThumbnailProps) {
+export default function JobThumbnail({job, image, displayStatus, isJobOwner, daysAgo, repostAllowed}: JobThumbnailProps) {
     // Just returning null if you try to have no status
     if (!job.status) return null;
 
@@ -98,15 +99,23 @@ export default function JobThumbnail({job, image, displayStatus, isJobOwner, day
                 <AppText style={JobThumbnailStyles.bodyText}><AppText style={JobThumbnailStyles.bodyHeading}>Drop-off: </AppText>{job.dropoffLocation}</AppText>
                 { job.packageQuantity && <AppText style={JobThumbnailStyles.bodyText}><AppText style={JobThumbnailStyles.bodyHeading}>Package Quantity: </AppText>{job.packageQuantity}</AppText>}
             </View>
-            {
-                !isJobOwner &&
-                <View style={{marginTop: 5}}>
+            
+            <View style={[CardStyles.row, CardStyles.footer]}>
+                {
+                    !isJobOwner &&
                     <ButtonWrapper style={JobThumbnailStyles.rowFlexBox} onPress={() => console.log('Call client button pressed')}>
                         <PhoneIcon />
                         <AppText style={[JobThumbnailStyles.callClientText, { marginLeft: 5}]}>Call {job.clientName}</AppText>
                     </ButtonWrapper>
-                </View>
-            }
+                }
+                <View style={JobThumbnailStyles.flexSpacer} />
+                {
+                    repostAllowed && 
+                    <AppButton title='Repost' style={JobThumbnailStyles.repostButton} type='tertiary' size='small' onPress={() => console.log('Job attempted to repost')}/>
+                }   
+            </View>
+            
+
         </View>
     )
 }
@@ -129,13 +138,20 @@ const CardStyles = StyleSheet.create({
     row: {
         display: 'flex',
         flexDirection: 'row',
-        marginBottom: 5,
-        padding: 0
+        marginBottom: 7,
+        padding: 0,
+        alignItems: 'center'
     },
 
     header: {
         justifyContent: 'space-between',
         marginBottom: 7,
+    },
+
+    footer: {
+        justifyContent: 'space-between',
+        marginTop: 5,
+        marginBottom: 0
     },
 
     title: {
@@ -186,5 +202,8 @@ const JobThumbnailStyles = StyleSheet.create({
     rowFlexBox: {
         display: 'flex',
         flexDirection: 'row'
+    },
+    flexSpacer: {
+        flexGrow: 1
     }
 })
