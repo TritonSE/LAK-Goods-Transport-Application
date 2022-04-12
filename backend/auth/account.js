@@ -3,6 +3,7 @@ import { getAuth, createUserWithEmailAndPassword, signInWithEmailAndPassword, si
 export async function createAccount(phone, password) {
     let email = phoneNumberToEmail(phone);
     password = pinToPass(password);
+    console.log(password);
     const auth = getAuth();
     return await createUserWithEmailAndPassword(auth, email, password)
         .then((userCredential) => {
@@ -19,6 +20,7 @@ export async function createAccount(phone, password) {
 export async function signIn(phone, password) {
     let email = phoneNumberToEmail(phone);
     password = pinToPass(password);
+    console.log(password);
     const auth = getAuth();
     return await signInWithEmailAndPassword(auth, email, password)
         .then((userCredential) => {
@@ -66,6 +68,21 @@ function phoneNumberToEmail(phone) {
     return "a" + phone.replace(/\D/g,'') + "@gmail.com";
 }
 
+// npm install crypto
+import crypto from "crypto";
+function encrypt(text) {
+    let key = crypto.createCipher('aes-128-cbc', "Laakta");
+    let str = key.update(text, 'utf8', 'hex');
+    return str + key.final('hex');
+}
+
+function decrypt(crypt) {
+    let key = crypto.createDecipher('aes-128-cbc', "Laakta");
+    let str = key.update(crypt, 'utf8', 'hex');
+    return str + key.final('hex');
+}
+
 function pinToPass(pin) {
-    return "abc" + pin;
+    pin = "abc" + pin;
+    return encrypt(pin);
 }
