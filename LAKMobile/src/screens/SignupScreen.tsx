@@ -1,6 +1,7 @@
 import { StyleSheet, View, TextInput } from 'react-native';
-import { PrimaryButton, LabelWrapper, AppText } from '../components';
+import { AppButton, LabelWrapper, AppText } from '../components';
 import { COLORS } from '../../constants';
+import App from '../../App';
 
 export default function SignupScreen({}) {
   return (
@@ -40,7 +41,7 @@ export default function SignupScreen({}) {
         />
       </LabelWrapper>
 
-      <PrimaryButton
+      <AppButton
         type='primary'
         title='Create Account'
         onPress={() => console.log('Create Account pressed')}
@@ -49,7 +50,7 @@ export default function SignupScreen({}) {
 
       <View style={styles.loginLinkContainer}>
         <AppText>Already have an account?</AppText>
-        <PrimaryButton 
+        <AppButton 
           type='link' 
           title='Log in here' 
           onPress={() => console.log('Log in here pressed')}
