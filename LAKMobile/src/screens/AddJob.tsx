@@ -7,7 +7,7 @@ import Icon  from 'react-native-vector-icons/MaterialCommunityIcons';
 import { 
   AppText,
   LabelWrapper,
-  PrimaryButton, 
+  AppButton, 
   ScreenHeader,
   AppTextInput,
 } from '../components';
@@ -234,7 +234,7 @@ export function AddJob() {
         />
       </LabelWrapper>
 
-      <PrimaryButton style={[styles.center, { width: '100%'}]} title="Post Job" type='primary'/>
+      <AppButton style={[styles.center, { width: '100%'}]} title="Post Job" type='primary'/>
       </ScrollView>
       </View>
   );
