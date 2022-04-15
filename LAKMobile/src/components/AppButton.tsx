@@ -1,6 +1,6 @@
 
 import { StyleSheet, TouchableOpacity, StyleProp, ViewStyle } from 'react-native';
-import AppText from './AppText';
+import { AppText } from './AppText';
 import { COLORS } from '../../constants';
 
 // Common styling
@@ -163,7 +163,7 @@ type AppButtonProps = {
     style?: StyleProp<ViewStyle>,
 }
 
-export default function AppButton({title, size, style, onPress, type}: AppButtonProps) {
+export function AppButton({title, size, style, onPress, type}: AppButtonProps) {
     if (!type || !(type in TYPE_STYLE_MAP)) type = 'secondary';
     if (type != 'link' && (!size || !(size in SIZE_STYLE_MAP))) size = 'large';
 

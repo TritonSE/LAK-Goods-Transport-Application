@@ -1,5 +1,5 @@
-import AppText from "./AppText";
-import AppButton from "./AppButton";
-import LabelWrapper from "./LabelWrapper";
-import ScreenHeader from "./ScreenHeader";
-export { AppText, AppButton, LabelWrapper, ScreenHeader }
+export * from './AppText';
+export * from './LabelWrapper';
+export * from './AppButton';
+export * from './ScreenHeader';
+export * from './AppTextInput';

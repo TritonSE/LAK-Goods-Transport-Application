@@ -3,7 +3,7 @@ import { AppButton, LabelWrapper, AppText } from '../components';
 import { COLORS } from '../../constants';
 import App from '../../App';
 
-export default function SignupScreen({}) {
+export function SignupScreen({}) {
   return (
     <View style={styles.container}>
       <LabelWrapper label='Name (First, Last)'>
