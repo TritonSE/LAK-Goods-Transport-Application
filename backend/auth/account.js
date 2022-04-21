@@ -1,4 +1,8 @@
-import { getAuth, createUserWithEmailAndPassword, signInWithEmailAndPassword, signOut, updatePassword } from "firebase/auth";
+import { getAuth, createUserWithEmailAndPassword, signInWithEmailAndPassword,
+    signOut, updatePassword, RecaptchaVerifier, signInWithPhoneNumber } from "firebase/auth";
+
+import crypto from "crypto"; // npm install crypto
+import {initAdmin} from "../index.js"
 
 export async function createAccount(phone, password) {
     let email = phoneNumberToEmail(phone);
@@ -7,6 +11,7 @@ export async function createAccount(phone, password) {
     const auth = getAuth();
     return await createUserWithEmailAndPassword(auth, email, password)
         .then((userCredential) => {
+            userCredential.user.phoneNumber = phone;
             return userCredential.user;
         })
         .catch((error) => {
@@ -47,6 +52,7 @@ export async function logOut() {
             };
         });
 }
+
 export async function changePassword(pin) {
     const auth = getAuth();
     let user = auth.currentUser;
@@ -68,8 +74,6 @@ function phoneNumberToEmail(phone) {
     return "a" + phone.replace(/\D/g,'') + "@gmail.com";
 }
 
-// npm install crypto
-import crypto from "crypto";
 function encrypt(text) {
     let key = crypto.createCipher('aes-128-cbc', "Laakta");
     let str = key.update(text, 'utf8', 'hex');
@@ -85,4 +89,52 @@ function decrypt(crypt) {
 function pinToPass(pin) {
     pin = "abc" + pin;
     return encrypt(pin);
+}
+
+/**
+ * Verifies user through recaptcha, feeds into sendOTP
+ * @param phone number to send OTP to
+ * @param buttonID HTML/JS ID of the button for recaptcha
+ */
+function verifyRecaptchaForOTP(phone, buttonID) {
+    const auth = getAuth();
+    return window.recaptchaVerifier = new RecaptchaVerifier(buttonID, {
+        'size': 'invisible',
+        'callback': () => {
+            // reCAPTCHA solved, allow signInWithPhoneNumber.
+            return sendOTP(phone);
+        }
+    }, auth);
+}
+
+export async function sendOTP(phone) {
+    const auth = getAuth();
+    const adminAuth = initAdmin().auth();
+    // Allows for recaptcha bypassing
+    auth.settings.appVerificationDisabledForTesting = true;
+    return await signInWithPhoneNumber(adminAuth, phone)
+        .then((confirmationResult) => {
+            // SMS sent. Prompt user to type the code from the message, then sign the
+            // user in with confirmationResult.confirm(code).
+            window.confirmationResult = confirmationResult;
+            return true;
+            // ...
+        }).catch((error) => {
+            // Error; SMS not sent
+            // ...
+            console.log(error);
+            return false;
+        });
+}
+
+export async function confirmOTP(code) {
+    return await confirmationResult.confirm(code).then((result) => {
+        // User signed in successfully.
+        // ...
+        return true;
+    }).catch((error) => {
+        // User couldn't sign in (bad verification code?)
+        // ...
+        return false;
+    });
 }

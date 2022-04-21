@@ -7,8 +7,12 @@ import { MONGO_URI, PORT } from './config';
 import { CustomError } from './errors';
 import imageRoutes from './routes/image';
 import authRoutes from './routes/auth';
+
 import { initializeApp } from 'firebase/app';
-dotenv.config()
+import admin from 'firebase-admin';
+import * as serviceAccount from './auth/service.json';
+
+dotenv.config();
 
 /**
  * Database connection
@@ -48,6 +52,16 @@ export function initFirebase() {
     };
 
     initializeApp(firebaseConfig);
+}
+
+export function initAdmin() {
+    let init = admin.initializeApp({
+            credential: admin.credential.cert(serviceAccount.default),
+            databaseURL: 'https://laakta-ucsd.firebaseio.com'
+        },
+        'admin' // this name will be used to retrieve firebase instance. e.g. admin.database();
+    );
+    return init;
 }
 
 /**

@@ -1,7 +1,7 @@
 import express from 'express';
 
 import {
-    createAccount, signIn, logOut, changePassword
+    createAccount, signIn, logOut, changePassword, sendOTP, confirmOTP
 } from '../auth/account.js';
 import {
     initFirebase
@@ -42,6 +42,24 @@ routes.put('/auth/changepass/:password', (req, res, next) => {
 
     changePassword(req.params.password)
         .then((ret) => res.status(200).send(ret))
+        .catch(next);
+});
+
+routes.get('/auth/sendotp/:phone', (req, res, next) => {
+    initFirebase();
+    console.info('Sending OTP to ', req.params.phone);
+
+    sendOTP(req.params.phone)
+        .then((user) => res.status(200).send(user))
+        .catch(next);
+});
+
+routes.get('/auth/confirmotp/:code', (req, res, next) => {
+    initFirebase();
+    console.info('Confirming OTP with code ', req.params.code);
+
+    confirmOTP(req.params.code)
+        .then((user) => res.status(200).send(user))
         .catch(next);
 });
 
