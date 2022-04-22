@@ -124,7 +124,7 @@ routes.delete('/:jobid', async (req, res, next) => {
     let jobs = null;
     try {
         let userId = getSessionUserId(req);
-        // TODO - Validate IDs
+        // Validate IDs
         for (let jobId of jobIds) {
             validateId(jobId);
         }
