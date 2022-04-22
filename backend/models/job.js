@@ -15,7 +15,7 @@ export const JOB_STATUS = [JOB_STATUS_CREATED, JOB_STATUS_ASSIGNED, JOB_STATUS_C
 
 // Stored for validation during update request
 export const FIELDS_OWNER_PERMITTED_TO_UPDATE = ['title', 'clientName', 'phoneNumber', 'deliveryDate', 'pickupLocation', 'dropoffLocation', 'description', 'packageQuantity', 'price'];
-export const OWNER_LIMITED_FIELDS = ['applicants', 'assignedDriver'];
+export const OWNER_LIMITED_FIELDS = ['applicants', 'assignedDriverId'];
 
 const JobSchema = new Schema(
     {

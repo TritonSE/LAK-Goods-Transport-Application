@@ -8,7 +8,8 @@ import {
     deleteJob,
     addJobApplicant,
     assignDriver,
-    completeJob
+    completeJob,
+    getJobs
 } from '../services/job';
 import {
     registerJob,
@@ -113,6 +114,33 @@ routes.delete('/:jobid', async (req, res, next) => {
 });
 
 /**
+ * POST Get Job documents using IDs
+ * (Due to limitation of GET with body, we are using POST here)
+ */
+ routes.post('/get-by-ids', async (req, res, next) => {
+    console.info('ROUTE: Getting job document by IDs - jobIds', req.body.jobIds);
+
+    let jobIds = req.body.jobIds;
+    let jobs = null;
+    try {
+        let userId = getSessionUserId(req);
+        // TODO - Validate IDs
+        for (let jobId of jobIds) {
+            validateId(jobId);
+        }
+
+        jobs = await getJobs(jobIds, userId);
+    } catch(e) {
+        next(e);
+        return;
+    }
+    res.status(200).json({
+        message: 'Job documents sent as ${jobs}',
+        jobs: jobs
+    });
+});
+
+/**
  * GET Job by ID
  */
 routes.get('/:jobid', async (req, res, next) => {
@@ -123,7 +151,7 @@ routes.get('/:jobid', async (req, res, next) => {
         const jobId = validateId(req.params.jobid);
         const userId = getSessionUserId(req);
 
-        job = await getJob(jobId, userId)
+        job = await getJob(jobId, userId);
     } catch (e) {
         next(e);
         return;

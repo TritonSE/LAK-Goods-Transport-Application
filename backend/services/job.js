@@ -148,6 +148,23 @@ export async function deleteJob(userId, jobId) {
 }
 
 /**
+ * Gets the job documents for multiple $jobIds
+ * Uses `userId` to identify whether the request is coming from 
+ * owner/trucker to ensure relevant data is returned
+ * @param {*} jobId 
+ * @param {*} userId 
+ */
+export async function getJobs(jobIds, userId) {
+    console.debug(`SERVICE: getJobs service running: jobIds - ${jobIds}, userId - ${userId}`);
+
+    let jobs = [];
+    for (let jobId of jobIds) {
+        jobs.push(await getJob(jobId, userId));
+    }
+    return jobs;
+}
+
+/**
  * Gets the job document using `jobId`.
  * Uses `userId` to identify whether the request is coming from 
  * owner/trucker to ensure relevant data is returned
