@@ -7,6 +7,7 @@
 import mongoose from "mongoose";
 const { Schema, model } = mongoose;
 
+export const PUBLICLY_VISIBLE_FIELDS = ['firstName', 'lastName', 'phone'];
 const UserSchema = new Schema({
     firstName: {
         type: String,
