@@ -1,5 +1,5 @@
 
-import { StyleSheet, TouchableOpacity, StyleProp, ViewStyle } from 'react-native';
+import { StyleSheet, TouchableOpacity, StyleProp, ViewStyle, TextStyle } from 'react-native';
 import { AppText } from './AppText';
 import { COLORS } from '../../constants';
 
@@ -91,56 +91,6 @@ const smallStyle = StyleSheet.create({
     }
 })
 
-// const defaultStyle = StyleSheet.create({
-//     container: {
-//         // Shared
-//         width: "80%",
-//         height: 42,
-//         padding: 10,
-//         elevation: 8,
-
-//         backgroundColor: COLORS.white,
-//     },
-//     text: {
-//         // Shared
-//         fontWeight: "bold",
-//         alignSelf: "center",
-
-//         color: COLORS.maroon
-//     },
-// });
-
-// const primaryStyle = StyleSheet.create({
-//     container: {
-//         // Shared
-//         width: "80%",
-//         height: 42,
-//         padding: 10,
-
-//         backgroundColor: COLORS.maroon,
-//     },
-//     text: {
-//         //Shared
-//         fontWeight: "bold",
-//         alignSelf: "center",
-
-//         color: COLORS.white,
-//     }
-// });
-
-// const linkStyle = StyleSheet.create({
-//     container: {
-//         elevation: 8,
-//     },
-//     text: {
-//         // Shared
-//         fontWeight: "bold",
-//         alignSelf: "center", 
-
-//         color: COLORS.turquoise,
-//     }
-// });
-
 
 const TYPE_STYLE_MAP = {
     link: linkStyle,
@@ -161,9 +111,10 @@ type AppButtonProps = {
     onPress?: () => void,
     title: string,
     style?: StyleProp<ViewStyle>,
+    textStyle?: StyleProp<TextStyle>,
 }
 
-export function AppButton({title, size, style, onPress, type}: AppButtonProps) {
+export function AppButton({title, size, style, onPress, type, textStyle}: AppButtonProps) {
     if (!type || !(type in TYPE_STYLE_MAP)) type = 'secondary';
     if (type != 'link' && (!size || !(size in SIZE_STYLE_MAP))) size = 'large';
 
@@ -171,7 +122,7 @@ export function AppButton({title, size, style, onPress, type}: AppButtonProps) {
         <TouchableOpacity 
             onPress={onPress} 
             style={[COMMON_STYLE.container, TYPE_STYLE_MAP[type].container, size && SIZE_STYLE_MAP[size].container, style]}>
-            <AppText style={[TYPE_STYLE_MAP[type].text, size && SIZE_STYLE_MAP[size].text]}>{title}</AppText>
+            <AppText style={[TYPE_STYLE_MAP[type].text, size && SIZE_STYLE_MAP[size].text, textStyle]}>{title}</AppText>
         </TouchableOpacity>
     )
 }
