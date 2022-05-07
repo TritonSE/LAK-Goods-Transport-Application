@@ -13,34 +13,30 @@ interface ImageCarouselProps {
   imageIds: string[];
 }
 
-const IMAGE_HEIGHT = 150;
-const THUMBNAIL_WIDTH = 32;
-const THUMBNAIL_HEIGHT = 28;
+const IMAGE_HEIGHT = 180;
+const THUMBNAIL_WIDTH = 48;
+const THUMBNAIL_HEIGHT = 42;
+const THUMBNAIL_GUTTER = 3;
 
-// const imageIdToSource = (imageId: string): ImageSourcePropType => ({
-//   uri: `${API_URL}/api/images/${imageId}`,
-// });
-
-const imageIdToSource = (imageId: string): ImageSourcePropType =>
-  imageId.length % 2 == 0
-    ? require("../apples.png")
-    : require("../vegetables.png");
+const imageIdToSource = (imageId: string): ImageSourcePropType => ({
+  uri: `${API_URL}/api/images/${imageId}`,
+});
 
 export function ImageCarousel({ imageIds }: ImageCarouselProps) {
-  const [selectedImageId, setSelectedImageId] = useState(imageIds[0]);
+  const [selectedIndex, setSelectedIndex] = useState(0);
 
   return (
     <View style={styles.wrapper}>
       <Image
         resizeMode="center"
-        source={imageIdToSource(selectedImageId)}
+        source={imageIdToSource(imageIds[selectedIndex])}
         style={styles.bigImage}
       />
       <FlatList
         data={imageIds}
-        renderItem={({ item }) => (
+        renderItem={({ item, index }) => (
           <Pressable
-            onPress={() => setSelectedImageId(item)}
+            onPress={() => setSelectedIndex(index)}
             style={styles.thumbnailPressable}
           >
             <Image
@@ -51,8 +47,8 @@ export function ImageCarousel({ imageIds }: ImageCarouselProps) {
           </Pressable>
         )}
         getItemLayout={(data, index) => ({
-          length: THUMBNAIL_WIDTH + 2,
-          offset: (THUMBNAIL_WIDTH + 2) * index,
+          length: THUMBNAIL_WIDTH + 2 * THUMBNAIL_GUTTER,
+          offset: (THUMBNAIL_WIDTH + 2 * THUMBNAIL_GUTTER) * index,
           index,
         })}
         horizontal
@@ -80,7 +76,7 @@ const styles = StyleSheet.create({
   },
   thumbnailPressable: {
     flex: 1,
-    paddingLeft: 2,
+    paddingLeft: THUMBNAIL_GUTTER,
   },
   thumbnailImage: {
     width: THUMBNAIL_WIDTH,
