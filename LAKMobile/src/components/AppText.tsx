@@ -13,6 +13,6 @@ export function AppText({style, children, ...props}: TextProps) {
 const defaultStyles = StyleSheet.create({
   textStyle: {
     fontFamily: 'Roboto',
-    fontSize: 18,
+    fontSize: 16,
   },
 });

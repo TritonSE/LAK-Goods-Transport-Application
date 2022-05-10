@@ -42,7 +42,7 @@ export function DetailsScreen({jobId}: DetailsScreenProps) {
                     Pick up <DetailsArrow></DetailsArrow> Drop Off
                 </AppText>
                 <View style={styles.colContainer}>
-                    <AppText style={styles.deliverDate}>Deliver by
+                    <AppText>Deliver by
                         date<br/><b>{jobData?.job?.deliveryDate}</b></AppText>
                     <AppText style={styles.deliverPrice}>Delivery
                         Price<br/><b>{jobData?.job?.price}</b></AppText>
@@ -91,7 +91,6 @@ const styles = StyleSheet.create({
     pickDropComponent: {
         marginTop: 20,
         fontWeight: "700",
-        fontSize: 16,
         lineHeight: 19,
     },
 
@@ -108,20 +107,13 @@ const styles = StyleSheet.create({
         alignItems: 'flex-start', // if you want to fill rows left to right
     },
 
-    deliverDate: {
-        fontSize: 16
-
-    },
-
     deliverPrice: {
         paddingLeft: 100,
-        fontSize: 16
     },
 
     packageQuantity: {
         marginTop: 20,
         fontWeight: "700",
-        fontSize: 16,
         lineHeight: 19,
     },
 
