@@ -43,17 +43,27 @@ export function DetailsScreen({jobId}: DetailsScreenProps) {
                 </AppText>
                 <View style={styles.colContainer}>
                     <AppText>Deliver by
-                        date<br/><b>{jobData?.job?.deliveryDate}</b></AppText>
-                    <AppText style={styles.deliverPrice}>Delivery
-                        Price<br/><b>{jobData?.job?.price}</b></AppText>
+                        date<br/><b>{jobData?.job?.deliveryDate}</b>
+                    </AppText>
+                    {jobData?.job?.price ? (
+                        <AppText style={styles.deliverPrice}>Delivery
+                            Price<br/><b>{jobData?.job?.price}</b>
+                        </AppText>
+                    ):""}
+
                 </View>
-                <AppText style={styles.packageQuantity}>
-                    Package Quantity: {jobData?.job?.packageQuantity}
-                </AppText>
-                <View style={styles.fieldContainer}>
-                    <AppText><b>Description</b></AppText>
-                    <AppText>{jobData?.job?.description}</AppText>
-                </View>
+                {jobData?.job?.packageQuantity ? (
+                    <AppText style={styles.packageQuantity}>
+                        Package Quantity: {jobData?.job?.packageQuantity}
+                    </AppText>
+                ):""}
+                {jobData?.job?.description ? (
+                    <View style={styles.fieldContainer}>
+                        <AppText><b>Description</b></AppText>
+                        <AppText>{jobData?.job?.description}</AppText>
+                    </View>
+                ):""}
+
                 <View style={styles.fieldContainer}>
                     <AppText><b>Contact</b></AppText>
                     <AppText>{jobData?.job?.clientName}</AppText>
