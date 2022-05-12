@@ -8,6 +8,7 @@ import userRoutes from './routes/user';
 import { MONGO_URI, PORT } from './config';
 import { CustomError, InternalError } from './errors';
 import imageRoutes from './routes/image';
+import cors from 'cors';
 
 dotenv.config()
 
@@ -44,6 +45,7 @@ const errorHandler = (err, req, res, next) => {
  * Create and run app
  */
 const app = express()
+app.use(cors());
 const port = PORT || 3000; // TODO Revisit default PORT
 app.use(bodyParser.urlencoded({
     extended: true

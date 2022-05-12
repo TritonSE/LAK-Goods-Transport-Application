@@ -11,11 +11,13 @@ type DetailsScreenProps = {
 }
 
 export function DetailsScreen({jobId}: DetailsScreenProps) {
+    // temporary dummy data
     jobId = "62307de6ec658d185f81dff3";
-    const [jobData, setJobData] = useState();
+    const [jobData, setJobData] = useState(null);
 
     const getJobData = async () => {
-        const data = await fetch("http://localhost:3000/api/jobs/" + jobId, {
+        // replace "10.0.2.2" with localhost if using web
+        const data = await fetch("http://10.0.2.2:3000/api/jobs/" + jobId, {
             method: "GET",
             mode: "cors",
             headers: {
@@ -35,47 +37,55 @@ export function DetailsScreen({jobId}: DetailsScreenProps) {
 
     return (
         <View>
-            <ScreenHeader children={""} showArrow={true}/>
-            <View style={styles.detailsComponent}>
-                <AppText style={styles.jobText}>{jobData?.job?.title}</AppText>
-                <AppText style={styles.pickDropComponent}>
-                    Pick up <DetailsArrow></DetailsArrow> Drop Off
-                </AppText>
-                <View style={styles.colContainer}>
-                    <AppText>Deliver by
-                        date<br/><b>{jobData?.job?.deliveryDate}</b>
+            <ScreenHeader showArrow={true}/>
+            {jobData!=null ? (
+                <View>
+                <View style={styles.detailsComponent}>
+                    <AppText style={styles.jobText}>{jobData?.job.title}</AppText>
+                    <AppText style={styles.pickDropComponent}>
+                        Pick up <DetailsArrow></DetailsArrow> Drop Off
                     </AppText>
-                    {jobData?.job?.price ? (
-                        <AppText style={styles.deliverPrice}>Delivery
-                            Price<br/><b>{jobData?.job?.price}</b>
+                    <View style={styles.colContainer}>
+                        <AppText>
+                            <Text style={{fontWeight: "bold"}}>Deliver by date{"\n"}</Text>
+                            {jobData?.job.deliveryDate}
                         </AppText>
-                    ):""}
-
-                </View>
-                {jobData?.job?.packageQuantity ? (
-                    <AppText style={styles.packageQuantity}>
-                        Package Quantity: {jobData?.job?.packageQuantity}
-                    </AppText>
-                ):""}
-                {jobData?.job?.description ? (
-                    <View style={styles.fieldContainer}>
-                        <AppText><b>Description</b></AppText>
-                        <AppText>{jobData?.job?.description}</AppText>
+                        {jobData?.job.price ? (
+                            <AppText style={styles.deliverPrice}>
+                                <Text style={{fontWeight: "bold"}}>Delivery Price{"\n"}</Text>
+                                {jobData?.job.price}
+                            </AppText>
+                        ):null}
                     </View>
-                ):""}
 
-                <View style={styles.fieldContainer}>
-                    <AppText><b>Contact</b></AppText>
-                    <AppText>{jobData?.job?.clientName}</AppText>
-                    <AppText onPress={() => {
-                        Linking.openURL('tel:' + jobData?.job?.phoneNumber);
-                    }}
-                             style={styles.phoneNumber}>
-                        {jobData?.job?.phoneNumber}
-                    </AppText>
+                    {jobData?.job.packageQuantity ? (
+                        <AppText style={styles.packageQuantity}>
+                            Package Quantity: {jobData?.job.packageQuantity}
+                        </AppText>
+                    ):null}
+                    {jobData?.job.description ? (
+                        <View style={styles.fieldContainer}>
+                            <AppText style={{fontWeight: "bold"}}>Description</AppText>
+                            <AppText>{jobData?.job.description}</AppText>
+                        </View>
+                    ):null}
+
+                    <View style={styles.fieldContainer}>
+                        <AppText style={{fontWeight: "bold"}}>Contact</AppText>
+                        <AppText>{jobData?.job.clientName}</AppText>
+                        <AppText onPress={() => {
+                            Linking.openURL('tel:' + jobData?.job.phoneNumber);
+                        }}
+                                 style={styles.phoneNumber}>
+                            {jobData?.job.phoneNumber}
+                        </AppText>
+                    </View>
                 </View>
-            </View>
+                </View>
+            ):null}
         </View>
+
+
 
     );
 }
@@ -111,9 +121,8 @@ const styles = StyleSheet.create({
 
     colContainer: {
         marginTop: 20,
-        flex: 1,
         flexDirection: 'row',
-        flexWrap: "wrap",
+        flexWrap: 'wrap',
         alignItems: 'flex-start', // if you want to fill rows left to right
     },
 
