@@ -38,7 +38,7 @@ const secondaryStyle = StyleSheet.create({
 const tertiaryStyle = StyleSheet.create({
     container: {
         backgroundColor: COLORS.white,
-        borderRadius: 4
+        borderRadius: 4,
     },
     text: {
         alignSelf: 'center',

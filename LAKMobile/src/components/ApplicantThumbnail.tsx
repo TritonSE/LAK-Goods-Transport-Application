@@ -7,9 +7,10 @@ import { AppText } from "./AppText";
 import { AppButton } from './AppButton';
 import { COLORS } from '../../constants';
 
+// states 'Accepted' will not be used because page changes to tracking once an applicant is accepted
 interface ApplicantThumbnailProps {
     applicantData: ApplicantData;
-    status: 'Accepted' | 'Rejected' | 'Unassigned';
+    status: 'Accepted' | 'Denied' | 'Unassigned'; 
     style?: StyleProp<ViewStyle>
 }
 
@@ -22,11 +23,11 @@ export function ApplicantThumbnail({applicantData, status, style}: ApplicantThum
             <AppText style={ThumbailStyles.containerItem}>{applicantData.vehicleInformation}</AppText>
 
             <View style={[ThumbailStyles.flex, status == 'Accepted' ? {justifyContent: 'space-between'} : null]}>
+                {status == 'Unassigned' && <AppButton type="tertiary" size="small" title="Deny" style={ThumbailStyles.flexItem}/>}
                 {status == 'Unassigned' && <AppButton type="tertiary" size="small" title="Accept" style={ThumbailStyles.flexItem} textStyle={{color: COLORS.turquoise}}/>}
-                {status == 'Unassigned' && <AppButton type="tertiary" size="small" title="Reject" style={ThumbailStyles.flexItem}/>}
                 {status == 'Accepted' && <AppText style={[{color: COLORS.deepGreen}, ThumbailStyles.flexItem]}>Accepted</AppText>}
                 {status == 'Accepted' && <AppButton type="tertiary" size="medium" title="Cancel Applicant"/>}
-                {status == 'Rejected' && <AppText style={{color: COLORS.red}}>Rejected</AppText>}
+                {status == 'Denied' && <AppText style={{color: COLORS.red}}>Denied</AppText>}
             </View>
             
         </View>
