@@ -52,8 +52,11 @@ export function DetailsScreen({jobId}: DetailsScreenProps) {
         <View>
             <ScreenHeader showArrow={true}/>
             {jobData!=null ? (
-                <View>
                 <View style={styles.detailsComponent}>
+                    <View>
+
+                    </View>
+
                     <AppText style={styles.jobText}>{jobData?.job.title}</AppText>
 
                     <View style={styles.fieldContainer}>
@@ -107,7 +110,6 @@ export function DetailsScreen({jobId}: DetailsScreenProps) {
                         </AppText>
                     </View>
                 </View>
-                </View>
             ):null}
         </View>
 
@@ -132,33 +134,6 @@ const styles = StyleSheet.create({
         fontSize: 24,
         lineHeight: 28,
         color: "#94100C",
-    },
-
-    pickDropComponent: {
-        marginTop: 20,
-        fontWeight: "700",
-        lineHeight: 19,
-    },
-
-    dateText: {
-        marginTop: 20,
-        width: "40%"
-    },
-
-    colContainer: {
-        marginTop: 20,
-        flexDirection: 'row',
-        flexWrap: 'wrap',
-        alignItems: 'flex-start', // if you want to fill rows left to right
-    },
-
-    deliverPrice: {
-        paddingLeft: 100,
-    },
-
-    packageQuantity: {
-        fontWeight: "700",
-        lineHeight: 19,
     },
 
     fieldContainer: {
