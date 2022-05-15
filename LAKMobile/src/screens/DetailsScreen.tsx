@@ -1,10 +1,10 @@
 import React, {useEffect, useState} from 'react';
-import {StyleSheet, Text, View, Image, Linking} from 'react-native';
+import {StyleSheet, Text, View, Image, Linking, Pressable} from 'react-native';
 import {
     AppText,
     ScreenHeader,
 } from '../components';
-import {DetailsArrow} from "../icons/DetailsArrow";
+import {DefaultProfilePic} from "../icons/DefaultProfilePicture";
 
 type DetailsScreenProps = {
     jobId: String;
@@ -53,8 +53,12 @@ export function DetailsScreen({jobId}: DetailsScreenProps) {
             <ScreenHeader showArrow={true}/>
             {jobData!=null ? (
                 <View style={styles.detailsComponent}>
-                    <View>
-
+                    <View style={styles.assignedPanel}>
+                        <AppText style={styles.assignedText}>
+                            <AppText style={styles.assignedName}><DefaultProfilePic></DefaultProfilePic>  {driverData?.users[0].firstName} {driverData?.users[0].lastName}</AppText> is assigned to this job.
+                        </AppText>
+                        <Pressable style={styles.assignedButton}>Mark as Done</Pressable>
+                        <Pressable style={styles.assignedButton}>Cancel Job</Pressable>
                     </View>
 
                     <AppText style={styles.jobText}>{jobData?.job.title}</AppText>
@@ -125,6 +129,42 @@ const styles = StyleSheet.create({
         paddingLeft: 30,
         paddingTop: 20,
         paddingRight: 30,
+    },
+
+    assignedPanel: {
+        width: 304,
+        backgroundColor: "#F5C7C5",
+        borderRadius: 6,
+        paddingTop: 16,
+        paddingLeft: 12,
+        paddingRight: 12,
+        paddingBottom: 16,
+    },
+
+    assignedName: {
+        fontSize: 16,
+        fontWeight: "700",
+        color: "#333333",
+    },
+
+    assignedText: {
+        fontSize: 12,
+    },
+
+    assignedButton: {
+        width: 160,
+        height: 34,
+        marginTop: 12,
+        backgroundColor: "#FFFFFF",
+        borderRadius: 3,
+        fontWeight: "700",
+        fontSize: 14,
+        lineHeight: 34,
+        color: "#94100C",
+        display: "flex",
+        alignSelf: "center",
+        textAlign: "center",
+        textAlignVertical: "center",
     },
 
     jobText: {
