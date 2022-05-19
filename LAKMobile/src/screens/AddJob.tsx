@@ -1,15 +1,7 @@
-import React, { Reducer, useReducer, useState } from "react";
-import {
-  PermissionsAndroid,
-  ScrollView,
-  StyleSheet,
-  TouchableOpacity,
-  View,
-} from "react-native";
+import React, { Reducer, useCallback, useReducer, useState } from "react";
+import { ScrollView, StyleSheet, View } from "react-native";
 import { Picker } from "@react-native-picker/picker";
-import { launchCamera, launchImageLibrary } from "react-native-image-picker";
-import { MediaType } from "react-native-image-picker";
-import Icon from "react-native-vector-icons/MaterialCommunityIcons";
+import * as ImagePicker from "expo-image-picker";
 import {
   AppText,
   LabelWrapper,
@@ -64,10 +56,15 @@ const reducer: ImagesReducer = (state, action): ImagesReducerState => {
   let newState = state.slice();
   switch (action.type) {
     case "ADD_IMAGE":
-      newState.push(action.payload);
+      const index = newState.findIndex((value) => value === "");
+      newState[index] = action.payload;
       break;
     case "REMOVE_IMAGE":
       newState[action.payload] = "";
+      newState = newState.filter((value) => value !== "");
+      while (newState.length < 3) {
+        newState.push("");
+      }
       break;
   }
   return newState;
@@ -86,69 +83,37 @@ export function AddJob() {
   const [dropoffLocation, setDropoffLocation] = useState("");
   const [dropoffDistrict, setDropoffDistrict] = useState("");
   const [phoneNumber, setPhoneNumber] = useState("");
-  /*const [addJobInformation, setAddJobInformation] = useState({
-    jobTitle: "",
-    clientName: "",
-    deliveryDate: "",
-    packageDescription: "",
-    packageQuantity: "",
-    estimatedPrice: "",
-    pickUpLocation: "",
-    dropOffLocation: "",
-    phoneNumber: "",
-  });
 
-  const addJob = () => {
-    console.log("temp ");
-  };
+  const openImagePicker = useCallback(async () => {
+    const permissionResult =
+      await ImagePicker.requestMediaLibraryPermissionsAsync();
+    if (!permissionResult.granted) {
+      // TODO display alert message
+      console.log(":(");
+      return;
+    }
+    const pickerResult = await ImagePicker.launchImageLibraryAsync();
+    if (pickerResult.cancelled) {
+      return;
+    }
+    dispatch({ type: "ADD_IMAGE", payload: pickerResult.uri });
+  }, []);
 
-  const requestCameraAccess = async () => {
-    try {
-      const granted = await PermissionsAndroid.request(
-        PermissionsAndroid.PERMISSIONS.CAMERA,
-        {
-          title: "LAK Mobile Permissions",
-          message: "LAK Mobile needs your permission to access your camera",
-          buttonNeutral: "Ask Me Later",
-          buttonNegative: "Cancel",
-          buttonPositive: "OK",
-        }
-      );
-      if (granted === PermissionsAndroid.RESULTS.GRANTED) {
+  const handleTapImage = useCallback(
+    (index) => {
+      if (imageURIs[index] === "") {
+        openImagePicker();
       } else {
+        dispatch({ type: "REMOVE_IMAGE", payload: index });
       }
-    } catch (err) {
-      console.warn(err);
-    }
-  };
+    },
+    [imageURIs, openImagePicker]
+  );
 
-  const photoPress = async () => {
-    await requestCameraAccess();
-
-    const mediaType = "photo" as MediaType;
-
-    const options = {
-      storageOptions: {
-        path: "images",
-      },
-      mediaType: mediaType,
-      includeBase64: true,
-    };
-
-    try {
-      const result = await launchImageLibrary(options);
-    } catch (e) {
-      console.log(e);
-    }
-  };
-
-  const onTextInputChange = (e: any, id: string) => {
-    // NOTE Pass in the id that will be the attribute we need to change
-    setAddJobInformation({ ...addJobInformation, [id]: e.target.value });
-    console.log(e);
-  };*/
-
-  // TODO Implement state manipulations once data managenement is setup on frontend
+  const submitJob = useCallback(() => {
+    // TODO: when submitting, remember to filter out empty strings from imageURIs
+    console.log("submitJob");
+  }, []);
 
   return (
     <View>
@@ -162,7 +127,7 @@ export function AddJob() {
             <ImagePickerButton
               key={index}
               sourceURI={uri}
-              onSelect={() => console.log(index)}
+              onSelect={() => handleTapImage(index)}
             />
           ))}
         </View>
@@ -308,6 +273,7 @@ export function AddJob() {
         </LabelWrapper>
 
         <AppButton
+          onPress={submitJob}
           style={[styles.center, { width: "100%" }]}
           title="Post Job"
           type="primary"
@@ -347,20 +313,6 @@ const styles = StyleSheet.create({
     marginBottom: 100,
   },
 
-  photoText: {
-    fontSize: 10,
-    textAlign: "center",
-  },
-  photoBox: {
-    margin: 15,
-    padding: 5,
-    fontSize: 12,
-    width: 90,
-    height: 90,
-    borderWidth: 1,
-    flexDirection: "column",
-    alignItems: "center",
-  },
   photos: {
     flexDirection: "row",
     alignSelf: "center",
