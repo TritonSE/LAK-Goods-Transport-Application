@@ -3,18 +3,18 @@ import { StyleSheet, TextInput, View } from 'react-native';
 import { AppText, LabelWrapper, AppButton, ScreenHeader } from '../components';
 import { COLORS } from '../../constants';
 
-export function ForgotPassword() {
+export function OTP() {
     return(
         <View style={styles.container}>
             <ScreenHeader showArrow={true}>
-                Forgot Pin?
+                OTP Verification
             </ScreenHeader>
 
-            <AppText style={headerText}>Please enter the mobile number associated with your account.</AppText>
+            <AppText style={headerText}>Please enter the OTP sent to your phone.</AppText>
 
-            <LabelWrapper label='Mobile Number'>
+            <LabelWrapper label='OTP'>
                 <TextInput
-                    style={bigInputStyle}
+                    style={smallInputStyle}
                     keyboardType="default"
                 />
             </LabelWrapper>
@@ -41,20 +41,14 @@ const styles = StyleSheet.create({
         borderWidth: 1,
         borderRadius: 2,
         borderColor: COLORS.mediumGrey,
-        padding: 10,
+        padding: 5,
         height: 40,
-        marginBottom: 14,
-    },
-
-    forgotPIN: {
-        marginTop: -10,
-        elevation: 0
+        marginBottom: 8,
     },
 
     submitButton: {
         width: '100%',
         marginTop: 40,
-        marginBottom: 10,
         padding: 5
     },
 
@@ -69,17 +63,15 @@ const styles = StyleSheet.create({
     }
 });
 
-const bigInputStyle = StyleSheet.flatten([
-    styles.input,
-    {
-        width: '100%',
+const smallInputStyle = StyleSheet.flatten([
+    styles.input, {
+        width: '45%'
     }
-]);
+])
 
-const headerText = StyleSheet.flatten([
-    {
+const headerText = StyleSheet.flatten([{
         width: '100%',
         marginTop: "30%",
-        marginBottom: '15%',
+        marginBottom: '8%',
     }
 ]);

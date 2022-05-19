@@ -1,7 +1,6 @@
 import { StyleSheet, View, TextInput } from 'react-native';
 import { AppButton, LabelWrapper, AppText } from '../components';
 import { COLORS } from '../../constants';
-import App from '../../App';
 
 export function SignupScreen({}) {
   return (

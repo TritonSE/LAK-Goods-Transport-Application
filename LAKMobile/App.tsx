@@ -1,14 +1,14 @@
 import { StatusBar } from 'expo-status-bar';
 import { StyleSheet, View } from 'react-native';
 import { ScreenHeader } from './src/components';
-import { SignupScreen, LoginScreen, AddJob } from './src/screens';
+import { SignupScreen, LoginScreen, AddJob, ForgotPassword, OTP } from './src/screens';
 
 export default function App() {
   return (
     // Thumbnail Demo
 
     <View style={styles.container}>
-      <AddJob></AddJob>
+      <ForgotPassword></ForgotPassword>
     </View>
 
     // <SignupScreen />

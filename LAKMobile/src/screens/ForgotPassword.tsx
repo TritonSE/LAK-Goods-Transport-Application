@@ -1,47 +1,30 @@
 import React from 'react';
 import { StyleSheet, TextInput, View } from 'react-native';
-import { AppText, LabelWrapper, AppButton } from '../components';
+import { AppText, LabelWrapper, AppButton, ScreenHeader } from '../components';
 import { COLORS } from '../../constants';
 
-export function LoginScreen() {
+export function ForgotPassword() {
     return(
         <View style={styles.container}>
+            <ScreenHeader showArrow={true}>
+                Forgot Pin?
+            </ScreenHeader>
+
+            <AppText style={headerText}>Please enter the mobile number associated with your account.</AppText>
+
             <LabelWrapper label='Mobile Number'>
                 <TextInput
-                style={bigInputStyle}
-                keyboardType="default"
+                    style={bigInputStyle}
+                    keyboardType="default"
                 />
             </LabelWrapper>
-
-            <LabelWrapper label='4 Digit PIN'>
-                <TextInput
-                style={smallInputStyle}
-                keyboardType="numeric"
-                />
-            </LabelWrapper>
-            <AppButton 
-                type='link' 
-                title='Forgot PIN?' 
-                onPress={() => console.log('Forgot PIN button pressed')}
-                style={styles.forgotPIN}
-            />
 
             <AppButton
                 type='primary'
-                title='Log in'
-                onPress={() => console.log('Login button pressed')}
+                title='Submit'
+                onPress={() => console.log('Submit')}
                 style={styles.submitButton}
             />
-
-            <View style={styles.signupPrompt}>
-                <AppText>Don't have an account?</AppText>
-                <AppButton 
-                    type='link' 
-                    title='Sign up here.' 
-                    onPress={() => console.log('Sign up button pressed')}
-                    style={styles.signupLink}
-                />
-            </View>
         </View>
     )
 }
@@ -52,27 +35,20 @@ const styles = StyleSheet.create({
         padding: 32,
         flex: 1,
         alignItems: 'flex-start',
-        justifyContent: 'center',
     },
 
     input: {
         borderWidth: 1,
         borderRadius: 2,
         borderColor: COLORS.mediumGrey,
-        padding: 10,
+        padding: 5,
         height: 40,
-        marginBottom: 14,
-    },
-
-    forgotPIN: {
-        marginTop: -10,
-        elevation: 0
+        marginBottom: 8,
     },
 
     submitButton: {
         width: '100%',
         marginTop: 40,
-        marginBottom: 10,
         padding: 5
     },
 
@@ -88,15 +64,14 @@ const styles = StyleSheet.create({
 });
 
 const bigInputStyle = StyleSheet.flatten([
-    styles.input, 
-    {
-      width: '100%',
+    styles.input, {
+        width: '100%',
     }
 ]);
-  
-const smallInputStyle = StyleSheet.flatten([
-    styles.input, 
-    {
-        width: '45%'
+
+const headerText = StyleSheet.flatten([{
+        width: '100%',
+        marginTop: "30%",
+        marginBottom: '8%',
     }
-])
+]);
