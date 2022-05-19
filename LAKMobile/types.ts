@@ -9,3 +9,10 @@ export interface JobData {
     applicants?: number;
     status: 'CREATED' | 'ASSIGNED' | 'COMPLETED' ;
 }
+
+export interface ApplicantData {
+    firstName: string;
+    lastName: string;
+    phone: string;
+    vehicleInformation: string;
+}
