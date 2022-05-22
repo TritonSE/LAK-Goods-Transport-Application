@@ -1,4 +1,5 @@
 export interface JobData {
+    _id: string,
     title: string;
     clientName: string;
     phoneNumber?: string;
@@ -8,6 +9,7 @@ export interface JobData {
     packageQuantity?: number;
     applicants?: number;
     status: 'CREATED' | 'ASSIGNED' | 'COMPLETED' ;
+    imageIds: string[];
 }
 
 export interface ApplicantData {

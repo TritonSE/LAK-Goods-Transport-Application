@@ -1,4 +1,5 @@
-import { JobData, ApplicantData } from "./types"
+import { JobData, ApplicantData } from './src/api/data';
+
 export const COLORS = {
     white: "#ffffff",
     maroon: "#94100C",

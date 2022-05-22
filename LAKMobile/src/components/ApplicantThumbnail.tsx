@@ -2,7 +2,7 @@ import React from "react";
 import { StyleProp, StyleSheet, View, ViewStyle } from "react-native";
 import App from "../../App";
 
-import { ApplicantData } from '../../types';
+import { ApplicantData } from '../api/data';
 import { AppText } from "./AppText";
 import { AppButton } from './AppButton';
 import { COLORS } from '../../constants';

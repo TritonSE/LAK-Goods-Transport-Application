@@ -3,8 +3,9 @@ import { StyleSheet, View, Image, ImageSourcePropType, TouchableOpacity, Touchab
 
 import { AppText, AppButton } from '../components';
 import { COLORS } from '../../constants';
-import { JobData } from '../../types';
+import { JobData } from '../api/data';
 import { EditIcon, PhoneIcon } from '../icons';
+import { imageIdToSource } from '../api';
 
 /**
  * Button Wrapper
@@ -49,12 +50,16 @@ function StatusIndicator({text, color}: StatusIndicatorProps) {
     )
 }
 
+const getDisplayImage = (job: JobData): ImageSourcePropType => {
+    const imageId = job.imageIds[0] || '6230818f1ccd9cfc10ffcbde';
+    return imageIdToSource(imageId);
+}
+
 /**
  * Job thumbnail component
  */
 interface JobThumbnailProps {
     job: JobData;
-    image: ImageSourcePropType;
     displayStatus: 'In Progress' | 'Finished' | 'Accepted' | 'Denied' | 'Not Started' | 'Applied',
     isJobOwner?: boolean;
     daysAgo?: number;
@@ -69,7 +74,7 @@ const STATUS_DISPLAY_COLOR = {
     'Applied': null,
 }
 
-export default function JobThumbnail({job, image, displayStatus, isJobOwner, daysAgo, repostAllowed}: JobThumbnailProps) {
+export function JobThumbnail({job, displayStatus, isJobOwner, daysAgo, repostAllowed}: JobThumbnailProps) {
     // Just returning null if you try to have no status
     if (!job.status) return null;
 
@@ -85,7 +90,7 @@ export default function JobThumbnail({job, image, displayStatus, isJobOwner, day
                 <EditIcon />
             </ButtonWrapper>
 
-            <Image style={JobThumbnailStyles.jobImage} source={image}/>
+            <Image style={JobThumbnailStyles.jobImage} source={getDisplayImage(job)}/>
             <View style={[CardStyles.row]}>
                 {statusDisplayColor && <StatusIndicator text={displayStatus} color={statusDisplayColor} /> }
                 { displayStatus === 'In Progress' && <AppText style={[JobThumbnailStyles.daysText, {marginLeft: 10}]}>Started {daysAgo} {(daysAgo == 1) ? "day" : "days"} ago</AppText>}
