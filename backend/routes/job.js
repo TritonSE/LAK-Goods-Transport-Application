@@ -165,13 +165,13 @@ routes.get('/:jobid', async (req, res, next) => {
 
 /**
  * GET jobs for in session user
- * @params owned (boolean), completed (boolean), [page_number (int)], [page_size (int)]
+ * @params owned (boolean), completed (boolean), [offset (int)], [limit (int)]
  * @returns List of jobs according to pagination properties (if any)
  */
 routes.get('/', async (req, res, next) => {
     console.info('ROUTE: Getting jobs', req.query);
 
-    let jobIds = null;
+    let jobs = null;
     try {
         // Get request parameters
         const owned = stringToBoolean(req.query.owned);
@@ -180,10 +180,27 @@ routes.get('/', async (req, res, next) => {
             throw ValidationError.INVALID_BOOLEAN_VALUE;
         }
 
+        let offset = req.query.offset;
+        let limit = req.query.limit;
+        console.log(Number.isInteger(offset));
+
+        if (!isNaN(offset) && !isNaN(limit)) {
+            offset = parseInt(offset);
+            limit = parseInt(limit);
+        } else if (offset !== undefined || limit !== undefined) {
+            throw ValidationError.INVALID_PAGINATION_INPUT;
+        }
+
         const userId = getSessionUserId(req);
         // TODO: Add user auth
 
-        jobIds = await getJobIds(userId, owned, finished)
+        let jobIds = await getJobIds(userId, owned, finished);
+        
+        // Apply pagination
+        if (offset !== undefined && limit !== undefined) {
+            jobIds = jobIds.slice(offset, offset + limit);
+        }
+        jobs = await getJobs(jobIds, userId);
 
     } catch (e) {
         next(e);
@@ -191,9 +208,8 @@ routes.get('/', async (req, res, next) => {
     }
     
     res.status(200).json({
-        message: 'Find $count job IDs in $jobIds',
-        count: jobIds.length,
-        jobIds: jobIds
+        message: 'Job documents sent as ${jobs}',
+        jobs: jobs
     })
 });
 
