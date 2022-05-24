@@ -1,6 +1,6 @@
 import { ImageSourcePropType } from 'react-native';
 import { API_URL } from '@env';
-import { JobData } from './data';
+import { JobData, JobOwnerView } from './data';
 
 export const GET_JOBS = `${API_URL}/api/jobs`
 
@@ -13,22 +13,6 @@ export const getJobById = async (jobId: string): Promise<JobData | null> => {
         return data;
     } catch {
         return null;
-    }
-}
-
-export const getJobIds = async (owned: boolean, finished: boolean): Promise<string[]> => {
-    try {
-        const url = `${GET_JOBS}?` + new URLSearchParams({
-            owned: owned.toString(), 
-            finished: finished.toString(),
-            user: 'client1' // TODO Remove after auth
-        });
-        const response = await fetch(url);
-        let data = await response.json();
-        data = data.jobIds as string[];
-        return data;
-    } catch {
-        return [];
     }
 }
 
@@ -54,6 +38,24 @@ export const getJobsByIds = async (jobIds: string[]): Promise<JobData[]> => {
     }
 }
 
+const PAGE_SIZE = 5;
+export const getJobs = async (owned: boolean, finished: boolean, page: number): Promise<JobData[] | JobOwnerView[] | null> => {
+    try {
+        const url = `${GET_JOBS}?` + new URLSearchParams({
+            owned: owned.toString(), 
+            finished: finished.toString(),
+            offset: ((page-1)*PAGE_SIZE).toString(),
+            limit: PAGE_SIZE.toString(),
+            user: 'client1' // TODO Remove after auth
+        });
+        const response = await fetch(url);
+        let data = await response.json();
+        data = data.jobs;
+        return data;
+    } catch {
+        return null;
+    }
+}
 
 export const imageIdToSource = (imageId: string): ImageSourcePropType => ({
     uri: `${API_URL}/api/images/${imageId}`,

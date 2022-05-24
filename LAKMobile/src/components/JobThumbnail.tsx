@@ -1,11 +1,12 @@
 import React, { PropsWithChildren } from 'react';
 import { StyleSheet, View, Image, ImageSourcePropType, TouchableOpacity, TouchableHighlight, StyleProp, ViewStyle, Button, ButtonProps, TouchableOpacityProps } from 'react-native';
 
-import { AppText, AppButton } from '../components';
 import { COLORS } from '../../constants';
-import { JobData } from '../api/data';
+import { JobData, JobOwnerView, JobStatus } from '../api/data';
 import { EditIcon, PhoneIcon } from '../icons';
 import { imageIdToSource } from '../api';
+import { AppText } from './AppText';
+import { AppButton } from './AppButton';
 
 /**
  * Button Wrapper
@@ -50,22 +51,41 @@ function StatusIndicator({text, color}: StatusIndicatorProps) {
     )
 }
 
+/**
+ * Helpers
+ */
 const getDisplayImage = (job: JobData): ImageSourcePropType => {
     const imageId = job.imageIds[0] || '6230818f1ccd9cfc10ffcbde';
     return imageIdToSource(imageId);
 }
 
+const diffDatesInDays = (start: Date, end: Date) => {
+    console.log(end, start)
+    let diff = (end.getTime() - start.getTime()) / (1000 * 3600 * 24);
+    return diff < 0 ? 0 : Math.round(diff);
+}
+
 /**
  * Job thumbnail component
  */
-interface JobThumbnailProps {
-    job: JobData;
-    displayStatus: 'In Progress' | 'Finished' | 'Accepted' | 'Denied' | 'Not Started' | 'Applied',
-    isJobOwner?: boolean;
-    daysAgo?: number;
+interface JobThumbnailOwnerViewProps {
+    isJobOwner: true;
+    job: JobOwnerView;
     repostAllowed?: boolean;
 }
-const STATUS_DISPLAY_COLOR = {
+
+interface JobThumbnailApplicantViewProps {
+    isJobOwner: false;
+    job: JobData;
+    appliedDate: Date;
+    applicantStatus: 'Applied' | 'Accepted' | 'Denied';
+}
+
+type JobThumbnailProps = JobThumbnailOwnerViewProps | JobThumbnailApplicantViewProps;
+
+type DisplayStatus = 'In Progress' | 'Finished' | 'Accepted' | 'Denied' | 'Not Started' | 'Applied';
+
+const STATUS_DISPLAY_COLOR: Record<DisplayStatus, string | null> = {
     'In Progress': '#FFE587',
     'Finished': '#E8E8E8',
     'Accepted': '#BCF19C',
@@ -74,11 +94,29 @@ const STATUS_DISPLAY_COLOR = {
     'Applied': null,
 }
 
-export function JobThumbnail({job, displayStatus, isJobOwner, daysAgo, repostAllowed}: JobThumbnailProps) {
-    // Just returning null if you try to have no status
-    if (!job.status) return null;
+const JOB_DISPLAY_STATUS_MAP: Record<JobStatus, DisplayStatus> = {
+    'CREATED': 'Not Started',
+    'ASSIGNED': 'In Progress',
+    'COMPLETED': 'Finished'
+}
 
-    const statusDisplayColor = STATUS_DISPLAY_COLOR[displayStatus];
+export function JobThumbnail({isJobOwner, job, ...props}: JobThumbnailProps) {
+    // Just returning null if you try to have no status
+
+    console.log('Today ', new Date().toString())
+    let displayStatus: DisplayStatus, daysAgo, numApplicants;
+    if (isJobOwner) {
+        props = props as JobThumbnailOwnerViewProps;
+        displayStatus = JOB_DISPLAY_STATUS_MAP[job.status];
+        daysAgo = diffDatesInDays(new Date(job.startDate), new Date());
+        numApplicants = job.applicants.length;
+    } else {
+        props = props as JobThumbnailApplicantViewProps;
+        displayStatus = props.applicantStatus;
+        daysAgo = diffDatesInDays(props.appliedDate as Date, new Date());
+    }
+    
+    const statusDisplayColor = displayStatus && STATUS_DISPLAY_COLOR[displayStatus];
 
     return (
         <View style={CardStyles.card}>
@@ -93,10 +131,10 @@ export function JobThumbnail({job, displayStatus, isJobOwner, daysAgo, repostAll
             <Image style={JobThumbnailStyles.jobImage} source={getDisplayImage(job)}/>
             <View style={[CardStyles.row]}>
                 {statusDisplayColor && <StatusIndicator text={displayStatus} color={statusDisplayColor} /> }
-                { displayStatus === 'In Progress' && <AppText style={[JobThumbnailStyles.daysText, {marginLeft: 10}]}>Started {daysAgo} {(daysAgo == 1) ? "day" : "days"} ago</AppText>}
-                { displayStatus === 'Applied' && <AppText style={JobThumbnailStyles.daysText}>Applied {daysAgo} {(daysAgo == 1) ? "day" : "days"} ago</AppText>}
-                { displayStatus === 'Not Started' && isJobOwner && <AppText style={JobThumbnailStyles.ownerApplicantsText}>{job.applicants} {(job.applicants == 1) ? "applicant" : "applicants"}</AppText>}
-                { displayStatus === 'Not Started' && !isJobOwner && <AppText style={JobThumbnailStyles.clientApplicantsText}>{job.applicants} {(job.applicants == 1) ? "person has" : "people have"} applied</AppText>}
+                { displayStatus === 'In Progress' && daysAgo != null && <AppText style={[JobThumbnailStyles.daysText, {marginLeft: 10}]}>Started {daysAgo} {(daysAgo == 1) ? "day" : "days"} ago</AppText>}
+                { displayStatus === 'Applied' && daysAgo != null && <AppText style={JobThumbnailStyles.daysText}>Applied {daysAgo} {(daysAgo == 1) ? "day" : "days"} ago</AppText>}
+                { displayStatus === 'Not Started' && isJobOwner && <AppText style={JobThumbnailStyles.ownerApplicantsText}>{numApplicants} {(numApplicants == 1) ? "applicant" : "applicants"}</AppText>}
+                { displayStatus === 'Not Started' && !isJobOwner && <AppText style={JobThumbnailStyles.clientApplicantsText}>{numApplicants} {(numApplicants == 1) ? "person has" : "people have"} applied</AppText>}
             </View>
             <View>
                 <AppText style={JobThumbnailStyles.bodyText}><AppText style={JobThumbnailStyles.bodyHeading}>Deliver by: </AppText>{job.deliveryDate}</AppText>
@@ -115,7 +153,8 @@ export function JobThumbnail({job, displayStatus, isJobOwner, daysAgo, repostAll
                 }
                 <View style={JobThumbnailStyles.flexSpacer} />
                 {
-                    repostAllowed && 
+                    isJobOwner &&
+                    (props as JobThumbnailOwnerViewProps).repostAllowed &&  
                     <AppButton title='Repost' style={JobThumbnailStyles.repostButton} type='tertiary' size='small' onPress={() => console.log('Job attempted to repost')}/>
                 }   
             </View>

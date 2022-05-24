@@ -247,6 +247,7 @@ export async function assignDriver(jobId, userId, driverId) {
 
     job.assignedDriverId = mongoose.Types.ObjectId(driverId);
     job.status = JOB_STATUS_ASSIGNED;
+    job.startDate = new Date();
 
     try { await job.save() }
     catch (e) { throw InternalError.DOCUMENT_UPLOAD_ERROR.addContext(e.stack)}

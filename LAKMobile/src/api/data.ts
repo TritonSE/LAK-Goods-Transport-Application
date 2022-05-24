@@ -1,3 +1,4 @@
+export type JobStatus = 'CREATED' | 'ASSIGNED' | 'COMPLETED';
 export interface JobData {
     _id: string,
     title: string;
@@ -7,9 +8,14 @@ export interface JobData {
     pickupLocation: string;
     dropoffLocation: string;
     packageQuantity?: number;
-    applicants?: number;
-    status: 'CREATED' | 'ASSIGNED' | 'COMPLETED' ;
+    status: JobStatus;
     imageIds: string[];
+}
+
+export interface JobOwnerView extends JobData{
+    applicants: {userId: string, applyDate: string}[];
+    assignedDriverId: string;
+    startDate: string;
 }
 
 export interface ApplicantData {
