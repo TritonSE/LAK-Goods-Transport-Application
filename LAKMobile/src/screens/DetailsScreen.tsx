@@ -1,5 +1,13 @@
 import React, {useEffect, useState} from 'react';
-import {StyleSheet, Text, View, Image, Linking, Pressable} from 'react-native';
+import {
+    StyleSheet,
+    Text,
+    View,
+    Image,
+    Linking,
+    Pressable,
+    ScrollView
+} from 'react-native';
 import {
     AppText,
     ScreenHeader,
@@ -18,7 +26,7 @@ export function DetailsScreen({jobId}: DetailsScreenProps) {
 
     const getJobData = async () => {
         // replace "10.0.2.2" with localhost if using web
-        await fetch("http://localhost:3000/api/jobs/" + jobId, {
+        await fetch("http://10.0.2.2:3000/api/jobs/" + jobId, {
             method: "GET",
             mode: "cors",
             headers: {
@@ -27,7 +35,7 @@ export function DetailsScreen({jobId}: DetailsScreenProps) {
         }).then(async response => {
             let json = await response.json()
             setJobData(json);
-            await fetch("http://localhost:3000/api/users/get-by-ids", {
+            await fetch("http://10.0.2.2:3000/api/users/get-by-ids", {
                 method: "POST",
                 mode: "cors",
                 headers: {
@@ -39,8 +47,6 @@ export function DetailsScreen({jobId}: DetailsScreenProps) {
                 setDriverData(json);
             })
         })
-
-
     }
 
     React.useEffect(() => {
@@ -52,13 +58,13 @@ export function DetailsScreen({jobId}: DetailsScreenProps) {
         <View>
             <ScreenHeader showArrow={true}/>
             {jobData!=null ? (
-                <View style={styles.detailsComponent}>
+                <ScrollView style={styles.detailsComponent}>
                     <View style={styles.assignedPanel}>
                         <AppText style={styles.assignedText}>
-                            <AppText style={styles.assignedName}><DefaultProfilePic></DefaultProfilePic>  {driverData?.users[0].firstName} {driverData?.users[0].lastName}</AppText> is assigned to this job.
+                            <AppText style={styles.assignedName}><DefaultProfilePic></DefaultProfilePic>  {driverData?.users[0].firstName} {driverData?.users[0].lastName}</AppText> <AppText style={styles.assignedText}>is assigned to this job.</AppText>
                         </AppText>
-                        <Pressable style={styles.assignedButton}>Mark as Done</Pressable>
-                        <Pressable style={styles.assignedButton}>Cancel Job</Pressable>
+                        <Pressable style={styles.assignedButton}><AppText style={styles.buttonText}>Mark as Done</AppText></Pressable>
+                        <Pressable style={styles.assignedButton}><AppText style={styles.buttonText}>Cancel Job</AppText></Pressable>
                     </View>
 
                     <AppText style={styles.jobText}>{jobData?.job.title}</AppText>
@@ -112,8 +118,9 @@ export function DetailsScreen({jobId}: DetailsScreenProps) {
                                  style={styles.phoneNumber}>
                             {driverData?.users[0].phone}
                         </AppText>
+                        <AppText>{driverData?.users[0].phone}a</AppText>
                     </View>
-                </View>
+                </ScrollView>
             ):null}
         </View>
 
@@ -157,6 +164,11 @@ const styles = StyleSheet.create({
         marginTop: 12,
         backgroundColor: "#FFFFFF",
         borderRadius: 3,
+        display: "flex",
+        alignSelf: "center",
+    },
+
+    buttonText: {
         fontWeight: "700",
         fontSize: 14,
         lineHeight: 34,
