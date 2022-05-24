@@ -1,6 +1,7 @@
 import React, {useEffect, useState} from 'react';
 import {StyleSheet, Text, View, Image, Linking, Pressable} from 'react-native';
 import {
+    AppButton,
     AppText,
     ScreenHeader,
 } from '../components';
@@ -70,6 +71,7 @@ export function PublicProfileScreen({userId}: PublicProfileScreenProps) {
                 <View style={styles.fieldContainer}>
                     <AppText style={styles.fieldText}>Make</AppText>
                 </View>
+                <AppButton title={"Report"} size={"small"} type={"tertiary"} style={styles.reportButton}></AppButton>
             </View>
         </View>
     );
@@ -116,6 +118,6 @@ const styles = StyleSheet.create({
     },
 
     reportButton: {
-
-    }
+        marginTop: 80
+    },
 })
