@@ -1,12 +1,20 @@
 
 /**
+<<<<<<< HEAD
  * Model to represent User data
+=======
+ * Schema for User document
+>>>>>>> main
  */
 
 // const bcrypt = require("bcrypt"); Import when needed
 import mongoose from "mongoose";
 const { Schema, model } = mongoose;
 
+<<<<<<< HEAD
+=======
+export const PUBLICLY_VISIBLE_FIELDS = ['firstName', 'lastName', 'phone'];
+>>>>>>> main
 const UserSchema = new Schema({
     firstName: {
         type: String,
@@ -28,7 +36,32 @@ const UserSchema = new Schema({
         type: String,
         required: true,
     },
+<<<<<<< HEAD
     jobIds: [
+=======
+    finishedAppliedJobs: [
+        {
+            type: mongoose.Types.ObjectId,
+            ref: "Job",
+            required: false,
+        },
+    ],
+    ongoingAppliedJobs: [
+        {
+            type: mongoose.Types.ObjectId,
+            ref: "Job",
+            required: false,
+        },
+    ],
+    finishedOwnedJobs: [
+        {
+            type: mongoose.Types.ObjectId,
+            ref: "Job",
+            required: false,
+        },
+    ],
+    ongoingOwnedJobs: [
+>>>>>>> main
         {
             type: mongoose.Types.ObjectId,
             ref: "Job",

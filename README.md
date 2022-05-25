@@ -16,6 +16,7 @@ npm start
 
 The app will be live at http://localhost:19002.
 
+<<<<<<< HEAD
 ## Backend setup
 
 Required:
@@ -54,3 +55,8 @@ Here is the backend repo structure
 └── index.js (Main script to run the server and use routes)
 ```
 
+=======
+## Backend
+
+Please checkout the backend guide at [backend/README.md](./backend/README.md)
+>>>>>>> main

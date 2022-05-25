@@ -1,7 +1,11 @@
 import React from 'react';
 import { StyleSheet, Text, TextProps } from 'react-native';
 
+<<<<<<< HEAD
 export default function AppText({style, children, ...props}: TextProps) {
+=======
+export function AppText({style, children, ...props}: TextProps) {
+>>>>>>> main
     return (
       <Text 
         {...props}

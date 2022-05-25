@@ -1,8 +1,13 @@
 import { StyleSheet, View, TextInput } from 'react-native';
+<<<<<<< HEAD
 import { PrimaryButton, LabelWrapper, AppText } from '../components';
+=======
+import { AppButton, LabelWrapper, AppText } from '../components';
+>>>>>>> main
 import { COLORS } from '../../constants';
+import App from '../../App';
 
-export default function SignupScreen({}) {
+export function SignupScreen({}) {
   return (
     <View style={styles.container}>
       <LabelWrapper label='Name (First, Last)'>
@@ -40,7 +45,7 @@ export default function SignupScreen({}) {
         />
       </LabelWrapper>
 
-      <PrimaryButton
+      <AppButton
         type='primary'
         title='Create Account'
         onPress={() => console.log('Create Account pressed')}
@@ -49,7 +54,11 @@ export default function SignupScreen({}) {
 
       <View style={styles.loginLinkContainer}>
         <AppText>Already have an account?</AppText>
+<<<<<<< HEAD
         <PrimaryButton 
+=======
+        <AppButton 
+>>>>>>> main
           type='link' 
           title='Log in here' 
           onPress={() => console.log('Log in here pressed')}

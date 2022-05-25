@@ -1,9 +1,13 @@
 import React from 'react';
 import { StyleSheet, TextInput, View } from 'react-native';
+<<<<<<< HEAD
 import { AppText, LabelWrapper, PrimaryButton } from '../components';
+=======
+import { AppText, LabelWrapper, AppButton } from '../components';
+>>>>>>> main
 import { COLORS } from '../../constants';
 
-export default function LoginScreen() {
+export function LoginScreen() {
     return(
         <View style={styles.container}>
             <LabelWrapper label='Mobile Number'>
@@ -19,14 +23,14 @@ export default function LoginScreen() {
                 keyboardType="numeric"
                 />
             </LabelWrapper>
-            <PrimaryButton 
+            <AppButton 
                 type='link' 
                 title='Forgot PIN?' 
                 onPress={() => console.log('Forgot PIN button pressed')}
                 style={styles.forgotPIN}
             />
 
-            <PrimaryButton
+            <AppButton
                 type='primary'
                 title='Log in'
                 onPress={() => console.log('Login button pressed')}
@@ -35,7 +39,11 @@ export default function LoginScreen() {
 
             <View style={styles.signupPrompt}>
                 <AppText>Don't have an account?</AppText>
+<<<<<<< HEAD
                 <PrimaryButton 
+=======
+                <AppButton 
+>>>>>>> main
                     type='link' 
                     title='Sign up here.' 
                     onPress={() => console.log('Sign up button pressed')}
