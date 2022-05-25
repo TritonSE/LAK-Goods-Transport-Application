@@ -1,10 +1,11 @@
 
-import {  } from './src/screens';
-import { StatusBar } from "expo-status-bar";
-import { StyleSheet, View } from "react-native";
-import { ScreenHeader, ImageCarousel, ApplicantThumbnail } from "./src/components";
-import { SignupScreen, LoginScreen, AddJob, ForgotPassword, OTP } from "./src/screens";
 import { MOCK_APPLICANT_DATA } from './constants';
+import { StatusBar } from 'expo-status-bar';
+import { StyleSheet, View } from 'react-native';
+import { ScreenHeader, ImageCarousel, ApplicantThumbnail } from './src/components';
+import {SignupScreen, LoginScreen, AddJob, ForgotPassword, OTP, ListJobs} from './src/screens';
+import {ResetSuccess} from "./src/screens/ResetSuccess";
+import {ResetPassword} from "./src/screens/ResetPassword";
 
 export default function App() {
   return <>
@@ -18,7 +19,7 @@ export default function App() {
 
 
     <View style={styles.container}>
-      <ForgotPassword></ForgotPassword>
+      <ResetPassword></ResetPassword>
     </View>
 
     // <SignupScreen />
