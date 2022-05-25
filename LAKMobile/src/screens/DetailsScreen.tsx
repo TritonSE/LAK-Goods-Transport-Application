@@ -35,6 +35,7 @@ export function DetailsScreen({jobId}: DetailsScreenProps) {
         }).then(async response => {
             let json = await response.json()
             setJobData(json);
+            console.log(json)
             await fetch("http://10.0.2.2:3000/api/users/get-by-ids", {
                 method: "POST",
                 mode: "cors",
@@ -57,11 +58,16 @@ export function DetailsScreen({jobId}: DetailsScreenProps) {
     return (
         <View>
             <ScreenHeader showArrow={true}/>
+            {console.log(jobData)}
             {jobData!=null ? (
                 <ScrollView style={styles.detailsComponent}>
                     <View style={styles.assignedPanel}>
                         <AppText style={styles.assignedText}>
-                            <AppText style={styles.assignedName}><DefaultProfilePic></DefaultProfilePic>  {driverData?.users[0].firstName} {driverData?.users[0].lastName}</AppText> <AppText style={styles.assignedText}>is assigned to this job.</AppText>
+                            <View style={{flexDirection:'row',
+                                alignItems:'center'}}>
+                                <DefaultProfilePic></DefaultProfilePic><AppText><AppText style={styles.assignedName}>  {driverData?.users[0].firstName} {driverData?.users[0].lastName}</AppText> <AppText style={styles.assignedText}>is assigned to this job.</AppText></AppText>
+
+                            </View>
                         </AppText>
                         <Pressable style={styles.assignedButton}><AppText style={styles.buttonText}>Mark as Done</AppText></Pressable>
                         <Pressable style={styles.assignedButton}><AppText style={styles.buttonText}>Cancel Job</AppText></Pressable>
@@ -152,10 +158,12 @@ const styles = StyleSheet.create({
         fontSize: 16,
         fontWeight: "700",
         color: "#333333",
+
     },
 
     assignedText: {
         fontSize: 12,
+
     },
 
     assignedButton: {
