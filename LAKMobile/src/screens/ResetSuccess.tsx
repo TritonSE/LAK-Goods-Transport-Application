@@ -3,26 +3,19 @@ import { StyleSheet, TextInput, View } from 'react-native';
 import { AppText, LabelWrapper, AppButton, ScreenHeader } from '../components';
 import { COLORS } from '../../constants';
 
-export function ResetPassword() {
+export function ResetSuccess() {
     return(
         <View style={styles.container}>
             <ScreenHeader showArrow={true}>
-                Forgot Pin?
+                Reset Pin
             </ScreenHeader>
 
-            <AppText style={headerText}>Please enter the mobile number associated with your account.</AppText>
-
-            <LabelWrapper label='Mobile Number'>
-                <TextInput
-                    style={bigInputStyle}
-                    keyboardType="default"
-                />
-            </LabelWrapper>
+            <AppText style={headerText}>Reset pin successful! You have X reset(s) left this month.</AppText>
 
             <AppButton
                 type='primary'
-                title='Submit'
-                onPress={() => console.log('Submit')}
+                title='Okay'
+                onPress={() => console.log('Okay')}
                 style={styles.submitButton}
             />
         </View>

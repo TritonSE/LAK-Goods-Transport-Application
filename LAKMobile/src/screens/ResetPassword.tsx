@@ -3,26 +3,31 @@ import { StyleSheet, TextInput, View } from 'react-native';
 import { AppText, LabelWrapper, AppButton, ScreenHeader } from '../components';
 import { COLORS } from '../../constants';
 
-export function ForgotPassword() {
+export function ResetPassword() {
     return(
         <View style={styles.container}>
             <ScreenHeader showArrow={true}>
                 Forgot Pin?
             </ScreenHeader>
-
-            <AppText style={headerText}>Please enter the mobile number associated with your account.</AppText>
-
-            <LabelWrapper label='Mobile Number'>
+            <View style={marginTop}></View>
+            <LabelWrapper label='New 4 digit pin'>
                 <TextInput
-                    style={bigInputStyle}
-                    keyboardType="default"
+                    style={smallInputStyle}
+                    keyboardType="numeric"
+                />
+            </LabelWrapper>
+
+            <LabelWrapper label='Confirm 4 digit pin'>
+                <TextInput
+                    style={smallInputStyle}
+                    keyboardType="numeric"
                 />
             </LabelWrapper>
 
             <AppButton
                 type='primary'
-                title='Submit'
-                onPress={() => console.log('Submit')}
+                title='Reset Pin'
+                onPress={() => console.log('Reset pin')}
                 style={styles.submitButton}
             />
         </View>
@@ -63,15 +68,13 @@ const styles = StyleSheet.create({
     }
 });
 
-const bigInputStyle = StyleSheet.flatten([
+const smallInputStyle = StyleSheet.flatten([
     styles.input, {
-        width: '100%',
+        width: '45%'
     }
-]);
+])
 
-const headerText = StyleSheet.flatten([{
-        width: '100%',
+const marginTop = StyleSheet.flatten([{
         marginTop: "30%",
-        marginBottom: '8%',
     }
 ]);

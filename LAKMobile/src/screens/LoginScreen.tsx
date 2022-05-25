@@ -95,8 +95,7 @@ const bigInputStyle = StyleSheet.flatten([
 ]);
   
 const smallInputStyle = StyleSheet.flatten([
-    styles.input, 
-    {
+    styles.input, {
         width: '45%'
     }
 ])
