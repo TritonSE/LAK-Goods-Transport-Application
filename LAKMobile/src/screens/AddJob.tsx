@@ -106,7 +106,7 @@ export function AddJob({ formType, jobID }: AddJobProps) {
             },
         }).then(async response => {
             let json = await response.json()
-            console.log(json.job.clientName)
+            console.log(JSON.stringify(json))
             const job = json.job;
             setJobTitle(job.title)
             setClientName(job.clientName)
@@ -339,9 +339,9 @@ export function AddJob({ formType, jobID }: AddJobProps) {
         {formType === "edit" && (
           <AppButton
             onPress={deleteJob}
-            style={[styles.center, { width: "100%" }]}
+            style={[styles.center, { width: "100%", margin: 15}]}
             title="Delete"
-            type="primary"
+            type="secondary"
           />
         )}
       </ScrollView>

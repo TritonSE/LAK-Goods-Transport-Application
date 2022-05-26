@@ -5,24 +5,25 @@ import { SignupScreen, LoginScreen, AddJob } from "./src/screens";
 import { MOCK_APPLICANT_DATA } from './constants';
 
 export default function App() {
-  return <>
-    {/* // Thumbnail Demo */}
-    <View style={styles.container}>
-      <ApplicantThumbnail applicantData={MOCK_APPLICANT_DATA} status='Accepted' style={{marginHorizontal: 10}}/>
-      <ApplicantThumbnail applicantData={MOCK_APPLICANT_DATA} status='Unassigned' style={{marginHorizontal: 10}}/>
-      <ApplicantThumbnail applicantData={MOCK_APPLICANT_DATA} status='Denied' style={{marginHorizontal: 10}}/>
-    </View>
+  return <AddJob formType="edit" jobID="62307de6ec658d185f81dff3"/>
+  // return <>
+  //   {/* // Thumbnail Demo */}
+  //   <View style={styles.container}>
+  //     <ApplicantThumbnail applicantData={MOCK_APPLICANT_DATA} status='Accepted' style={{marginHorizontal: 10}}/>
+  //     <ApplicantThumbnail applicantData={MOCK_APPLICANT_DATA} status='Unassigned' style={{marginHorizontal: 10}}/>
+  //     <ApplicantThumbnail applicantData={MOCK_APPLICANT_DATA} status='Denied' style={{marginHorizontal: 10}}/>
+  //   </View>
 
-    {/* // Carousel Demo */}
-    {/* <ImageCarousel
-      imageIds={[
-        "6230818f1ccd9cfc10ffcbde",
-        "6230818f1ccd9cfc10ffcbe0",
-        "623082900cd4cacb726883a7",
-        "623082900cd4cacb726883a9",
-      ]}
-    /> */}
-  </>;
+  //   {/* // Carousel Demo */}
+  //   {/* <ImageCarousel
+  //     imageIds={[
+  //       "6230818f1ccd9cfc10ffcbde",
+  //       "6230818f1ccd9cfc10ffcbe0",
+  //       "623082900cd4cacb726883a7",
+  //       "623082900cd4cacb726883a9",
+  //     ]}
+  //   /> */}
+  // </>;
 }
 
 const styles = StyleSheet.create({
