@@ -172,6 +172,7 @@ routes.get('/', async (req, res, next) => {
     console.info('ROUTE: Getting jobs', req.query);
 
     let jobs = null;
+    let lastPage = false;
     try {
         // Get request parameters
         const owned = stringToBoolean(req.query.owned);
@@ -196,6 +197,8 @@ routes.get('/', async (req, res, next) => {
 
         let jobIds = await getJobIds(userId, owned, finished);
         
+        lastPage = jobIds.length <= offset + limit;
+
         // Apply pagination
         if (offset !== undefined && limit !== undefined) {
             jobIds = jobIds.slice(offset, offset + limit);
@@ -209,7 +212,8 @@ routes.get('/', async (req, res, next) => {
     
     res.status(200).json({
         message: 'Job documents sent as ${jobs}',
-        jobs: jobs
+        jobs: jobs,
+        lastPage: lastPage,
     })
 });
 

@@ -163,7 +163,6 @@ export function JobThumbnail({isJobOwner, job, ...props}: JobThumbnailProps) {
 
 const CardStyles = StyleSheet.create({
     card: {
-        width: 303,
         padding: 13,
         backgroundColor: COLORS.white,
 

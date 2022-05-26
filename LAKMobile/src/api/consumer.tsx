@@ -39,7 +39,7 @@ export const getJobsByIds = async (jobIds: string[]): Promise<JobData[]> => {
 }
 
 const PAGE_SIZE = 5;
-export const getJobs = async (owned: boolean, finished: boolean, page: number): Promise<JobData[] | JobOwnerView[] | null> => {
+export const getJobs = async (owned: boolean, finished: boolean, page: number): Promise<{ jobs: JobData[] | JobOwnerView[], lastPage: boolean } | null> => {
     try {
         const url = `${GET_JOBS}?` + new URLSearchParams({
             owned: owned.toString(), 
@@ -50,8 +50,7 @@ export const getJobs = async (owned: boolean, finished: boolean, page: number): 
         });
         const response = await fetch(url);
         let data = await response.json();
-        data = data.jobs;
-        return data;
+        return { jobs: data.jobs, lastPage: data.lastPage };
     } catch {
         return null;
     }
