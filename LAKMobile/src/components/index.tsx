@@ -6,3 +6,5 @@ export * from "./AppTextInput";
 export * from "./ImageCarousel";
 export * from "./ImagePickerButton";
 export * from "./ApplicantThumbnail";
+export * from "./ModalAlert";
+export * from "./ModalCheckmark";
