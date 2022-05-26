@@ -4,4 +4,6 @@ export * from "./AppButton";
 export * from "./ScreenHeader";
 export * from "./AppTextInput";
 export * from "./ImageCarousel";
-export * from './ApplicantThumbnail';
+export * from "./ApplicantThumbnail";
+export * from "./ModalAlert";
+export * from "./ModalCheckmark";
