@@ -21,12 +21,13 @@ type DetailsScreenProps = {
 export function DetailsScreen({jobId}: DetailsScreenProps) {
     // temporary dummy data
     jobId = "62307de6ec658d185f81dff3";
+    const user = "client1"
     const [jobData, setJobData] = useState(null);
     const [driverData, setDriverData] = useState(null);
 
     const getJobData = async () => {
         // replace "10.0.2.2" with localhost if using web
-        await fetch("http://10.0.2.2:3000/api/jobs/" + jobId, {
+        await fetch("http://localhost:3000/api/jobs/" + jobId + "?user=" + user, {
             method: "GET",
             mode: "cors",
             headers: {
@@ -58,15 +59,15 @@ export function DetailsScreen({jobId}: DetailsScreenProps) {
     return (
         <View>
             <ScreenHeader showArrow={true}/>
-            {console.log(jobData)}
-            {jobData!=null ? (
+            {jobData != null ? (
                 <ScrollView style={styles.detailsComponent}>
                     <View style={styles.assignedPanel}>
                         <AppText style={styles.assignedText}>
-                            <View style={{flexDirection:'row',
-                                alignItems:'center'}}>
-                                <DefaultProfilePic></DefaultProfilePic><AppText><AppText style={styles.assignedName}>  {driverData?.users[0].firstName} {driverData?.users[0].lastName}</AppText> <AppText style={styles.assignedText}>is assigned to this job.</AppText></AppText>
-
+                            <View style={{
+                                flexDirection: 'row',
+                                alignItems: 'center'
+                            }}>
+                                <DefaultProfilePic/><AppText><AppText style={styles.assignedName}>  {driverData?.users[0].firstName} {driverData?.users[0].lastName}</AppText> <AppText style={styles.assignedText}>is assigned to this job.</AppText></AppText>
                             </View>
                         </AppText>
                         <Pressable style={styles.assignedButton}><AppText style={styles.buttonText}>Mark as Done</AppText></Pressable>
@@ -93,20 +94,20 @@ export function DetailsScreen({jobId}: DetailsScreenProps) {
                                 <AppText style={{fontWeight: "bold"}}>Package Quantity:</AppText> {jobData?.job.packageQuantity}
                             </AppText>
                         </View>
-                    ):null}
+                    ) : null}
                     {jobData?.job.price ? (
                         <View style={styles.fieldContainer}>
                             <AppText>
                                 <AppText style={{fontWeight: "bold"}}>Delivery Price:</AppText> {jobData?.job.price}
                             </AppText>
                         </View>
-                    ):null}
+                    ) : null}
                     {jobData?.job.description ? (
                         <View style={styles.fieldContainer}>
                             <AppText style={{fontWeight: "bold"}}>Description:</AppText>
                             <AppText>{jobData?.job.description}</AppText>
                         </View>
-                    ):null}
+                    ) : null}
 
                     <View style={styles.fieldContainer}>
                         <AppText style={{fontWeight: "bold"}}>Contact:</AppText>
@@ -127,9 +128,8 @@ export function DetailsScreen({jobId}: DetailsScreenProps) {
                         <AppText>{driverData?.users[0].phone}a</AppText>
                     </View>
                 </ScrollView>
-            ):null}
+            ) : null}
         </View>
-
 
 
     );
