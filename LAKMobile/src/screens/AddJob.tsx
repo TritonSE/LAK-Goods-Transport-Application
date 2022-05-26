@@ -1,4 +1,10 @@
-import React, { Reducer, useCallback, useReducer, useState } from "react";
+import React, {
+  Reducer,
+  useCallback,
+  useEffect,
+  useReducer,
+  useState,
+} from "react";
 import { ScrollView, StyleSheet, View } from "react-native";
 import { Picker } from "@react-native-picker/picker";
 import * as ImagePicker from "expo-image-picker";
@@ -70,7 +76,12 @@ const reducer: ImagesReducer = (state, action): ImagesReducerState => {
   return newState;
 };
 
-export function AddJob() {
+interface AddJobProps {
+  formType: "add" | "edit" | "repost";
+  jobID: string;
+}
+
+export function AddJob({ formType, jobID }: AddJobProps) {
   const [imageURIs, dispatch] = useReducer(reducer, ["", "", ""]);
   const [jobTitle, setJobTitle] = useState("");
   const [clientName, setClientName] = useState("");
@@ -83,6 +94,10 @@ export function AddJob() {
   const [dropoffLocation, setDropoffLocation] = useState("");
   const [dropoffDistrict, setDropoffDistrict] = useState("");
   const [phoneNumber, setPhoneNumber] = useState("");
+
+  useEffect(() => {
+    //
+  }, []);
 
   const openImagePicker = useCallback(async () => {
     const permissionResult =
@@ -115,10 +130,20 @@ export function AddJob() {
     console.log("submitJob");
   }, []);
 
+  const deleteJob = useCallback(() => {
+    // TODO
+  }, []);
+
   return (
     <View>
       <View style={styles.header}>
-        <ScreenHeader showArrow>Add Job</ScreenHeader>
+        <ScreenHeader showArrow>
+          {formType === "add"
+            ? "Add Job"
+            : formType === "edit"
+            ? "Edit Job"
+            : "Repost Job"}
+        </ScreenHeader>
       </View>
 
       <ScrollView contentContainerStyle={styles.container}>
@@ -275,9 +300,23 @@ export function AddJob() {
         <AppButton
           onPress={submitJob}
           style={[styles.center, { width: "100%" }]}
-          title="Post Job"
+          title={
+            formType === "add"
+              ? "Post Job"
+              : formType === "edit"
+              ? "Update"
+              : "Repost"
+          }
           type="primary"
         />
+        {formType === "edit" && (
+          <AppButton
+            onPress={deleteJob}
+            style={[styles.center, { width: "100%" }]}
+            title="Delete"
+            type="primary"
+          />
+        )}
       </ScrollView>
     </View>
   );
