@@ -96,8 +96,35 @@ export function AddJob({ formType, jobID }: AddJobProps) {
   const [phoneNumber, setPhoneNumber] = useState("");
 
   useEffect(() => {
-    //
-  }, []);
+
+    const getJobData = async () => {
+        fetch("http://localhost:3000/api/jobs/" + jobID, {
+            method: "GET",
+            mode: "cors",
+            headers: {
+                "content-type": "application/json",
+            },
+        }).then(async response => {
+            let json = await response.json()
+            console.log(json.job.clientName)
+            const job = json.job;
+            setJobTitle(job.title)
+            setClientName(job.clientName)
+            setPhoneNumber(job.phoneNumber)
+            setDeliveryDate(job.deliveryDate)
+            setDescription(job.description)
+            setQuantity(job.packageQuantity)
+            setPrice(job.price)
+            setPickupLocation(job.pickupLocation)
+            setPickupDistrict("")
+            setDropoffLocation(job.dropoffLocation)
+            setDropoffDistrict("")
+        })
+    }
+    if (formType !== "add") {
+      getJobData()
+    }
+  }, [formType, jobID]);
 
   const openImagePicker = useCallback(async () => {
     const permissionResult =
