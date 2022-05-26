@@ -55,12 +55,11 @@ function StatusIndicator({text, color}: StatusIndicatorProps) {
  * Helpers
  */
 const getDisplayImage = (job: JobData): ImageSourcePropType => {
-    const imageId = job.imageIds[0] || '6230818f1ccd9cfc10ffcbde';
+    const imageId = job.imageIds[0];
     return imageIdToSource(imageId);
 }
 
 const diffDatesInDays = (start: Date, end: Date) => {
-    console.log(end, start)
     let diff = (end.getTime() - start.getTime()) / (1000 * 3600 * 24);
     return diff < 0 ? 0 : Math.round(diff);
 }
@@ -102,8 +101,6 @@ const JOB_DISPLAY_STATUS_MAP: Record<JobStatus, DisplayStatus> = {
 
 export function JobThumbnail({isJobOwner, job, ...props}: JobThumbnailProps) {
     // Just returning null if you try to have no status
-
-    console.log('Today ', new Date().toString())
     let displayStatus: DisplayStatus, daysAgo, numApplicants;
     if (isJobOwner) {
         props = props as JobThumbnailOwnerViewProps;
