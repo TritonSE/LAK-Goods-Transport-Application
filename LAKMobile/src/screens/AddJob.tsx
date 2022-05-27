@@ -197,6 +197,15 @@ export function AddJob() {
           icon='location-pin'
         />
         
+        <View style={[styles.pickerWrapper, styles.spacer]}>
+          <Picker
+            selectedValue={pickupDistrict}
+            onValueChange={(value, index) => setPickupDistrict(value)}
+            mode="dropdown" // Android only
+          >
+            {LOCATIONS.map((location, index) => <Picker.Item key={index} label={location} value={location}/>)}
+          </Picker>
+        </View>
       </LabelWrapper>
       
       <LabelWrapper label='Drop-off location'>
