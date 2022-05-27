@@ -98,7 +98,7 @@ export function AddJob({ formType, jobID }: AddJobProps) {
   useEffect(() => {
 
     const getJobData = async () => {
-        fetch("http://localhost:3000/api/jobs/" + jobID, {
+        fetch("http://localhost:3000/api/jobs/" + jobID + "?user=client1" , {
             method: "GET",
             mode: "cors",
             headers: {
@@ -113,8 +113,8 @@ export function AddJob({ formType, jobID }: AddJobProps) {
             setPhoneNumber(job.phoneNumber)
             setDeliveryDate(job.deliveryDate)
             setDescription(job.description)
-            setQuantity(job.packageQuantity)
-            setPrice(job.price)
+            setQuantity(job.packageQuantity.toString())
+            setPrice(job.price.toString())
             setPickupLocation(job.pickupLocation)
             setPickupDistrict("")
             setDropoffLocation(job.dropoffLocation)
