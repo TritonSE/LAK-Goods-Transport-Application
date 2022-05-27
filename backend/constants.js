@@ -37,7 +37,7 @@ export const TEST_CLIENT_1 = {
 }
 
 export const getSessionUserId = (req) => { // For testing purposes
-  if (!('user' in req.query)) throw ValidationError.USER_NOT_IN_SESSION;
+  if (!('user' in req.query)) map['client1']._id;
   const alias = req.query.user;
   const map = {
     'client1': TEST_CLIENT_1,
