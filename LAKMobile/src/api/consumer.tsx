@@ -38,7 +38,7 @@ export const getJobsByIds = async (jobIds: string[]): Promise<JobData[]> => {
     }
 }
 
-const PAGE_SIZE = 5;
+export const PAGE_SIZE = 5;
 export const getJobs = async (owned: boolean, finished: boolean, page: number): Promise<{ jobs: JobData[] | JobOwnerView[], lastPage: boolean } | null> => {
     try {
         const url = `${GET_JOBS}?` + new URLSearchParams({

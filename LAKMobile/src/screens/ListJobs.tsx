@@ -2,9 +2,10 @@ import React, { useState, useEffect } from "react";
 import { View, Text, FlatList, StyleSheet } from "react-native";
 import { Picker } from "@react-native-picker/picker";
 
-import { getJobs, JobData, JobOwnerView } from "../api";
+import { getJobs, JobData, JobOwnerView, PAGE_SIZE } from "../api";
 import { JobThumbnail, ScreenHeader, AppButton } from "../components";
 import { COLORS } from '../../constants';
+import { PickerStyles, FlatListStyles } from '../styles';
 
 type JobTypePickerOption = 'Current Jobs' | 'Completed Jobs';
 const PICKER_OPTIONS: JobTypePickerOption[] = [
@@ -17,24 +18,32 @@ export function ListJobs() {
     const [jobListType, setJobListType] = useState<JobTypePickerOption>('Current Jobs');
 
     const [jobs, setJobs] = useState<JobData[] | JobOwnerView[]>([]);
-    const [page, setPage] = useState(1);
-    const [allLoaded, setAllLoaded] = useState<boolean>(false);
-    console.log('render allLoaded', allLoaded);
+    const [page, setPage] = useState(0);
+    const [loading, setLoading] = useState(false);
+
+    const [allLoaded, setAllLoaded] = useState(false);
 
     useEffect(() => {
-        console.log('useEffect1: displayJobOwned', displayJobOwned, 'jobListType', jobListType)
+        // Resets the states for the screen
         setJobs([]);
+        setAllLoaded(false);
         setPage(0);
     }, [displayJobOwned, jobListType]);
     
     useEffect(() => {
-        console.log('useEffect2 page', page)
         if (page === 0) {
             setPage(1);
             return;
         }
 
-        setAllLoaded(false);
+        if (allLoaded || loading) {
+            return;
+        }  
+
+        // Check if page already loaded
+        if (jobs.length >= page * PAGE_SIZE) return;
+
+        setLoading(true);
         getJobs(displayJobOwned, jobListType === 'Completed Jobs', page)
         .then(response => {
             if (response === null) {
@@ -43,27 +52,22 @@ export function ListJobs() {
             }
             
             const { jobs: newJobs, lastPage } = response;
-
-            for (let newJob of newJobs) {
-                if (jobs.find((jobI, index) => newJob._id === jobI._id)) {
-                    console.log('Duplicate found: ', newJob._id)
-                }
-            }
-
-            setJobs([...jobs, ...newJobs]);
+            
             setAllLoaded(lastPage);
+            setJobs([...jobs, ...newJobs]);
+            setLoading(false)
         });
     }, [page]);
  
     return <>
-        <View style={{height: 90, backgroundColor: COLORS.maroon}}></View>
+        {/* Temporary banner */}
+        <View style={{height: 90, backgroundColor: COLORS.maroon}}></View> 
+        
         <View style={{alignItems: 'center'}}>
-            
-            <View style={{width: '100%', paddingHorizontal: 40, marginBottom: 10}}>
-                
+            <View style={FlatListStyles.wrapper}>
                 <FlatList 
-                    style={{width: '100%'}}
-                    contentContainerStyle={{width: '100%'}}
+                    style={FlatListStyles.container}
+                    contentContainerStyle={FlatListStyles.contentContainer}
                     data={jobs}
                     keyExtractor={item => item._id}
                     renderItem={ ({ item, index }) => (
@@ -72,15 +76,13 @@ export function ListJobs() {
                     scrollEnabled={true}
                     ListHeaderComponent={
                         <View style={styles.header}>
-                            <View style={[styles.pickerWrapper]}>
+                            <View style={[PickerStyles.wrapper]}>
                                 <Picker
-                                    style={{margin: 0, height: 25}} 
-
                                     selectedValue={jobListType}
                                     onValueChange = {(value, index) => setJobListType(value)}
                                     mode="dropdown" // Android only
                                 >
-                                    {PICKER_OPTIONS.map((option, index) => <Picker.Item key={index} label={option} value={option} style={{margin: 0, padding: 0, height: 25}} />)}
+                                    {PICKER_OPTIONS.map((option, index) => <Picker.Item key={index} label={option} value={option} />)}
                                 </Picker>
                             </View>
                             <View style={styles.spacer}/>
@@ -88,7 +90,6 @@ export function ListJobs() {
                         </View>
                     }
                     onEndReached={() => {
-                        console.log('allLoaded', allLoaded);
                         if (!allLoaded) {
                             setPage(page+1);
                         }
@@ -101,13 +102,6 @@ export function ListJobs() {
 }
 
 const styles = StyleSheet.create({
-    pickerWrapper: {
-        borderColor: COLORS.mediumGrey,
-        borderWidth: 1,
-        width: 200,
-        padding: 0,
-        borderRadius: 4
-    },
     spacer: {
         flexGrow: 1
     },
@@ -117,8 +111,11 @@ const styles = StyleSheet.create({
         justifyContent: 'space-between',
         marginVertical: 10,
         paddingHorizontal: 10,
+        height: 55 // Hardcoded based on the height of the react-native picker
     },
     addJobBtn: {
         borderRadius: 4,
-    }
-})
+        height: '100%'
+    },
+});
+
