@@ -54,7 +54,15 @@ interface ImagesReducerRemoveAction {
   payload: number;
 }
 
-type ImagesReducerAction = ImagesReducerAddAction | ImagesReducerRemoveAction;
+interface ImagesReducerSetAction {
+  type: "SET_IMAGES";
+  payload: string[];
+}
+
+type ImagesReducerAction =
+  | ImagesReducerAddAction
+  | ImagesReducerRemoveAction
+  | ImagesReducerSetAction;
 
 type ImagesReducer = Reducer<ImagesReducerState, ImagesReducerAction>;
 
@@ -68,6 +76,12 @@ const reducer: ImagesReducer = (state, action): ImagesReducerState => {
     case "REMOVE_IMAGE":
       newState[action.payload] = "";
       newState = newState.filter((value) => value !== "");
+      while (newState.length < 3) {
+        newState.push("");
+      }
+      break;
+    case "SET_IMAGES":
+      newState = action.payload;
       while (newState.length < 3) {
         newState.push("");
       }
@@ -96,33 +110,33 @@ export function AddJob({ formType, jobID }: AddJobProps) {
   const [phoneNumber, setPhoneNumber] = useState("");
 
   useEffect(() => {
-
     const getJobData = async () => {
-        fetch("http://localhost:3000/api/jobs/" + jobID + "?user=client1" , {
-            method: "GET",
-            mode: "cors",
-            headers: {
-                "content-type": "application/json",
-            },
-        }).then(async response => {
-            let json = await response.json()
-            console.log(JSON.stringify(json))
-            const job = json.job;
-            setJobTitle(job.title)
-            setClientName(job.clientName)
-            setPhoneNumber(job.phoneNumber)
-            setDeliveryDate(job.deliveryDate)
-            setDescription(job.description)
-            setQuantity(job.packageQuantity.toString())
-            setPrice(job.price.toString())
-            setPickupLocation(job.pickupLocation)
-            setPickupDistrict("")
-            setDropoffLocation(job.dropoffLocation)
-            setDropoffDistrict("")
-        })
-    }
+      fetch("http://localhost:3000/api/jobs/" + jobID + "?user=client1", {
+        method: "GET",
+        mode: "cors",
+        headers: {
+          "content-type": "application/json",
+        },
+      }).then(async (response) => {
+        let json = await response.json();
+        console.log(JSON.stringify(json));
+        const job = json.job;
+        setJobTitle(job.title);
+        setClientName(job.clientName);
+        setPhoneNumber(job.phoneNumber);
+        setDeliveryDate(job.deliveryDate);
+        setDescription(job.description);
+        setQuantity(job.packageQuantity.toString());
+        setPrice(job.price.toString());
+        setPickupLocation(job.pickupLocation);
+        setPickupDistrict("");
+        setDropoffLocation(job.dropoffLocation);
+        setDropoffDistrict("");
+        dispatch({ type: "SET_IMAGES", payload: job.imageIds });
+      });
+    };
     if (formType !== "add") {
-      getJobData()
+      getJobData();
     }
   }, [formType, jobID]);
 
@@ -339,7 +353,7 @@ export function AddJob({ formType, jobID }: AddJobProps) {
         {formType === "edit" && (
           <AppButton
             onPress={deleteJob}
-            style={[styles.center, { width: "100%", margin: 15}]}
+            style={[styles.center, { width: "100%", margin: 15 }]}
             title="Delete"
             type="secondary"
           />
