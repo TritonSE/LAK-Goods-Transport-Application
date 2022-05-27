@@ -66,7 +66,9 @@ const diffDatesInDays = (start: Date, end: Date) => {
 
 /**
  * Job thumbnail component
+ * Note: Display of the component varies based on whether the owner or an applicant views it which is why different type of props for the two cases
  */
+
 interface JobThumbnailOwnerViewProps {
     isJobOwner: true;
     job: JobOwnerView;
@@ -97,11 +99,11 @@ const JOB_DISPLAY_STATUS_MAP: Record<JobStatus, DisplayStatus> = {
     'CREATED': 'Not Started',
     'ASSIGNED': 'In Progress',
     'COMPLETED': 'Finished'
-}
+} // Mapping between job status from backend to frontend
 
 export function JobThumbnail({isJobOwner, job, ...props}: JobThumbnailProps) {
-    // Just returning null if you try to have no status
     let displayStatus: DisplayStatus, daysAgo, numApplicants;
+
     if (isJobOwner) {
         props = props as JobThumbnailOwnerViewProps;
         displayStatus = JOB_DISPLAY_STATUS_MAP[job.status];
@@ -121,9 +123,11 @@ export function JobThumbnail({isJobOwner, job, ...props}: JobThumbnailProps) {
                 <AppText style={CardStyles.title}>Box of apples</AppText>
             </View>
             
-            <ButtonWrapper style={JobThumbnailStyles.editButton} onPress={() => console.log("Edit Button Pressed")}>
-                <EditIcon />
-            </ButtonWrapper>
+            {isJobOwner && numApplicants == 0 && (
+                <ButtonWrapper style={JobThumbnailStyles.editButton} onPress={() => console.log("Edit Button Pressed")}>
+                    <EditIcon />
+                </ButtonWrapper>
+            )}
 
             <Image style={JobThumbnailStyles.jobImage} source={getDisplayImage(job)}/>
             <View style={[CardStyles.row]}>
@@ -152,7 +156,7 @@ export function JobThumbnail({isJobOwner, job, ...props}: JobThumbnailProps) {
                 {
                     isJobOwner &&
                     (props as JobThumbnailOwnerViewProps).repostAllowed &&  
-                    <AppButton title='Repost' style={JobThumbnailStyles.repostButton} type='tertiary' size='small' onPress={() => console.log('Job attempted to repost')}/>
+                    <AppButton title='Repost' type='tertiary' size='small' onPress={() => console.log('Job attempted to repost')}/>
                 }   
             </View>
             

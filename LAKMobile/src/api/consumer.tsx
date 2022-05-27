@@ -1,3 +1,7 @@
+/**
+ * Functions to consume the API routes available
+ */
+
 import { ImageSourcePropType } from 'react-native';
 import { API_URL } from '@env';
 import { JobData, JobOwnerView } from './data';
@@ -16,6 +20,7 @@ export const getJobById = async (jobId: string): Promise<JobData | null> => {
     }
 }
 
+/** Might consider removing */
 export const getJobsByIds = async (jobIds: string[]): Promise<JobData[]> => {
     try {
         const url = `${GET_JOBS}/get-by-ids?` + new URLSearchParams({
@@ -39,6 +44,8 @@ export const getJobsByIds = async (jobIds: string[]): Promise<JobData[]> => {
 }
 
 export const PAGE_SIZE = 5;
+
+// Gets the list of job documents (with pagination parameters)
 export const getJobs = async (owned: boolean, finished: boolean, page: number): Promise<{ jobs: JobData[] | JobOwnerView[], lastPage: boolean } | null> => {
     try {
         const url = `${GET_JOBS}?` + new URLSearchParams({

@@ -1,9 +1,9 @@
 import React, { useState, useEffect } from "react";
-import { View, Text, FlatList, StyleSheet } from "react-native";
+import { View, FlatList, StyleSheet } from "react-native";
 import { Picker } from "@react-native-picker/picker";
 
 import { getJobs, JobData, JobOwnerView, PAGE_SIZE } from "../api";
-import { JobThumbnail, ScreenHeader, AppButton } from "../components";
+import { JobThumbnail, AppButton } from "../components";
 import { COLORS } from '../../constants';
 import { PickerStyles, FlatListStyles } from '../styles';
 
@@ -14,13 +14,16 @@ const PICKER_OPTIONS: JobTypePickerOption[] = [
 ]
 
 export function ListJobs() {
-    const [displayJobOwned, setDisplayJobOwned] = useState<boolean>(true);
+    const [displayJobOwned, setDisplayJobOwned] = useState<boolean>(true); // TODO toggle for add jobs/find jobs
     const [jobListType, setJobListType] = useState<JobTypePickerOption>('Current Jobs');
 
     const [jobs, setJobs] = useState<JobData[] | JobOwnerView[]>([]);
+    
+    // NOTE: Page 0 is being used as a null page, but the first page is 1. 
+    // Added this so that we are able to trigger hooks dependent on `page` when type of screen changes but page number does not
     const [page, setPage] = useState(0);
+    
     const [loading, setLoading] = useState(false);
-
     const [allLoaded, setAllLoaded] = useState(false);
 
     useEffect(() => {
@@ -31,6 +34,7 @@ export function ListJobs() {
     }, [displayJobOwned, jobListType]);
     
     useEffect(() => {
+        // Fetches the job data for last reached page `page`. Enables lazy load on scrolling.
         if (page === 0) {
             setPage(1);
             return;
@@ -86,7 +90,13 @@ export function ListJobs() {
                                 </Picker>
                             </View>
                             <View style={styles.spacer}/>
-                            <AppButton type="primary" size="small" onPress={() => console.log('Add Job button pressed')} title='Add Job' style={styles.addJobBtn}/>
+                            <AppButton 
+                                textStyle={styles.addJobBtnText}
+                                type="primary" 
+                                size="small" 
+                                onPress={() => console.log('Add Job button pressed')} 
+                                title='Add Job' 
+                                style={styles.addJobBtn}/>
                         </View>
                     }
                     onEndReached={() => {
@@ -115,7 +125,10 @@ const styles = StyleSheet.create({
     },
     addJobBtn: {
         borderRadius: 4,
-        height: '100%'
+        height: '100%',
     },
+    addJobBtnText: {
+        fontSize: 16
+    }
 });
 
