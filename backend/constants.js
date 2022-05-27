@@ -37,12 +37,12 @@ export const TEST_CLIENT_1 = {
 }
 
 export const getSessionUserId = (req) => { // For testing purposes
-  if (!('user' in req.query)) map['client1']._id;
-  const alias = req.query.user;
   const map = {
     'client1': TEST_CLIENT_1,
     'trucker1': TEST_TRCUKER_1,
     'trucker2': TEST_TRCUKER_2,
   }
+  if (!('user' in req.query)) return map['client1']._id;
+  const alias = req.query.user;
   return map[alias]._id;
 };
