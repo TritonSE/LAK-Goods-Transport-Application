@@ -183,7 +183,6 @@ routes.get('/', async (req, res, next) => {
 
         let offset = req.query.offset;
         let limit = req.query.limit;
-        console.log(Number.isInteger(offset));
 
         if (!isNaN(offset) && !isNaN(limit)) {
             offset = parseInt(offset);
