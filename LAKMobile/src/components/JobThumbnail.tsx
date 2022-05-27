@@ -84,6 +84,16 @@ interface JobThumbnailApplicantViewProps {
 
 type JobThumbnailProps = JobThumbnailOwnerViewProps | JobThumbnailApplicantViewProps;
 
+/**
+ * Not all the display status will be used in one view (owner or applicant). 
+ * Here is the flow of status in respective views
+ * 
+ * Owner View
+ * Not Started -> In Progress -> Finished
+ * 
+ * Applicant View
+ * Not Started | Applied | Accepted/Denied | Finished
+ */
 type DisplayStatus = 'In Progress' | 'Finished' | 'Accepted' | 'Denied' | 'Not Started' | 'Applied';
 
 const STATUS_DISPLAY_COLOR: Record<DisplayStatus, string | null> = {
