@@ -34,19 +34,17 @@ routes.post('/', upload, async (req, res, next) => {
     
     let job = null;
     try {
-        //const userId = getSessionUserId(req);
+        const userId = getSessionUserId(req);
         
         // Create Job
         job = await createJob(
-            //userId,
-            'client1',
+            userId,
             req.body,
             req.files || [],
         );
         
         // Update User document
-        await registerJob('client1', job._id, true);
-        //await registerJob(userId, job._id, true);
+        await registerJob(userId, job._id, true);
     } catch (e) { 
         next(e);
         return;

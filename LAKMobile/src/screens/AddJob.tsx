@@ -166,13 +166,64 @@ export function AddJob({ formType, jobID }: AddJobProps) {
     [imageURIs, openImagePicker]
   );
 
-  const submitJob = useCallback(() => {
+  const submitJob = useCallback(async() => {
     // TODO: when submitting, remember to filter out empty strings from imageURIs
     console.log("submitJob");
+    if (formType === "add") {
+      const body={
+        //TODO pickup and dropoff district
+        title: jobTitle,
+        clientName: clientName,
+        phoneNumber: phoneNumber,
+        deliveryDate: deliveryDate,
+        description: description,
+        packageQuantity: parseInt(quantity),
+        price: parseInt(price),
+        pickupLocation: pickupLocation,
+        dropoffLocation: dropoffLocation,
+        imageIds: imageURIs.filter((value) => value !== "")
+      }
+      fetch("http://localhost:3000/api/jobs/?user=client1", {
+        method: "POST",
+        mode: "cors",
+        headers: {
+          "content-type": "application/json",
+        }, 
+        body: JSON.stringify(body)
+      }).then(async (response) => {
+        let json = await response.json();
+        console.log(JSON.stringify(json));
+        console.log(json.jobId);
+
+        //TODO
+
+
+      });
+    }
+    else if (formType === "edit") {
+      //TODO
+    }
+    else {
+      //TODO
+    }
   }, []);
 
   const deleteJob = useCallback(() => {
     // TODO
+    fetch("http://localhost:3000/api/jobs/" + jobID +"?user=client1", {
+      method: "DELETE",
+      mode: "cors",
+      headers: {
+        "content-type": "application/json",
+      }, 
+    }).then(async (response) => {
+      let json = await response.json();
+      console.log(JSON.stringify(json));
+
+      //TODO
+
+
+    });
   }, []);
 
   return (
