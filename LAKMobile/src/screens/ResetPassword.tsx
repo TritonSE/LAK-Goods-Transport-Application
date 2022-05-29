@@ -9,7 +9,7 @@ export function ResetPassword() {
             <ScreenHeader showArrow={true}>
                 Forgot Pin?
             </ScreenHeader>
-            <View style={marginTop}></View>
+            <View style={marginTop}/>
             <LabelWrapper label='New 4 digit pin'>
                 <TextInput
                     style={smallInputStyle}

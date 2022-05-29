@@ -6,35 +6,22 @@ import { ScreenHeader, ImageCarousel, ApplicantThumbnail } from './src/component
 import {SignupScreen, LoginScreen, AddJob, ForgotPassword, OTP, ListJobs} from './src/screens';
 import {ResetSuccess} from "./src/screens/ResetSuccess";
 import {ResetPassword} from "./src/screens/ResetPassword";
+import { NavigationContainer } from '@react-navigation/native';
+import { createNativeStackNavigator } from '@react-navigation/native-stack';
+
+const Stack = createNativeStackNavigator();
+
+
 
 export default function App() {
-  return <>
-    <ListJobs />
-    {/* // Thumbnail Demo */}
-    {/* <View style={styles.container}>
-      <ApplicantThumbnail applicantData={MOCK_APPLICANT_DATA} status='Accepted' style={{marginHorizontal: 10}}/>
-      <ApplicantThumbnail applicantData={MOCK_APPLICANT_DATA} status='Unassigned' style={{marginHorizontal: 10}}/>
-      <ApplicantThumbnail applicantData={MOCK_APPLICANT_DATA} status='Denied' style={{marginHorizontal: 10}}/>
-    </View> */}
-
-
-    <View style={styles.container}>
-      <ResetPassword></ResetPassword>
+  return <View style={styles.container}>
+      <NavigationContainer>
+        <Stack.Navigator initialRouteName="Login">
+          <Stack.Screen name="Login" component={LoginScreen} />
+          <Stack.Screen name="Signup" component={SignupScreen} />
+        </Stack.Navigator>
+      </NavigationContainer>
     </View>
-
-    // <SignupScreen />
-
-  );
-    {/* // Carousel Demo */}
-    {/* <ImageCarousel
-      imageIds={[
-        "6230818f1ccd9cfc10ffcbde",
-        "6230818f1ccd9cfc10ffcbe0",
-        "623082900cd4cacb726883a7",
-        "623082900cd4cacb726883a9",
-      ]}
-    /> */}
-  </>;
 }
 
 const styles = StyleSheet.create({

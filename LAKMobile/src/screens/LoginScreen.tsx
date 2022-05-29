@@ -2,8 +2,11 @@ import React from 'react';
 import { StyleSheet, TextInput, View } from 'react-native';
 import { AppText, LabelWrapper, AppButton } from '../components';
 import { COLORS } from '../../constants';
+import { NavigationContainer } from '@react-navigation/native';
+import {createNativeStackNavigator, NativeStackScreenProps} from '@react-navigation/native-stack';
+import {LoginProps} from '../types/navigation';
 
-export function LoginScreen() {
+export function LoginScreen({navigation}: LoginProps) {
     return(
         <View style={styles.container}>
             <LabelWrapper label='Mobile Number'>
@@ -29,7 +32,7 @@ export function LoginScreen() {
             <AppButton
                 type='primary'
                 title='Log in'
-                onPress={() => console.log('Login button pressed')}
+                onPress={() => console.log("Login")}
                 style={styles.submitButton}
             />
 
@@ -38,7 +41,7 @@ export function LoginScreen() {
                 <AppButton 
                     type='link' 
                     title='Sign up here.' 
-                    onPress={() => console.log('Sign up button pressed')}
+                    onPress={() => navigation.navigate('Signup')}
                     style={styles.signupLink}
                 />
             </View>
