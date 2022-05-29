@@ -2,12 +2,11 @@ import React, { useState } from "react";
 import {
   FlatList,
   Image,
-  ImageSourcePropType,
   Pressable,
   StyleSheet,
   View,
 } from "react-native";
-import { API_URL } from "@env";
+import { imageIdToSource } from '../api/consumer';
 
 interface ImageCarouselProps {
   imageIds: string[];
@@ -17,10 +16,6 @@ const IMAGE_HEIGHT = 180;
 const THUMBNAIL_WIDTH = 48;
 const THUMBNAIL_HEIGHT = 42;
 const THUMBNAIL_GUTTER = 3;
-
-const imageIdToSource = (imageId: string): ImageSourcePropType => ({
-  uri: `${API_URL}/api/images/${imageId}`,
-});
 
 export function ImageCarousel({ imageIds }: ImageCarouselProps) {
   const [selectedIndex, setSelectedIndex] = useState(0);

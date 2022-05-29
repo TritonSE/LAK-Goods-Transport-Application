@@ -7,3 +7,4 @@ export * from "./ImageCarousel";
 export * from "./ApplicantThumbnail";
 export * from "./ModalAlert";
 export * from "./ModalCheckmark";
+export * from './JobThumbnail';
