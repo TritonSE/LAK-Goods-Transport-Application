@@ -45,10 +45,12 @@ export class CustomError {
 const INVALID_OBJECT_ID_RECEIVED_MSG = 'Invalid ID was found, ID must be a string of 12 bytes or a string of 24 hex characters';
 const INVALID_BOOLEAN_VALUE_MSG = 'Invalid boolean value was found in the request, expected true/false';
 const USER_NOT_IN_SESSION_MSG = 'No user found in session'
+const INVALID_PAGINATION_INPUT = 'Incorrect pagination values received';
 export class ValidationError extends CustomError {
   static INVALID_OBJECT_ID = new ValidationError(0, 400, INVALID_OBJECT_ID_RECEIVED_MSG);
   static INVALID_BOOLEAN_VALUE = new ValidationError(1, 400, INVALID_BOOLEAN_VALUE_MSG);
   static USER_NOT_IN_SESSION = new ValidationError(2, 400, USER_NOT_IN_SESSION_MSG);
+  static INVALID_PAGINATION_INPUT = new ValidationError(3, 400, INVALID_PAGINATION_INPUT);
 }
 
 

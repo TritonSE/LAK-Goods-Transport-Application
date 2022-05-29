@@ -2,6 +2,7 @@ import mongoose from 'mongoose';
 import express from 'express';
 import bodyParser from 'body-parser';
 import dotenv from 'dotenv';
+import cors from 'cors';
 import jobRoutes from './routes/job';
 import userRoutes from './routes/user';
 import { MONGO_URI, PORT } from './config';
@@ -47,6 +48,8 @@ const port = PORT || 3000; // TODO Revisit default PORT
 app.use(bodyParser.urlencoded({
     extended: true
 }));
+
+app.use(cors());
 
 // Parse application/json requests
 app.use(bodyParser.json()); 
