@@ -83,7 +83,7 @@ export const JOB_STATUS = [JOB_STATUS_CREATED, JOB_STATUS_ASSIGNED, JOB_STATUS_C
 
 // Stored for validation during update request
 export const FIELDS_OWNER_PERMITTED_TO_UPDATE = ['title', 'clientName', 'phoneNumber', 'deliveryDate', 'pickupLocation', 'dropoffLocation', 'description', 'packageQuantity', 'price'];
-export const OWNER_LIMITED_FIELDS = ['applicants', 'assignedDriverId'];
+export const OWNER_LIMITED_FIELDS = ['applicants', 'assignedDriverId', 'startDate'];
 
 const JobSchema = new Schema(
     {
@@ -158,6 +158,10 @@ const JobSchema = new Schema(
             ref: "User",
             required: false,
         },
+        startDate: {
+            type: Date,
+            required: false
+        }
     }, 
     {
         toObject: {

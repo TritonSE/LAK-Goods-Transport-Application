@@ -5,7 +5,6 @@ import { PrimaryButton, LabelWrapper, AppText } from '../components';
 import { AppButton, LabelWrapper, AppText } from '../components';
 >>>>>>> main
 import { COLORS } from '../../constants';
-import App from '../../App';
 
 export function SignupScreen({}) {
   return (
