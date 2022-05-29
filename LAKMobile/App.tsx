@@ -1,7 +1,9 @@
+
+import {  } from './src/screens';
 import { StatusBar } from "expo-status-bar";
 import { StyleSheet, View } from "react-native";
 import { ScreenHeader, ImageCarousel, ApplicantThumbnail } from "./src/components";
-import { SignupScreen, LoginScreen, AddJob, ListJobs } from "./src/screens";
+import { SignupScreen, LoginScreen, AddJob, ForgotPassword, OTP } from "./src/screens";
 import { MOCK_APPLICANT_DATA } from './constants';
 
 export default function App() {
@@ -14,6 +16,14 @@ export default function App() {
       <ApplicantThumbnail applicantData={MOCK_APPLICANT_DATA} status='Denied' style={{marginHorizontal: 10}}/>
     </View> */}
 
+
+    <View style={styles.container}>
+      <ForgotPassword></ForgotPassword>
+    </View>
+
+    // <SignupScreen />
+
+  );
     {/* // Carousel Demo */}
     {/* <ImageCarousel
       imageIds={[
