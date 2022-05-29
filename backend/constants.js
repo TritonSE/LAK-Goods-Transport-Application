@@ -1,12 +1,31 @@
+<<<<<<< HEAD
+import User from './models/user';
+
+export const SAMPLE_USER = User({
+  firstName: 'Test',
+=======
 import { ValidationError } from "./errors";
 // Sample Users (for testing only)
 
 export const SAMPLE_USER_PAYLOAD = {
   firstName: 'Trucker1',
+>>>>>>> main
   lastName: 'User',
   password: 'password',
   phone: 'number',
   location: 'location',
+<<<<<<< HEAD
+  _id: '621bda9026575a70d82448c1',
+});
+
+export const SAMPLE_USER2 = User({
+  firstName: 'Test2',
+  lastName: 'User2',
+  password: 'password2',
+  phone: 'number2',
+  location: 'location2'
+});
+=======
 };
 
 export const TEST_TRCUKER_1 = {
@@ -46,3 +65,4 @@ export const getSessionUserId = (req) => { // For testing purposes
   const alias = req.query.user;
   return map[alias]._id;
 };
+>>>>>>> main

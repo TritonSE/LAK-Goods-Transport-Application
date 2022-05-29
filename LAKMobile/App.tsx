@@ -1,5 +1,3 @@
-
-import {  } from './src/screens';
 import { StatusBar } from "expo-status-bar";
 import { StyleSheet, View } from "react-native";
 import { ScreenHeader, ImageCarousel, ApplicantThumbnail } from "./src/components";

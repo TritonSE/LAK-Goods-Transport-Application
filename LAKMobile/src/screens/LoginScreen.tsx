@@ -1,6 +1,10 @@
 import React from 'react';
 import { StyleSheet, TextInput, View } from 'react-native';
+<<<<<<< HEAD
+import { AppText, LabelWrapper, PrimaryButton } from '../components';
+=======
 import { AppText, LabelWrapper, AppButton } from '../components';
+>>>>>>> main
 import { COLORS } from '../../constants';
 
 export function LoginScreen() {
@@ -35,7 +39,11 @@ export function LoginScreen() {
 
             <View style={styles.signupPrompt}>
                 <AppText>Don't have an account?</AppText>
+<<<<<<< HEAD
+                <PrimaryButton 
+=======
                 <AppButton 
+>>>>>>> main
                     type='link' 
                     title='Sign up here.' 
                     onPress={() => console.log('Sign up button pressed')}

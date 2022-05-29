@@ -1,6 +1,16 @@
 /**
  * JobService that interacts with the job documents in the database
  */
+<<<<<<< HEAD
+import { CustomError, InternalError, ServiceError } from '../errors';
+import JobModel, { FIELDS_OWNER_PERMITTED_TO_UPDATE } from '../models/job';
+import { saveImage, deleteImage } from './image';
+
+export async function createJob(user, jobData, jobImages) {
+    console.debug('createJob service running')
+    const imageIds = [];
+
+=======
 import mongoose from 'mongoose';
 import { ServiceError, InternalError } from '../errors';
 import { filterObject } from '../helpers';
@@ -26,20 +36,30 @@ export async function createJob(userId, jobData, jobImages) {
     const imageIds = [];
 
     // Store images
+>>>>>>> main
     for (let image of jobImages) {
         let imageId = await saveImage(image);
         imageIds.push(imageId);
     }
 
+<<<<<<< HEAD
+=======
     // Create Job
+>>>>>>> main
     let job = null;
     try {
         job = await JobModel({
             ...jobData, //TODO Sanitize input
+<<<<<<< HEAD
+            client: user._id,
+            applicants: [],
+            imageIds: imageIds,
+=======
             client: userId,
             applicants: [],
             imageIds: imageIds,
             status: JOB_STATUS_CREATED,
+>>>>>>> main
         });
     } catch (e) {
         throw ServiceError.INVALID_JOB_RECEIVED.addContext(e.stack);
@@ -47,7 +67,10 @@ export async function createJob(userId, jobData, jobImages) {
     
     //TODO Validate request fields like delievryDate, etc.
 
+<<<<<<< HEAD
+=======
     // Save Job
+>>>>>>> main
     try {
         return await job.save();
     } catch (e) {
@@ -55,6 +78,18 @@ export async function createJob(userId, jobData, jobImages) {
     }
 }
 
+<<<<<<< HEAD
+function filterUpdatePayload(payload, allowedFields) {
+    const filtered = {}  
+    allowedFields.forEach(field => {
+      if (field in payload) filtered[field] = payload[field];
+    });
+    return filtered;
+}
+
+export async function updateJob(user, jobId, jobData, jobImages) {
+    console.debug('updateJob service runnning');
+=======
 /**
  * Updates the existing job document. 
  * Throws an error if `userid` is not the job owner
@@ -66,6 +101,7 @@ export async function createJob(userId, jobData, jobImages) {
  */
 export async function updateJob(userId, jobId, jobData, jobImages) {
     console.debug(`SERVICE: updateJob service runnning: jobId - ${jobId}, userId - ${userId}, jobData - payload, jobImages - files`);
+>>>>>>> main
 
     // Retrieve original job
     let originalJob = await JobModel.findById(jobId);
@@ -74,12 +110,20 @@ export async function updateJob(userId, jobId, jobData, jobImages) {
     }
 
     // Validate client job ownership
+<<<<<<< HEAD
+    if (!originalJob.client.equals(user._id)) {
+=======
     if (!originalJob.client.equals(userId)) {
+>>>>>>> main
         throw ServiceError.JOB_EDIT_PERMISSION_DENIED;
     }
 
     // Ensure updated fields are only getting updated
+<<<<<<< HEAD
+    jobData = filterUpdatePayload(jobData, FIELDS_OWNER_PERMITTED_TO_UPDATE);
+=======
     jobData = filterObject(jobData, FIELDS_OWNER_PERMITTED_TO_UPDATE);
+>>>>>>> main
 
     //TODO Find a better way of updating images
 
@@ -100,7 +144,11 @@ export async function updateJob(userId, jobId, jobData, jobImages) {
         ...jobData,
         imageIds: newImageIds,
     }
+<<<<<<< HEAD
+    
+=======
 
+>>>>>>> main
     try {
         await JobModel.findOneAndUpdate({'_id': jobId}, jobData)
     } catch (e) {
@@ -108,6 +156,10 @@ export async function updateJob(userId, jobId, jobData, jobImages) {
     }
 }
 
+<<<<<<< HEAD
+export async function deleteJob(jobId) {
+    console.debug('deleteJob service running')
+=======
 /**
  * Deletes a job document `jobId` and also erases its respective images
  * Throws error if `userId` does not own the job
@@ -116,23 +168,30 @@ export async function updateJob(userId, jobId, jobData, jobImages) {
  */
 export async function deleteJob(userId, jobId) {
     console.debug(`SERVICE: deleteJob service running: jobId - ${jobId}, userId - ${userId}`)
+>>>>>>> main
 
     // Retrieve job
     let originalJob = await JobModel.findById(jobId);
     if (!originalJob) {
         throw ServiceError.JOB_NOT_FOUND;
     }
+<<<<<<< HEAD
+    // TODO Validate client job ownership
+=======
 
     // Validate client job ownership
     if (!originalJob.client.equals(userId)) {
         throw ServiceError.JOB_EDIT_PERMISSION_DENIED;
     }
+>>>>>>> main
 
     // Delete existing images
     let existingImageIds = originalJob.imageIds;
     for (let imageId of existingImageIds) {
         await deleteImage(imageId);
     }
+<<<<<<< HEAD
+=======
 
     // Dergister applied user documents
     for (let applicantId of originalJob.applicants) {
@@ -140,6 +199,7 @@ export async function deleteJob(userId, jobId) {
     }
 
     // Delete Job document
+>>>>>>> main
     try {
         await JobModel.deleteOne({'_id': jobId}, null)
     } catch (e) {
@@ -147,6 +207,19 @@ export async function deleteJob(userId, jobId) {
     }
 }
 
+<<<<<<< HEAD
+
+export async function getJob(jobId) {
+    console.debug('getJob service running');
+    //TODO Confirm if any auth is required
+    //TODO Send images -- or just send image IDs and then send images through seperate request (preferred)
+    
+    let res = await JobModel.findById(jobId);
+    if (!res) {
+        throw ServiceError.JOB_NOT_FOUND
+    }
+    return res;
+=======
 /**
  * Gets the job documents for multiple $jobIds
  * Uses `userId` to identify whether the request is coming from 
@@ -276,4 +349,5 @@ export async function completeJob(jobId, userId) {
     job.status = JOB_STATUS_COMPLETED;
     try { await job.save() }
     catch (e) { throw InternalError.DOCUMENT_UPLOAD_ERROR.addContext(e.stack) }
+>>>>>>> main
 }

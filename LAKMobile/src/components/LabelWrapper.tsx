@@ -1,6 +1,10 @@
 import React, { ReactNode } from 'react';
 import { StyleSheet, View } from 'react-native';
+<<<<<<< HEAD
+import AppText from './AppText';
+=======
 import { AppText } from './AppText';
+>>>>>>> main
 
 type LabelWrapperProps = {
     label: string,
@@ -22,6 +26,9 @@ const styles = StyleSheet.create({
     },
     label: {
         marginBottom: 8,
+<<<<<<< HEAD
+=======
         fontSize: 16
+>>>>>>> main
     },
 })

@@ -1,5 +1,9 @@
 import { StyleSheet, View, TextInput } from 'react-native';
+<<<<<<< HEAD
+import { PrimaryButton, LabelWrapper, AppText } from '../components';
+=======
 import { AppButton, LabelWrapper, AppText } from '../components';
+>>>>>>> main
 import { COLORS } from '../../constants';
 
 export function SignupScreen({}) {
@@ -49,7 +53,11 @@ export function SignupScreen({}) {
 
       <View style={styles.loginLinkContainer}>
         <AppText>Already have an account?</AppText>
+<<<<<<< HEAD
+        <PrimaryButton 
+=======
         <AppButton 
+>>>>>>> main
           type='link' 
           title='Log in here' 
           onPress={() => console.log('Log in here pressed')}

@@ -1,6 +1,10 @@
 import React from 'react';
 import { StyleSheet, Text, View, Image, TouchableOpacity } from 'react-native';
+<<<<<<< HEAD
+import AppText from './AppText';
+=======
 import { AppText } from './AppText';
+>>>>>>> main
 import { COLORS } from '../../constants';
 
 interface HeaderProps {
