@@ -2,8 +2,9 @@ import React from 'react';
 import { StyleSheet, TextInput, View } from 'react-native';
 import { AppText, LabelWrapper, AppButton, ScreenHeader } from '../components';
 import { COLORS } from '../../constants';
+import {ResetSuccessProps} from "../types/navigation";
 
-export function ResetSuccess() {
+export function ResetSuccess({navigation}: ResetSuccessProps) {
     return(
         <View style={styles.container}>
             <ScreenHeader showArrow={true}>
@@ -15,7 +16,7 @@ export function ResetSuccess() {
             <AppButton
                 type='primary'
                 title='Okay'
-                onPress={() => console.log('Okay')}
+                onPress={() => navigation.navigate("Login")}
                 style={styles.submitButton}
             />
         </View>

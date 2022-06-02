@@ -2,8 +2,9 @@ import React from 'react';
 import { StyleSheet, TextInput, View } from 'react-native';
 import { AppText, LabelWrapper, AppButton, ScreenHeader } from '../components';
 import { COLORS } from '../../constants';
+import {ForgotPasswordProps} from "../types/navigation";
 
-export function ForgotPassword() {
+export function ForgotPassword({navigation}: ForgotPasswordProps) {
     return(
         <View style={styles.container}>
             <ScreenHeader showArrow={true}>
@@ -22,7 +23,7 @@ export function ForgotPassword() {
             <AppButton
                 type='primary'
                 title='Submit'
-                onPress={() => console.log('Submit')}
+                onPress={() => navigation.navigate("OTP")}
                 style={styles.submitButton}
             />
         </View>

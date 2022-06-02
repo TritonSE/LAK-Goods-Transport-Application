@@ -20,6 +20,8 @@ export default function App() {
           <Stack.Screen name="Login" component={LoginScreen} />
           <Stack.Screen name="Signup" component={SignupScreen} />
           <Stack.Screen name="ResetPassword" component={ResetPassword} />
+          <Stack.Screen name="ForgotPassword" component={ForgotPassword} />
+          <Stack.Screen name="ResetSuccess" component={ResetSuccess} />
           <Stack.Screen name="OTP" component={OTP} />
         </Stack.Navigator>
       </NavigationContainer>

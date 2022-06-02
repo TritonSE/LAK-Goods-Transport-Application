@@ -23,7 +23,7 @@ export function OTP({navigation}: OTPProps) {
             <AppButton
                 type='primary'
                 title='Submit'
-                onPress={() => console.log('Submit')}
+                onPress={() => navigation.navigate("ResetPassword")}
                 style={styles.submitButton}
             />
         </View>

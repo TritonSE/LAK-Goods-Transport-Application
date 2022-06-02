@@ -28,7 +28,7 @@ export function ResetPassword({navigation}: ResetPasswordProps) {
             <AppButton
                 type='primary'
                 title='Reset Pin'
-                onPress={() => navigation.navigate('OTP')}
+                onPress={() => navigation.navigate('ResetSuccess')}
                 style={styles.submitButton}
             />
         </View>
