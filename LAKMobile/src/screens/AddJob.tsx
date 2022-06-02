@@ -9,6 +9,7 @@ import {
   ScreenHeader,
   AppTextInput,
   ImagePickerButton,
+  ModalAlert,
 } from "../components";
 import { COLORS } from "../../constants";
 
@@ -72,6 +73,7 @@ const reducer: ImagesReducer = (state, action): ImagesReducerState => {
 
 export function AddJob() {
   const [imageURIs, dispatch] = useReducer(reducer, ["", "", ""]);
+  const [permissionAlertVisible, setPermissionAlertVisible] = useState(false);
   const [jobTitle, setJobTitle] = useState("");
   const [clientName, setClientName] = useState("");
   const [deliveryDate, setDeliveryDate] = useState("");
@@ -88,8 +90,7 @@ export function AddJob() {
     const permissionResult =
       await ImagePicker.requestMediaLibraryPermissionsAsync();
     if (!permissionResult.granted) {
-      // TODO display alert message
-      console.log(":(");
+      setPermissionAlertVisible(true);
       return;
     }
     const pickerResult = await ImagePicker.launchImageLibraryAsync();
@@ -279,6 +280,13 @@ export function AddJob() {
           type="primary"
         />
       </ScrollView>
+      <ModalAlert
+        title="Permission Needed"
+        message="Please allow access to photos in Settings!"
+        confirmLabel="Close"
+        onConfirm={() => setPermissionAlertVisible(false)}
+        visible={permissionAlertVisible}
+      />
     </View>
   );
 }
