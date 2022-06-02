@@ -20,14 +20,14 @@ type DetailsScreenProps = {
 
 export function DetailsScreen({jobId}: DetailsScreenProps) {
     // temporary dummy data
-    jobId = "62307de6ec658d185f81dff3";
+    jobId = "623082910cd4cacb726883ab";
     const user = "client1"
     const [jobData, setJobData] = useState(null);
     const [driverData, setDriverData] = useState(null);
 
     const getJobData = async () => {
         // replace "10.0.2.2" with localhost if using web
-        await fetch("http://localhost:3000/api/jobs/" + jobId + "?user=" + user, {
+        await fetch("http://10.0.2.2:3000/api/jobs/" + jobId + "?user=" + user, {
             method: "GET",
             mode: "cors",
             headers: {
@@ -110,22 +110,21 @@ export function DetailsScreen({jobId}: DetailsScreenProps) {
                     ) : null}
 
                     <View style={styles.fieldContainer}>
-                        <AppText style={{fontWeight: "bold"}}>Contact:</AppText>
-                        <AppText>{jobData?.job.clientName}</AppText>
+                        <AppText style={{fontWeight: "bold"}}>Contacts:</AppText>
+                        <AppText>Sender: {jobData?.job.clientName}</AppText>
                         <AppText onPress={() => {
                             Linking.openURL('tel:' + jobData?.job.phoneNumber);
                         }}
                                  style={styles.phoneNumber}>
                             {jobData?.job.phoneNumber}
                         </AppText>
-                        <AppText>{driverData?.users[0].firstName} {driverData?.users[0].lastName}</AppText>
+                        <AppText>Receiver: {driverData?.users[0].firstName} {driverData?.users[0].lastName}</AppText>
                         <AppText onPress={() => {
                             Linking.openURL('tel:' + driverData?.users[0].phone);
                         }}
                                  style={styles.phoneNumber}>
                             {driverData?.users[0].phone}
                         </AppText>
-                        <AppText>{driverData?.users[0].phone}a</AppText>
                     </View>
                 </ScrollView>
             ) : null}
