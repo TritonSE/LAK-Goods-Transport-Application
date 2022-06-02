@@ -2,8 +2,9 @@ import React from 'react';
 import { StyleSheet, TextInput, View } from 'react-native';
 import { AppText, LabelWrapper, AppButton, ScreenHeader } from '../components';
 import { COLORS } from '../../constants';
+import {ResetPasswordProps} from '../types/navigation';
 
-export function ResetPassword() {
+export function ResetPassword({navigation}: ResetPasswordProps) {
     return(
         <View style={styles.container}>
             <ScreenHeader showArrow={true}>
@@ -27,7 +28,7 @@ export function ResetPassword() {
             <AppButton
                 type='primary'
                 title='Reset Pin'
-                onPress={() => console.log('Reset pin')}
+                onPress={() => navigation.navigate('OTP')}
                 style={styles.submitButton}
             />
         </View>

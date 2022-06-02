@@ -25,7 +25,7 @@ export function LoginScreen({navigation}: LoginProps) {
             <AppButton 
                 type='link' 
                 title='Forgot PIN?' 
-                onPress={() => console.log('Forgot PIN button pressed')}
+                onPress={() => navigation.navigate('ResetPassword')}
                 style={styles.forgotPIN}
             />
 
