@@ -1,18 +1,48 @@
-import User from './models/user';
+import { ValidationError } from "./errors";
+// Sample Users (for testing only)
 
-export const SAMPLE_USER = User({
-  firstName: 'Test',
+export const SAMPLE_USER_PAYLOAD = {
+  firstName: 'Trucker1',
   lastName: 'User',
   password: 'password',
   phone: 'number',
   location: 'location',
-  _id: '621bda9026575a70d82448c1',
-});
+};
 
-export const SAMPLE_USER2 = User({
-  firstName: 'Test2',
-  lastName: 'User2',
-  password: 'password2',
-  phone: 'number2',
-  location: 'location2'
-});
+export const TEST_TRCUKER_1 = {
+  firstName: 'Trucker1',
+  lastName: 'User',
+  password: 'password',
+  phone: 'number',
+  location: 'location',
+  _id: '62306b0832164f9d56114029',
+};
+
+export const TEST_TRCUKER_2 = {
+  firstName: 'Trucker2',
+  lastName: 'User',
+  password: 'password',
+  phone: 'number',
+  location: 'location',
+  _id: '62306af1dd523e31b07bb10c',
+};
+
+export const TEST_CLIENT_1 = {
+  firstName: 'Client1',
+  lastName: 'User',
+  password: 'password',
+  phone: 'number',
+  location: 'location',
+  _id: '62306adf7f4a466b571f6b42'
+}
+
+export const getSessionUserId = (req) => { // For testing purposes
+  const map = {
+    'client1': TEST_CLIENT_1,
+    'trucker1': TEST_TRCUKER_1,
+    'trucker2': TEST_TRCUKER_2,
+  }
+  if (!('user' in req.query)) return map['client1']._id;
+  const alias = req.query.user;
+  return map[alias]._id;
+};

@@ -2,7 +2,7 @@ import ImageModel from '../models/image';
 import { InternalError, ServiceError } from '../errors';
 
 export async function saveImage(rawImage) {
-    console.debug('saveImage service running ', rawImage.originalname);
+    console.debug('SERVICE: saveImage service running ', rawImage.originalname);
     let image = ImageModel({
         buffer: rawImage.buffer,
         originalname: rawImage.originalname,
@@ -20,7 +20,7 @@ export async function saveImage(rawImage) {
 }
 
 export async function getImage(imageId) {
-    console.debug('getImage service running ', imageId);
+    console.debug('SERVICE: getImage service running: imageId -', imageId);
     let image = await ImageModel.findById(imageId);
     if (!image) {
         throw ServiceError.IMAGE_NOT_FOUND;
@@ -29,7 +29,7 @@ export async function getImage(imageId) {
 }
 
 export async function deleteImage(imageId) {
-    console.debug('deleteImage service running', imageId);
+    console.debug('SERVICE: deleteImage service running: imageId -', imageId);
     // TODO To be tested
 
     try {
