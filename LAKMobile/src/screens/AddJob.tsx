@@ -123,26 +123,6 @@ export function AddJob() {
       </View>
 
       <ScrollView contentContainerStyle={styles.container}>
-        <View style={styles.photos}>
-          {imageURIs.map((uri, index) => (
-            <ImagePickerButton
-              key={index}
-              sourceURI={uri}
-              onSelect={() => handleTapImage(index)}
-            />
-          ))}
-        </View>
-
-        <View style={[styles.spacer]}>
-          <AppText style={styles.photoInstructions}>
-            At least one photo of the package is required. Tap on a photo to
-            remove it.
-          </AppText>
-          <AppText style={styles.photoInstructions}>
-            Note: The first photo will be the thumbnail of the job listing.
-          </AppText>
-        </View>
-
         <LabelWrapper label="Job Title">
           <AppTextInput
             value={jobTitle}
@@ -272,6 +252,26 @@ export function AddJob() {
             icon="phone-in-talk"
           />
         </LabelWrapper>
+
+        <View style={styles.photos}>
+          {imageURIs.map((uri, index) => (
+            <ImagePickerButton
+              key={index}
+              sourceURI={uri}
+              onSelect={() => handleTapImage(index)}
+            />
+          ))}
+        </View>
+
+        <View style={[styles.spacer]}>
+          <AppText style={styles.photoInstructions}>
+            At least one photo of the package is required. Tap on a photo to
+            remove it.
+          </AppText>
+          <AppText style={styles.photoInstructions}>
+            Note: The first photo will be the thumbnail of the job listing.
+          </AppText>
+        </View>
 
         <AppButton
           onPress={submitJob}
