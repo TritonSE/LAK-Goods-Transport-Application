@@ -1,25 +1,30 @@
 import React from "react";
 import { Modal, Pressable, StyleSheet, Text, View } from "react-native";
 
+interface ModalButtonOptions {
+  type: "primary" | "secondary";
+  label: string;
+  onPress: () => void;
+}
+
 interface ModalProps {
   title: string;
   message?: string;
-  confirmLabel: string;
-  onConfirm: () => void;
-  cancelLabel?: string;
-  onCancel?: () => void;
+  buttons: ModalButtonOptions[];
   visible: boolean;
 }
 
 /**
- * This component works like the built-in `Modal` (https://reactnative.dev/docs/modal).
+ * This component works like the built-in `Modal`
+ * (https://reactnative.dev/docs/modal).
  *
- * The `message`, `cancelLabel`, and `onCancel` props are optional. If
- * `cancelLabel` is not provided, then there is only the confirmation button.
+ * The `buttons` prop works similarly to the built-in `Alert`
+ * (https://reactnative.dev/docs/alert). "Primary" buttons have red labels and
+ * "secondary" buttons have black labels.
  *
  * Note that **the parent component completely controls whether the modal is
- * visible or not.** That means the `onConfirm` and `onCancel` callbacks should
- * hide the modal in addition to performing any other handling actions.
+ * visible or not.** That means the button press callbacks should hide the modal
+ * in addition to performing any other handling actions.
  *
  * Example usage:
  *
@@ -36,10 +41,10 @@ interface ModalProps {
  *       <ModalAlert
  *         title="Modal title"
  *         message="Optional message"
- *         confirmLabel="Confirm"
- *         onConfirm={() => handleConfirm()}
- *         cancelLabel="Optional cancel"
- *         onCancel={() => handleCancel()}
+ *         buttons={[
+ *           { type: "secondary", label: "Cancel", onPress: handleCancel },
+ *           { type: "primary", label: "Confirm", onPress: handleConfirm },
+ *         ]}
  *         visible={modalVisible}
  *       />
  *     </View>
@@ -47,49 +52,41 @@ interface ModalProps {
  * }
  * ```
  */
-export function ModalAlert({
-  title,
-  message,
-  confirmLabel,
-  onConfirm,
-  cancelLabel,
-  onCancel,
-  visible,
-}: ModalProps) {
+export function ModalAlert({ title, message, buttons, visible }: ModalProps) {
   return (
     <Modal animationType="fade" transparent visible={visible}>
       <View style={styles.modalWrapper}>
         <View style={styles.modalBox}>
           <Text style={styles.modalTitle}>{title}</Text>
           {message ? <Text style={styles.modalMessage}>{message}</Text> : null}
-          <View style={styles.modalButtonWrapper}>
-            {cancelLabel ? (
+          <View
+            style={[
+              styles.modalButtonWrapper,
+              buttons.length > 2 ? styles.modalButtonWrapperVertical : null,
+            ]}
+          >
+            {buttons.map((button, index) => (
               <Pressable
-                onPress={() => {
-                  if (onCancel) {
-                    onCancel();
-                  }
-                }}
+                key={index}
+                onPress={button.onPress}
                 android_ripple={{ color: "#ccc" }}
-                style={styles.modalButton}
-              >
-                <Text style={styles.modalButtonLabel}>{cancelLabel}</Text>
-              </Pressable>
-            ) : null}
-            <Pressable
-              onPress={onConfirm}
-              android_ripple={{ color: "#ccc" }}
-              style={styles.modalButton}
-            >
-              <Text
                 style={[
-                  styles.modalButtonLabel,
-                  styles.modalButtonLabelPrimary,
+                  styles.modalButton,
+                  buttons.length > 2 ? styles.modalButtonVertical : null,
                 ]}
               >
-                {confirmLabel}
-              </Text>
-            </Pressable>
+                <Text
+                  style={[
+                    styles.modalButtonLabel,
+                    button.type === "primary"
+                      ? styles.modalButtonLabelPrimary
+                      : null,
+                  ]}
+                >
+                  {button.label}
+                </Text>
+              </Pressable>
+            ))}
           </View>
         </View>
       </View>
@@ -134,16 +131,24 @@ const styles = StyleSheet.create({
     flexDirection: "row",
     justifyContent: "center",
   },
+  modalButtonWrapperVertical: {
+    flexDirection: "column",
+    alignItems: "stretch",
+  },
   modalButton: {
     flex: 1,
     alignItems: "center",
     paddingVertical: 10,
+  },
+  modalButtonVertical: {
+    flex: 0,
   },
   modalButtonLabel: {
     fontFamily: "Roboto",
     fontSize: 16,
     fontWeight: "700",
     color: "#333",
+    textAlign: "center",
   },
   modalButtonLabelPrimary: {
     color: "#da5c5c",
