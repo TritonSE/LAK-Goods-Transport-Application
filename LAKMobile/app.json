@@ -30,7 +30,8 @@
       [
         "expo-image-picker",
         {
-          "photosPermission": "Access your photos to add them to a job listing"
+          "photosPermission": "Access your photos to add them to a job listing",
+          "cameraPermission": "Access your camera to take a photo for a job listing"
         }
       ]
     ]

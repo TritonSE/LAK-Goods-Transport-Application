@@ -2,6 +2,7 @@ import React, { Reducer, useCallback, useReducer, useState } from "react";
 import { ScrollView, StyleSheet, View } from "react-native";
 import { Picker } from "@react-native-picker/picker";
 import * as ImagePicker from "expo-image-picker";
+import type { ImagePickerErrorResult } from "expo-image-picker";
 import {
   AppText,
   LabelWrapper,
@@ -74,6 +75,7 @@ const reducer: ImagesReducer = (state, action): ImagesReducerState => {
 export function AddJob() {
   const [imageURIs, dispatch] = useReducer(reducer, ["", "", ""]);
   const [permissionAlertVisible, setPermissionAlertVisible] = useState(false);
+  const [imagePickPromptVisible, setImagePickPromptVisible] = useState(false);
   const [jobTitle, setJobTitle] = useState("");
   const [clientName, setClientName] = useState("");
   const [deliveryDate, setDeliveryDate] = useState("");
@@ -86,7 +88,7 @@ export function AddJob() {
   const [dropoffDistrict, setDropoffDistrict] = useState("");
   const [phoneNumber, setPhoneNumber] = useState("");
 
-  const openImagePicker = useCallback(async () => {
+  const openImageLibrary = useCallback(async () => {
     const permissionResult =
       await ImagePicker.requestMediaLibraryPermissionsAsync();
     if (!permissionResult.granted) {
@@ -94,21 +96,34 @@ export function AddJob() {
       return;
     }
     const pickerResult = await ImagePicker.launchImageLibraryAsync();
-    if (pickerResult.cancelled) {
+    if (!pickerResult.cancelled) {
+      dispatch({ type: "ADD_IMAGE", payload: pickerResult.uri });
+    }
+    setImagePickPromptVisible(false);
+  }, []);
+
+  const openCamera = useCallback(async () => {
+    const permissionResult = await ImagePicker.requestCameraPermissionsAsync();
+    if (!permissionResult.granted) {
+      setPermissionAlertVisible(true);
       return;
     }
-    dispatch({ type: "ADD_IMAGE", payload: pickerResult.uri });
+    const cameraResult = await ImagePicker.launchCameraAsync();
+    if (!cameraResult.cancelled) {
+      dispatch({ type: "ADD_IMAGE", payload: cameraResult.uri });
+    }
+    setImagePickPromptVisible(false);
   }, []);
 
   const handleTapImage = useCallback(
     (index) => {
       if (imageURIs[index] === "") {
-        openImagePicker();
+        setImagePickPromptVisible(true);
       } else {
         dispatch({ type: "REMOVE_IMAGE", payload: index });
       }
     },
-    [imageURIs, openImagePicker]
+    [imageURIs]
   );
 
   const submitJob = useCallback(() => {
@@ -283,9 +298,31 @@ export function AddJob() {
       <ModalAlert
         title="Permission Needed"
         message="Please allow access to photos in Settings!"
-        confirmLabel="Close"
-        onConfirm={() => setPermissionAlertVisible(false)}
+        buttons={[
+          {
+            type: "primary",
+            label: "Close",
+            onPress: () => setPermissionAlertVisible(false),
+          },
+        ]}
         visible={permissionAlertVisible}
+      />
+      <ModalAlert
+        title="Add Photo"
+        buttons={[
+          {
+            type: "primary",
+            label: "Upload from library",
+            onPress: openImageLibrary,
+          },
+          { type: "primary", label: "Take with camera", onPress: openCamera },
+          {
+            type: "secondary",
+            label: "Cancel",
+            onPress: () => setImagePickPromptVisible(false),
+          },
+        ]}
+        visible={imagePickPromptVisible}
       />
     </View>
   );
