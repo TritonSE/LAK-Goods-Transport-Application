@@ -5,25 +5,15 @@ import { StyleSheet, View } from "react-native";
 import { ScreenHeader, ImageCarousel, ApplicantThumbnail } from "./src/components";
 import { SignupScreen, LoginScreen, AddJob, ForgotPassword, OTP } from "./src/screens";
 import { MOCK_APPLICANT_DATA } from './constants';
-
 export default function App() {
-  return <>
-    <ListJobs />
-    {/* // Thumbnail Demo */}
-    {/* <View style={styles.container}>
-      <ApplicantThumbnail applicantData={MOCK_APPLICANT_DATA} status='Accepted' style={{marginHorizontal: 10}}/>
-      <ApplicantThumbnail applicantData={MOCK_APPLICANT_DATA} status='Unassigned' style={{marginHorizontal: 10}}/>
-      <ApplicantThumbnail applicantData={MOCK_APPLICANT_DATA} status='Denied' style={{marginHorizontal: 10}}/>
-    </View> */}
-
-
-    <View style={styles.container}>
-      <ForgotPassword></ForgotPassword>
-    </View>
-
-    // <SignupScreen />
-
-  );
+  return <AddJob formType="edit" jobID="62914221fc854ad69e5a68aa"/>
+  // return <>
+  //   {/* // Thumbnail Demo */}
+  //   <View style={styles.container}>
+  //     <ApplicantThumbnail applicantData={MOCK_APPLICANT_DATA} status='Accepted' style={{marginHorizontal: 10}}/>
+  //     <ApplicantThumbnail applicantData={MOCK_APPLICANT_DATA} status='Unassigned' style={{marginHorizontal: 10}}/>
+  //     <ApplicantThumbnail applicantData={MOCK_APPLICANT_DATA} status='Denied' style={{marginHorizontal: 10}}/>
+  //   </View>
     {/* // Carousel Demo */}
     {/* <ImageCarousel
       imageIds={[
@@ -33,7 +23,6 @@ export default function App() {
         "623082900cd4cacb726883a9",
       ]}
     /> */}
-  </>;
 }
 
 const styles = StyleSheet.create({

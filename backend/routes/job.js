@@ -61,19 +61,19 @@ routes.post('/', upload, async (req, res, next) => {
  */
 routes.patch('/:jobid', upload, async (req, res, next) => {
     console.info('ROUTE: Updating job:', req.params.jobid);
-    
+    console.info("JOB DATA IS: " + JSON.stringify(req.body));
     let jobId = null;
     try {
         jobId = validateId(req.params.jobid);
         const payload = req.body;
-
+        console.log("REQ IS " + req);
         const userId = getSessionUserId(req);
 
         await updateJob(
             userId,
             jobId,
             payload,
-            req.files,
+            req.files || [],
         );
     } catch (e) {
         next(e);
