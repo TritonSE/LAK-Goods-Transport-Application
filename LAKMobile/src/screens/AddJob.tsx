@@ -136,7 +136,7 @@ export function AddJob({ formType, jobID }: AddJobProps) {
       setPermissionAlertVisible(true);
       return;
     }
-    const pickerResult = await ImagePicker.launchImageLibraryAsync();
+    const pickerResult = await ImagePicker.launchImageLibraryAsync({mediaTypes: ImagePicker.MediaTypeOptions.Images});
     if (!pickerResult.cancelled) {
       dispatch({ type: "ADD_IMAGE", payload: pickerResult.uri });
     }
@@ -172,7 +172,7 @@ export function AddJob({ formType, jobID }: AddJobProps) {
     // TODO: when submitting, remember to filter out empty strings from imageURIs
     console.log("submitJob");
 
-    if (formType === "add") {
+    if (formType === "add" || formType=="repost") {
       const body={
         //TODO pickup and dropoff district
         title: jobTitle,
@@ -416,9 +416,23 @@ export function AddJob({ formType, jobID }: AddJobProps) {
         <AppButton
           onPress={submitJob}
           style={[styles.center, { width: "100%" }]}
-          title="Post Job"
+          title={
+            formType === "add"
+              ? "Post Job"
+              : formType === "edit"
+              ? "Update"
+              : "Repost"
+          }
           type="primary"
         />
+        {formType === "edit" && (
+          <AppButton
+            onPress={deleteJob}
+            style={[styles.center, { width: "100%", margin: 15 }]}
+            title="Delete"
+            type="secondary"
+          />
+        )}
       </ScrollView>
       <ModalAlert
         title="Permission Needed"
