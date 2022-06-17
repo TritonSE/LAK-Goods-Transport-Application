@@ -65,6 +65,7 @@ export async function createJob(userId, jobData, jobImages) {
  * @param {list} jobImages 
  */
 export async function updateJob(userId, jobId, jobData, jobImages) {
+    console.log(jobImages)
     console.debug(`SERVICE: updateJob service runnning: jobId - ${jobId}, userId - ${userId}, jobData - payload, jobImages - files`);
 
     // Retrieve original job
@@ -100,6 +101,7 @@ export async function updateJob(userId, jobId, jobData, jobImages) {
         ...jobData,
         imageIds: newImageIds,
     }
+    console.log("JOB DATA IS " + JSON.stringify(jobData));
 
     try {
         await JobModel.findOneAndUpdate({'_id': jobId}, jobData)

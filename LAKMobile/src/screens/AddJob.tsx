@@ -1,4 +1,4 @@
-import React, { Reducer, useCallback, useReducer, useState } from "react";
+import React, { Reducer, useCallback, useEffect, useReducer, useState } from "react";
 import { ScrollView, StyleSheet, View } from "react-native";
 import { Picker } from "@react-native-picker/picker";
 import * as ImagePicker from "expo-image-picker";
@@ -50,7 +50,12 @@ interface ImagesReducerRemoveAction {
   payload: number;
 }
 
-type ImagesReducerAction = ImagesReducerAddAction | ImagesReducerRemoveAction;
+interface ImagesReducerSetAction {
+  type: "SET_IMAGES";
+  payload: string[];
+}
+
+type ImagesReducerAction = ImagesReducerAddAction | ImagesReducerRemoveAction | ImagesReducerSetAction;
 
 type ImagesReducer = Reducer<ImagesReducerState, ImagesReducerAction>;
 
@@ -72,12 +77,17 @@ const reducer: ImagesReducer = (state, action): ImagesReducerState => {
   return newState;
 };
 
-export function AddJob() {
+interface AddJobProps {
+  formType: "add" | "edit" | "repost";
+  jobID: string;
+}
+
+export function AddJob({ formType, jobID }: AddJobProps) {
   const [imageURIs, dispatch] = useReducer(reducer, ["", "", ""]);
   const [permissionAlertVisible, setPermissionAlertVisible] = useState(false);
   const [imagePickPromptVisible, setImagePickPromptVisible] = useState(false);
   const [jobTitle, setJobTitle] = useState("");
-  const [clientName, setClientName] = useState("");
+  const [clientName, setClientName] = useState("HELLO");
   const [deliveryDate, setDeliveryDate] = useState("");
   const [description, setDescription] = useState("");
   const [quantity, setQuantity] = useState("");
@@ -88,6 +98,37 @@ export function AddJob() {
   const [dropoffDistrict, setDropoffDistrict] = useState("");
   const [phoneNumber, setPhoneNumber] = useState("");
 
+  useEffect(() => {
+    const getJobData = async () => {
+      fetch("http://10.0.2.2:3000/api/jobs/" + jobID + "?user=client1", {
+        method: "GET",
+        mode: "cors",
+        headers: {
+          "content-type": "application/json",
+        },
+      }).then(async (response) => {
+        let json = await response.json();
+        console.log(JSON.stringify(json));
+        const job = json.job;
+        setJobTitle(job.title);
+        setClientName(job.clientName);
+        setPhoneNumber(job.phoneNumber);
+        setDeliveryDate(job.deliveryDate);
+        setDescription(job.description);
+        setQuantity(job.packageQuantity.toString());
+        setPrice(job.price.toString());
+        setPickupLocation(job.pickupLocation);
+        setPickupDistrict("");
+        setDropoffLocation(job.dropoffLocation);
+        setDropoffDistrict("");
+        dispatch({ type: "SET_IMAGES", payload: job.imageIds });
+      });
+    };
+    if (formType !== "add") {
+      getJobData();
+    }
+  }, [formType, jobID]);
+
   const openImageLibrary = useCallback(async () => {
     const permissionResult =
       await ImagePicker.requestMediaLibraryPermissionsAsync();
@@ -95,7 +136,7 @@ export function AddJob() {
       setPermissionAlertVisible(true);
       return;
     }
-    const pickerResult = await ImagePicker.launchImageLibraryAsync();
+    const pickerResult = await ImagePicker.launchImageLibraryAsync({mediaTypes: ImagePicker.MediaTypeOptions.Images});
     if (!pickerResult.cancelled) {
       dispatch({ type: "ADD_IMAGE", payload: pickerResult.uri });
     }
@@ -126,10 +167,94 @@ export function AddJob() {
     [imageURIs]
   );
 
-  const submitJob = useCallback(() => {
+
+  const submitJob = async() => {
     // TODO: when submitting, remember to filter out empty strings from imageURIs
     console.log("submitJob");
-  }, []);
+
+    if (formType === "add" || formType=="repost") {
+      const body={
+        //TODO pickup and dropoff district
+        title: jobTitle,
+        clientName: clientName,
+        phoneNumber: phoneNumber,
+        deliveryDate: deliveryDate,
+        description: description,
+        packageQuantity: parseInt(quantity),
+        price: parseInt(price),
+        pickupLocation: pickupLocation,
+        dropoffLocation: dropoffLocation,
+        imageIds: imageURIs.filter((value) => value !== "")
+      }
+      fetch("http://10.0.2.2:3000/api/jobs/?user=client1", {
+        method: "POST",
+        mode: "cors",
+        headers: {
+          "content-type": "application/json",
+        }, 
+        body: JSON.stringify(body)
+      }).then(async (response) => {
+        let json = await response.json();
+        console.log(JSON.stringify(json));
+        console.log(json.jobId);
+
+        //TODO
+
+
+      });
+    }
+    else if (formType === "edit") {
+      const body={
+        //TODO pickup and dropoff district
+        title: jobTitle,
+        clientName: clientName,
+        phoneNumber: phoneNumber,
+        deliveryDate: deliveryDate,
+        description: description,
+        packageQuantity: parseInt(quantity),
+        price: parseInt(price),
+        pickupLocation: pickupLocation,
+        dropoffLocation: dropoffLocation,
+        imageIds: imageURIs.filter((value) => value !== "")
+      }
+      console.log("CLIENT NAME IS " + clientName);
+      //TODO
+      fetch("http://10.0.2.2:3000/api/jobs/" + jobID + "?user=client1", {
+        method: "PATCH",
+        mode: "cors",
+        headers: {
+          "content-type": "application/json",
+        },
+        body: JSON.stringify(body)
+      }).then(async (response) => {
+        let json = await response.json();
+        console.log(JSON.stringify(json));
+      })
+
+    }
+    else {
+      //TODO
+    }
+  };
+
+  const deleteJob = () => {
+    // TODO
+    console.log("JOBID IS " + jobID)
+    fetch("http://10.0.2.2:3000/api/jobs/" + jobID +"?user=client1", {
+      method: "DELETE",
+      mode: "cors",
+      headers: {
+        "content-type": "application/json",
+      }, 
+    }).then(async (response) => {
+      let json = await response.json();
+      console.log(JSON.stringify(json));
+
+      //TODO - Route out of page
+
+
+    });
+  };
 
   return (
     <View>
@@ -291,9 +416,23 @@ export function AddJob() {
         <AppButton
           onPress={submitJob}
           style={[styles.center, { width: "100%" }]}
-          title="Post Job"
+          title={
+            formType === "add"
+              ? "Post Job"
+              : formType === "edit"
+              ? "Update"
+              : "Repost"
+          }
           type="primary"
         />
+        {formType === "edit" && (
+          <AppButton
+            onPress={deleteJob}
+            style={[styles.center, { width: "100%", margin: 15 }]}
+            title="Delete"
+            type="secondary"
+          />
+        )}
       </ScrollView>
       <ModalAlert
         title="Permission Needed"
