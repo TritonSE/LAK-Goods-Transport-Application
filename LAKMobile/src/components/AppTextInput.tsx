@@ -5,16 +5,28 @@ import MaterialIcon  from 'react-native-vector-icons/MaterialIcons';
 type AppTextInputProps = TextInputProps & {
     icon?: string,
     style?: StyleProp<TextStyle>
+    err?: boolean
 }
 
-export function AppTextInput({icon, style, ...textInputProps}: AppTextInputProps) {
+export function AppTextInput({icon, err, style, ...textInputProps}: AppTextInputProps) {
     return (
-        <View style={[styles.textInputWrapper, style]}>
+      <>
+      {err ?
+      <View style={[styles.textInputWrapper, style]}>
             { icon && 
               <MaterialIcon style={styles.icon} name={icon} size={20} color="gray"/>
             }
             <TextInput style={styles.textInput} {...textInputProps}/>
       </View>
+      : 
+      <View style={[styles.textInputWrapper, style]}>
+        { icon && 
+        <MaterialIcon style={styles.icon} name={icon} size={20} color="gray"/>
+        }
+        <TextInput style={styles.textInput} {...textInputProps}/>
+      </View>
+      }
+      </>
     )
 }
 
@@ -32,6 +44,7 @@ const styles = StyleSheet.create({
       width: '100%',
       height: '100%'
     },
+    
     textInputWrapper: {
       paddingHorizontal: 10,
       display: 'flex',
