@@ -1,3 +1,12 @@
+---
+name: Epic
+about: Create an Epic
+title: ''
+labels: Epic
+assignees: ''
+
+---
+
 Related Issues:
 - 
 - 
