@@ -6,9 +6,10 @@ type AppTextInputProps = TextInputProps & {
     icon?: string,
     style?: StyleProp<TextStyle>
     err?: boolean
+    errLabel ?: string
 }
 
-export function AppTextInput({icon, err, style, ...textInputProps}: AppTextInputProps) {
+export function AppTextInput({icon, err, errLabel, style, ...textInputProps}: AppTextInputProps) {
     return (
       <>
       {err ?
