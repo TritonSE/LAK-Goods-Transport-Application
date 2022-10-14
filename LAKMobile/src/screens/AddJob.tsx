@@ -79,7 +79,7 @@ const reducer: ImagesReducer = (state, action): ImagesReducerState => {
 
 interface AddJobProps {
   formType: "add" | "edit" | "repost";
-  jobID: string;
+  jobID: string | null;
 }
 
 export function AddJob({ formType, jobID }: AddJobProps) {
@@ -87,7 +87,7 @@ export function AddJob({ formType, jobID }: AddJobProps) {
   const [permissionAlertVisible, setPermissionAlertVisible] = useState(false);
   const [imagePickPromptVisible, setImagePickPromptVisible] = useState(false);
   const [jobTitle, setJobTitle] = useState("");
-  const [clientName, setClientName] = useState("HELLO");
+  const [clientName, setClientName] = useState("");
   const [deliveryDate, setDeliveryDate] = useState("");
   const [description, setDescription] = useState("");
   const [quantity, setQuantity] = useState("");
@@ -167,23 +167,37 @@ export function AddJob({ formType, jobID }: AddJobProps) {
     [imageURIs]
   );
 
+  const checkRequired = () => {
+    if (jobTitle === "") {
+
+      return;
+    }
+    if (phoneNumber === "" || phoneNumber.length < 7) {
+      return false
+    }
+
+  }
 
   const submitJob = async() => {
     // TODO: when submitting, remember to filter out empty strings from imageURIs
-    console.log("submitJob");
+
+    //TODO: Check for empty required inputs
+    if (!checkRequired()) {
+      return;
+    }
 
     if (formType === "add" || formType=="repost") {
       const body={
         //TODO pickup and dropoff district
-        title: jobTitle,
-        clientName: clientName,
+        title: jobTitle.trim(),
+        clientName: clientName.trim(),
         phoneNumber: phoneNumber,
         deliveryDate: deliveryDate,
-        description: description,
+        description: description.trim(),
         packageQuantity: parseInt(quantity),
         price: parseInt(price),
-        pickupLocation: pickupLocation,
-        dropoffLocation: dropoffLocation,
+        pickupLocation: pickupLocation.trim(),
+        dropoffLocation: dropoffLocation.trim(),
         imageIds: imageURIs.filter((value) => value !== "")
       }
       fetch("http://10.0.2.2:3000/api/jobs/?user=client1", {
@@ -385,11 +399,13 @@ export function AddJob({ formType, jobID }: AddJobProps) {
 
         <LabelWrapper label="Phone number">
           <AppTextInput
+          
             value={phoneNumber}
             onChangeText={setPhoneNumber}
             style={[inputStyleFull, styles.spacer]}
             placeholder="Ex. 17113456"
             icon="phone-in-talk"
+            keyboardType="numeric"
           />
         </LabelWrapper>
 
