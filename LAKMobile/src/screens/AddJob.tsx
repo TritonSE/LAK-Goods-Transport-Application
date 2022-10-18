@@ -88,6 +88,9 @@ export function AddJob({ formType, jobID }: AddJobProps) {
   const [imagePickPromptVisible, setImagePickPromptVisible] = useState(false);
   const [jobTitle, setJobTitle] = useState("");
   const [clientName, setClientName] = useState("");
+  const [phoneNumber, setPhoneNumber] = useState("");
+  const [receiverName, setReceiverName] = useState("");
+  const [receiverPhoneNumber, setReceiverPhoneNumber] = useState("");
   const [deliveryDate, setDeliveryDate] = useState("");
   const [description, setDescription] = useState("");
   const [quantity, setQuantity] = useState("");
@@ -96,7 +99,19 @@ export function AddJob({ formType, jobID }: AddJobProps) {
   const [pickupDistrict, setPickupDistrict] = useState("");
   const [dropoffLocation, setDropoffLocation] = useState("");
   const [dropoffDistrict, setDropoffDistrict] = useState("");
-  const [phoneNumber, setPhoneNumber] = useState("");
+  const [isValid, setIsValid] = useState({
+    "jobTitle": false,
+  })
+
+  const isPresent = (text: string, type: string) => {
+    let valid = text.length > 0;
+    setIsValid({...isValid, [type]: (valid)})
+    return valid
+  }
+
+  const matchers = {
+    presence: isPresent
+  }
 
   useEffect(() => {
     const getJobData = async () => {
@@ -167,24 +182,9 @@ export function AddJob({ formType, jobID }: AddJobProps) {
     [imageURIs]
   );
 
-  const checkRequired = () => {
-    if (jobTitle === "") {
-
-      return;
-    }
-    if (phoneNumber === "" || phoneNumber.length < 7) {
-      return false
-    }
-
-  }
-
   const submitJob = async() => {
     // TODO: when submitting, remember to filter out empty strings from imageURIs
-
-    //TODO: Check for empty required inputs
-    if (!checkRequired()) {
-      return;
-    }
+    console.log("SUBMITTED")
 
     if (formType === "add" || formType=="repost") {
       const body={
@@ -231,7 +231,6 @@ export function AddJob({ formType, jobID }: AddJobProps) {
         dropoffLocation: dropoffLocation,
         imageIds: imageURIs.filter((value) => value !== "")
       }
-      console.log("CLIENT NAME IS " + clientName);
       //TODO
       fetch("http://10.0.2.2:3000/api/jobs/" + jobID + "?user=client1", {
         method: "PATCH",
@@ -280,9 +279,12 @@ export function AddJob({ formType, jobID }: AddJobProps) {
         <LabelWrapper label="Job Title">
           <AppTextInput
             value={jobTitle}
-            onChangeText={setJobTitle}
+            changeAction={setJobTitle}
             style={[inputStyle2, styles.spacer]}
             placeholder="Ex. Box of apples"
+            checkValid={matchers.presence}
+            type="jobTitle"
+            errMsg = "Please write a title for your listing."
             maxLength={100}
             keyboardType="default"
           />
@@ -291,22 +293,60 @@ export function AddJob({ formType, jobID }: AddJobProps) {
         <LabelWrapper label="Client Name">
           <AppTextInput
             value={clientName}
-            onChangeText={setClientName}
+            changeAction={setClientName}
             style={[inputStyle2, styles.spacer]}
             placeholder="Ex. Gabby Gibson"
+            // pattern = {matchers.presence}
             maxLength={100}
             keyboardType="default"
+          />
+        </LabelWrapper>
+
+        <LabelWrapper label="Phone number">
+          <AppTextInput
+            value={phoneNumber}
+            changeAction={setPhoneNumber}
+            style={[inputStyleFull, styles.spacer]}
+            placeholder="Ex. 17113456"
+            icon="phone-in-talk"
+            // checkValid={matchers.presence}
+            keyboardType="numeric"
+            errMsg="Please insert the sender's phone number"
+          />
+        </LabelWrapper>
+
+        <LabelWrapper label="Receiver name">
+          <AppTextInput
+            value={receiverName}
+            changeAction={setReceiverName}
+            style={[inputStyle2, styles.spacer]}
+            placeholder="First Last"
+            maxLength={100}
+            keyboardType="default"
+          />
+        </LabelWrapper>
+
+        <LabelWrapper label="Receiver phone number">
+          <AppTextInput
+            value={receiverPhoneNumber}
+            changeAction={setReceiverPhoneNumber}
+            style={[inputStyleFull, styles.spacer]}
+            placeholder="Ex. 17113456"
+            icon="phone-in-talk"
+            keyboardType="numeric"
           />
         </LabelWrapper>
 
         <LabelWrapper label="Date to be delivered">
           <AppTextInput
             value={deliveryDate}
-            onChangeText={setDeliveryDate}
+            changeAction={setDeliveryDate}
             style={inputStyle2}
             placeholder="Ex. MM/DD/YYYY"
             maxLength={10}
+            // pattern = {matchers.date}
             keyboardType="default"
+            errMsg="Please put in a date or N/A if not applicable"
           />
           <AppText style={[styles.inputFooterText, styles.spacer]}>
             (put N/A if not applicable)
@@ -316,7 +356,7 @@ export function AddJob({ formType, jobID }: AddJobProps) {
         <LabelWrapper label="Description">
           <AppTextInput
             value={description}
-            onChangeText={setDescription}
+            changeAction={setDescription}
             multiline
             style={[styles.multilineInput, styles.spacer]}
             maxLength={1000}
@@ -335,7 +375,7 @@ export function AddJob({ formType, jobID }: AddJobProps) {
         <LabelWrapper label="Package Quantity">
           <AppTextInput
             value={quantity}
-            onChangeText={setQuantity}
+            changeAction={setQuantity}
             style={[inputStyle1, styles.spacer]}
             placeholder="Ex. 6"
             maxLength={10}
@@ -359,7 +399,9 @@ export function AddJob({ formType, jobID }: AddJobProps) {
             style={inputStyleFull}
             placeholder="Ex. Insert address or landmark"
             maxLength={100}
+            // checkValid={matchers.presence}
             icon="location-pin"
+            errMsg="Please input an address or landmark"
           />
 
           <View style={[styles.pickerWrapper, styles.spacer]}>
@@ -382,6 +424,8 @@ export function AddJob({ formType, jobID }: AddJobProps) {
             style={inputStyleFull}
             placeholder="Ex. Insert address or landmark"
             maxLength={100}
+            // pattern={matchers.presence}
+            errMsg="Please input an address or landmark"
             icon="location-pin"
           />
           <View style={[styles.pickerWrapper, styles.spacer]}>
@@ -395,18 +439,6 @@ export function AddJob({ formType, jobID }: AddJobProps) {
               ))}
             </Picker>
           </View>
-        </LabelWrapper>
-
-        <LabelWrapper label="Phone number">
-          <AppTextInput
-          
-            value={phoneNumber}
-            onChangeText={setPhoneNumber}
-            style={[inputStyleFull, styles.spacer]}
-            placeholder="Ex. 17113456"
-            icon="phone-in-talk"
-            keyboardType="numeric"
-          />
         </LabelWrapper>
 
         <View style={styles.photos}>
@@ -432,6 +464,7 @@ export function AddJob({ formType, jobID }: AddJobProps) {
         <AppButton
           onPress={submitJob}
           style={[styles.center, { width: "100%" }]}
+          type={Object.values(isValid).some(v => v === false) ? "disabled" : "primary"}
           title={
             formType === "add"
               ? "Post Job"
@@ -439,7 +472,6 @@ export function AddJob({ formType, jobID }: AddJobProps) {
               ? "Update"
               : "Repost"
           }
-          type="primary"
         />
         {formType === "edit" && (
           <AppButton

@@ -1,34 +1,35 @@
-import React from "react";
-import { TextInputProps, View, TextInput, StyleSheet, StyleProp, TextStyle } from 'react-native';
+import React, {useState} from "react";
+import { Text, TextInputProps, View, TextInput, StyleSheet, StyleProp, TextStyle } from 'react-native';
 import MaterialIcon  from 'react-native-vector-icons/MaterialIcons';
 
 type AppTextInputProps = TextInputProps & {
-    icon?: string,
+    icon?: string
     style?: StyleProp<TextStyle>
-    err?: boolean
-    errLabel ?: string
+    errMsg ?: string
+    value: string
+    changeAction?: React.Dispatch<React.SetStateAction<string>>
+    checkValid?: (a: string, b: string) => boolean
+    type?: string
 }
 
-export function AppTextInput({icon, err, errLabel, style, ...textInputProps}: AppTextInputProps) {
-    return (
-      <>
-      {err ?
-      <View style={[styles.textInputWrapper, style]}>
-            { icon && 
-              <MaterialIcon style={styles.icon} name={icon} size={20} color="gray"/>
-            }
-            <TextInput style={styles.textInput} {...textInputProps}/>
-      </View>
-      : 
-      <View style={[styles.textInputWrapper, style]}>
-        { icon && 
+export function AppTextInput({icon, errMsg, style, value, checkValid, type, changeAction, ...textInputProps}: AppTextInputProps) {
+  const [isError, setIsError] = useState(false)
+  const handleChange = (text: string) => {
+    changeAction && changeAction(text)
+    checkValid && type && setIsError(!checkValid(text, type));
+  }
+  
+  return (
+    <View style={[styles.textInputWrapper, style]}>
+      { icon && 
         <MaterialIcon style={styles.icon} name={icon} size={20} color="gray"/>
-        }
-        <TextInput style={styles.textInput} {...textInputProps}/>
-      </View>
       }
-      </>
-    )
+      <TextInput style={styles.textInput} onChangeText= {(text) => handleChange(text)} value={value} {...textInputProps}/>
+      {isError &&
+        <Text>{errMsg}</Text>
+      }
+    </View>
+  )
 }
 
 
