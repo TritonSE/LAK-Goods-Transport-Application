@@ -101,17 +101,38 @@ export function AddJob({ formType, jobID }: AddJobProps) {
   const [dropoffDistrict, setDropoffDistrict] = useState("");
   const [isValid, setIsValid] = useState({
     "jobTitle": false,
+    "phoneNumber": false,
+    "deliveryDate": false,
   })
 
-  const isPresent = (text: string, type: string) => {
+  //TODO: Abstract text validation to make more DRY
+  const validatePresence = (text: string, type: string) => {
     let valid = text.length > 0;
     setIsValid({...isValid, [type]: (valid)})
     return valid
   }
 
-  const matchers = {
-    presence: isPresent
+  const validatePhoneNumber = (text: string, type: string) => {
+    let valid = (text.startsWith('1') || text.startsWith('7')) && text.length == 8
+    setIsValid({...isValid, [type]: (valid)})
+    return valid
   }
+
+  const validateDate = (text: string, type: string) => {
+    let date_regex = /^(0[1-9]|1[0-2])\/(0[1-9]|1\d|2\d|3[01])\/(19|20)\d{2}$/;
+    let valid = date_regex.test(text);
+    setIsValid({...isValid, [type]: (valid)})
+    return valid
+  }
+
+  const validators = {
+    presence: validatePresence,
+    phoneNumber: validatePhoneNumber,
+    date: validateDate,
+  }
+  
+
+
 
   useEffect(() => {
     const getJobData = async () => {
@@ -282,7 +303,7 @@ export function AddJob({ formType, jobID }: AddJobProps) {
             changeAction={setJobTitle}
             style={[inputStyle2, styles.spacer]}
             placeholder="Ex. Box of apples"
-            checkValid={matchers.presence}
+            checkValid={validators.presence}
             type="jobTitle"
             errMsg = "Please write a title for your listing."
             maxLength={100}
@@ -296,7 +317,6 @@ export function AddJob({ formType, jobID }: AddJobProps) {
             changeAction={setClientName}
             style={[inputStyle2, styles.spacer]}
             placeholder="Ex. Gabby Gibson"
-            // pattern = {matchers.presence}
             maxLength={100}
             keyboardType="default"
           />
@@ -309,7 +329,8 @@ export function AddJob({ formType, jobID }: AddJobProps) {
             style={[inputStyleFull, styles.spacer]}
             placeholder="Ex. 17113456"
             icon="phone-in-talk"
-            // checkValid={matchers.presence}
+            checkValid={validators.phoneNumber}
+            type="phoneNumber"
             keyboardType="numeric"
             errMsg="Please insert the sender's phone number"
           />
@@ -344,7 +365,8 @@ export function AddJob({ formType, jobID }: AddJobProps) {
             style={inputStyle2}
             placeholder="Ex. MM/DD/YYYY"
             maxLength={10}
-            // pattern = {matchers.date}
+            checkValid = {validators.date}
+            type="deliveryDate"
             keyboardType="default"
             errMsg="Please put in a date or N/A if not applicable"
           />
