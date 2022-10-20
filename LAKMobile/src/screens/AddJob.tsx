@@ -14,8 +14,9 @@ import {
 } from "../components";
 import { COLORS } from "../../constants";
 
+const PICKER_DEFAULT = "-- Select a district --"
 const LOCATIONS = [
-  "-- Select a district --",
+  PICKER_DEFAULT,
   "Bumthang",
   "Chhukha",
   "Dagana",
@@ -38,44 +39,7 @@ const LOCATIONS = [
   "Zhemgang",
 ];
 
-type ImagesReducerState = string[];
 
-interface ImagesReducerAddAction {
-  type: "ADD_IMAGE";
-  payload: string;
-}
-
-interface ImagesReducerRemoveAction {
-  type: "REMOVE_IMAGE";
-  payload: number;
-}
-
-interface ImagesReducerSetAction {
-  type: "SET_IMAGES";
-  payload: string[];
-}
-
-type ImagesReducerAction = ImagesReducerAddAction | ImagesReducerRemoveAction | ImagesReducerSetAction;
-
-type ImagesReducer = Reducer<ImagesReducerState, ImagesReducerAction>;
-
-const reducer: ImagesReducer = (state, action): ImagesReducerState => {
-  let newState = state.slice();
-  switch (action.type) {
-    case "ADD_IMAGE":
-      const index = newState.findIndex((value) => value === "");
-      newState[index] = action.payload;
-      break;
-    case "REMOVE_IMAGE":
-      newState[action.payload] = "";
-      newState = newState.filter((value) => value !== "");
-      while (newState.length < 3) {
-        newState.push("");
-      }
-      break;
-  }
-  return newState;
-};
 
 interface AddJobProps {
   formType: "add" | "edit" | "repost";
@@ -83,6 +47,45 @@ interface AddJobProps {
 }
 
 export function AddJob({ formType, jobID }: AddJobProps) {
+  const [isValid, setIsValid] = useState({
+    "jobTitle": false,
+    "phoneNumber": false,
+    "deliveryDate": false,
+    "selectPickup": false,
+    "selectDropoff": false,
+    "imageSelect": false
+  })
+  interface ImagesReducerSetAction {
+    type: "SET_IMAGES";
+    payload: string[];
+  }
+
+  type ImagesReducerAction = ImagesReducerAddAction | ImagesReducerRemoveAction | ImagesReducerSetAction;
+
+  type ImagesReducer = Reducer<ImagesReducerState, ImagesReducerAction>;
+
+  const reducer: ImagesReducer = (state, action): ImagesReducerState => {
+    let newState = state.slice();
+    switch (action.type) {
+      case "ADD_IMAGE":
+        const index = newState.findIndex((value) => value === "");
+        newState[index] = action.payload;
+        setIsValid({...isValid, ["imageSelect"]: true})
+        break;
+      case "REMOVE_IMAGE":
+        newState[action.payload] = "";
+        newState = newState.filter((value) => value !== "");
+        while (newState.length < 3) {
+          newState.push("");
+        }
+        let valid = newState.some(v => v !== "")
+        console.log(valid)
+        setIsValid({...isValid, ["imageSelect"]: (valid)})
+        break;
+    }
+    return newState;
+  };
+
   const [imageURIs, dispatch] = useReducer(reducer, ["", "", ""]);
   const [permissionAlertVisible, setPermissionAlertVisible] = useState(false);
   const [imagePickPromptVisible, setImagePickPromptVisible] = useState(false);
@@ -99,11 +102,20 @@ export function AddJob({ formType, jobID }: AddJobProps) {
   const [pickupDistrict, setPickupDistrict] = useState("");
   const [dropoffLocation, setDropoffLocation] = useState("");
   const [dropoffDistrict, setDropoffDistrict] = useState("");
-  const [isValid, setIsValid] = useState({
-    "jobTitle": false,
-    "phoneNumber": false,
-    "deliveryDate": false,
-  })
+
+
+  type ImagesReducerState = string[];
+
+  interface ImagesReducerAddAction {
+    type: "ADD_IMAGE";
+    payload: string;
+  }
+
+  interface ImagesReducerRemoveAction {
+    type: "REMOVE_IMAGE";
+    payload: number;
+  }
+
 
   //TODO: Abstract text validation to make more DRY
   const validatePresence = (text: string, type: string) => {
@@ -125,10 +137,19 @@ export function AddJob({ formType, jobID }: AddJobProps) {
     return valid
   }
 
+  const validatePickerSelect = (value: string, type: string) => {
+    let valid = value !== PICKER_DEFAULT
+    setIsValid({...isValid, [type]: (valid)})
+    return valid
+  }
+
+
+
   const validators = {
     presence: validatePresence,
     phoneNumber: validatePhoneNumber,
     date: validateDate,
+    picker: validatePickerSelect,
   }
   
 
@@ -429,7 +450,7 @@ export function AddJob({ formType, jobID }: AddJobProps) {
           <View style={[styles.pickerWrapper, styles.spacer]}>
             <Picker
               selectedValue={pickupDistrict}
-              onValueChange={(value) => setPickupDistrict(value)}
+              onValueChange={(value) => { validators.picker(value, "selectPickup"); setPickupDistrict(value)}}
               mode="dropdown" // Android only
             >
               {LOCATIONS.map((location, index) => (
@@ -453,7 +474,7 @@ export function AddJob({ formType, jobID }: AddJobProps) {
           <View style={[styles.pickerWrapper, styles.spacer]}>
             <Picker
               selectedValue={dropoffDistrict}
-              onValueChange={(value) => setDropoffDistrict(value)}
+              onValueChange={(value) => { validators.picker(value, "selectDropoff"); setDropoffDistrict(value) }}
               mode="dropdown" // Android only
             >
               {LOCATIONS.map((location, index) => (
