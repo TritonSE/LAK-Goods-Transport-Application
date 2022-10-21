@@ -11,17 +11,11 @@ import {
     completeJob,
     getJobs
 } from '../services/job';
-import {
-    registerJob,
-    deregisterOwnedJob,
-    getJobIds
-} from '../services/user';
-import { InternalError, ValidationError } from '../errors';
+import { ValidationError } from '../errors';
 import { getSessionUserId } from '../constants';
 import { stringToBoolean, validateId } from '../helpers';
 
 const routes = express.Router();
-
 
 // Middleware that parses multipart/form-data request and extracts images into memory storage
 const upload = multer({ storage: multer.memoryStorage() }).array("images");
@@ -42,9 +36,6 @@ routes.post('/', upload, async (req, res, next) => {
             req.body,
             req.files || [],
         );
-        
-        // Update User document
-        await registerJob(userId, job._id, true);
     } catch (e) { 
         next(e);
         return;
@@ -96,9 +87,6 @@ routes.delete('/:jobid', async (req, res, next) => {
     try {
         const userId = getSessionUserId(req);
         jobId = validateId(req.params.jobid);
-        
-        // Update job owner document
-        await deregisterOwnedJob(userId, jobId);
     
         // Remove Job document (updates applicants documents)
         await deleteJob(userId, jobId);
@@ -228,9 +216,6 @@ routes.patch('/:jobid/apply', async (req, res, next) => {
         userId = getSessionUserId(req);
 
         await addJobApplicant(jobId, userId);
-        let registered = await registerJob(userId, jobId, false);
-        if (!registered) throw InternalError.OTHER.addContext('User job registration failed, despite valid application')
-
     } catch (e) {
         next(e);
         return;

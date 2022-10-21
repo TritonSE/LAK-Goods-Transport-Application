@@ -134,11 +134,6 @@ export async function deleteJob(userId, jobId) {
         await deleteImage(imageId);
     }
 
-    // Dergister applied user documents
-    for (let applicantId of originalJob.applicants) {
-        await deregisterAppliedJob(applicantId.userId, originalJob._id);
-    }
-
     // Delete Job document
     try {
         await JobModel.deleteOne({'_id': jobId}, null)
@@ -268,10 +263,6 @@ export async function completeJob(jobId, userId) {
         throw ServiceError.DRIVER_NOT_ASSIGNED;
     }
     
-    // Update user documents of job owner and driver
-    await updateJobStatus(job.client, job._id, true, true);
-    await updateJobStatus(job.assignedDriverId, job._id, false, true);
-
     // Update job status
     job.status = JOB_STATUS_COMPLETED;
     try { await job.save() }
