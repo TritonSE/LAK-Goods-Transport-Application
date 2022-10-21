@@ -1,6 +1,7 @@
 /**
  * JobService that interacts with the job documents in the database
  */
+import { ObjectId } from 'mongodb';
 import mongoose from 'mongoose';
 import { ServiceError, InternalError } from '../errors';
 import { filterObject } from '../helpers';
@@ -12,7 +13,42 @@ import JobModel, {
     JOB_STATUS_COMPLETED
 } from '../models/job';
 import { saveImage, deleteImage } from './image';
-import { deregisterAppliedJob, updateJobStatus } from './user';
+
+/**
+ * @param {ObjectId} $userId 
+ * @param {{owned: boolean, finished: boolean, assigned: boolean}} queryOptions 
+ * @param {{limit: number, offset: number}} paginationOptions 
+ * @returns 
+ */
+export async function getJobIds(userId, {owned, finished, assigned}, {limit, offset}, search) {
+    console.debug(`SERVICE: getJobIds service running: {owned - ${owned}, finished - ${finished}, assigned - ${assigned}}, search - ${search}, paginationOptions: {limit: ${limit}, offset: ${offset}}`)
+    const additionalQuery = {
+        status: finished ? { $eq: JOB_STATUS_COMPLETED} : {$ne:  JOB_STATUS_COMPLETED},
+        ...search ? {$text: {$search: search}} : null
+    }
+
+    const paginationOptions = { limit: limit, skip: offset }
+    if (owned) {
+        return await JobModel.find({ 
+            client: userId, 
+            ...additionalQuery
+        }, null, paginationOptions).exec()
+    } else if (assigned) {
+        return await JobModel.find({
+            assignedDriverId: userId,
+            ...additionalQuery
+        }, null, paginationOptions).exec()
+    } else {
+        return await JobModel.find( // Find Jobs Query
+            {
+                client: {$ne: userId}, 
+                $or: [{assignedDriverId: null}, {assignedDriverId: userId}],
+                ...additionalQuery
+            },
+            null, paginationOptions
+        ).exec()
+    }
+}
 
 /**
  * Responsible for creating a job with `userId` as owner
@@ -249,7 +285,7 @@ export async function assignDriver(jobId, userId, driverId) {
 }
 
 export async function completeJob(jobId, userId) {
-    console.debug(`SERVICE: updateJobStatus service running: jobId - ${jobId}, userId - ${userId}`);
+    console.debug(`SERVICE: completeJob service running: jobId - ${jobId}, userId - ${userId}`);
 
     let job = await JobModel.findById(jobId);
     if (!job) throw ServiceError.JOB_NOT_FOUND;

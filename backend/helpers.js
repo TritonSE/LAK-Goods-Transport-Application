@@ -13,6 +13,14 @@ export const stringToBoolean = (str) => {
     else return null;
 }
 
+export const stringToBooleanAllowNull = (str) => {
+  const bool = stringToBoolean(str)
+  if (bool == null && str == null) {
+    return false;
+  }
+  return bool;
+}
+
 /**
  * Returns a new `object` from existing one containing only fields specified in `fields`
  * @param {*} object 
