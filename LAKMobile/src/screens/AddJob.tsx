@@ -148,6 +148,7 @@ export function AddJob({ formType, jobID }: AddJobProps) {
   const validators = {
     presence: validatePresence,
     phoneNumber: validatePhoneNumber,
+    recieverPhoneNumber: validatePhoneNumber,
     date: validateDate,
     picker: validatePickerSelect,
   }
@@ -322,7 +323,10 @@ export function AddJob({ formType, jobID }: AddJobProps) {
           <AppTextInput
             value={jobTitle}
             changeAction={setJobTitle}
+
+            //TODO: make spacer only happen when there is no errMsg
             style={[inputStyle2, styles.spacer]}
+
             placeholder="Ex. Box of apples"
             checkValid={validators.presence}
             type="jobTitle"
@@ -332,7 +336,7 @@ export function AddJob({ formType, jobID }: AddJobProps) {
           />
         </LabelWrapper>
 
-        <LabelWrapper label="Client Name">
+        <LabelWrapper label="Your Name">
           <AppTextInput
             value={clientName}
             changeAction={setClientName}
@@ -343,16 +347,20 @@ export function AddJob({ formType, jobID }: AddJobProps) {
           />
         </LabelWrapper>
 
-        <LabelWrapper label="Phone number">
+        <LabelWrapper label="Your Phone number">
           <AppTextInput
             value={phoneNumber}
             changeAction={setPhoneNumber}
+
+            //TODO: make spacer only happen when there is no errMsg
             style={[inputStyleFull, styles.spacer]}
+
             placeholder="Ex. 17113456"
             icon="phone-in-talk"
+            keyboardType="numeric"
+
             checkValid={validators.phoneNumber}
             type="phoneNumber"
-            keyboardType="numeric"
             errMsg="Please insert the sender's phone number"
           />
         </LabelWrapper>
@@ -372,10 +380,17 @@ export function AddJob({ formType, jobID }: AddJobProps) {
           <AppTextInput
             value={receiverPhoneNumber}
             changeAction={setReceiverPhoneNumber}
+
+            //TODO: make spacer only happen when there is no errMsg
             style={[inputStyleFull, styles.spacer]}
+
             placeholder="Ex. 17113456"
             icon="phone-in-talk"
             keyboardType="numeric"
+
+            checkValid={validators.phoneNumber}
+            type="recieverPhoneNumber"
+            errMsg="Invalid phone number"
           />
         </LabelWrapper>
 
@@ -390,10 +405,15 @@ export function AddJob({ formType, jobID }: AddJobProps) {
             type="deliveryDate"
             keyboardType="default"
             errMsg="Please put in a date or N/A if not applicable"
+            instructionText="put N/A if not applicable"
           />
-          <AppText style={[styles.inputFooterText, styles.spacer]}>
+
+          {/* Remove this AppText when errMsg printed 
+              CURRENTLY: added instructionText above instead of this */}
+          {/* <AppText style={[styles.inputFooterText, styles.spacer]}>
             (put N/A if not applicable)
-          </AppText>
+          </AppText> */}
+
         </LabelWrapper>
 
         <LabelWrapper label="Description">
@@ -421,6 +441,7 @@ export function AddJob({ formType, jobID }: AddJobProps) {
             changeAction={setQuantity}
             style={[inputStyle1, styles.spacer]}
             placeholder="Ex. 6"
+            keyboardType="numeric"
             maxLength={10}
           />
         </LabelWrapper>
@@ -431,6 +452,7 @@ export function AddJob({ formType, jobID }: AddJobProps) {
             onChangeText={setPrice}
             placeholder="Ex. $$"
             maxLength={20}
+            keyboardType="numeric"
             style={[inputStyle1, styles.spacer]}
           />
         </LabelWrapper>
@@ -447,6 +469,7 @@ export function AddJob({ formType, jobID }: AddJobProps) {
             errMsg="Please input an address or landmark"
           />
 
+          {/* TODO: Remove spacer when errMsg displayed */}
           <View style={[styles.pickerWrapper, styles.spacer]}>
             <Picker
               selectedValue={pickupDistrict}
@@ -471,6 +494,8 @@ export function AddJob({ formType, jobID }: AddJobProps) {
             errMsg="Please input an address or landmark"
             icon="location-pin"
           />
+
+          {/* TODO: Remove spacer when errMsg displayed */}
           <View style={[styles.pickerWrapper, styles.spacer]}>
             <Picker
               selectedValue={dropoffDistrict}
