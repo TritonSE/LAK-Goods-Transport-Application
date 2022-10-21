@@ -41,10 +41,10 @@ export function AppTextInput({icon, errMsg, instructionText, style, value, check
 
       {isError 
         ? ( 
-          <Text style={styles.errText}>{errMsg}</Text>
+          (errMsg && <Text style={styles.errText}>{errMsg}</Text> )
         ) 
         : (
-          <Text style={styles.instructionText}> {instructionText} </Text>
+          (instructionText && <Text style={styles.instructionText}> {instructionText} </Text>)
         )
       } 
 
@@ -71,20 +71,14 @@ const styles = StyleSheet.create({
       width: '100%',
       height: '100%',
     },
-    textInputErr: {
-      borderWidth: 0,
-      margin: 0,
-      width: '100%',
-      height: '100%',
-    },
     errText: {
       color: COLORS.red,
       fontSize: 12,
-      marginBottom: 20  // this is adding margin below null errMsg as well
+      paddingBottom: 20  // this is adding margin below null errMsg as well
     },
     instructionText: {
       fontSize: 12,
-      marginBottom: 20  // this is adding margin below null instructionText as well
+      paddingBottom: 20  // this is adding margin below null instructionText as well
     },
     textInputWrapper: {
       paddingHorizontal: 10,

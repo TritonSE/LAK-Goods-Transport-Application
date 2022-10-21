@@ -48,12 +48,12 @@ interface AddJobProps {
 
 export function AddJob({ formType, jobID }: AddJobProps) {
   const [isValid, setIsValid] = useState({
-    "jobTitle": false,
-    "phoneNumber": false,
-    "deliveryDate": false,
-    "selectPickup": false,
-    "selectDropoff": false,
-    "imageSelect": false
+    "jobTitle": true,
+    "phoneNumber": true,
+    "deliveryDate": true,
+    "selectPickup": true,
+    "selectDropoff": true,
+    "imageSelect": true
   })
   interface ImagesReducerSetAction {
     type: "SET_IMAGES";
@@ -324,8 +324,7 @@ export function AddJob({ formType, jobID }: AddJobProps) {
             value={jobTitle}
             changeAction={setJobTitle}
 
-            //TODO: make spacer only happen when there is no errMsg
-            style={[inputStyle2, styles.spacer]}
+            style={isValid["jobTitle"] ?  [inputStyle2, styles.spacer] : [inputStyleErr2, styles.spacer]}
 
             placeholder="Ex. Box of apples"
             checkValid={validators.presence}
@@ -352,8 +351,8 @@ export function AddJob({ formType, jobID }: AddJobProps) {
             value={phoneNumber}
             changeAction={setPhoneNumber}
 
-            //TODO: make spacer only happen when there is no errMsg
-            style={[inputStyleFull, styles.spacer]}
+            //style={isValid["phoneNumber"] ?  [inputStyle2, styles.spacer] : [inputStyleErr2, styles.spacer]}
+            style={isValid["phoneNumber"] ?  inputStyle2 : inputStyleErr2}
 
             placeholder="Ex. 17113456"
             icon="phone-in-talk"
@@ -381,7 +380,6 @@ export function AddJob({ formType, jobID }: AddJobProps) {
             value={receiverPhoneNumber}
             changeAction={setReceiverPhoneNumber}
 
-            //TODO: make spacer only happen when there is no errMsg
             style={[inputStyleFull, styles.spacer]}
 
             placeholder="Ex. 17113456"
@@ -398,7 +396,11 @@ export function AddJob({ formType, jobID }: AddJobProps) {
           <AppTextInput
             value={deliveryDate}
             changeAction={setDeliveryDate}
-            style={inputStyle2}
+
+
+            style={isValid["deliveryDate"] ?  inputStyle2 : inputStyleErr2}
+            //style={inputStyle2}
+
             placeholder="Ex. MM/DD/YYYY"
             maxLength={10}
             checkValid = {validators.date}
@@ -407,14 +409,8 @@ export function AddJob({ formType, jobID }: AddJobProps) {
             errMsg="Please put in a date or N/A if not applicable"
             instructionText="put N/A if not applicable"
           />
-
-          {/* Remove this AppText when errMsg printed 
-              CURRENTLY: added instructionText above instead of this */}
-          {/* <AppText style={[styles.inputFooterText, styles.spacer]}>
-            (put N/A if not applicable)
-          </AppText> */}
-
         </LabelWrapper>
+
 
         <LabelWrapper label="Description">
           <AppTextInput
@@ -429,11 +425,6 @@ export function AddJob({ formType, jobID }: AddJobProps) {
           />
         </LabelWrapper>
 
-        {/*  
-      TODO:  
-      (2) Edit: size of the TextInput box so that it shows all the placeholder text. 
-      Right now you need to scroll down to see all the text.
-       */}
 
         <LabelWrapper label="Package Quantity">
           <AppTextInput
@@ -461,7 +452,10 @@ export function AddJob({ formType, jobID }: AddJobProps) {
           <AppTextInput
             value={pickupLocation}
             onChangeText={setPickupLocation}
-            style={inputStyleFull}
+
+            style={isValid["selectPickup"] ?  inputStyleFull : inputStyleErrFull}
+            //style={inputStyleFull}
+            
             placeholder="Ex. Insert address or landmark"
             maxLength={100}
             // checkValid={matchers.presence}
@@ -469,7 +463,6 @@ export function AddJob({ formType, jobID }: AddJobProps) {
             errMsg="Please input an address or landmark"
           />
 
-          {/* TODO: Remove spacer when errMsg displayed */}
           <View style={[styles.pickerWrapper, styles.spacer]}>
             <Picker
               selectedValue={pickupDistrict}
@@ -487,7 +480,10 @@ export function AddJob({ formType, jobID }: AddJobProps) {
           <AppTextInput
             value={dropoffLocation}
             onChangeText={setDropoffLocation}
-            style={inputStyleFull}
+
+            style={isValid["selectDropoff"] ?  inputStyleFull : inputStyleErrFull}
+            //style={inputStyleFull}
+
             placeholder="Ex. Insert address or landmark"
             maxLength={100}
             // pattern={matchers.presence}
@@ -495,7 +491,6 @@ export function AddJob({ formType, jobID }: AddJobProps) {
             icon="location-pin"
           />
 
-          {/* TODO: Remove spacer when errMsg displayed */}
           <View style={[styles.pickerWrapper, styles.spacer]}>
             <Picker
               selectedValue={dropoffDistrict}
@@ -583,6 +578,8 @@ export function AddJob({ formType, jobID }: AddJobProps) {
   );
 }
 
+
+
 const styles = StyleSheet.create({
   input: {
     borderWidth: 1,
@@ -591,8 +588,11 @@ const styles = StyleSheet.create({
     height: 40,
   },
 
-  inputFooterText: {
-    fontSize: 12,
+  errInput: {
+    borderWidth: 1,
+    borderRadius: 4,
+    borderColor: COLORS.red,
+    height: 40,
   },
 
   multilineInput: {
@@ -656,4 +656,24 @@ const inputStyleFull = StyleSheet.flatten([
   {
     width: "100%",
   },
+]);
+  const inputStyleErr1 = StyleSheet.flatten([
+    styles.errInput,
+    {
+      width: "40%",
+    },
+  ]);
+  
+  const inputStyleErr2 = StyleSheet.flatten([
+    styles.errInput,
+    {
+      width: "60%",
+    },
+  ]);
+  
+  const inputStyleErrFull = StyleSheet.flatten([
+    styles.errInput,
+    {
+      width: "100%",
+    },
 ]);
