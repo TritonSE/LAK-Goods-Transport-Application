@@ -1,4 +1,4 @@
-import { red } from "colors";
+import { COLORS } from "../../constants";
 import React, {useState} from "react";
 import { Text, TextInputProps, View, TextInput, StyleSheet, StyleProp, TextStyle } from 'react-native';
 import MaterialIcon  from 'react-native-vector-icons/MaterialIcons';
@@ -29,7 +29,7 @@ export function AppTextInput({icon, errMsg, instructionText, style, value, check
 
       <View style={[styles.textInputWrapper, style]}>
         { icon && 
-          <MaterialIcon style={styles.icon} name={icon} size={20} color="gray"/>
+          <MaterialIcon style={styles.icon} name={icon} size={20} color={COLORS.mediumGrey}/>
         }
         <TextInput style={styles.textInput} onChangeText= {(text) => handleChange(text)} value={value} {...textInputProps}/>
       </View>
@@ -78,7 +78,7 @@ const styles = StyleSheet.create({
       height: '100%',
     },
     errText: {
-      color: '#DA5C5C',
+      color: COLORS.red,
       fontSize: 12,
       marginBottom: 20  // this is adding margin below null errMsg as well
     },
