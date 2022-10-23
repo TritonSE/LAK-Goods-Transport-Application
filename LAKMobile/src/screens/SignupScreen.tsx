@@ -1,8 +1,6 @@
 import { StyleSheet, View, TextInput } from 'react-native';
 import { AppButton, LabelWrapper, AppText } from '../components';
 import { COLORS } from '../../constants';
-import { NavigationContainer } from '@react-navigation/native';
-import {createNativeStackNavigator, NativeStackScreenProps} from '@react-navigation/native-stack';
 import {SignupProps} from '../types/navigation';
 
 export function SignupScreen({navigation}: SignupProps) {

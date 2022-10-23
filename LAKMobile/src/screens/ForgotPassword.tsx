@@ -7,7 +7,7 @@ import {ForgotPasswordProps} from "../types/navigation";
 export function ForgotPassword({navigation}: ForgotPasswordProps) {
     return(
         <View style={styles.container}>
-            <ScreenHeader showArrow={true}>
+            <ScreenHeader showArrow={true} navigation>
                 Forgot Pin?
             </ScreenHeader>
 
