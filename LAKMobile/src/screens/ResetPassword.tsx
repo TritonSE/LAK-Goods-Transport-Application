@@ -7,7 +7,7 @@ import {ResetPasswordProps} from '../types/navigation';
 export function ResetPassword({navigation}: ResetPasswordProps) {
     return(
         <View style={styles.container}>
-            <ScreenHeader showArrow={true} navigation>
+            <ScreenHeader showArrow={true}>
                 Forgot Pin?
             </ScreenHeader>
             <View style={marginTop}/>
