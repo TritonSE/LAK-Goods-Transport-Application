@@ -20,14 +20,14 @@ type DetailsScreenProps = {
 
 export function DetailsScreen({jobId}: DetailsScreenProps) {
     // temporary dummy data
-    jobId = "623082910cd4cacb726883ab";
+    //jobId = "623082910cd4cacb726883ab";
     const user = "client1"
     const [jobData, setJobData] = useState(null);
     const [driverData, setDriverData] = useState(null);
 
     const getJobData = async () => {
         // replace "10.0.2.2" with localhost if using web
-        await fetch("http://10.0.2.2:3000/api/jobs/" + jobId + "?user=" + user, {
+        await fetch("http://localhost:3000/api/jobs/" + jobId + "?user=" + user, {
             method: "GET",
             mode: "cors",
             headers: {

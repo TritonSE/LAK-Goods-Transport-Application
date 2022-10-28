@@ -5,34 +5,11 @@ import { StyleSheet, View } from "react-native";
 import { ScreenHeader, ImageCarousel, ApplicantThumbnail } from "./src/components";
 import { SignupScreen, LoginScreen, AddJob, ForgotPassword, OTP } from "./src/screens";
 import { MOCK_APPLICANT_DATA } from './constants';
+import { DetailsScreen } from './src/screens/DetailsScreen';
 
 export default function App() {
   return <>
-    <ListJobs />
-    {/* // Thumbnail Demo */}
-    {/* <View style={styles.container}>
-      <ApplicantThumbnail applicantData={MOCK_APPLICANT_DATA} status='Accepted' style={{marginHorizontal: 10}}/>
-      <ApplicantThumbnail applicantData={MOCK_APPLICANT_DATA} status='Unassigned' style={{marginHorizontal: 10}}/>
-      <ApplicantThumbnail applicantData={MOCK_APPLICANT_DATA} status='Denied' style={{marginHorizontal: 10}}/>
-    </View> */}
-
-
-    <View style={styles.container}>
-      <ForgotPassword></ForgotPassword>
-    </View>
-
-    // <SignupScreen />
-
-  );
-    {/* // Carousel Demo */}
-    {/* <ImageCarousel
-      imageIds={[
-        "6230818f1ccd9cfc10ffcbde",
-        "6230818f1ccd9cfc10ffcbe0",
-        "623082900cd4cacb726883a7",
-        "623082900cd4cacb726883a9",
-      ]}
-    /> */}
+   <DetailsScreen jobId="63524f51b015a14af83b653d" />
   </>;
 }
 

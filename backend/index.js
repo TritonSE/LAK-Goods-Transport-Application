@@ -8,7 +8,6 @@ import userRoutes from './routes/user';
 import { MONGO_URI, PORT } from './config';
 import { CustomError, InternalError } from './errors';
 import imageRoutes from './routes/image';
-import cors from 'cors';
 
 dotenv.config()
 
