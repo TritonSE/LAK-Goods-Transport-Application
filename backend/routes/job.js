@@ -9,19 +9,14 @@ import {
     addJobApplicant,
     assignDriver,
     completeJob,
-    getJobs
+    getJobs,
+    getJobIds,
 } from '../services/job';
-import {
-    registerJob,
-    deregisterOwnedJob,
-    getJobIds
-} from '../services/user';
-import { InternalError, ValidationError } from '../errors';
+import { ValidationError } from '../errors';
 import { getSessionUserId } from '../constants';
-import { stringToBoolean, validateId } from '../helpers';
+import { stringToBooleanAllowNull, validateId } from '../helpers';
 
 const routes = express.Router();
-
 
 // Middleware that parses multipart/form-data request and extracts images into memory storage
 const upload = multer({ storage: multer.memoryStorage() }).array("images");
@@ -42,9 +37,6 @@ routes.post('/', upload, async (req, res, next) => {
             req.body,
             req.files || [],
         );
-        
-        // Update User document
-        await registerJob(userId, job._id, true);
     } catch (e) { 
         next(e);
         return;
@@ -96,9 +88,6 @@ routes.delete('/:jobid', async (req, res, next) => {
     try {
         const userId = getSessionUserId(req);
         jobId = validateId(req.params.jobid);
-        
-        // Update job owner document
-        await deregisterOwnedJob(userId, jobId);
     
         // Remove Job document (updates applicants documents)
         await deleteJob(userId, jobId);
@@ -165,7 +154,8 @@ routes.get('/:jobid', async (req, res, next) => {
 
 /**
  * GET jobs for in session user
- * @params owned (boolean), completed (boolean), [offset (int)], [limit (int)]
+ * @params owned (boolean), assigned (boolean), finished (boolean), [offset (int)], [limit (int)]
+ * @param search string
  * @returns List of jobs according to pagination properties (if any)
  */
 routes.get('/', async (req, res, next) => {
@@ -175,9 +165,10 @@ routes.get('/', async (req, res, next) => {
     let lastPage = false;
     try {
         // Get request parameters
-        const owned = stringToBoolean(req.query.owned);
-        const finished = stringToBoolean(req.query.finished); 
-        if (owned === null || finished === null) { // Invalid Boolean found
+        const owned = stringToBooleanAllowNull(req.query.owned);
+        const assigned = stringToBooleanAllowNull(req.query.assigned);
+        const finished = stringToBooleanAllowNull(req.query.finished); 
+        if (owned == null || assigned == null || finished == null) { // Invalid Boolean found
             throw ValidationError.INVALID_BOOLEAN_VALUE;
         }
 
@@ -191,17 +182,11 @@ routes.get('/', async (req, res, next) => {
             throw ValidationError.INVALID_PAGINATION_INPUT;
         }
 
+        const search = req.query.search ?? null;
         const userId = getSessionUserId(req);
         // TODO: Add user auth
 
-        let jobIds = await getJobIds(userId, owned, finished);
-        
-        lastPage = jobIds.length <= offset + limit;
-
-        // Apply pagination
-        if (offset !== undefined && limit !== undefined) {
-            jobIds = jobIds.slice(offset, offset + limit);
-        }
+        let jobIds = await getJobIds(userId, {owned, assigned, finished}, {limit, offset}, search);
         jobs = await getJobs(jobIds, userId);
 
     } catch (e) {
@@ -228,9 +213,6 @@ routes.patch('/:jobid/apply', async (req, res, next) => {
         userId = getSessionUserId(req);
 
         await addJobApplicant(jobId, userId);
-        let registered = await registerJob(userId, jobId, false);
-        if (!registered) throw InternalError.OTHER.addContext('User job registration failed, despite valid application')
-
     } catch (e) {
         next(e);
         return;

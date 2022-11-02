@@ -105,6 +105,12 @@ const JobSchema = new Schema(
     }
 );
 
+// Index to optimize owned job search for clients
+JobSchema.index({client: 1}) 
+
+// Index to enable job search
+JobSchema.index({title: 'text', pickupLocation: 'text', dropoffLocation: 'text', deliveryDate: 'text', description: 'text'})
+
 const JobModel = model('Job', JobSchema);
 export default JobModel;
 

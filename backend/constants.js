@@ -2,7 +2,7 @@ import { ValidationError } from "./errors";
 // Sample Users (for testing only)
 
 export const SAMPLE_USER_PAYLOAD = {
-  firstName: 'Trucker1',
+  firstName: 'Client2',
   lastName: 'User',
   password: 'password',
   phone: 'number',
@@ -15,7 +15,7 @@ export const TEST_TRCUKER_1 = {
   password: 'password',
   phone: 'number',
   location: 'location',
-  _id: '62306b0832164f9d56114029',
+  _id: '635246c11402cc7134325d93',
 };
 
 export const TEST_TRCUKER_2 = {
@@ -24,7 +24,7 @@ export const TEST_TRCUKER_2 = {
   password: 'password',
   phone: 'number',
   location: 'location',
-  _id: '62306af1dd523e31b07bb10c',
+  _id: '635247c074ca71554d2b8a35',
 };
 
 export const TEST_CLIENT_1 = {
@@ -33,12 +33,22 @@ export const TEST_CLIENT_1 = {
   password: 'password',
   phone: 'number',
   location: 'location',
-  _id: '62306adf7f4a466b571f6b42'
+  _id: '635247cc2fdd8166dd9a3747'
+}
+
+export const TEST_CLIENT_2 = {
+  firstName: 'Client2',
+  lastName: 'User',
+  password: 'password',
+  phone: 'number',
+  location: 'location',
+  _id: '635247d1b0ddabd341688615'
 }
 
 export const getSessionUserId = (req) => { // For testing purposes
   const map = {
     'client1': TEST_CLIENT_1,
+    'client2': TEST_CLIENT_2,
     'trucker1': TEST_TRCUKER_1,
     'trucker2': TEST_TRCUKER_2,
   }
