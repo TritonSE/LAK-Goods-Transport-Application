@@ -9,6 +9,9 @@ import {
     ScrollView
 } from 'react-native';
 import {
+    Job
+} from '../types/job'
+import {
     AppText,
     ScreenHeader,
 } from '../components';
@@ -22,7 +25,7 @@ export function DetailsScreen({jobId}: DetailsScreenProps) {
     // temporary dummy data
     //jobId = "623082910cd4cacb726883ab";
     const user = "client1"
-    const [jobData, setJobData] = useState(null);
+    const [jobData, setJobData] = useState<Job | null>(null);
     const [driverData, setDriverData] = useState(null);
 
     const getJobData = async () => {
@@ -35,8 +38,18 @@ export function DetailsScreen({jobId}: DetailsScreenProps) {
             },
         }).then(async response => {
             let json = await response.json()
-            setJobData(json);
-            console.log(json)
+            console.log(json.job)
+            let jobresponse:Job = {
+                clientName: json?.job.clientName,
+                deliveryDate: json?.job.deliveryDate,
+                description: json?.job.description,
+                dropoffLocation: json?.job.dropoffLocation,
+                title: json?.job.title,
+                phoneNumber: json?.job.phoneNumber,
+                pickupLocation: json?.job.pickupLocation,
+                status: json?.job.status,
+            }
+            setJobData(jobresponse);
             await fetch("http://10.0.2.2:3000/api/users/get-by-ids", {
                 method: "POST",
                 mode: "cors",
@@ -74,49 +87,49 @@ export function DetailsScreen({jobId}: DetailsScreenProps) {
                         <Pressable style={styles.assignedButton}><AppText style={styles.buttonText}>Cancel Job</AppText></Pressable>
                     </View>
 
-                    <AppText style={styles.jobText}>{jobData?.job.title}</AppText>
+                    <AppText style={styles.jobText}>{jobData.title}</AppText>
 
                     <View style={styles.fieldContainer}>
                         <AppText style={{fontWeight: "bold"}}>Pick-up:</AppText>
-                        <AppText>{jobData?.job.pickupLocation}</AppText>
+                        <AppText>{jobData.pickupLocation}</AppText>
                     </View>
                     <View style={styles.fieldContainer}>
                         <AppText style={{fontWeight: "bold"}}>Drop-off:</AppText>
-                        <AppText>{jobData?.job.dropoffLocation}</AppText>
+                        <AppText>{jobData.dropoffLocation}</AppText>
                     </View>
                     <View style={styles.fieldContainer}>
                         <AppText style={{fontWeight: "bold"}}>Deliver by date:</AppText>
-                        <AppText>{jobData?.job.deliveryDate}</AppText>
+                        <AppText>{jobData.deliveryDate}</AppText>
                     </View>
-                    {jobData?.job.packageQuantity ? (
+                    {jobData.packageQuantity ? (
                         <View style={styles.fieldContainer}>
                             <AppText>
                                 <AppText style={{fontWeight: "bold"}}>Package Quantity:</AppText> {jobData?.job.packageQuantity}
                             </AppText>
                         </View>
                     ) : null}
-                    {jobData?.job.price ? (
+                    {jobData.price ? (
                         <View style={styles.fieldContainer}>
                             <AppText>
                                 <AppText style={{fontWeight: "bold"}}>Delivery Price:</AppText> {jobData?.job.price}
                             </AppText>
                         </View>
                     ) : null}
-                    {jobData?.job.description ? (
+                    {jobData.description ? (
                         <View style={styles.fieldContainer}>
                             <AppText style={{fontWeight: "bold"}}>Description:</AppText>
-                            <AppText>{jobData?.job.description}</AppText>
+                            <AppText>{jobData.description}</AppText>
                         </View>
                     ) : null}
 
                     <View style={styles.fieldContainer}>
                         <AppText style={{fontWeight: "bold"}}>Contacts:</AppText>
-                        <AppText>Sender: {jobData?.job.clientName}</AppText>
+                        <AppText>Sender: {jobData.clientName}</AppText>
                         <AppText onPress={() => {
-                            Linking.openURL('tel:' + jobData?.job.phoneNumber);
+                            Linking.openURL('tel:' + jobData.phoneNumber);
                         }}
                                  style={styles.phoneNumber}>
-                            {jobData?.job.phoneNumber}
+                            {jobData.phoneNumber}
                         </AppText>
                         <AppText>Receiver: {driverData?.users[0].firstName} {driverData?.users[0].lastName}</AppText>
                         <AppText onPress={() => {
