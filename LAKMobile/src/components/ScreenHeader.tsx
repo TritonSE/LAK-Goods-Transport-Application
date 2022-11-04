@@ -2,27 +2,27 @@ import React from 'react';
 import { StyleSheet, Text, View, Image, TouchableOpacity } from 'react-native';
 import { AppText } from './AppText';
 import { COLORS } from '../../constants';
+import { useNavigation } from '@react-navigation/native';
 
 interface HeaderProps {
     children?: string,
     showArrow?: boolean
 }
 
-export function ScreenHeader({children, showArrow = false}:HeaderProps) {
-    return(
-        <View style={styles.header}>
-            <View style={styles.headerContent}>
+export function ScreenHeader({children, showArrow = false}: HeaderProps) {
+    const navigation = useNavigation();
+    return<View style={styles.header}>
+        <View style={styles.headerContent}>
 
-                {(showArrow) ? 
-                    <TouchableOpacity onPress={() => console.log("Header Arrow Pressed")}>
-                        <Image style={styles.headerArrow} source={require('../../assets/header-arrow.png')} />
-                    </TouchableOpacity>
-                : null}
+            {showArrow ?
+                <TouchableOpacity onPress={(e) => navigation.goBack()}>
+                    <Image style={styles.headerArrow} source={require('../../assets/header-arrow.png')} />
+                </TouchableOpacity>
+            : null}
 
-                <AppText style={styles.headerText}>{children}</AppText>
-            </View>
+            <AppText style={styles.headerText}>{children}</AppText>
         </View>
-    )
+    </View>
 }
 
 const styles = StyleSheet.create({

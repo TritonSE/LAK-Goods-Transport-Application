@@ -1,8 +1,9 @@
 import { StyleSheet, View, TextInput } from 'react-native';
 import { AppButton, LabelWrapper, AppText } from '../components';
 import { COLORS } from '../../constants';
+import {SignupProps} from '../types/navigation';
 
-export function SignupScreen({}) {
+export function SignupScreen({navigation}: SignupProps) {
   return (
     <View style={styles.container}>
       <LabelWrapper label='Name (First, Last)'>
@@ -52,7 +53,7 @@ export function SignupScreen({}) {
         <AppButton 
           type='link' 
           title='Log in here' 
-          onPress={() => console.log('Log in here pressed')}
+          onPress={() => navigation.navigate('Login')}
           style={styles.loginLink}
           />
       </View>

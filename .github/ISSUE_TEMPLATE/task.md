@@ -1,6 +1,6 @@
 ---
-name: Feature
-about: Template for features
+name: Task
+about: Template for task
 title: ''
 labels: ''
 assignees: ''

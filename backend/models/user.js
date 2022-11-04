@@ -29,34 +29,6 @@ const UserSchema = new Schema({
         type: String,
         required: true,
     },
-    finishedAppliedJobs: [
-        {
-            type: mongoose.Types.ObjectId,
-            ref: "Job",
-            required: false,
-        },
-    ],
-    ongoingAppliedJobs: [
-        {
-            type: mongoose.Types.ObjectId,
-            ref: "Job",
-            required: false,
-        },
-    ],
-    finishedOwnedJobs: [
-        {
-            type: mongoose.Types.ObjectId,
-            ref: "Job",
-            required: false,
-        },
-    ],
-    ongoingOwnedJobs: [
-        {
-            type: mongoose.Types.ObjectId,
-            ref: "Job",
-            required: false,
-        },
-    ],
 });
 
 const UserModel = model('User', UserSchema);
