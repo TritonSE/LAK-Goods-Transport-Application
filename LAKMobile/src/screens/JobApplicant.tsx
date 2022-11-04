@@ -22,7 +22,7 @@ type JobApplicantProps = {
     jobId: string
 }
 
-export function JobApplicantProps({jobId}: JobApplicantProps) {
+export function JobApplicant({jobId}: JobApplicantProps) {
     const user = "client1"
     const [jobData, setJobData] = useState<Job | null>(null);
 
@@ -67,8 +67,8 @@ export function JobApplicantProps({jobId}: JobApplicantProps) {
     }, [])
 
     return (
-        <DetailsScreen jobData={jobData} />
 
+        <DetailsScreen jobData={jobData} />
     )
 
 }
