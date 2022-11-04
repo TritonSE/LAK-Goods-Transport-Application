@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useMemo } from "react";
 import { TextInputProps, View, TextInput, StyleSheet, StyleProp, TextStyle } from 'react-native';
 import MaterialIcon  from 'react-native-vector-icons/MaterialIcons';
 

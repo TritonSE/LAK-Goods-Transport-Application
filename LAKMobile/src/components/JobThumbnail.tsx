@@ -130,11 +130,11 @@ export function JobThumbnail({isJobOwner, job, ...props}: JobThumbnailProps) {
     return (
         <View style={CardStyles.card}>
             <View style={[CardStyles.row, CardStyles.header]}>
-                <AppText style={CardStyles.title}>Box of apples</AppText>
+                <AppText style={CardStyles.title}>{job.title}</AppText>
             </View>
             
             {isJobOwner && numApplicants == 0 && (
-                <ButtonWrapper style={JobThumbnailStyles.editButton} onPress={() => console.log("Edit Button Pressed")}>
+                <ButtonWrapper style={JobThumbnailStyles.editButton} onPress={() => console.log("Edit Button Pressed for job ", job._id)}>
                     <EditIcon />
                 </ButtonWrapper>
             )}

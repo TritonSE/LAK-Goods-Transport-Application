@@ -24,7 +24,7 @@ export async function getJobIds(userId, {owned, finished, assigned}, {limit, off
     console.debug(`SERVICE: getJobIds service running: {owned - ${owned}, finished - ${finished}, assigned - ${assigned}}, search - ${search}, paginationOptions: {limit: ${limit}, offset: ${offset}}`)
     const additionalQuery = {
         status: finished ? { $eq: JOB_STATUS_COMPLETED} : {$ne:  JOB_STATUS_COMPLETED},
-        ...search ? {$text: {$search: search}} : null
+        ...search ? {$text: {$search: `\"${search}\"`}} : null
     }
 
     const paginationOptions = { limit: limit, skip: offset }

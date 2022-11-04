@@ -16,7 +16,7 @@ const Stack = createNativeStackNavigator();
 export default function App() {
   return <View style={styles.container}>
       <NavigationContainer>
-        <Stack.Navigator initialRouteName="Login" screenOptions={{
+        <Stack.Navigator initialRouteName="ListJobs" screenOptions={{
           headerShown: false
         }}>
           <Stack.Screen name="Login" component={LoginScreen} />
@@ -25,6 +25,7 @@ export default function App() {
           <Stack.Screen name="ForgotPassword" component={ForgotPassword} />
           <Stack.Screen name="ResetSuccess" component={ResetSuccess} />
           <Stack.Screen name="OTP" component={OTP} />
+          <Stack.Screen name="ListJobs" component={ListJobs} />
         </Stack.Navigator>
       </NavigationContainer>
     </View>
