@@ -18,55 +18,13 @@ import {
 import {DefaultProfilePic} from "../icons/DefaultProfilePicture";
 
 type DetailsScreenProps = {
-    jobId: String;
+    jobData: Job | null
 }
 
-export function DetailsScreen({jobId}: DetailsScreenProps) {
+export function DetailsScreen({jobData}: DetailsScreenProps) {
     // temporary dummy data
     //jobId = "623082910cd4cacb726883ab";
-    const user = "client1"
-    const [jobData, setJobData] = useState<Job | null>(null);
-    const [driverData, setDriverData] = useState(null);
 
-    const getJobData = async () => {
-        // replace "10.0.2.2" with localhost if using web
-        await fetch("http://localhost:3000/api/jobs/" + jobId + "?user=" + user, {
-            method: "GET",
-            mode: "cors",
-            headers: {
-                "content-type": "application/json",
-            },
-        }).then(async response => {
-            let json = await response.json()
-            console.log(json.job)
-            let jobresponse:Job = {
-                clientName: json?.job.clientName,
-                deliveryDate: json?.job.deliveryDate,
-                description: json?.job.description,
-                dropoffLocation: json?.job.dropoffLocation,
-                title: json?.job.title,
-                phoneNumber: json?.job.phoneNumber,
-                pickupLocation: json?.job.pickupLocation,
-                status: json?.job.status,
-            }
-            setJobData(jobresponse);
-            await fetch("http://10.0.2.2:3000/api/users/get-by-ids", {
-                method: "POST",
-                mode: "cors",
-                headers: {
-                    "content-type": "application/json",
-                },
-                body: JSON.stringify({userIds: [json.job.assignedDriverId]}),
-            }).then(async response => {
-                let json = await response.json();
-                setDriverData(json);
-            })
-        })
-    }
-
-    React.useEffect(() => {
-        getJobData();
-    }, [])
 
 
     return (
@@ -80,7 +38,7 @@ export function DetailsScreen({jobId}: DetailsScreenProps) {
                                 flexDirection: 'row',
                                 alignItems: 'center'
                             }}>
-                                <DefaultProfilePic/><AppText><AppText style={styles.assignedName}>  {driverData?.users[0].firstName} {driverData?.users[0].lastName}</AppText> <AppText style={styles.assignedText}>is assigned to this job.</AppText></AppText>
+                                {/* <DefaultProfilePic/><AppText><AppText style={styles.assignedName}>  {driverData?.users[0].firstName} {driverData?.users[0].lastName}</AppText> <AppText style={styles.assignedText}>is assigned to this job.</AppText></AppText> */}
                             </View>
                         </AppText>
                         <Pressable style={styles.assignedButton}><AppText style={styles.buttonText}>Mark as Done</AppText></Pressable>
@@ -104,14 +62,14 @@ export function DetailsScreen({jobId}: DetailsScreenProps) {
                     {jobData.packageQuantity ? (
                         <View style={styles.fieldContainer}>
                             <AppText>
-                                <AppText style={{fontWeight: "bold"}}>Package Quantity:</AppText> {jobData?.job.packageQuantity}
+                                <AppText style={{fontWeight: "bold"}}>Package Quantity:</AppText> {jobData?.packageQuantity}
                             </AppText>
                         </View>
                     ) : null}
                     {jobData.price ? (
                         <View style={styles.fieldContainer}>
                             <AppText>
-                                <AppText style={{fontWeight: "bold"}}>Delivery Price:</AppText> {jobData?.job.price}
+                                <AppText style={{fontWeight: "bold"}}>Delivery Price:</AppText> {jobData?.price}
                             </AppText>
                         </View>
                     ) : null}
@@ -131,12 +89,11 @@ export function DetailsScreen({jobId}: DetailsScreenProps) {
                                  style={styles.phoneNumber}>
                             {jobData.phoneNumber}
                         </AppText>
-                        <AppText>Receiver: {driverData?.users[0].firstName} {driverData?.users[0].lastName}</AppText>
+                        <AppText>Receiver:</AppText>
                         <AppText onPress={() => {
-                            Linking.openURL('tel:' + driverData?.users[0].phone);
+                            Linking.openURL('tel:');
                         }}
                                  style={styles.phoneNumber}>
-                            {driverData?.users[0].phone}
                         </AppText>
                     </View>
                 </ScrollView>
