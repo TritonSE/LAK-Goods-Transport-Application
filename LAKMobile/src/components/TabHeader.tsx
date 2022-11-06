@@ -12,15 +12,6 @@ const backButtonIcon = <Icon name="arrow-long-left" size={30} color="white" />;
 
 const Tab = createMaterialTopTabNavigator();
 
-function ApplicantsScreen(){
-    return (
-        <View>
-
-        </View>
-    )
-}
-
-
 type NumberOfApplicantsProps = {
     numApplicants: number
 }
@@ -33,18 +24,12 @@ function NumberOfApplicants({numApplicants} : NumberOfApplicantsProps){
 }
 
 interface TabHeaderProps {
-    jobData: JobData | null
+    jobData: JobData
 }
 
 export function TabHeader({jobData}: TabHeaderProps) {
     const navigation = useNavigation()
-    const carousel =  <ImageCarousel
-    imageIds={[
-      "6230818f1ccd9cfc10ffcbde",
-      "6230818f1ccd9cfc10ffcbe0",
-      "623082900cd4cacb726883a7",
-      "623082900cd4cacb726883a9",
-    ]}
+    const carousel =  <ImageCarousel imageIds={jobData.imageIds}
   />
   return (
 
@@ -66,7 +51,9 @@ export function TabHeader({jobData}: TabHeaderProps) {
             <Tab.Screen name="Details">
                 {props => <DetailsScreen {...props} carousel={carousel} jobData={jobData} />}
             </Tab.Screen>
-            <Tab.Screen name="Applicants" component={ApplicantsScreen}/>
+            <Tab.Screen name="Applicants">
+                {props => <ApplicantsScreen {...props} carousel={carousel} jobData={jobData} />}
+            </Tab.Screen>
         </Tab.Navigator> 
       </View>
       

@@ -20,8 +20,8 @@ import { JobApplicantProps } from '../types/navigation';
 import { getJobById } from '../api';
 import { JobData, JobOwnerView } from '../api/data';
 
-export function JobApplicant({navigation, route} : JobApplicantProps) {
-    console.log(route)
+
+export function ApplicantsScreen({} : JobApplicantProps) {
     return (
         <TabHeader jobData={route.params.jobData}/>        
     )
