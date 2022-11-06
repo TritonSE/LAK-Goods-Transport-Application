@@ -1,5 +1,5 @@
 import React, { PropsWithChildren } from 'react';
-import { StyleSheet, View, Image, ImageSourcePropType, TouchableOpacity, TouchableHighlight, StyleProp, ViewStyle, Button, ButtonProps, TouchableOpacityProps } from 'react-native';
+import { GestureResponderEvent, StyleSheet, View, Image, ImageSourcePropType, TouchableOpacity, TouchableHighlight, StyleProp, ViewStyle, Button, ButtonProps, TouchableOpacityProps } from 'react-native';
 
 import { COLORS } from '../../constants';
 import { JobData, JobOwnerView, JobStatus } from '../api/data';
@@ -70,6 +70,7 @@ const diffDatesInDays = (start: Date, end: Date) => {
  */
 
 interface JobThumbnailOwnerViewProps {
+    onPress: ((event: GestureResponderEvent) => void) | undefined;
     isJobOwner: true;
     job: JobOwnerView;
     repostAllowed?: boolean;
@@ -119,6 +120,7 @@ export function JobThumbnail({isJobOwner, job, ...props}: JobThumbnailProps) {
         displayStatus = JOB_DISPLAY_STATUS_MAP[job.status];
         daysAgo = diffDatesInDays(new Date(job.startDate), new Date());
         numApplicants = job.applicants.length;
+
     } else {
         props = props as JobThumbnailApplicantViewProps;
         displayStatus = props.applicantStatus;
@@ -128,6 +130,8 @@ export function JobThumbnail({isJobOwner, job, ...props}: JobThumbnailProps) {
     const statusDisplayColor = displayStatus && STATUS_DISPLAY_COLOR[displayStatus];
 
     return (
+        <TouchableOpacity onPress={(props as JobThumbnailOwnerViewProps).onPress}>
+
         <View style={CardStyles.card}>
             <View style={[CardStyles.row, CardStyles.header]}>
                 <AppText style={CardStyles.title}>Box of apples</AppText>
@@ -172,6 +176,7 @@ export function JobThumbnail({isJobOwner, job, ...props}: JobThumbnailProps) {
             
 
         </View>
+        </TouchableOpacity>
     )
 }
 

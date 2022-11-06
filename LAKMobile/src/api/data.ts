@@ -7,6 +7,8 @@ export interface JobData {
     deliveryDate: string;
     pickupLocation: string;
     dropoffLocation: string;
+    description?: string;
+    price?: string;
     packageQuantity?: number;
     status: JobStatus;
     imageIds: string[];

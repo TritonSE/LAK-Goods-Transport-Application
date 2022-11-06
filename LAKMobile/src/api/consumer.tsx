@@ -6,11 +6,12 @@ import { ImageSourcePropType } from 'react-native';
 import { API_URL } from '@env';
 import { JobData, JobOwnerView } from './data';
 
-export const GET_JOBS = `${API_URL}/api/jobs`
+export const GET_JOBS = `http://localhost:3000/api/jobs`
 
 export const getJobById = async (jobId: string): Promise<JobData | null> => {
     try {
-        const url = `${GET_JOBS}/${jobId}?` + new URLSearchParams({user: 'client1'});
+        console.log("FETHCING")
+        const url = `${GET_JOBS}/${jobId}?`;
         const response = await fetch(url)
         let data = await response.json();
         data = data.job as JobData;

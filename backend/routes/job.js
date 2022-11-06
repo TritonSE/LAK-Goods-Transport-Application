@@ -145,7 +145,7 @@ routes.get('/:jobid', async (req, res, next) => {
         next(e);
         return;
     }
-    
+    console.log("HERE")
     res.status(200).json({
         message: 'Job document sent as ${job}',
         job: job

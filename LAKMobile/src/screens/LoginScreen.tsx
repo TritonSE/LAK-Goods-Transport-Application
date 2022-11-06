@@ -32,7 +32,7 @@ export function LoginScreen({navigation}: LoginProps) {
             <AppButton
                 type='primary'
                 title='Log in'
-                onPress={() => loginResponse()}
+                onPress={() => navigation.navigate('ListJobs')}
                 style={styles.submitButton}
             />
 
@@ -47,10 +47,6 @@ export function LoginScreen({navigation}: LoginProps) {
             </View>
         </View>
     )
-}
-
-function loginResponse() {
-    console.log("Login")
 }
 
 const styles = StyleSheet.create({

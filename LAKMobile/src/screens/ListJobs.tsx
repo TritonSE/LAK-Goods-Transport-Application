@@ -6,6 +6,7 @@ import { getJobs, JobData, JobOwnerView, PAGE_SIZE } from "../api";
 import { JobThumbnail, AppButton } from "../components";
 import { COLORS } from '../../constants';
 import { PickerStyles, FlatListStyles } from '../styles';
+import { ListJobProps } from "../types/navigation";
 
 type JobTypePickerOption = 'Current Jobs' | 'Completed Jobs';
 const PICKER_OPTIONS: JobTypePickerOption[] = [
@@ -13,7 +14,7 @@ const PICKER_OPTIONS: JobTypePickerOption[] = [
     'Completed Jobs'
 ]
 
-export function ListJobs() {
+export function ListJobs({navigation}: ListJobProps) {
     const [displayJobOwned, setDisplayJobOwned] = useState<boolean>(true); // TODO toggle for add jobs/find jobs
     const [jobListType, setJobListType] = useState<JobTypePickerOption>('Current Jobs');
 
@@ -75,7 +76,7 @@ export function ListJobs() {
                     data={jobs}
                     keyExtractor={item => item._id}
                     renderItem={ ({ item, index }) => (
-                        <JobThumbnail isJobOwner={true} job={(item as JobOwnerView)} />
+                        <JobThumbnail onPress = {() => navigation.navigate('JobApplicant', {jobData: item})} isJobOwner={true} job={(item as JobOwnerView)} />
                     )}
                     scrollEnabled={true}
                     ListHeaderComponent={

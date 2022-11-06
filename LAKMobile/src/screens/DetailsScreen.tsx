@@ -1,49 +1,28 @@
-import React, {useEffect, useState} from 'react';
+import React, {Children, useEffect, useState} from 'react';
 import {
     StyleSheet,
-    Text,
     View,
-    Image,
     Linking,
-    Pressable,
     ScrollView
 } from 'react-native';
-import {
-    Job
-} from '../types/job'
+import { JobData } from '../api/data';
 import {
     AppText,
-    ScreenHeader,
 } from '../components';
 import {DefaultProfilePic} from "../icons/DefaultProfilePicture";
 
 type DetailsScreenProps = {
-    jobData: Job | null
+    jobData: JobData | null
+    carousel: JSX.Element
 }
 
-export function DetailsScreen({jobData}: DetailsScreenProps) {
+export function DetailsScreen({carousel, jobData}: DetailsScreenProps) {
     // temporary dummy data
-    //jobId = "623082910cd4cacb726883ab";
-
-
-
     return (
         <View>
-            <ScreenHeader showArrow={true}/>
+            {carousel}
             {jobData != null ? (
                 <ScrollView style={styles.detailsComponent}>
-                    <View style={styles.assignedPanel}>
-                        <AppText style={styles.assignedText}>
-                            <View style={{
-                                flexDirection: 'row',
-                                alignItems: 'center'
-                            }}>
-                                {/* <DefaultProfilePic/><AppText><AppText style={styles.assignedName}>  {driverData?.users[0].firstName} {driverData?.users[0].lastName}</AppText> <AppText style={styles.assignedText}>is assigned to this job.</AppText></AppText> */}
-                            </View>
-                        </AppText>
-                        <Pressable style={styles.assignedButton}><AppText style={styles.buttonText}>Mark as Done</AppText></Pressable>
-                        <Pressable style={styles.assignedButton}><AppText style={styles.buttonText}>Cancel Job</AppText></Pressable>
-                    </View>
 
                     <AppText style={styles.jobText}>{jobData.title}</AppText>
 
@@ -107,13 +86,12 @@ export function DetailsScreen({jobData}: DetailsScreenProps) {
 const styles = StyleSheet.create({
 
     detailsComponent: {
-        marginTop: 268,
         paddingLeft: 30,
         paddingTop: 20,
         paddingRight: 30,
     },
 
-    assignedPanel: {
+    assignedPanel: { // style to create read panel
         width: 304,
         backgroundColor: "#F5C7C5",
         borderRadius: 6,
