@@ -26,3 +26,8 @@ export interface ApplicantData {
     phone: string;
     vehicleInformation: string;
 }
+
+// TODO
+export interface UserData {
+
+}

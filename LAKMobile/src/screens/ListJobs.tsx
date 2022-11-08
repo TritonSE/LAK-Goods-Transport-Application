@@ -76,7 +76,7 @@ export function ListJobs({navigation}: ListJobProps) {
                     data={jobs}
                     keyExtractor={item => item._id}
                     renderItem={ ({ item, index }) => (
-                        <JobThumbnail onPress = {() => navigation.navigate('JobApplicant', {jobData: item})} isJobOwner={true} job={(item as JobOwnerView)} />
+                        <JobThumbnail onPress = {() => navigation.navigate('JobApplicant', {jobData: (item as JobOwnerView)})} isJobOwner={true} job={(item as JobOwnerView)} />
                     )}
                     scrollEnabled={true}
                     ListHeaderComponent={

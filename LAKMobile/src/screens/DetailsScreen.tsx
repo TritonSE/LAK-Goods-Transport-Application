@@ -12,7 +12,7 @@ import {
 import {DefaultProfilePic} from "../icons/DefaultProfilePicture";
 
 type DetailsScreenProps = {
-    jobData: JobData | null
+    jobData: JobData
     carousel: JSX.Element
 }
 

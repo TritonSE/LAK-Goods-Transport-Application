@@ -1,29 +1,63 @@
 import React, {useEffect, useState} from 'react';
+import { JobData, JobOwnerView } from '../api/data';
 import {
     StyleSheet,
-    Text,
     View,
-    Image,
     Linking,
-    Pressable,
     ScrollView
 } from 'react-native';
 import {
-    Job
-} from '../types/job'
-import {
-    TabHeader
+    ApplicantThumbnail,
+    AppText,
 } from '../components';
-import {DefaultProfilePic} from "../icons/DefaultProfilePicture";
-import { DetailsScreen } from './DetailsScreen';
-import { JobApplicantProps } from '../types/navigation';
-import { getJobById } from '../api';
-import { JobData, JobOwnerView } from '../api/data';
 
 
-export function ApplicantsScreen({} : JobApplicantProps) {
+import { ApplicantData } from '../api/data';
+
+
+interface ApplicantScreenProps {
+    jobData: JobOwnerView
+    carousel: JSX.Element
+}
+
+
+
+export function ApplicantsScreen({jobData, carousel} : ApplicantScreenProps) {
+
+
+    useEffect(()=>{}, [])
+
+
     return (
-        <TabHeader jobData={route.params.jobData}/>        
-    )
+        <View>
+            {carousel}
+
+            <ScrollView>
+
+                {
+
+                jobData.applicants.map(applicant=>{
+                    let applicantData : ApplicantData = { }
+                }<ApplicantThumbnail/>)
+
+                }
+
+
+
+                
+                
+            </ScrollView>
+            
+        </View>
+
+
+                
+    );
 
 }
+
+
+
+const styles = StyleSheet.create({
+
+})

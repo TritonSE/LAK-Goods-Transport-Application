@@ -3,7 +3,8 @@ import { View, StyleSheet, TouchableOpacity, Image} from 'react-native';
 import {AppText} from './AppText';
 import Icon from 'react-native-vector-icons/Entypo';
 import { DetailsScreen } from '../screens/DetailsScreen';
-import { JobData } from '../api/data';
+import { ApplicantsScreen } from '../screens/ApplicantsScreen';
+import { JobData, JobOwnerView } from '../api/data';
 import { ImageCarousel } from './ImageCarousel';
 import { useNavigation } from '@react-navigation/native';
 import { BackArrowIcon } from '../icons/BackArrow';
@@ -24,7 +25,7 @@ function NumberOfApplicants({numApplicants} : NumberOfApplicantsProps){
 }
 
 interface TabHeaderProps {
-    jobData: JobData
+    jobData: JobOwnerView
 }
 
 export function TabHeader({jobData}: TabHeaderProps) {
@@ -51,7 +52,7 @@ export function TabHeader({jobData}: TabHeaderProps) {
             <Tab.Screen name="Details">
                 {props => <DetailsScreen {...props} carousel={carousel} jobData={jobData} />}
             </Tab.Screen>
-            <Tab.Screen name="Applicants">
+            <Tab.Screen name="Applicants" listeners={{ tabPress: e => {if(jobData.applicants.length === 0){e.preventDefault();}}}}>
                 {props => <ApplicantsScreen {...props} carousel={carousel} jobData={jobData} />}
             </Tab.Screen>
         </Tab.Navigator> 

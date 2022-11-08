@@ -6,7 +6,9 @@ import { ImageSourcePropType } from 'react-native';
 import { API_URL } from '@env';
 import { JobData, JobOwnerView } from './data';
 
+// change to http://10.0.2.2/api/jobs/ for Android Emulator
 export const GET_JOBS = `http://localhost:3000/api/jobs`
+export const GET_USER = `http://localhost:3000/api/users` // might need to change
 
 export const getJobById = async (jobId: string): Promise<JobData | null> => {
     try {
@@ -19,6 +21,17 @@ export const getJobById = async (jobId: string): Promise<JobData | null> => {
     } catch {
         return null;
     }
+}
+
+
+export const getUserById = async (userID: string): Promise<UserData | null> => {
+    try {
+        const url = `$`
+
+    } catch {
+        return null;
+    }
+
 }
 
 /** Might consider removing */
