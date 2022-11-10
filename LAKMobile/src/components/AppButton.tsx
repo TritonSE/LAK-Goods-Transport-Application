@@ -46,6 +46,17 @@ const tertiaryStyle = StyleSheet.create({
     }
 })
 
+const disabledStyle = StyleSheet.create({
+    container: {
+        backgroundColor: COLORS.gray,
+        borderRadius: 4,
+    },
+    text: {
+        alignSelf: 'center',
+        color: COLORS.white,
+    }
+})
+
 const linkStyle = StyleSheet.create({
     container: {
         elevation: 8,
@@ -96,7 +107,8 @@ const TYPE_STYLE_MAP = {
     link: linkStyle,
     primary: primaryStyle,
     secondary: secondaryStyle,
-    tertiary: tertiaryStyle
+    tertiary: tertiaryStyle,
+    disabled: disabledStyle
 }
 
 const SIZE_STYLE_MAP = {
@@ -106,7 +118,7 @@ const SIZE_STYLE_MAP = {
 }
 
 type AppButtonProps = {
-    type?: 'link' | 'primary' | 'secondary' | 'tertiary',
+    type?: 'link' | 'primary' | 'secondary' | 'tertiary' | 'disabled',
     size?: 'large' | 'medium' | 'small',
     onPress?: () => void,
     title: string,
@@ -120,7 +132,8 @@ export function AppButton({title, size, style, onPress, type, textStyle}: AppBut
 
     return (
         <TouchableOpacity 
-            onPress={onPress} 
+            onPress={onPress}
+            disabled = {type === 'disabled'}
             style={[COMMON_STYLE.container, TYPE_STYLE_MAP[type].container, size && SIZE_STYLE_MAP[size].container, style]}>
             <AppText style={[TYPE_STYLE_MAP[type].text, size && SIZE_STYLE_MAP[size].text, textStyle]}>{title}</AppText>
         </TouchableOpacity>

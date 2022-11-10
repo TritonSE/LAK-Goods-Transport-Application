@@ -1,4 +1,4 @@
-import React, { Reducer, useCallback, useReducer, useState } from "react";
+import React, { Reducer, useCallback, useEffect, useReducer, useState } from "react";
 import { ScrollView, StyleSheet, View } from "react-native";
 import { Picker } from "@react-native-picker/picker";
 import * as ImagePicker from "expo-image-picker";
@@ -13,9 +13,11 @@ import {
   ModalAlert,
 } from "../components";
 import { COLORS } from "../../constants";
+import { getJobById, JobData } from "../api";
 
+const PICKER_DEFAULT = "-- Select a district --"
 const LOCATIONS = [
-  "-- Select a district --",
+  PICKER_DEFAULT,
   "Bumthang",
   "Chhukha",
   "Dagana",
@@ -38,46 +40,77 @@ const LOCATIONS = [
   "Zhemgang",
 ];
 
-type ImagesReducerState = string[];
 
-interface ImagesReducerAddAction {
-  type: "ADD_IMAGE";
-  payload: string;
+
+interface AddJobProps {
+  formType: "add" | "edit" | "repost";
+  jobID: string;
 }
 
-interface ImagesReducerRemoveAction {
-  type: "REMOVE_IMAGE";
-  payload: number;
+type Validator = (text: string) => boolean
+
+type ValidatedField = {
+  fieldName: string
+  fieldValue: string
+  validator: Validator
 }
 
-type ImagesReducerAction = ImagesReducerAddAction | ImagesReducerRemoveAction;
+const fieldNames = {
+  jobTitle: "jobTitle",
+  phoneNumber: "phoneNumber",
+  deliveryDate: "deliveryDate",
+  pickupLocation: "pickupLocation",
+  dropoffLocation: "dropoffLocation",
+  imageSelect: "imageSelect"
+}
 
-type ImagesReducer = Reducer<ImagesReducerState, ImagesReducerAction>;
-
-const reducer: ImagesReducer = (state, action): ImagesReducerState => {
-  let newState = state.slice();
-  switch (action.type) {
-    case "ADD_IMAGE":
-      const index = newState.findIndex((value) => value === "");
-      newState[index] = action.payload;
-      break;
-    case "REMOVE_IMAGE":
-      newState[action.payload] = "";
-      newState = newState.filter((value) => value !== "");
-      while (newState.length < 3) {
-        newState.push("");
-      }
-      break;
+export function AddJob({ formType, jobID }: AddJobProps) {
+  const [isValid, setIsValid] = useState({
+    [fieldNames.jobTitle] : true,
+    [fieldNames.phoneNumber]: true,
+    [fieldNames.deliveryDate]: true,
+    [fieldNames.pickupLocation]: true,
+    [fieldNames.dropoffLocation]: true,
+    [fieldNames.imageSelect]: true
+  })
+  interface ImagesReducerSetAction {
+    type: "SET_IMAGES";
+    payload: string[];
   }
-  return newState;
-};
 
-export function AddJob() {
+  type ImagesReducerAction = ImagesReducerAddAction | ImagesReducerRemoveAction | ImagesReducerSetAction;
+
+  type ImagesReducer = Reducer<ImagesReducerState, ImagesReducerAction>;
+
+  const reducer: ImagesReducer = (state, action): ImagesReducerState => {
+    let newState = state.slice();
+    switch (action.type) {
+      case "ADD_IMAGE":
+        const index = newState.findIndex((value) => value === "");
+        newState[index] = action.payload;
+        setIsValid({...isValid, ["imageSelect"]: true})
+        break;
+      case "REMOVE_IMAGE":
+        newState[action.payload] = "";
+        newState = newState.filter((value) => value !== "");
+        while (newState.length < 3) {
+          newState.push("");
+        }
+        let valid = newState.some(v => v !== "")
+        setIsValid({...isValid, ["imageSelect"]: (valid)})
+        break;
+    }
+    return newState;
+  };
+
   const [imageURIs, dispatch] = useReducer(reducer, ["", "", ""]);
   const [permissionAlertVisible, setPermissionAlertVisible] = useState(false);
   const [imagePickPromptVisible, setImagePickPromptVisible] = useState(false);
   const [jobTitle, setJobTitle] = useState("");
   const [clientName, setClientName] = useState("");
+  const [phoneNumber, setPhoneNumber] = useState("");
+  const [receiverName, setReceiverName] = useState("");
+  const [receiverPhoneNumber, setReceiverPhoneNumber] = useState("");
   const [deliveryDate, setDeliveryDate] = useState("");
   const [description, setDescription] = useState("");
   const [quantity, setQuantity] = useState("");
@@ -86,7 +119,96 @@ export function AddJob() {
   const [pickupDistrict, setPickupDistrict] = useState("");
   const [dropoffLocation, setDropoffLocation] = useState("");
   const [dropoffDistrict, setDropoffDistrict] = useState("");
-  const [phoneNumber, setPhoneNumber] = useState("");
+
+
+  type ImagesReducerState = string[];
+
+  interface ImagesReducerAddAction {
+    type: "ADD_IMAGE";
+    payload: string;
+  }
+
+  interface ImagesReducerRemoveAction {
+    type: "REMOVE_IMAGE";
+    payload: number;
+  }
+
+
+  //TODO: Abstract text validation to make more DRY
+  const validatePresence: Validator = (text: string) => {
+    let valid = text.length > 0;
+    return valid
+  }
+
+  const validatePhoneNumber:Validator = (text: string) => {
+    let valid = (text.startsWith('1') || text.startsWith('7')) && text.length == 8
+    return valid
+  }
+
+  const validateDate: Validator = (text: string) => {
+    let date_regex = /^(0[1-9]|1[0-2])\/(0[1-9]|1\d|2\d|3[01])\/(19|20)\d{2}$/;
+    let valid = date_regex.test(text);
+    return valid
+  }
+
+  const validatePickerSelect: Validator = (value: string) => {
+    let valid = value !== PICKER_DEFAULT
+    return valid
+  }
+
+  const validators = {
+    presence: validatePresence,
+    phoneNumber: validatePhoneNumber,
+    recieverPhoneNumber: validatePhoneNumber,
+    date: validateDate,
+    picker: validatePickerSelect,
+  }
+
+  const validatedFields: Array<ValidatedField> = [
+    {fieldName: fieldNames.jobTitle, fieldValue: jobTitle, validator: validators.presence}, 
+    {fieldName: fieldNames.phoneNumber, fieldValue: phoneNumber, validator: validators.phoneNumber},
+    {fieldName: fieldNames.deliveryDate, fieldValue: deliveryDate, validator: validators.date},
+    {fieldName: fieldNames.pickupLocation, fieldValue: pickupLocation, validator: validators.presence},
+    {fieldName: fieldNames.dropoffLocation, fieldValue: dropoffLocation, validator: validators.presence}
+  ]
+
+  const validateFields = () => {
+    let isAllValid: boolean = true
+    const currentValid = {...isValid}
+    validatedFields.forEach(validatedField => {
+      let valid = validatedField.validator(validatedField.fieldValue);
+      currentValid[validatedField.fieldName] = valid;
+      if (!valid) {
+        isAllValid = false;
+      }
+    })
+    setIsValid(currentValid)
+    return isAllValid
+  }
+
+  useEffect(() => {
+    if (formType !== "add") {
+      console.log("IN USE EFFECT " + jobID)
+      getJobById(jobID).then(async (response) => {
+        if (response == null) {
+          return null;
+        }
+        const job: JobData = response;
+        setJobTitle(job.title);
+        setClientName(job.clientName);
+        setPhoneNumber(job.phoneNumber);
+        setDeliveryDate(job.deliveryDate);
+        setDescription(job.description);
+        setQuantity(job.packageQuantity?.toString() || "");
+        setPrice(job.price?.toString() || "");
+        setPickupLocation(job.pickupLocation);
+        setPickupDistrict("");
+        setDropoffLocation(job.dropoffLocation);
+        setDropoffDistrict("");
+        dispatch({ type: "SET_IMAGES", payload: job.imageIds });
+      });
+    }
+  }, [formType, jobID]);
 
   const openImageLibrary = useCallback(async () => {
     const permissionResult =
@@ -95,7 +217,7 @@ export function AddJob() {
       setPermissionAlertVisible(true);
       return;
     }
-    const pickerResult = await ImagePicker.launchImageLibraryAsync();
+    const pickerResult = await ImagePicker.launchImageLibraryAsync({mediaTypes: ImagePicker.MediaTypeOptions.Images});
     if (!pickerResult.cancelled) {
       dispatch({ type: "ADD_IMAGE", payload: pickerResult.uri });
     }
@@ -126,10 +248,95 @@ export function AddJob() {
     [imageURIs]
   );
 
-  const submitJob = useCallback(() => {
+  const submitJob = async() => {
     // TODO: when submitting, remember to filter out empty strings from imageURIs
-    console.log("submitJob");
-  }, []);
+    console.log(isValid)
+    if (!validateFields()) {
+      console.log(isValid)
+      return
+    }
+    if (formType === "add" || formType=="repost") {
+      const body={
+        //TODO pickup and dropoff district
+        title: jobTitle.trim(),
+        clientName: clientName.trim(),
+        phoneNumber: phoneNumber,
+        deliveryDate: deliveryDate,
+        description: description.trim(),
+        packageQuantity: parseInt(quantity),
+        price: parseInt(price),
+        pickupLocation: pickupLocation.trim(),
+        dropoffLocation: dropoffLocation.trim(),
+        imageIds: imageURIs.filter((value) => value !== "")
+      }
+      fetch("http://10.0.2.2:3000/api/jobs/?user=client1", {
+        method: "POST",
+        mode: "cors",
+        headers: {
+          "content-type": "application/json",
+        }, 
+        body: JSON.stringify(body)
+      }).then(async (response) => {
+        let json = await response.json();
+        console.log(JSON.stringify(json));
+        console.log(json.jobId);
+
+        //TODO
+
+
+      });
+    }
+    else if (formType === "edit") {
+      const body={
+        //TODO pickup and dropoff district
+        title: jobTitle,
+        clientName: clientName,
+        phoneNumber: phoneNumber,
+        deliveryDate: deliveryDate,
+        description: description,
+        packageQuantity: parseInt(quantity),
+        price: parseInt(price),
+        pickupLocation: pickupLocation,
+        dropoffLocation: dropoffLocation,
+        imageIds: imageURIs.filter((value) => value !== "")
+      }
+      //TODO
+      fetch("http://10.0.2.2:3000/api/jobs/" + jobID + "?user=client1", {
+        method: "PATCH",
+        mode: "cors",
+        headers: {
+          "content-type": "application/json",
+        },
+        body: JSON.stringify(body)
+      }).then(async (response) => {
+        let json = await response.json();
+        console.log(JSON.stringify(json));
+      })
+
+    }
+    else {
+      //TODO
+    }
+  };
+
+  const deleteJob = () => {
+    // TODO
+    console.log("JOBID IS " + jobID)
+    fetch("http://10.0.2.2:3000/api/jobs/" + jobID +"?user=client1", {
+      method: "DELETE",
+      mode: "cors",
+      headers: {
+        "content-type": "application/json",
+      }, 
+    }).then(async (response) => {
+      let json = await response.json();
+      console.log(JSON.stringify(json));
+
+      //TODO - Route out of page
+
+
+    });
+  };
 
   return (
     <View>
@@ -141,18 +348,21 @@ export function AddJob() {
         <LabelWrapper label="Job Title">
           <AppTextInput
             value={jobTitle}
-            onChangeText={setJobTitle}
-            style={[inputStyle2, styles.spacer]}
+            changeAction={setJobTitle}
+            style={isValid[fieldNames.jobTitle] ?  [inputStyle2, styles.spacer] : [inputStyleErr2]}
             placeholder="Ex. Box of apples"
+            isValid = {isValid[fieldNames.jobTitle]}
+            type="jobTitle"
+            errMsg = "Please write a title for your listing."
             maxLength={100}
             keyboardType="default"
           />
         </LabelWrapper>
 
-        <LabelWrapper label="Client Name">
+        <LabelWrapper label="Your Name">
           <AppTextInput
             value={clientName}
-            onChangeText={setClientName}
+            changeAction={setClientName}
             style={[inputStyle2, styles.spacer]}
             placeholder="Ex. Gabby Gibson"
             maxLength={100}
@@ -160,24 +370,63 @@ export function AddJob() {
           />
         </LabelWrapper>
 
+        <LabelWrapper label="Your Phone number">
+          <AppTextInput
+            value={phoneNumber}
+            changeAction={setPhoneNumber}
+            isValid={isValid[fieldNames.phoneNumber]}
+            style={isValid["phoneNumber"] ?  [inputStyle2, styles.spacer] : inputStyleErr2}
+            placeholder="Ex. 17113456"
+            icon="phone-in-talk"
+            keyboardType="numeric"
+            type="phoneNumber"
+            errMsg="Please insert the sender's phone number"
+          />
+        </LabelWrapper>
+
+        <LabelWrapper label="Receiver name">
+          <AppTextInput
+            value={receiverName}
+            changeAction={setReceiverName}
+            style={[inputStyle2, styles.spacer]}
+            placeholder="First Last"
+            maxLength={100}
+            keyboardType="default"
+          />
+        </LabelWrapper>
+
+        <LabelWrapper label="Receiver phone number">
+          <AppTextInput
+            value={receiverPhoneNumber}
+            changeAction={setReceiverPhoneNumber}
+            style={[inputStyleFull, styles.spacer]}
+            placeholder="Ex. 17113456"
+            icon="phone-in-talk"
+            keyboardType="numeric"
+            type="recieverPhoneNumber"
+          />
+        </LabelWrapper>
+
         <LabelWrapper label="Date to be delivered">
           <AppTextInput
             value={deliveryDate}
-            onChangeText={setDeliveryDate}
-            style={inputStyle2}
+            changeAction={setDeliveryDate}
+            isValid={isValid[fieldNames.deliveryDate]}
+            style={isValid["deliveryDate"] ?  inputStyle2 : inputStyleErr2}
             placeholder="Ex. MM/DD/YYYY"
             maxLength={10}
+            type="deliveryDate"
             keyboardType="default"
+            errMsg="Please put in a date or N/A if not applicable"
+            instructionText="put N/A if not applicable"
           />
-          <AppText style={[styles.inputFooterText, styles.spacer]}>
-            (put N/A if not applicable)
-          </AppText>
         </LabelWrapper>
+
 
         <LabelWrapper label="Description">
           <AppTextInput
             value={description}
-            onChangeText={setDescription}
+            changeAction={setDescription}
             multiline
             style={[styles.multilineInput, styles.spacer]}
             maxLength={1000}
@@ -187,18 +436,14 @@ export function AddJob() {
           />
         </LabelWrapper>
 
-        {/*  
-      TODO:  
-      (2) Edit: size of the TextInput box so that it shows all the placeholder text. 
-      Right now you need to scroll down to see all the text.
-       */}
 
         <LabelWrapper label="Package Quantity">
           <AppTextInput
             value={quantity}
-            onChangeText={setQuantity}
+            changeAction={setQuantity}
             style={[inputStyle1, styles.spacer]}
             placeholder="Ex. 6"
+            keyboardType="numeric"
             maxLength={10}
           />
         </LabelWrapper>
@@ -209,6 +454,7 @@ export function AddJob() {
             onChangeText={setPrice}
             placeholder="Ex. $$"
             maxLength={20}
+            keyboardType="numeric"
             style={[inputStyle1, styles.spacer]}
           />
         </LabelWrapper>
@@ -217,16 +463,18 @@ export function AddJob() {
           <AppTextInput
             value={pickupLocation}
             onChangeText={setPickupLocation}
-            style={inputStyleFull}
+            isValid={isValid[fieldNames.pickupLocation]}
+            style={isValid[fieldNames.pickupLocation] ? inputStyleFull : inputStyleErrFull}            
             placeholder="Ex. Insert address or landmark"
             maxLength={100}
             icon="location-pin"
+            errMsg="Please input an address or landmark"
           />
 
           <View style={[styles.pickerWrapper, styles.spacer]}>
             <Picker
               selectedValue={pickupDistrict}
-              onValueChange={(value) => setPickupDistrict(value)}
+              onValueChange={(value) => {setPickupDistrict(value)}}
               mode="dropdown" // Android only
             >
               {LOCATIONS.map((location, index) => (
@@ -240,15 +488,18 @@ export function AddJob() {
           <AppTextInput
             value={dropoffLocation}
             onChangeText={setDropoffLocation}
-            style={inputStyleFull}
+            style={isValid[fieldNames.dropoffLocation] ? inputStyleFull : inputStyleErrFull}
+            isValid={isValid[fieldNames.dropoffLocation]}
             placeholder="Ex. Insert address or landmark"
             maxLength={100}
+            errMsg="Please input an address or landmark"
             icon="location-pin"
           />
+
           <View style={[styles.pickerWrapper, styles.spacer]}>
             <Picker
               selectedValue={dropoffDistrict}
-              onValueChange={(value) => setDropoffDistrict(value)}
+              onValueChange={(value) => {setDropoffDistrict(value)}}
               mode="dropdown" // Android only
             >
               {LOCATIONS.map((location, index) => (
@@ -256,16 +507,6 @@ export function AddJob() {
               ))}
             </Picker>
           </View>
-        </LabelWrapper>
-
-        <LabelWrapper label="Phone number">
-          <AppTextInput
-            value={phoneNumber}
-            onChangeText={setPhoneNumber}
-            style={[inputStyleFull, styles.spacer]}
-            placeholder="Ex. 17113456"
-            icon="phone-in-talk"
-          />
         </LabelWrapper>
 
         <View style={styles.photos}>
@@ -291,9 +532,23 @@ export function AddJob() {
         <AppButton
           onPress={submitJob}
           style={[styles.center, { width: "100%" }]}
-          title="Post Job"
           type="primary"
+          title={
+            formType === "add"
+              ? "Post Job"
+              : formType === "edit"
+              ? "Update"
+              : "Repost"
+          }
         />
+        {formType === "edit" && (
+          <AppButton
+            onPress={deleteJob}
+            style={[styles.center, { width: "100%", margin: 15 }]}
+            title="Delete"
+            type="secondary"
+          />
+        )}
       </ScrollView>
       <ModalAlert
         title="Permission Needed"
@@ -328,6 +583,8 @@ export function AddJob() {
   );
 }
 
+
+
 const styles = StyleSheet.create({
   input: {
     borderWidth: 1,
@@ -336,8 +593,11 @@ const styles = StyleSheet.create({
     height: 40,
   },
 
-  inputFooterText: {
-    fontSize: 12,
+  errInput: {
+    borderWidth: 1,
+    borderRadius: 4,
+    borderColor: COLORS.red,
+    height: 40,
   },
 
   multilineInput: {
@@ -401,4 +661,24 @@ const inputStyleFull = StyleSheet.flatten([
   {
     width: "100%",
   },
+]);
+  const inputStyleErr1 = StyleSheet.flatten([
+    styles.errInput,
+    {
+      width: "40%",
+    },
+  ]);
+  
+  const inputStyleErr2 = StyleSheet.flatten([
+    styles.errInput,
+    {
+      width: "60%",
+    },
+  ]);
+  
+  const inputStyleErrFull = StyleSheet.flatten([
+    styles.errInput,
+    {
+      width: "100%",
+    },
 ]);
