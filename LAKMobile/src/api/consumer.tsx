@@ -24,15 +24,15 @@ export const getJobById = async (jobId: string): Promise<JobData | null> => {
 }
 
 
-export const getUserById = async (userID: string): Promise<UserData | null> => {
-    try {
-        const url = `$`
+// export const getUserById = async (userID: string): Promise<UserData | null> => {
+//     try {
+//         const url = `$`
 
-    } catch {
-        return null;
-    }
+//     } catch {
+//         return null;
+//     }
 
-}
+// }
 
 /** Might consider removing */
 export const getJobsByIds = async (jobIds: string[]): Promise<JobData[]> => {
