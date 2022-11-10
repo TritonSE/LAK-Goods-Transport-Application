@@ -10,16 +10,11 @@ type AppTextInputProps = TextInputProps & {
     instructionText ?: string  // default text under "Date to be Delivered"
     value: string
     changeAction?: React.Dispatch<React.SetStateAction<string>>
-    checkValid?: (a: string, b: string) => boolean
+    isValid?: boolean
     type?: string
 }
 
-export function AppTextInput({icon, errMsg, instructionText, style, value, checkValid, type, changeAction, ...textInputProps}: AppTextInputProps) {
-  const [isError, setIsError] = useState(false)
-  const handleChange = (text: string) => {
-    changeAction && changeAction(text)
-    checkValid && type && setIsError(!checkValid(text, type));
-  }
+export function AppTextInput({icon, errMsg, instructionText, style, value, isValid, type, changeAction, ...textInputProps}: AppTextInputProps) {
 
 
   return (
@@ -31,7 +26,7 @@ export function AppTextInput({icon, errMsg, instructionText, style, value, check
         { icon && 
           <MaterialIcon style={styles.icon} name={icon} size={20} color={COLORS.mediumGrey}/>
         }
-        <TextInput style={styles.textInput} onChangeText= {(text) => handleChange(text)} value={value} {...textInputProps}/>
+        <TextInput style={styles.textInput} value={value} {...textInputProps}/>
       </View>
 
 
@@ -39,7 +34,7 @@ export function AppTextInput({icon, errMsg, instructionText, style, value, check
         <Text style={styles.errText}>{errMsg}</Text>
       } */}
 
-      {isError 
+      {!isValid 
         ? ( 
           (errMsg && <Text style={styles.errText}>{errMsg}</Text> )
         ) 

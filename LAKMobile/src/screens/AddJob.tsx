@@ -13,6 +13,7 @@ import {
   ModalAlert,
 } from "../components";
 import { COLORS } from "../../constants";
+import { getJobById } from "../api";
 
 const PICKER_DEFAULT = "-- Select a district --"
 const LOCATIONS = [
@@ -43,17 +44,34 @@ const LOCATIONS = [
 
 interface AddJobProps {
   formType: "add" | "edit" | "repost";
-  jobID: string | null;
+  jobID: string;
+}
+
+type Validator = (text: string, type: string) => boolean
+
+type ValidatedField = {
+  fieldName: string
+  fieldValue: string
+  validator: Validator
+}
+
+const fieldNames = {
+  jobTitle: "jobTitle",
+  phoneNumber: "phoneNumber",
+  deliveryDate: "deliveryDate",
+  pickupLocation: "pickupDistrict",
+  dropoffLocation: "dropoffDistrict",
+  imageSelect: "imageSelect"
 }
 
 export function AddJob({ formType, jobID }: AddJobProps) {
   const [isValid, setIsValid] = useState({
-    "jobTitle": true,
-    "phoneNumber": true,
-    "deliveryDate": true,
-    "selectPickup": true,
-    "selectDropoff": true,
-    "imageSelect": true
+    [fieldNames.jobTitle] : true,
+    [fieldNames.phoneNumber]: true,
+    [fieldNames.deliveryDate]: true,
+    [fieldNames.pickupLocation]: true,
+    [fieldNames.dropoffLocation]: true,
+    [fieldNames.imageSelect]: true
   })
   interface ImagesReducerSetAction {
     type: "SET_IMAGES";
@@ -79,7 +97,6 @@ export function AddJob({ formType, jobID }: AddJobProps) {
           newState.push("");
         }
         let valid = newState.some(v => v !== "")
-        console.log(valid)
         setIsValid({...isValid, ["imageSelect"]: (valid)})
         break;
     }
@@ -118,32 +135,30 @@ export function AddJob({ formType, jobID }: AddJobProps) {
 
 
   //TODO: Abstract text validation to make more DRY
-  const validatePresence = (text: string, type: string) => {
+  const validatePresence: Validator = (text: string, name: string) => {
     let valid = text.length > 0;
-    setIsValid({...isValid, [type]: (valid)})
+    setIsValid({...isValid, [name]: (valid)})
     return valid
   }
 
-  const validatePhoneNumber = (text: string, type: string) => {
+  const validatePhoneNumber:Validator = (text: string, name: string) => {
     let valid = (text.startsWith('1') || text.startsWith('7')) && text.length == 8
-    setIsValid({...isValid, [type]: (valid)})
+    setIsValid({...isValid, [name]: (valid)})
     return valid
   }
 
-  const validateDate = (text: string, type: string) => {
+  const validateDate: Validator = (text: string, name: string) => {
     let date_regex = /^(0[1-9]|1[0-2])\/(0[1-9]|1\d|2\d|3[01])\/(19|20)\d{2}$/;
     let valid = date_regex.test(text);
-    setIsValid({...isValid, [type]: (valid)})
+    setIsValid({...isValid, [name]: (valid)})
     return valid
   }
 
-  const validatePickerSelect = (value: string, type: string) => {
+  const validatePickerSelect: Validator = (value: string, name: string) => {
     let valid = value !== PICKER_DEFAULT
-    setIsValid({...isValid, [type]: (valid)})
+    setIsValid({...isValid, [name]: (valid)})
     return valid
   }
-
-
 
   const validators = {
     presence: validatePresence,
@@ -152,19 +167,23 @@ export function AddJob({ formType, jobID }: AddJobProps) {
     date: validateDate,
     picker: validatePickerSelect,
   }
-  
 
+  const validatedFields: Array<ValidatedField> = [
+    {fieldName: fieldNames.jobTitle, fieldValue: jobTitle, validator: validators.presence}, 
+    {fieldName: fieldNames.phoneNumber, fieldValue: phoneNumber, validator: validators.phoneNumber},
+    {fieldName: fieldNames.deliveryDate, fieldValue: deliveryDate, validator: validators.date},
+    {fieldName: fieldNames.pickupLocation, fieldValue: pickupLocation, validator: validators.presence},
+    {fieldName: fieldNames.dropoffLocation, fieldValue: dropoffLocation, validator: validators.presence}
+  ]
 
+  const validateFields = () => {
+    return validatedFields.every(validatedField =>
+      validatedField.validator(validatedField.fieldValue, validatedField.fieldName)
+    )
+  }
 
   useEffect(() => {
-    const getJobData = async () => {
-      fetch("http://10.0.2.2:3000/api/jobs/" + jobID + "?user=client1", {
-        method: "GET",
-        mode: "cors",
-        headers: {
-          "content-type": "application/json",
-        },
-      }).then(async (response) => {
+    getJobById(jobID).then(async (response) => {
         let json = await response.json();
         console.log(JSON.stringify(json));
         const job = json.job;
@@ -227,7 +246,10 @@ export function AddJob({ formType, jobID }: AddJobProps) {
 
   const submitJob = async() => {
     // TODO: when submitting, remember to filter out empty strings from imageURIs
-    console.log("SUBMITTED")
+    if (!validateFields()) {
+      return
+    }
+
 
     if (formType === "add" || formType=="repost") {
       const body={
@@ -323,11 +345,9 @@ export function AddJob({ formType, jobID }: AddJobProps) {
           <AppTextInput
             value={jobTitle}
             changeAction={setJobTitle}
-
             style={isValid["jobTitle"] ?  [inputStyle2, styles.spacer] : [inputStyleErr2, styles.spacer]}
-
             placeholder="Ex. Box of apples"
-            checkValid={validators.presence}
+            isValid = {isValid[fieldNames.jobTitle]}
             type="jobTitle"
             errMsg = "Please write a title for your listing."
             maxLength={100}
@@ -350,15 +370,11 @@ export function AddJob({ formType, jobID }: AddJobProps) {
           <AppTextInput
             value={phoneNumber}
             changeAction={setPhoneNumber}
-
-            //style={isValid["phoneNumber"] ?  [inputStyle2, styles.spacer] : [inputStyleErr2, styles.spacer]}
+            isValid={isValid[fieldNames.phoneNumber]}
             style={isValid["phoneNumber"] ?  inputStyle2 : inputStyleErr2}
-
             placeholder="Ex. 17113456"
             icon="phone-in-talk"
             keyboardType="numeric"
-
-            checkValid={validators.phoneNumber}
             type="phoneNumber"
             errMsg="Please insert the sender's phone number"
           />
@@ -379,14 +395,11 @@ export function AddJob({ formType, jobID }: AddJobProps) {
           <AppTextInput
             value={receiverPhoneNumber}
             changeAction={setReceiverPhoneNumber}
-
+            isValid={isValid[fieldNames.phoneNumber]}
             style={[inputStyleFull, styles.spacer]}
-
             placeholder="Ex. 17113456"
             icon="phone-in-talk"
             keyboardType="numeric"
-
-            checkValid={validators.phoneNumber}
             type="recieverPhoneNumber"
             errMsg="Invalid phone number"
           />
@@ -396,14 +409,10 @@ export function AddJob({ formType, jobID }: AddJobProps) {
           <AppTextInput
             value={deliveryDate}
             changeAction={setDeliveryDate}
-
-
+            isValid={isValid[fieldNames.deliveryDate]}
             style={isValid["deliveryDate"] ?  inputStyle2 : inputStyleErr2}
-            //style={inputStyle2}
-
             placeholder="Ex. MM/DD/YYYY"
             maxLength={10}
-            checkValid = {validators.date}
             type="deliveryDate"
             keyboardType="default"
             errMsg="Please put in a date or N/A if not applicable"
@@ -452,10 +461,7 @@ export function AddJob({ formType, jobID }: AddJobProps) {
           <AppTextInput
             value={pickupLocation}
             onChangeText={setPickupLocation}
-
-            style={isValid["selectPickup"] ?  inputStyleFull : inputStyleErrFull}
-            //style={inputStyleFull}
-            
+            style={isValid["selectPickup"] ?  inputStyleFull : inputStyleErrFull}            
             placeholder="Ex. Insert address or landmark"
             maxLength={100}
             // checkValid={matchers.presence}
@@ -480,13 +486,9 @@ export function AddJob({ formType, jobID }: AddJobProps) {
           <AppTextInput
             value={dropoffLocation}
             onChangeText={setDropoffLocation}
-
             style={isValid["selectDropoff"] ?  inputStyleFull : inputStyleErrFull}
-            //style={inputStyleFull}
-
             placeholder="Ex. Insert address or landmark"
             maxLength={100}
-            // pattern={matchers.presence}
             errMsg="Please input an address or landmark"
             icon="location-pin"
           />
