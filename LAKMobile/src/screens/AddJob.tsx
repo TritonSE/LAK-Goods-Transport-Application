@@ -13,7 +13,7 @@ import {
   ModalAlert,
 } from "../components";
 import { COLORS } from "../../constants";
-import { getJobById } from "../api";
+import { getJobById, JobData } from "../api";
 
 const PICKER_DEFAULT = "-- Select a district --"
 const LOCATIONS = [
@@ -47,7 +47,7 @@ interface AddJobProps {
   jobID: string;
 }
 
-type Validator = (text: string, type: string) => boolean
+type Validator = (text: string) => boolean
 
 type ValidatedField = {
   fieldName: string
@@ -59,8 +59,8 @@ const fieldNames = {
   jobTitle: "jobTitle",
   phoneNumber: "phoneNumber",
   deliveryDate: "deliveryDate",
-  pickupLocation: "pickupDistrict",
-  dropoffLocation: "dropoffDistrict",
+  pickupLocation: "pickupLocation",
+  dropoffLocation: "dropoffLocation",
   imageSelect: "imageSelect"
 }
 
@@ -135,28 +135,24 @@ export function AddJob({ formType, jobID }: AddJobProps) {
 
 
   //TODO: Abstract text validation to make more DRY
-  const validatePresence: Validator = (text: string, name: string) => {
+  const validatePresence: Validator = (text: string) => {
     let valid = text.length > 0;
-    setIsValid({...isValid, [name]: (valid)})
     return valid
   }
 
-  const validatePhoneNumber:Validator = (text: string, name: string) => {
+  const validatePhoneNumber:Validator = (text: string) => {
     let valid = (text.startsWith('1') || text.startsWith('7')) && text.length == 8
-    setIsValid({...isValid, [name]: (valid)})
     return valid
   }
 
-  const validateDate: Validator = (text: string, name: string) => {
+  const validateDate: Validator = (text: string) => {
     let date_regex = /^(0[1-9]|1[0-2])\/(0[1-9]|1\d|2\d|3[01])\/(19|20)\d{2}$/;
     let valid = date_regex.test(text);
-    setIsValid({...isValid, [name]: (valid)})
     return valid
   }
 
-  const validatePickerSelect: Validator = (value: string, name: string) => {
+  const validatePickerSelect: Validator = (value: string) => {
     let valid = value !== PICKER_DEFAULT
-    setIsValid({...isValid, [name]: (valid)})
     return valid
   }
 
@@ -177,32 +173,40 @@ export function AddJob({ formType, jobID }: AddJobProps) {
   ]
 
   const validateFields = () => {
-    return validatedFields.every(validatedField =>
-      validatedField.validator(validatedField.fieldValue, validatedField.fieldName)
-    )
+    let isAllValid: boolean = true
+    const currentValid = {...isValid}
+    validatedFields.forEach(validatedField => {
+      let valid = validatedField.validator(validatedField.fieldValue);
+      currentValid[validatedField.fieldName] = valid;
+      if (!valid) {
+        isAllValid = false;
+      }
+    })
+    setIsValid(currentValid)
+    return isAllValid
   }
 
   useEffect(() => {
-    getJobById(jobID).then(async (response) => {
-        let json = await response.json();
-        console.log(JSON.stringify(json));
-        const job = json.job;
+    if (formType !== "add") {
+      console.log("IN USE EFFECT " + jobID)
+      getJobById(jobID).then(async (response) => {
+        if (response == null) {
+          return null;
+        }
+        const job: JobData = response;
         setJobTitle(job.title);
         setClientName(job.clientName);
         setPhoneNumber(job.phoneNumber);
         setDeliveryDate(job.deliveryDate);
         setDescription(job.description);
-        setQuantity(job.packageQuantity.toString());
-        setPrice(job.price.toString());
+        setQuantity(job.packageQuantity?.toString() || "");
+        setPrice(job.price?.toString() || "");
         setPickupLocation(job.pickupLocation);
         setPickupDistrict("");
         setDropoffLocation(job.dropoffLocation);
         setDropoffDistrict("");
         dispatch({ type: "SET_IMAGES", payload: job.imageIds });
       });
-    };
-    if (formType !== "add") {
-      getJobData();
     }
   }, [formType, jobID]);
 
@@ -246,11 +250,11 @@ export function AddJob({ formType, jobID }: AddJobProps) {
 
   const submitJob = async() => {
     // TODO: when submitting, remember to filter out empty strings from imageURIs
+    console.log(isValid)
     if (!validateFields()) {
+      console.log(isValid)
       return
     }
-
-
     if (formType === "add" || formType=="repost") {
       const body={
         //TODO pickup and dropoff district
@@ -345,7 +349,7 @@ export function AddJob({ formType, jobID }: AddJobProps) {
           <AppTextInput
             value={jobTitle}
             changeAction={setJobTitle}
-            style={isValid["jobTitle"] ?  [inputStyle2, styles.spacer] : [inputStyleErr2, styles.spacer]}
+            style={isValid[fieldNames.jobTitle] ?  [inputStyle2, styles.spacer] : [inputStyleErr2]}
             placeholder="Ex. Box of apples"
             isValid = {isValid[fieldNames.jobTitle]}
             type="jobTitle"
@@ -371,7 +375,7 @@ export function AddJob({ formType, jobID }: AddJobProps) {
             value={phoneNumber}
             changeAction={setPhoneNumber}
             isValid={isValid[fieldNames.phoneNumber]}
-            style={isValid["phoneNumber"] ?  inputStyle2 : inputStyleErr2}
+            style={isValid["phoneNumber"] ?  [inputStyle2, styles.spacer] : inputStyleErr2}
             placeholder="Ex. 17113456"
             icon="phone-in-talk"
             keyboardType="numeric"
@@ -395,13 +399,11 @@ export function AddJob({ formType, jobID }: AddJobProps) {
           <AppTextInput
             value={receiverPhoneNumber}
             changeAction={setReceiverPhoneNumber}
-            isValid={isValid[fieldNames.phoneNumber]}
             style={[inputStyleFull, styles.spacer]}
             placeholder="Ex. 17113456"
             icon="phone-in-talk"
             keyboardType="numeric"
             type="recieverPhoneNumber"
-            errMsg="Invalid phone number"
           />
         </LabelWrapper>
 
@@ -461,10 +463,10 @@ export function AddJob({ formType, jobID }: AddJobProps) {
           <AppTextInput
             value={pickupLocation}
             onChangeText={setPickupLocation}
-            style={isValid["selectPickup"] ?  inputStyleFull : inputStyleErrFull}            
+            isValid={isValid[fieldNames.pickupLocation]}
+            style={isValid[fieldNames.pickupLocation] ? inputStyleFull : inputStyleErrFull}            
             placeholder="Ex. Insert address or landmark"
             maxLength={100}
-            // checkValid={matchers.presence}
             icon="location-pin"
             errMsg="Please input an address or landmark"
           />
@@ -472,7 +474,7 @@ export function AddJob({ formType, jobID }: AddJobProps) {
           <View style={[styles.pickerWrapper, styles.spacer]}>
             <Picker
               selectedValue={pickupDistrict}
-              onValueChange={(value) => { validators.picker(value, "selectPickup"); setPickupDistrict(value)}}
+              onValueChange={(value) => {setPickupDistrict(value)}}
               mode="dropdown" // Android only
             >
               {LOCATIONS.map((location, index) => (
@@ -486,7 +488,8 @@ export function AddJob({ formType, jobID }: AddJobProps) {
           <AppTextInput
             value={dropoffLocation}
             onChangeText={setDropoffLocation}
-            style={isValid["selectDropoff"] ?  inputStyleFull : inputStyleErrFull}
+            style={isValid[fieldNames.dropoffLocation] ? inputStyleFull : inputStyleErrFull}
+            isValid={isValid[fieldNames.dropoffLocation]}
             placeholder="Ex. Insert address or landmark"
             maxLength={100}
             errMsg="Please input an address or landmark"
@@ -496,7 +499,7 @@ export function AddJob({ formType, jobID }: AddJobProps) {
           <View style={[styles.pickerWrapper, styles.spacer]}>
             <Picker
               selectedValue={dropoffDistrict}
-              onValueChange={(value) => { validators.picker(value, "selectDropoff"); setDropoffDistrict(value) }}
+              onValueChange={(value) => {setDropoffDistrict(value)}}
               mode="dropdown" // Android only
             >
               {LOCATIONS.map((location, index) => (
@@ -529,7 +532,7 @@ export function AddJob({ formType, jobID }: AddJobProps) {
         <AppButton
           onPress={submitJob}
           style={[styles.center, { width: "100%" }]}
-          type={Object.values(isValid).some(v => v === false) ? "disabled" : "primary"}
+          type="primary"
           title={
             formType === "add"
               ? "Post Job"

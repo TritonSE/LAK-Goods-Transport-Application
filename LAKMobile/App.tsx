@@ -6,7 +6,7 @@ import { ScreenHeader, ImageCarousel, ApplicantThumbnail } from "./src/component
 import { SignupScreen, LoginScreen, AddJob, ForgotPassword, OTP } from "./src/screens";
 import { MOCK_APPLICANT_DATA } from './constants';
 export default function App() {
-  return <AddJob formType="repost" jobID="62427202cbe7ce9f6e286829"/>
+  return <AddJob formType="edit" jobID="636d811946696ea231a43aee"/>
   // return <>
   //   {/* // Thumbnail Demo */}
   //   <View style={styles.container}>

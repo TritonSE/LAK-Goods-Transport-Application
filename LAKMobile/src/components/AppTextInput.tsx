@@ -15,7 +15,9 @@ type AppTextInputProps = TextInputProps & {
 }
 
 export function AppTextInput({icon, errMsg, instructionText, style, value, isValid, type, changeAction, ...textInputProps}: AppTextInputProps) {
-
+  const handleChange = (text: string) => {
+    changeAction && changeAction(text)
+  }
 
   return (
 
@@ -26,7 +28,7 @@ export function AppTextInput({icon, errMsg, instructionText, style, value, isVal
         { icon && 
           <MaterialIcon style={styles.icon} name={icon} size={20} color={COLORS.mediumGrey}/>
         }
-        <TextInput style={styles.textInput} value={value} {...textInputProps}/>
+        <TextInput style={styles.textInput} value={value} onChangeText= {(text) => handleChange(text)} {...textInputProps}/>
       </View>
 
 

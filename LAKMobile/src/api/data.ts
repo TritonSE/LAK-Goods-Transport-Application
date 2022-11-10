@@ -3,13 +3,15 @@ export interface JobData {
     _id: string,
     title: string;
     clientName: string;
-    phoneNumber?: string;
+    phoneNumber: string;
     deliveryDate: string;
     pickupLocation: string;
     dropoffLocation: string;
     packageQuantity?: number;
     status: JobStatus;
     imageIds: string[];
+    description: string;
+    price?: number;
 }
 
 export interface JobOwnerView extends JobData{
