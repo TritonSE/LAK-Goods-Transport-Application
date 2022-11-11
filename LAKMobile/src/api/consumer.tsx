@@ -4,15 +4,14 @@
 
 import { ImageSourcePropType } from 'react-native';
 import { API_URL } from '@env';
-import { JobData, JobOwnerView } from './data';
+import { JobData, JobOwnerView, UserData } from './data';
 
 // change to http://10.0.2.2/api/jobs/ for Android Emulator
-export const GET_JOBS = `http://localhost:3000/api/jobs`
-export const GET_USER = `http://localhost:3000/api/users` // might need to change
+export const GET_JOBS = `http://10.0.2.2:3000/api/jobs`
+export const GET_USER = `http://10.0.2.2:3000/api/users` // might need to change
 
 export const getJobById = async (jobId: string): Promise<JobData | null> => {
     try {
-        console.log("FETHCING")
         const url = `${GET_JOBS}/${jobId}?`;
         const response = await fetch(url)
         let data = await response.json();
@@ -24,15 +23,26 @@ export const getJobById = async (jobId: string): Promise<JobData | null> => {
 }
 
 
-// export const getUserById = async (userID: string): Promise<UserData | null> => {
-//     try {
-//         const url = `$`
+export const getUsersByIds = async (userIds: Array<string>): Promise<UserData[]> => {
+    try {
+        const url = `${GET_USER}/get-by-ids?`;
+        const response = await fetch(url, {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json'
+            },
+            body: JSON.stringify({
+                userIds: [...userIds]
+            })
+        });
+        let data = await response.json();
+        data = data.users;
+        return data;
+    } catch {
+        return [];
+    }
 
-//     } catch {
-//         return null;
-//     }
-
-// }
+}
 
 /** Might consider removing */
 export const getJobsByIds = async (jobIds: string[]): Promise<JobData[]> => {

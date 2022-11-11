@@ -8,11 +8,9 @@ export interface JobData {
     pickupLocation: string;
     dropoffLocation: string;
     description?: string;
-    price?: string;
     packageQuantity?: number;
     status: JobStatus;
     imageIds: string[];
-    description: string;
     price?: number;
 }
 
@@ -31,5 +29,8 @@ export interface ApplicantData {
 
 // TODO
 export interface UserData {
-
+    firstName: string;
+    lastName: string;
+    phone: string;
+    location: string;
 }

@@ -14,6 +14,7 @@ import {
 } from "../components";
 import { COLORS } from "../../constants";
 import { getJobById, JobData } from "../api";
+import { AddJobProps } from "../types/navigation";
 
 const PICKER_DEFAULT = "-- Select a district --"
 const LOCATIONS = [
@@ -40,13 +41,6 @@ const LOCATIONS = [
   "Zhemgang",
 ];
 
-
-
-interface AddJobProps {
-  formType: "add" | "edit" | "repost";
-  jobID: string;
-}
-
 type Validator = (text: string) => boolean
 
 type ValidatedField = {
@@ -64,7 +58,9 @@ const fieldNames = {
   imageSelect: "imageSelect"
 }
 
-export function AddJob({ formType, jobID }: AddJobProps) {
+export function AddJob({navigation, route} : AddJobProps) {
+  let jobID = route.params.jobId
+  let formType = route.params.formType
   const [isValid, setIsValid] = useState({
     [fieldNames.jobTitle] : true,
     [fieldNames.phoneNumber]: true,
@@ -188,7 +184,6 @@ export function AddJob({ formType, jobID }: AddJobProps) {
 
   useEffect(() => {
     if (formType !== "add") {
-      console.log("IN USE EFFECT " + jobID)
       getJobById(jobID).then(async (response) => {
         if (response == null) {
           return null;
@@ -198,7 +193,7 @@ export function AddJob({ formType, jobID }: AddJobProps) {
         setClientName(job.clientName);
         setPhoneNumber(job.phoneNumber);
         setDeliveryDate(job.deliveryDate);
-        setDescription(job.description);
+        setDescription(job.description || "");
         setQuantity(job.packageQuantity?.toString() || "");
         setPrice(job.price?.toString() || "");
         setPickupLocation(job.pickupLocation);
@@ -255,6 +250,7 @@ export function AddJob({ formType, jobID }: AddJobProps) {
       console.log(isValid)
       return
     }
+    console.log(imageURIs)
     if (formType === "add" || formType=="repost") {
       const body={
         //TODO pickup and dropoff district
@@ -280,10 +276,8 @@ export function AddJob({ formType, jobID }: AddJobProps) {
         let json = await response.json();
         console.log(JSON.stringify(json));
         console.log(json.jobId);
-
         //TODO
-
-
+        navigation.navigate('ListJobs')
       });
     }
     else if (formType === "edit") {
@@ -311,6 +305,7 @@ export function AddJob({ formType, jobID }: AddJobProps) {
       }).then(async (response) => {
         let json = await response.json();
         console.log(JSON.stringify(json));
+        navigation.navigate('ListJobs');
       })
 
     }

@@ -21,7 +21,6 @@ import { getJobById } from '../api';
 import { JobData, JobOwnerView } from '../api/data';
 
 export function JobApplicant({navigation, route} : JobApplicantProps) {
-    console.log(route)
     return (
         <TabHeader jobData={route.params.jobData}/>        
     )

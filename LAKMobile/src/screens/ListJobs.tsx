@@ -7,6 +7,7 @@ import { JobThumbnail, AppButton } from "../components";
 import { COLORS } from '../../constants';
 import { PickerStyles, FlatListStyles } from '../styles';
 import { ListJobProps } from "../types/navigation";
+import { useFocusEffect, useIsFocused } from "@react-navigation/native";
 
 type JobTypePickerOption = 'Current Jobs' | 'Completed Jobs';
 const PICKER_OPTIONS: JobTypePickerOption[] = [
@@ -14,11 +15,12 @@ const PICKER_OPTIONS: JobTypePickerOption[] = [
     'Completed Jobs'
 ]
 
-export function ListJobs({navigation}: ListJobProps) {
+export function ListJobs({navigation }: ListJobProps) {
     const [displayJobOwned, setDisplayJobOwned] = useState<boolean>(true); // TODO toggle for add jobs/find jobs
     const [jobListType, setJobListType] = useState<JobTypePickerOption>('Current Jobs');
 
     const [jobs, setJobs] = useState<JobData[] | JobOwnerView[]>([]);
+    const isFocused = useIsFocused()
     
     // NOTE: Page 0 is being used as a null page, but the first page is 1. 
     // Added this so that we are able to trigger hooks dependent on `page` when type of screen changes but page number does not
@@ -26,13 +28,12 @@ export function ListJobs({navigation}: ListJobProps) {
     
     const [loading, setLoading] = useState(false);
     const [allLoaded, setAllLoaded] = useState(false);
-
     useEffect(() => {
         // Resets the states for the screen
         setJobs([]);
         setAllLoaded(false);
         setPage(0);
-    }, [displayJobOwned, jobListType]);
+    }, [displayJobOwned, jobListType, isFocused]);
     
     useEffect(() => {
         // Fetches the job data for last reached page `page`. Enables lazy load on scrolling.
@@ -44,10 +45,8 @@ export function ListJobs({navigation}: ListJobProps) {
         if (allLoaded || loading) {
             return;
         }  
-
         // Check if page already loaded
         if (jobs.length >= page * PAGE_SIZE) return;
-
         setLoading(true);
         getJobs(displayJobOwned, jobListType === 'Completed Jobs', page)
         .then(response => {
@@ -76,7 +75,13 @@ export function ListJobs({navigation}: ListJobProps) {
                     data={jobs}
                     keyExtractor={item => item._id}
                     renderItem={ ({ item, index }) => (
-                        <JobThumbnail onPress = {() => navigation.navigate('JobApplicant', {jobData: (item as JobOwnerView)})} isJobOwner={true} job={(item as JobOwnerView)} />
+                        <JobThumbnail 
+                        onPress = {() => navigation.navigate('JobApplicant', {jobData: (item as JobOwnerView)})} 
+                        onEdit= {() => navigation.navigate('AddJob', {formType: "edit", jobId: item._id})}
+                        isJobOwner={true} 
+                        job={(item as JobOwnerView)} 
+
+                        />
                     )}
                     scrollEnabled={true}
                     ListHeaderComponent={
@@ -95,7 +100,7 @@ export function ListJobs({navigation}: ListJobProps) {
                                 textStyle={styles.addJobBtnText}
                                 type="primary" 
                                 size="small" 
-                                onPress={() => console.log('Add Job button pressed')} 
+                                onPress={() => navigation.navigate('AddJob', {formType: "add", jobId: ""})}
                                 title='Add Job' 
                                 style={styles.addJobBtn}/>
                         </View>

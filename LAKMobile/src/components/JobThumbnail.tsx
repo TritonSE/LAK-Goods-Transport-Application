@@ -7,6 +7,7 @@ import { EditIcon, PhoneIcon } from '../icons';
 import { imageIdToSource } from '../api';
 import { AppText } from './AppText';
 import { AppButton } from './AppButton';
+import { useNavigation } from '@react-navigation/native';
 
 /**
  * Button Wrapper
@@ -71,6 +72,7 @@ const diffDatesInDays = (start: Date, end: Date) => {
 
 interface JobThumbnailOwnerViewProps {
     onPress: ((event: GestureResponderEvent) => void) | undefined;
+    onEdit: ((event: GestureResponderEvent) => void) | undefined;
     isJobOwner: true;
     job: JobOwnerView;
     repostAllowed?: boolean;
@@ -114,6 +116,7 @@ const JOB_DISPLAY_STATUS_MAP: Record<JobStatus, DisplayStatus> = {
 
 export function JobThumbnail({isJobOwner, job, ...props}: JobThumbnailProps) {
     let displayStatus: DisplayStatus, daysAgo, numApplicants;
+    const navigation = useNavigation();
 
     if (isJobOwner) {
         props = props as JobThumbnailOwnerViewProps;
@@ -138,7 +141,7 @@ export function JobThumbnail({isJobOwner, job, ...props}: JobThumbnailProps) {
             </View>
             
             {isJobOwner && numApplicants == 0 && (
-                <ButtonWrapper style={JobThumbnailStyles.editButton} onPress={() => console.log("Edit Button Pressed")}>
+                <ButtonWrapper style={JobThumbnailStyles.editButton} onPress={(props as JobThumbnailOwnerViewProps).onEdit}>
                     <EditIcon />
                 </ButtonWrapper>
             )}

@@ -1,5 +1,5 @@
 import type { NativeStackScreenProps } from '@react-navigation/native-stack';
-import { JobData } from '../api';
+import { JobData, JobOwnerView } from '../api';
 
 export type RootStackParamList = {
     Login: undefined;
@@ -8,7 +8,8 @@ export type RootStackParamList = {
     OTP: undefined;
     ResetSuccess: undefined;
     ForgotPassword: undefined;
-    JobApplicant: {jobData: JobData};
+    JobApplicant: {jobData: JobOwnerView};
+    AddJob: {formType: "add" | "edit" | "delete" | "repost", jobId: string}
     ListJobs: undefined;
 };
 
@@ -20,3 +21,4 @@ export type ResetSuccessProps = NativeStackScreenProps<RootStackParamList, 'Rese
 export type ForgotPasswordProps = NativeStackScreenProps<RootStackParamList, 'ForgotPassword'>;
 export type JobApplicantProps = NativeStackScreenProps<RootStackParamList, 'JobApplicant'>;
 export type ListJobProps = NativeStackScreenProps<RootStackParamList, 'ListJobs'>;
+export type AddJobProps = NativeStackScreenProps<RootStackParamList, 'AddJob'>;
