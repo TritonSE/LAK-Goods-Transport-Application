@@ -27,6 +27,7 @@ export default function App() {
           <Stack.Screen name="OTP" component={OTP} />
           <Stack.Screen name="ListJobs" component={ListJobs} />
           <Stack.Screen name="JobApplicant" component={JobApplicant} />
+          <Stack.Screen name="AddJob" component={AddJob} />
         </Stack.Navigator>
       </NavigationContainer>
     </View>

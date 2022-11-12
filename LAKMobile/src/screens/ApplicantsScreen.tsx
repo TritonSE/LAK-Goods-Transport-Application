@@ -50,10 +50,7 @@ export function ApplicantsScreen({jobData, carousel} : ApplicantScreenProps) {
                 
             </ScrollView>
             
-        </View>
-
-
-                
+        </View> 
     );
 
 }

@@ -73,6 +73,7 @@ const diffDatesInDays = (start: Date, end: Date) => {
 interface JobThumbnailOwnerViewProps {
     onPress: ((event: GestureResponderEvent) => void) | undefined;
     onEdit: ((event: GestureResponderEvent) => void) | undefined;
+    onRepost?: (() => void);
     isJobOwner: true;
     job: JobOwnerView;
     repostAllowed?: boolean;
@@ -173,7 +174,7 @@ export function JobThumbnail({isJobOwner, job, ...props}: JobThumbnailProps) {
                 {
                     isJobOwner &&
                     (props as JobThumbnailOwnerViewProps).repostAllowed &&  
-                    <AppButton title='Repost' type='tertiary' size='small' onPress={() => console.log('Job attempted to repost')}/>
+                    <AppButton title='Repost' type='tertiary' size='small' onPress={(props as JobThumbnailOwnerViewProps).onRepost}/>
                 }   
             </View>
             

@@ -76,11 +76,12 @@ export function ListJobs({navigation }: ListJobProps) {
                     keyExtractor={item => item._id}
                     renderItem={ ({ item, index }) => (
                         <JobThumbnail 
-                        onPress = {() => navigation.navigate('JobApplicant', {jobData: (item as JobOwnerView)})} 
-                        onEdit= {() => navigation.navigate('AddJob', {formType: "edit", jobId: item._id})}
+                        onPress={() => navigation.navigate('JobApplicant', {jobData: (item as JobOwnerView)})} 
+                        onEdit={() => navigation.navigate('AddJob', {formType: "edit", jobId: item._id})}
+                        onRepost={() => navigation.navigate('AddJob', {formType: "repost", jobId: item._id})} 
                         isJobOwner={true} 
                         job={(item as JobOwnerView)} 
-
+                        repostAllowed = {jobListType === 'Completed Jobs'}
                         />
                     )}
                     scrollEnabled={true}

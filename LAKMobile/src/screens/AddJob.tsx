@@ -61,6 +61,16 @@ const fieldNames = {
 export function AddJob({navigation, route} : AddJobProps) {
   let jobID = route.params.jobId
   let formType = route.params.formType
+  let screenHeader;
+  switch(formType) {
+    case "add":
+      screenHeader="Add Job";
+    case "edit":
+      screenHeader="Edit Job";
+    case "repost":
+      screenHeader="Repost Job";
+  }
+
   const [isValid, setIsValid] = useState({
     [fieldNames.jobTitle] : true,
     [fieldNames.phoneNumber]: true,
@@ -336,7 +346,7 @@ export function AddJob({navigation, route} : AddJobProps) {
   return (
     <View>
       <View style={styles.header}>
-        <ScreenHeader showArrow>Add Job</ScreenHeader>
+        <ScreenHeader showArrow>{screenHeader}</ScreenHeader>
       </View>
 
       <ScrollView contentContainerStyle={styles.container}>
