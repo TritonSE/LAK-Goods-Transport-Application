@@ -59,9 +59,9 @@ export async function getJobIds(userId, {owned, finished, assigned}, {limit, off
  */
 export async function createJob(userId, jobData, jobImages) {
     console.debug(`SERVICE: createJob service running: userId - ${userId}, jobData - payload`);
-    const imageIds = [];
 
     // Store images
+    const imageIds = [];
     for (let image of jobImages) {
         let imageId = await saveImage(image);
         imageIds.push(imageId);
