@@ -1,6 +1,6 @@
 import React from 'react';
 import { StyleSheet, TextInput, View } from 'react-native';
-import { AppText, LabelWrapper, AppButton } from '../components';
+import { AppText, LabelWrapper, AppButton, ScreenHeader } from '../components';
 import { COLORS } from '../../constants';
 import { NavigationContainer } from '@react-navigation/native';
 import {createNativeStackNavigator, NativeStackScreenProps} from '@react-navigation/native-stack';
@@ -8,42 +8,45 @@ import {LoginProps} from '../types/navigation';
 
 export function LoginScreen({navigation}: LoginProps) {
     return(
-        <View style={styles.container}>
-            <LabelWrapper label='Mobile Number'>
-                <TextInput
-                style={bigInputStyle}
-                keyboardType="default"
-                />
-            </LabelWrapper>
+        <View>
+            <ScreenHeader showArrow={true} children={"Login"}/>
+            <View style={styles.container}>
+                <LabelWrapper label='Mobile Number'>
+                    <TextInput
+                    style={bigInputStyle}
+                    keyboardType="default"
+                    />
+                </LabelWrapper>
 
-            <LabelWrapper label='4 Digit PIN'>
-                <TextInput
-                style={smallInputStyle}
-                keyboardType="numeric"
-                />
-            </LabelWrapper>
-            <AppButton 
-                type='link' 
-                title='Forgot PIN?' 
-                onPress={() => navigation.navigate('ForgotPassword')}
-                style={styles.forgotPIN}
-            />
-
-            <AppButton
-                type='primary'
-                title='Log in'
-                onPress={() => loginResponse()}
-                style={styles.submitButton}
-            />
-
-            <View style={styles.signupPrompt}>
-                <AppText>Don't have an account?</AppText>
+                <LabelWrapper label='4 Digit PIN'>
+                    <TextInput
+                    style={smallInputStyle}
+                    keyboardType="numeric"
+                    />
+                </LabelWrapper>
                 <AppButton 
                     type='link' 
-                    title='Sign up here.' 
-                    onPress={() => navigation.navigate('Signup')}
-                    style={styles.signupLink}
+                    title='Forgot PIN?' 
+                    onPress={() => navigation.navigate('ForgotPassword')}
+                    style={styles.forgotPIN}
                 />
+
+                <AppButton
+                    type='primary'
+                    title='Log in'
+                    onPress={() => loginResponse()}
+                    style={styles.submitButton}
+                />
+
+                <View style={styles.signupPrompt}>
+                    <AppText>Don't have an account?</AppText>
+                    <AppButton 
+                        type='link' 
+                        title='Sign up here.' 
+                        onPress={() => navigation.navigate('Signup')}
+                        style={styles.signupLink}
+                    />
+                </View>
             </View>
         </View>
     )
@@ -57,7 +60,6 @@ const styles = StyleSheet.create({
     container: {
         width: '100%',
         padding: 32,
-        flex: 1,
         alignItems: 'flex-start',
         justifyContent: 'center',
     },

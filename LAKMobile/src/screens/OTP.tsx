@@ -6,26 +6,25 @@ import {OTPProps} from '../types/navigation';
 
 export function OTP({navigation}: OTPProps) {
     return(
-        <View style={styles.container}>
-            <ScreenHeader showArrow={true}>
-                OTP Verification
-            </ScreenHeader>
+        <View>
+            <ScreenHeader showArrow={true} children={"OTP Verification"}/>
+            <View style={styles.container}>
+                <AppText style={headerText}>Please enter the OTP sent to your phone.</AppText>
 
-            <AppText style={headerText}>Please enter the OTP sent to your phone.</AppText>
+                <LabelWrapper label='OTP'>
+                    <TextInput
+                        style={smallInputStyle}
+                        keyboardType="default"
+                    />
+                </LabelWrapper>
 
-            <LabelWrapper label='OTP'>
-                <TextInput
-                    style={smallInputStyle}
-                    keyboardType="default"
+                <AppButton
+                    type='primary'
+                    title='Submit'
+                    onPress={() => navigation.navigate("ResetPassword")}
+                    style={styles.submitButton}
                 />
-            </LabelWrapper>
-
-            <AppButton
-                type='primary'
-                title='Submit'
-                onPress={() => navigation.navigate("ResetPassword")}
-                style={styles.submitButton}
-            />
+            </View>
         </View>
     )
 }
@@ -34,7 +33,6 @@ const styles = StyleSheet.create({
     container: {
         width: '100%',
         padding: 32,
-        flex: 1,
         alignItems: 'flex-start',
     },
 
@@ -72,7 +70,6 @@ const smallInputStyle = StyleSheet.flatten([
 
 const headerText = StyleSheet.flatten([{
         width: '100%',
-        marginTop: "30%",
         marginBottom: '8%',
     }
 ]);

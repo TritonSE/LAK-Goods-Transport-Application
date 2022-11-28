@@ -7,6 +7,7 @@ export type RootStackParamList = {
     OTP: undefined;
     ResetSuccess: undefined;
     ForgotPassword: undefined;
+    ScreenList: undefined;
 };
 
 export type LoginProps = NativeStackScreenProps<RootStackParamList, 'Login'>;
@@ -15,3 +16,4 @@ export type ResetPasswordProps = NativeStackScreenProps<RootStackParamList, 'Res
 export type OTPProps = NativeStackScreenProps<RootStackParamList, 'OTP'>;
 export type ResetSuccessProps = NativeStackScreenProps<RootStackParamList, 'ResetSuccess'>;
 export type ForgotPasswordProps = NativeStackScreenProps<RootStackParamList, 'ForgotPassword'>;
+export type ScreenListProps = NativeStackScreenProps<RootStackParamList, 'ScreenList'>;

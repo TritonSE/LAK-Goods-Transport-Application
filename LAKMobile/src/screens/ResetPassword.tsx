@@ -6,31 +6,30 @@ import {ResetPasswordProps} from '../types/navigation';
 
 export function ResetPassword({navigation}: ResetPasswordProps) {
     return(
-        <View style={styles.container}>
-            <ScreenHeader showArrow={true}>
-                Forgot Pin?
-            </ScreenHeader>
-            <View style={marginTop}/>
-            <LabelWrapper label='New 4 digit pin'>
-                <TextInput
-                    style={smallInputStyle}
-                    keyboardType="numeric"
-                />
-            </LabelWrapper>
+        <View>
+            <ScreenHeader showArrow={true} children={"Forgot Pin?"}/>
+            <View style={styles.container}>
+                <LabelWrapper label='New 4 digit pin'>
+                    <TextInput
+                        style={smallInputStyle}
+                        keyboardType="numeric"
+                    />
+                </LabelWrapper>
 
-            <LabelWrapper label='Confirm 4 digit pin'>
-                <TextInput
-                    style={smallInputStyle}
-                    keyboardType="numeric"
-                />
-            </LabelWrapper>
+                <LabelWrapper label='Confirm 4 digit pin'>
+                    <TextInput
+                        style={smallInputStyle}
+                        keyboardType="numeric"
+                    />
+                </LabelWrapper>
 
-            <AppButton
-                type='primary'
-                title='Reset Pin'
-                onPress={() => navigation.navigate('ResetSuccess')}
-                style={styles.submitButton}
-            />
+                <AppButton
+                    type='primary'
+                    title='Reset Pin'
+                    onPress={() => navigation.navigate('ResetSuccess')}
+                    style={styles.submitButton}
+                />
+            </View>
         </View>
     )
 }
@@ -39,7 +38,6 @@ const styles = StyleSheet.create({
     container: {
         width: '100%',
         padding: 32,
-        flex: 1,
         alignItems: 'flex-start',
     },
 
@@ -74,8 +72,3 @@ const smallInputStyle = StyleSheet.flatten([
         width: '45%'
     }
 ])
-
-const marginTop = StyleSheet.flatten([{
-        marginTop: "30%",
-    }
-]);

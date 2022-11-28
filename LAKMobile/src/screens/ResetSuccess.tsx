@@ -6,20 +6,20 @@ import {ResetSuccessProps} from "../types/navigation";
 
 export function ResetSuccess({navigation}: ResetSuccessProps) {
     return(
-        <View style={styles.container}>
-            <ScreenHeader showArrow={true}>
-                Reset Pin
-            </ScreenHeader>
+        <View>
+            <ScreenHeader showArrow={true} children={"Reset Pin"}/>
+            <View style={styles.container}>
+                <AppText style={headerText}>Reset pin successful! You have X reset(s) left this month.</AppText>
 
-            <AppText style={headerText}>Reset pin successful! You have X reset(s) left this month.</AppText>
-
-            <AppButton
-                type='primary'
-                title='Okay'
-                onPress={() => navigation.navigate("Login")}
-                style={styles.submitButton}
-            />
+                <AppButton
+                    type='primary'
+                    title='Okay'
+                    onPress={() => navigation.navigate("Login")}
+                    style={styles.submitButton}
+                />
+            </View>
         </View>
+        
     )
 }
 
@@ -27,7 +27,6 @@ const styles = StyleSheet.create({
     container: {
         width: '100%',
         padding: 32,
-        flex: 1,
         alignItems: 'flex-start',
     },
 
@@ -65,7 +64,6 @@ const bigInputStyle = StyleSheet.flatten([
 
 const headerText = StyleSheet.flatten([{
         width: '100%',
-        marginTop: "30%",
         marginBottom: '8%',
     }
 ]);

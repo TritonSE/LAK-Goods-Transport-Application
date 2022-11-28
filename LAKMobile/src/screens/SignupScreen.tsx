@@ -1,61 +1,64 @@
 import { StyleSheet, View, TextInput } from 'react-native';
-import { AppButton, LabelWrapper, AppText } from '../components';
+import { AppButton, LabelWrapper, AppText, ScreenHeader } from '../components';
 import { COLORS } from '../../constants';
 import {SignupProps} from '../types/navigation';
 
 export function SignupScreen({navigation}: SignupProps) {
   return (
-    <View style={styles.container}>
-      <LabelWrapper label='Name (First, Last)'>
-        <TextInput
+    <View>
+      <ScreenHeader showArrow={true} children={"Sign up"}/>
+      <View style={styles.container}>
+        <LabelWrapper label='Name (First, Last)'>
+          <TextInput
           style={styles.input}
           keyboardType="default"
-        />
-      </LabelWrapper>
-      
-      <LabelWrapper label='Mobile Number'>
-        <TextInput
-          style={bigInputStyle}
-          keyboardType="default"
-        />
-      </LabelWrapper>
-
-      <LabelWrapper label='Location'>
-        <TextInput
-          style={bigInputStyle}
-          keyboardType="default"
-        />
-      </LabelWrapper>
-
-      <LabelWrapper label='4 digit pin password'>
-        <TextInput
-          style={smallInputStyle}
-          keyboardType="numeric"
-        />
-      </LabelWrapper>
-
-      <LabelWrapper label='Confirm password'>
-        <TextInput
-          style={smallInputStyle}
-          keyboardType="numeric"
-        />
-      </LabelWrapper>
-
-      <AppButton
-        type='primary'
-        title='Create Account'
-        onPress={() => console.log('Create Account pressed')}
-        style={styles.submitButton}
-        />
-
-      <View style={styles.loginLinkContainer}>
-        <AppText>Already have an account?</AppText>
-        <AppButton 
-          type='link' 
-          title='Log in here' 
-          onPress={() => navigation.navigate('Login')}
-          style={styles.loginLink}
           />
+        </LabelWrapper>
+
+        <LabelWrapper label='Mobile Number'>
+          <TextInput
+          style={bigInputStyle}
+          keyboardType="default"
+          />
+        </LabelWrapper>
+
+        <LabelWrapper label='Location'>
+          <TextInput
+          style={bigInputStyle}
+          keyboardType="default"
+          />
+        </LabelWrapper>
+
+        <LabelWrapper label='4 digit pin password'>
+          <TextInput
+          style={smallInputStyle}
+          keyboardType="numeric"
+          />
+        </LabelWrapper>
+
+        <LabelWrapper label='Confirm password'>
+          <TextInput
+          style={smallInputStyle}
+          keyboardType="numeric"
+          />
+        </LabelWrapper>
+
+        <AppButton
+          type='primary'
+          title='Create Account'
+          onPress={() => console.log('Create Account pressed')}
+          style={styles.submitButton}
+        />
+
+        <View style={styles.loginLinkContainer}>
+          <AppText>Already have an account?</AppText>
+          <AppButton 
+            type='link' 
+            title='Log in here' 
+            onPress={() => navigation.navigate('Login')}
+            style={styles.loginLink}
+          />
+        </View>
       </View>
     </View>
   );
@@ -66,7 +69,6 @@ const styles = StyleSheet.create({
   container: {
     width: '100%',
     padding: 32,
-    flex: 1,
     backgroundColor: COLORS.white,
     alignItems: 'flex-start',
     justifyContent: 'center',
