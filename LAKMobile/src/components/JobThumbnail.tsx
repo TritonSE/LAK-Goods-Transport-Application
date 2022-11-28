@@ -7,21 +7,7 @@ import { EditIcon, PhoneIcon } from '../icons';
 import { imageIdToSource } from '../api';
 import { AppText } from './AppText';
 import { AppButton } from './AppButton';
-
-/**
- * Button Wrapper
- */
-type ButtonWrapperProps = PropsWithChildren<TouchableOpacityProps> & {
-    style?: StyleProp<ViewStyle>;
-}
-function ButtonWrapper({ onPress, style, children }: ButtonWrapperProps) {
-    return (
-        <TouchableOpacity onPress={onPress} style={style}>
-            {children}
-        </TouchableOpacity>
-    )
-}
-
+import { IconButtonWrapper } from './IconButtonWrapper'
 /**
  * Status Indicator
  */
@@ -134,9 +120,9 @@ export function JobThumbnail({isJobOwner, job, ...props}: JobThumbnailProps) {
             </View>
             
             {isJobOwner && numApplicants == 0 && (
-                <ButtonWrapper style={JobThumbnailStyles.editButton} onPress={() => console.log("Edit Button Pressed for job ", job._id)}>
+                <IconButtonWrapper style={JobThumbnailStyles.editButton} onPress={() => console.log("Edit Button Pressed for job ", job._id)}>
                     <EditIcon />
-                </ButtonWrapper>
+                </IconButtonWrapper>
             )}
 
             <Image style={JobThumbnailStyles.jobImage} source={getDisplayImage(job)}/>
@@ -157,10 +143,10 @@ export function JobThumbnail({isJobOwner, job, ...props}: JobThumbnailProps) {
             <View style={[CardStyles.row, CardStyles.footer]}>
                 {
                     !isJobOwner &&
-                    <ButtonWrapper style={JobThumbnailStyles.rowFlexBox} onPress={() => console.log('Call client button pressed')}>
+                    <IconButtonWrapper style={JobThumbnailStyles.rowFlexBox} onPress={() => console.log('Call client button pressed')}>
                         <PhoneIcon />
                         <AppText style={[JobThumbnailStyles.callClientText, { marginLeft: 5}]}>Call {job.clientName}</AppText>
-                    </ButtonWrapper>
+                    </IconButtonWrapper>
                 }
                 <View style={JobThumbnailStyles.flexSpacer} />
                 {

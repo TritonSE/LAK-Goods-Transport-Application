@@ -4,9 +4,10 @@
 
 import { ImageSourcePropType } from 'react-native';
 import { API_URL } from '@env';
-import { JobData, JobOwnerView } from './data';
+import { JobData, JobOwnerView, UserData } from './data';
 
 export const GET_JOBS = `${API_URL}/api/jobs`
+export const USERS_URL = `${API_URL}/api/users`
 
 export const getJobById = async (jobId: string): Promise<JobData | null> => {
     try {
@@ -68,3 +69,24 @@ export const imageIdToSource = (imageId: string): ImageSourcePropType => ({
     uri: `${API_URL}/api/images/${imageId}`,
 });
   
+
+/*
+* Users
+*/
+
+// TODO remove (Dummy data)
+export const getCurrentUser = (): string => {
+    return '63843c9907b5a9f8cf75fcc1';
+}
+
+export const getUser = async (userId: string): Promise<UserData | null> => {
+    try {
+        const url = `${USERS_URL}/${userId}?` + new URLSearchParams({user: 'client1'});
+        const response = await fetch(url)
+        let data = await response.json();
+        data = data.user as UserData;
+        return data;
+    } catch {
+        return null;
+    }
+}

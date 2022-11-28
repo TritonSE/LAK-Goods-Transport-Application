@@ -1,22 +1,18 @@
 
-import { MOCK_APPLICANT_DATA } from './constants';
-import { StatusBar } from 'expo-status-bar';
 import { StyleSheet, View } from 'react-native';
-import { ScreenHeader, ImageCarousel, ApplicantThumbnail } from './src/components';
-import {SignupScreen, LoginScreen, AddJob, ForgotPassword, OTP, ListJobs} from './src/screens';
+import {SignupScreen, LoginScreen, ForgotPassword, OTP, ListJobs, ProfileScreen} from './src/screens';
 import {ResetSuccess} from "./src/screens/ResetSuccess";
 import {ResetPassword} from "./src/screens/ResetPassword";
 import { NavigationContainer } from '@react-navigation/native';
 import { createNativeStackNavigator } from '@react-navigation/native-stack';
+import { getCurrentUser } from './src/api';
 
 const Stack = createNativeStackNavigator();
-
-
 
 export default function App() {
   return <View style={styles.container}>
       <NavigationContainer>
-        <Stack.Navigator initialRouteName="ListJobs" screenOptions={{
+        <Stack.Navigator initialRouteName="ProfileScreen" screenOptions={{
           headerShown: false
         }}>
           <Stack.Screen name="Login" component={LoginScreen} />
@@ -26,6 +22,7 @@ export default function App() {
           <Stack.Screen name="ResetSuccess" component={ResetSuccess} />
           <Stack.Screen name="OTP" component={OTP} />
           <Stack.Screen name="ListJobs" component={ListJobs} />
+          <Stack.Screen name="ProfileScreen" component={ProfileScreen} initialParams={{userId: getCurrentUser()}}/>
         </Stack.Navigator>
       </NavigationContainer>
     </View>
