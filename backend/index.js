@@ -40,6 +40,31 @@ const errorHandler = (err, req, res, next) => {
     });
 }
 
+export function initFirebase() {
+
+    const firebaseConfig = {
+        apiKey: "AIzaSyAHrRD9SL3wnoVUM9yzG8lxScWf92pWL38",
+        authDomain: "laakta-ucsd.firebaseapp.com",
+        projectId: "laakta-ucsd",
+        storageBucket: "laakta-ucsd.appspot.com",
+        messagingSenderId: "892160174879",
+        appId: "1:892160174879:web:d58d800b0b7cd700b25e2a",
+        measurementId: "G-ZFLMC1NS04"
+    };
+
+    initializeApp(firebaseConfig);
+}
+
+export function initAdmin() {
+    let init = admin.initializeApp({
+            credential: admin.credential.cert(serviceAccount.default),
+            databaseURL: 'https://laakta-ucsd.firebaseio.com'
+        },
+        'admin' // this name will be used to retrieve firebase instance. e.g. admin.database();
+    );
+    return init;
+}
+
 /**
  * Create and run app
  */
