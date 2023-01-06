@@ -1,8 +1,9 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useMemo } from "react";
 import { View, FlatList, StyleSheet } from "react-native";
 import { Picker } from "@react-native-picker/picker";
+import debounce from 'lodash.debounce';
 import { getJobs, JobData, JobOwnerView, PAGE_SIZE } from "../api";
-import { JobThumbnail, AppButton } from "../components";
+import { JobThumbnail, AppButton, AppTextInput } from "../components";
 import { COLORS } from '../../constants';
 import { PickerStyles, FlatListStyles } from '../styles';
 import { ListJobProps } from "../types/navigation";
@@ -22,6 +23,7 @@ const PICKER_OPTIONS: JobTypePickerOption[] = [
 export function ListJobs({ navigation }: ListJobProps) {
     const [displayJobOwned, setDisplayJobOwned] = useState<boolean>(true); // TODO toggle for add jobs/find jobs
     const [jobListType, setJobListType] = useState<JobTypePickerOption>('Current Jobs');
+    const [searchString, setSearchString] = useState<string | null>(null);
 
     const [jobs, setJobs] = useState<JobData[] | JobOwnerView[]>([]);
 
@@ -33,32 +35,23 @@ export function ListJobs({ navigation }: ListJobProps) {
     const [loading, setLoading] = useState(false);
     const [isRefreshing, setRefreshing] = useState(false);
     const [allLoaded, setAllLoaded] = useState(false);
-    // useEffect(() => {
-    //     if (route.params.update === null) {
-    //         return
-    //     }
-    //     if (route.params.update?.op) {
-    //         setJobs(jobs.filter(job => job._id !== route.params.update?.changedJob._id))
-    //         return
-    //     }
-    //     let newJobs = jobs
-    //     if (jobs.some(job => job._id === route.params.update?.changedJob._id)) {
-    //         newJobs = jobs.map(job => (
-    //             job._id === route.params.update?.changedJob._id ? route.params.update.changedJob : job)
-    //         )
-    //     } else {
-    //         newJobs = [...jobs, route.params.update.changedJob]
-    //     }
 
-    //     setJobs(newJobs)
-    // }, [isFocused])
 
-    useEffect(() => {
-        // Resets the states for the screen
+    const resetJobsOnPage = () => {
         setJobs([]);
         setAllLoaded(false);
         setPage(0);
+    }
+    const debouncedResetJobs = useMemo(() => debounce(resetJobsOnPage, 300), [])
+
+    useEffect(() => {
+        // Resets the states for the screen
+        resetJobsOnPage()
     }, [displayJobOwned, jobListType]);
+
+    useEffect(() => {
+        debouncedResetJobs()
+    }, [searchString])
 
     useEffect(() => {
         // Fetches the job data for last reached page `page`. Enables lazy load on scrolling.
@@ -73,7 +66,7 @@ export function ListJobs({ navigation }: ListJobProps) {
         // Check if page already loaded
         if (jobs.length >= page * PAGE_SIZE) return;
         setLoading(true);
-        getJobs(displayJobOwned, jobListType === 'Completed Jobs', page)
+        getJobs(searchString, displayJobOwned, jobListType === 'Completed Jobs', page)
             .then(response => {
                 if (response === null) {
                     // TODO Handle Error
@@ -123,24 +116,35 @@ export function ListJobs({ navigation }: ListJobProps) {
                     scrollEnabled={true}
                     ListHeaderComponent={
                         <View style={styles.header}>
-                            <View style={[PickerStyles.wrapper]}>
-                                <Picker
-                                    selectedValue={jobListType}
-                                    onValueChange={(value, index) => setJobListType(value)}
-                                    mode="dropdown" // Android only
-                                >
-                                    {PICKER_OPTIONS.map((option, index) => <Picker.Item key={index} label={option} value={option} />)}
-                                </Picker>
+                            <View style={styles.header_row}>
+                                <View style={[PickerStyles.wrapper]}>
+                                    <Picker
+                                        selectedValue={jobListType}
+                                        onValueChange={(value, index) => setJobListType(value)}
+                                        mode="dropdown" // Android only
+                                    >
+                                        {PICKER_OPTIONS.map((option, index) => <Picker.Item key={index} label={option} value={option} />)}
+                                    </Picker>
+                                </View>
+                                <View style={styles.spacer} />
+                                <AppButton
+                                    textStyle={styles.addJobBtnText}
+                                    type="primary"
+                                    size="small"
+                                    onPress={() => console.log('Add Job button pressed')}
+                                    title='Add Job'
+                                    style={styles.addJobBtn} />
                             </View>
-                            <View style={styles.spacer} />
-                            <AppButton
-                                textStyle={styles.addJobBtnText}
-                                type="primary"
-                                size="small"
-                                onPress={() => navigation.navigate('AddJob', { formType: "add", setJobData: setJobs })}
-                                title='Add Job'
-                                style={styles.addJobBtn} />
-                        </View>
+                            <AppTextInput
+                                value={searchString ?? undefined}
+                                onChangeText={(text) => setSearchString(text)}
+                                style={[styles.searchTextInput]}
+                                placeholder="Search by title, location, and dellivery date"
+                                maxLength={100}
+                                keyboardType="default"
+                                icon="search"
+                            />
+                        </View >
                     }
                     onEndReached={() => {
                         if (!allLoaded) {
@@ -149,8 +153,8 @@ export function ListJobs({ navigation }: ListJobProps) {
                     }}
                     onEndReachedThreshold={0}
                 />
-            </View>
-        </View>
+            </View >
+        </View >
     </>
 }
 
@@ -160,11 +164,15 @@ const styles = StyleSheet.create({
     },
     header: {
         display: 'flex',
+        flexDirection: 'column',
+        paddingHorizontal: 10
+    },
+    header_row: {
+        display: 'flex',
         flexDirection: 'row',
         justifyContent: 'space-between',
         marginVertical: 10,
-        paddingHorizontal: 10,
-        height: 55 // Hardcoded based on the height of the react-native picker
+        height: 55, // Hardcoded based on the height of the react-native picker
     },
     addJobBtn: {
         borderRadius: 4,
@@ -172,6 +180,12 @@ const styles = StyleSheet.create({
     },
     addJobBtnText: {
         fontSize: 16
+    },
+    searchTextInput: {
+        borderWidth: 1,
+        borderRadius: 4,
+        borderColor: COLORS.mediumGrey,
+        height: 40
     }
 });
 

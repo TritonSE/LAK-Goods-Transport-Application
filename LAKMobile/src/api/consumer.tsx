@@ -72,21 +72,16 @@ export const getJobsByIds = async (jobIds: string[]): Promise<JobData[]> => {
 export const PAGE_SIZE = 5;
 
 // Gets the list of job documents (with pagination parameters)
-export const getJobs = async (
-    owned: boolean,
-    finished: boolean,
-    page: number
-): Promise<{ jobs: JobData[] | JobOwnerView[]; lastPage: boolean } | null> => {
+export const getJobs = async (search: string | null, owned: boolean, finished: boolean, page: number): Promise<{ jobs: JobData[] | JobOwnerView[], lastPage: boolean } | null> => {
     try {
-        const url =
-            `${GET_JOBS}?` +
-            new URLSearchParams({
-                owned: owned.toString(),
-                finished: finished.toString(),
-                offset: ((page - 1) * PAGE_SIZE).toString(),
-                limit: PAGE_SIZE.toString(),
-                user: "client1", // TODO Remove after auth
-            });
+        const url = `${GET_JOBS}?` + new URLSearchParams({
+            owned: owned.toString(),
+            finished: finished.toString(),
+            offset: ((page - 1) * PAGE_SIZE).toString(),
+            limit: PAGE_SIZE.toString(),
+            user: 'client1', // TODO Remove after auth
+            ...(search ? { search: search } : {})
+        });
         const response = await fetch(url);
         let data = await response.json();
         return { jobs: data.jobs, lastPage: data.lastPage };

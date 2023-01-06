@@ -1,7 +1,6 @@
 import { createMaterialTopTabNavigator } from '@react-navigation/material-top-tabs';
 import { View, StyleSheet, TouchableOpacity, Image } from 'react-native';
 import { AppText } from '../components/AppText';
-import Icon from 'react-native-vector-icons/Entypo';
 import { DetailsScreen } from '../screens/DetailsScreen';
 import { ApplicantsScreen } from '../screens/ApplicantsScreen';
 import { JobData, JobOwnerView } from '../api/data';
@@ -9,8 +8,6 @@ import { ImageCarousel } from '../components/ImageCarousel'
 import { useNavigation } from '@react-navigation/native';
 import { BackArrowIcon } from '../icons/BackArrow';
 import { JobApplicantProps } from '../types/navigation';
-
-const backButtonIcon = <Icon name="arrow-long-left" size={30} color="white" />;
 
 const Tab = createMaterialTopTabNavigator();
 
