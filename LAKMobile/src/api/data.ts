@@ -4,6 +4,8 @@ export interface JobData {
     title: string;
     clientName: string;
     phoneNumber: string;
+    receiverName: string;
+    receiverPhoneNumber: string;
     deliveryDate: string;
     pickupLocation: string;
     dropoffLocation: string;
@@ -14,7 +16,7 @@ export interface JobData {
     price?: number;
 }
 
-export interface JobOwnerView extends JobData{
+export interface JobOwnerView extends JobData {
     applicants: {userId: string, applyDate: string}[];
     assignedDriverId: string;
     startDate: string;
@@ -25,6 +27,7 @@ export interface ApplicantData {
     lastName: string;
     phone: string;
     vehicleInformation: string;
+    driverId?: string
 }
 
 // TODO

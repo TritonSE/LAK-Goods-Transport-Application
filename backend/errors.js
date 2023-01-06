@@ -68,6 +68,7 @@ const DRIVER_MUST_BE_APPLICANT_MSG = 'Driver must be an applicant to be assigned
 const DRIVER_NOT_ASSIGNED_MSG = 'Driver not assigned for the job but was expected to be assigned';
 const JOB_CLOSED_FOR_APPLICATION_MSG = 'Job has been closed for applications';
 const USER_NOT_FOUND_MSG = 'User was not found';
+const MUST_DENY_APPLICANT_MSG = 'Must deny an existing applicant';
 export class ServiceError extends CustomError {
     static INVALID_JOB_RECEIVED = new ServiceError(0, 400, INVALID_JOB_RECEIVED_MSG)
     static JOB_NOT_FOUND = new ServiceError(1, 404, JOB_NOT_FOUND_MSG)
@@ -80,6 +81,7 @@ export class ServiceError extends CustomError {
     static DRIVER_NOT_ASSIGNED = new ServiceError(8, 409, DRIVER_NOT_ASSIGNED_MSG)
     static JOB_CLOSED_FOR_APPLICATION = new ServiceError(9, 409, JOB_CLOSED_FOR_APPLICATION_MSG)
     static USER_NOT_FOUND = new ServiceError(10, 404, USER_NOT_FOUND_MSG);
+    static MUST_DENY_APPLICANT = new ServiceError(11, 403, MUST_DENY_APPLICANT_MSG)
 }
 
 /**

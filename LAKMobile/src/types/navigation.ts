@@ -1,5 +1,6 @@
 import type { NativeStackScreenProps } from '@react-navigation/native-stack';
 import { JobData, JobOwnerView } from '../api';
+import { JobUpdate } from '../screens';
 
 export type RootStackParamList = {
     Login: undefined;
@@ -8,8 +9,8 @@ export type RootStackParamList = {
     OTP: undefined;
     ResetSuccess: undefined;
     ForgotPassword: undefined;
-    JobApplicant: {jobData: JobOwnerView};
-    AddJob: {formType: "add" | "edit" | "delete" | "repost", jobId: string}
+    JobApplicant: {jobData: JobOwnerView, setJobData: React.Dispatch<React.SetStateAction<JobData[] | JobOwnerView[]>>};
+    AddJob: {formType: "add" | "edit" | "delete" | "repost", jobData?: JobOwnerView, setJobData: React.Dispatch<React.SetStateAction<JobData[] | JobOwnerView[]>>}
     ListJobs: undefined;
 };
 

@@ -10,11 +10,13 @@ import { COLORS } from '../../constants';
 // states 'Accepted' will not be used because page changes to tracking once an applicant is accepted
 interface ApplicantThumbnailProps {
     applicantData: ApplicantData;
-    status: 'Accepted' | 'Denied' | 'Unassigned'; 
+    status: 'Accepted' | 'Denied' | 'Unassigned';
     style?: StyleProp<ViewStyle>
+    onAccept: (() => void)
+    onDeny: (() => void)
 }
 
-export function ApplicantThumbnail({applicantData, status, style}: ApplicantThumbnailProps) {
+export function ApplicantThumbnail({ applicantData, status, style, onAccept, onDeny }: ApplicantThumbnailProps) {
     const flexJustifyContent = 'space-between'
     return (
         <View style={[ThumbailStyles.container, style]}>
@@ -22,14 +24,14 @@ export function ApplicantThumbnail({applicantData, status, style}: ApplicantThum
             <AppText style={[ThumbailStyles.phoneFont, ThumbailStyles.containerItem]}>{applicantData.phone}</AppText>
             <AppText style={ThumbailStyles.containerItem}>{applicantData.vehicleInformation}</AppText>
 
-            <View style={[ThumbailStyles.flex, status == 'Accepted' ? {justifyContent: 'space-between'} : null]}>
-                {status == 'Unassigned' && <AppButton type="tertiary" size="small" title="Deny" style={ThumbailStyles.flexItem}/>}
-                {status == 'Unassigned' && <AppButton type="tertiary" size="small" title="Accept" style={ThumbailStyles.flexItem} textStyle={{color: COLORS.turquoise}}/>}
-                {status == 'Accepted' && <AppText style={[{color: COLORS.deepGreen}, ThumbailStyles.flexItem]}>Accepted</AppText>}
-                {status == 'Accepted' && <AppButton type="tertiary" size="medium" title="Cancel Applicant"/>}
-                {status == 'Denied' && <AppText style={{color: COLORS.red}}>Denied</AppText>}
+            <View style={[ThumbailStyles.flex, status == 'Accepted' ? { justifyContent: 'space-between' } : null]}>
+                {status == 'Unassigned' && <AppButton type="tertiary" size="small" title="Deny" onPress={() => onDeny()} style={ThumbailStyles.flexItem} />}
+                {status == 'Unassigned' && <AppButton type="tertiary" size="small" title="Accept" onPress={() => onAccept()} style={ThumbailStyles.flexItem} textStyle={{ color: COLORS.turquoise }} />}
+                {status == 'Accepted' && <AppText style={[{ color: COLORS.deepGreen }, ThumbailStyles.flexItem]}>Accepted</AppText>}
+                {status == 'Accepted' && <AppButton type="tertiary" size="medium" title="Cancel Applicant" />}
+                {status == 'Denied' && <AppText style={{ color: COLORS.red }}>Denied</AppText>}
             </View>
-            
+
         </View>
     )
 }

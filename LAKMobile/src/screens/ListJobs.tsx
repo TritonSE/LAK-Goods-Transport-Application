@@ -1,7 +1,6 @@
 import React, { useState, useEffect } from "react";
 import { View, FlatList, StyleSheet } from "react-native";
 import { Picker } from "@react-native-picker/picker";
-
 import { getJobs, JobData, JobOwnerView, PAGE_SIZE } from "../api";
 import { JobThumbnail, AppButton } from "../components";
 import { COLORS } from '../../constants';
@@ -10,31 +9,57 @@ import { ListJobProps } from "../types/navigation";
 import { useFocusEffect, useIsFocused } from "@react-navigation/native";
 
 type JobTypePickerOption = 'Current Jobs' | 'Completed Jobs';
+
+export type JobUpdate = {
+    op: boolean // indicates whether this is a deletion
+    changedJob: JobOwnerView
+}
 const PICKER_OPTIONS: JobTypePickerOption[] = [
     'Current Jobs',
     'Completed Jobs'
 ]
 
-export function ListJobs({navigation }: ListJobProps) {
+export function ListJobs({ navigation }: ListJobProps) {
     const [displayJobOwned, setDisplayJobOwned] = useState<boolean>(true); // TODO toggle for add jobs/find jobs
     const [jobListType, setJobListType] = useState<JobTypePickerOption>('Current Jobs');
 
     const [jobs, setJobs] = useState<JobData[] | JobOwnerView[]>([]);
-    const isFocused = useIsFocused()
-    
+
     // NOTE: Page 0 is being used as a null page, but the first page is 1. 
     // Added this so that we are able to trigger hooks dependent on `page` when type of screen changes but page number does not
     const [page, setPage] = useState(0);
-    
+    const isFocused = useIsFocused();
+
     const [loading, setLoading] = useState(false);
+    const [isRefreshing, setRefreshing] = useState(false);
     const [allLoaded, setAllLoaded] = useState(false);
+    // useEffect(() => {
+    //     if (route.params.update === null) {
+    //         return
+    //     }
+    //     if (route.params.update?.op) {
+    //         setJobs(jobs.filter(job => job._id !== route.params.update?.changedJob._id))
+    //         return
+    //     }
+    //     let newJobs = jobs
+    //     if (jobs.some(job => job._id === route.params.update?.changedJob._id)) {
+    //         newJobs = jobs.map(job => (
+    //             job._id === route.params.update?.changedJob._id ? route.params.update.changedJob : job)
+    //         )
+    //     } else {
+    //         newJobs = [...jobs, route.params.update.changedJob]
+    //     }
+
+    //     setJobs(newJobs)
+    // }, [isFocused])
+
     useEffect(() => {
         // Resets the states for the screen
         setJobs([]);
         setAllLoaded(false);
         setPage(0);
-    }, [displayJobOwned, jobListType, isFocused]);
-    
+    }, [displayJobOwned, jobListType]);
+
     useEffect(() => {
         // Fetches the job data for last reached page `page`. Enables lazy load on scrolling.
         if (page === 0) {
@@ -44,44 +69,55 @@ export function ListJobs({navigation }: ListJobProps) {
 
         if (allLoaded || loading) {
             return;
-        }  
+        }
         // Check if page already loaded
         if (jobs.length >= page * PAGE_SIZE) return;
         setLoading(true);
         getJobs(displayJobOwned, jobListType === 'Completed Jobs', page)
-        .then(response => {
-            if (response === null) {
-                // TODO Handle Error
-                return;
-            }
-            
-            const { jobs: newJobs, lastPage } = response;
-            
-            setAllLoaded(lastPage);
-            setJobs([...jobs, ...newJobs]);
-            setLoading(false)
-        });
+            .then(response => {
+                if (response === null) {
+                    // TODO Handle Error
+                    return;
+                }
+
+                const { jobs: newJobs, lastPage } = response;
+
+                setAllLoaded(lastPage);
+                const filteredNewJobs = newJobs.filter(newjob => !(jobs.some(job => job._id === newjob._id)))
+                setJobs([...jobs, ...filteredNewJobs]);
+                setLoading(false)
+                setRefreshing(false)
+            });
     }, [page]);
- 
+
+    const onRefresh = () => {
+        setJobs([]);
+        setAllLoaded(false);
+        setPage(0);
+        setRefreshing(true)
+    }
+
     return <>
         {/* Temporary banner */}
-        <View style={{height: 90, backgroundColor: COLORS.maroon}}></View> 
-        
-        <View style={{alignItems: 'center'}}>
+        <View style={{ height: 90, backgroundColor: COLORS.maroon }}></View>
+
+        <View style={{ alignItems: 'center' }}>
             <View style={FlatListStyles.wrapper}>
-                <FlatList 
+                <FlatList
+                    onRefresh={() => onRefresh()}
+                    refreshing={isRefreshing}
                     style={FlatListStyles.container}
                     contentContainerStyle={FlatListStyles.contentContainer}
                     data={jobs}
                     keyExtractor={item => item._id}
-                    renderItem={ ({ item, index }) => (
-                        <JobThumbnail 
-                        onPress={() => navigation.navigate('JobApplicant', {jobData: (item as JobOwnerView)})} 
-                        onEdit={() => navigation.navigate('AddJob', {formType: "edit", jobId: item._id})}
-                        onRepost={() => navigation.navigate('AddJob', {formType: "repost", jobId: item._id})} 
-                        isJobOwner={true} 
-                        job={(item as JobOwnerView)} 
-                        repostAllowed = {jobListType === 'Completed Jobs'}
+                    renderItem={({ item, index }) => (
+                        <JobThumbnail
+                            onPress={() => navigation.navigate('JobApplicant', { jobData: (item as JobOwnerView), setJobData: setJobs })}
+                            onEdit={() => navigation.navigate('AddJob', { formType: "edit", jobData: (item as JobOwnerView), setJobData: setJobs })}
+                            onRepost={() => navigation.navigate('AddJob', { formType: "repost", jobData: (item as JobOwnerView), setJobData: setJobs })}
+                            isJobOwner={true}
+                            job={(item as JobOwnerView)}
+                            repostAllowed={jobListType === 'Completed Jobs'}
                         />
                     )}
                     scrollEnabled={true}
@@ -90,25 +126,25 @@ export function ListJobs({navigation }: ListJobProps) {
                             <View style={[PickerStyles.wrapper]}>
                                 <Picker
                                     selectedValue={jobListType}
-                                    onValueChange = {(value, index) => setJobListType(value)}
+                                    onValueChange={(value, index) => setJobListType(value)}
                                     mode="dropdown" // Android only
                                 >
                                     {PICKER_OPTIONS.map((option, index) => <Picker.Item key={index} label={option} value={option} />)}
                                 </Picker>
                             </View>
-                            <View style={styles.spacer}/>
-                            <AppButton 
+                            <View style={styles.spacer} />
+                            <AppButton
                                 textStyle={styles.addJobBtnText}
-                                type="primary" 
-                                size="small" 
-                                onPress={() => navigation.navigate('AddJob', {formType: "add", jobId: ""})}
-                                title='Add Job' 
-                                style={styles.addJobBtn}/>
+                                type="primary"
+                                size="small"
+                                onPress={() => navigation.navigate('AddJob', { formType: "add", setJobData: setJobs })}
+                                title='Add Job'
+                                style={styles.addJobBtn} />
                         </View>
                     }
                     onEndReached={() => {
                         if (!allLoaded) {
-                            setPage(page+1);
+                            setPage(page + 1);
                         }
                     }}
                     onEndReachedThreshold={0}

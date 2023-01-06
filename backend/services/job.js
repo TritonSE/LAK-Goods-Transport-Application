@@ -253,6 +253,38 @@ export async function addJobApplicant(jobId, userId) {
 }
 
 /**
+ * Denies an applicant `userId` from job `jobId`
+ * Throws error if userId if userId does not own jobId
+ * @param {mongoose.Types.ObjectId} jobId 
+ * @param {mongoose.Types.ObjectId} userId
+ * @param {mongoose.Types.ObjectId} driverId  
+ */
+export async function denyDriver(jobId, userId, driverId) {
+    console.debug(`SERVICE: denyDriver service running: jobId - ${jobId}, userId - ${userId}, driverId - ${driverId}`);
+    
+    let job = await JobModel.findById(jobId);
+    if (!job) throw ServiceError.JOB_NOT_FOUND;
+
+    // Validate client job ownership
+    if (!job.client.equals(userId)) {
+        throw ServiceError.JOB_EDIT_PERMISSION_DENIED;
+    }
+
+    const applicantIndex = job.applicants.findIndex(applicant => applicant.userId.equals(driverId))
+
+    if (applicantIndex === -1) {
+        throw ServiceError.DRIVER_MUST_BE_APPLICANT;
+    }
+
+    job.applicants.splice(applicantIndex, 1)
+
+    try { await job.save() }
+    catch (e) { throw InternalError.DOCUMENT_UPLOAD_ERROR.addContext(e.stack)}
+}
+
+
+
+/**
  * Assigns driver to `jobId`.
  * Throws error if userId does not own jobId
  * @param {mongoose.Types.ObjectId} jobId 
