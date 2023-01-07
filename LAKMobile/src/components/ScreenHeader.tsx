@@ -9,16 +9,16 @@ interface HeaderProps {
     showArrow?: boolean
 }
 
-export function ScreenHeader({children, showArrow = false}: HeaderProps) {
+export function ScreenHeader({ children, showArrow = false }: HeaderProps) {
     const navigation = useNavigation();
-    return<View style={styles.header}>
+    return <View style={styles.header}>
         <View style={styles.headerContent}>
 
             {showArrow ?
                 <TouchableOpacity onPress={(e) => navigation.goBack()}>
                     <Image style={styles.headerArrow} source={require('../../assets/header-arrow.png')} />
                 </TouchableOpacity>
-            : null}
+                : null}
 
             <AppText style={styles.headerText}>{children}</AppText>
         </View>

@@ -80,9 +80,9 @@ interface JobThumbnailOwnerViewProps {
 }
 
 interface JobThumbnailApplicantViewProps {
+    onPress: ((event: GestureResponderEvent) => void) | undefined;
     isJobOwner: false;
     job: JobData;
-    appliedDate: Date;
     applicantStatus: 'Applied' | 'Accepted' | 'Denied';
 }
 
@@ -128,7 +128,6 @@ export function JobThumbnail({ isJobOwner, job, ...props }: JobThumbnailProps) {
     } else {
         props = props as JobThumbnailApplicantViewProps;
         displayStatus = props.applicantStatus;
-        daysAgo = diffDatesInDays(props.appliedDate as Date, new Date());
     }
 
     const statusDisplayColor = displayStatus && STATUS_DISPLAY_COLOR[displayStatus];
@@ -151,7 +150,7 @@ export function JobThumbnail({ isJobOwner, job, ...props }: JobThumbnailProps) {
                 <View style={[CardStyles.row]}>
                     {statusDisplayColor && <StatusIndicator text={displayStatus} color={statusDisplayColor} />}
                     {displayStatus === 'In Progress' && daysAgo != null && <AppText style={[JobThumbnailStyles.daysText, { marginLeft: 10 }]}>Started {daysAgo} {(daysAgo == 1) ? "day" : "days"} ago</AppText>}
-                    {displayStatus === 'Applied' && daysAgo != null && <AppText style={JobThumbnailStyles.daysText}>Applied {daysAgo} {(daysAgo == 1) ? "day" : "days"} ago</AppText>}
+                    {displayStatus === 'Applied' && daysAgo != null && <AppText style={JobThumbnailStyles.daysText}>Applied</AppText>}
                     {displayStatus === 'Not Started' && isJobOwner && <AppText style={JobThumbnailStyles.ownerApplicantsText}>{numApplicants} {(numApplicants == 1) ? "applicant" : "applicants"}</AppText>}
                     {displayStatus === 'Not Started' && !isJobOwner && <AppText style={JobThumbnailStyles.clientApplicantsText}>{numApplicants} {(numApplicants == 1) ? "person has" : "people have"} applied</AppText>}
                 </View>

@@ -60,7 +60,6 @@ export async function getJobIds(userId, {owned, finished, assigned}, {limit, off
 export async function createJob(userId, jobData, jobImages) {
     console.debug(`SERVICE: createJob service running: userId - ${userId}, jobData - payload`);
     const imageIds = [];
-
     // Store images
     for (let image of jobImages) {
         let imageId = await saveImage(image);
@@ -101,9 +100,7 @@ export async function createJob(userId, jobData, jobImages) {
  * @param {list} jobImages 
  */
 export async function updateJob(userId, jobId, jobData, jobImages) {
-    console.log(jobImages)
     console.debug(`SERVICE: updateJob service runnning: jobId - ${jobId}, userId - ${userId}, jobData - payload, jobImages - files`);
-
     // Retrieve original job
     let originalJob = await JobModel.findById(jobId);
     if (!originalJob) {
@@ -137,7 +134,6 @@ export async function updateJob(userId, jobId, jobData, jobImages) {
         ...jobData,
         imageIds: newImageIds,
     }
-    console.log("JOB DATA IS " + JSON.stringify(jobData));
 
     try {
         await JobModel.findOneAndUpdate({'_id': jobId}, jobData)

@@ -16,13 +16,14 @@ export const FlatListStyles = StyleSheet.create({
     wrapper: {
         width: '100%', 
         paddingHorizontal: 30, 
-        marginBottom: 10
+        marginBottom: 10,
+        height: '100%'
     },
     container: {
         width: '100%', 
-        marginBottom: 100 // Added to allow scrolling until end of list
+        marginBottom: 10 // Added to allow scrolling until end of list
     },
     contentContainer: {
-        width: '100%'
+        width: '100%',
     }
 })

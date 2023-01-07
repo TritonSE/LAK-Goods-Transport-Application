@@ -17,7 +17,6 @@ import { ApplicantData, UserData } from '../api/data';
 import { assignDriver, denyDriver, getUsersByIds } from '../api';
 import { useNavigation, useNavigationState } from '@react-navigation/native';
 import { RootStackParamList } from '../types/navigation'
-import { JobUpdate } from './ListJobs'
 
 
 interface ApplicantScreenProps {
@@ -35,7 +34,6 @@ export function ApplicantsScreen({ jobData, setJobData, carousel, navigation }: 
 
     useEffect(() => {
         getUsersByIds(userIds).then(async (response) => {
-            console.log(navigation)
             if (response == null) {
                 return null;
             }
@@ -83,9 +81,7 @@ export function ApplicantsScreen({ jobData, setJobData, carousel, navigation }: 
     }
 
     const onDeny = (driverId?: string) => {
-        console.log("HERE")
         if (!driverId) return;
-        console.log("NOW HERE")
         denyDriver(jobData._id, driverId).then(response => {
             if (response === null) {
                 return

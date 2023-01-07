@@ -28,7 +28,6 @@ import {
   deleteJob,
 } from "../api";
 import { AddJobProps } from "../types/navigation";
-import { JobUpdate } from "./ListJobs";
 
 const PICKER_DEFAULT = "-- Select a district --";
 const LOCATIONS = [
@@ -75,13 +74,12 @@ const fieldNames = {
 export function AddJob({ navigation, route }: AddJobProps) {
   let formType = route.params.formType;
   let screenHeader;
-  switch (formType) {
-    case "add":
-      screenHeader = "Add Job";
-    case "edit":
-      screenHeader = "Edit Job";
-    case "repost":
-      screenHeader = "Repost Job";
+  if (formType === "add") {
+    screenHeader = "Add Job"
+  } else if (formType === "edit") {
+    screenHeader = "Edit Job"
+  } else {
+    screenHeader = "Repost Job"
   }
 
   const [isValid, setIsValid] = useState({
@@ -230,7 +228,6 @@ export function AddJob({ navigation, route }: AddJobProps) {
   useEffect(() => {
     if (formType !== "add" && route.params.jobData) {
       const job: JobOwnerView = route.params.jobData;
-      console.log(job.receiverName)
       setJobTitle(job.title);
       setClientName(job.clientName);
       setPhoneNumber(job.phoneNumber);
@@ -304,9 +301,7 @@ export function AddJob({ navigation, route }: AddJobProps) {
 
   const submitJob = async () => {
     // TODO: when submitting, remember to filter out empty strings from imageURIs
-    console.log(isValid);
     if (!validateFields()) {
-      console.log(isValid);
       return;
     }
     const newJob = {
@@ -333,7 +328,7 @@ export function AddJob({ navigation, route }: AddJobProps) {
         const { jobId } = response;
         const updatedJob: JobOwnerView = createUpdateFromId(jobId, newJob)
         route.params.setJobData(prevJobs => [...prevJobs, updatedJob])
-        navigation.navigate("ListJobs");
+        navigation.navigate("JobLandingScreen");
       });
     } else if (formType === "edit") {
       const body = {
@@ -350,10 +345,9 @@ export function AddJob({ navigation, route }: AddJobProps) {
           return;
         }
         const { jobId } = response;
-        console.log("RETURNED ID IS " + jobId);
         const updatedJob: JobOwnerView = createUpdateFromId(jobId, newJob)
         route.params.setJobData(prevJobs => prevJobs.map(job => job._id === updatedJob._id ? updatedJob : job))
-        navigation.navigate("ListJobs");
+        navigation.navigate("JobLandingScreen");
       });
     } else {
       //TODO
@@ -372,7 +366,7 @@ export function AddJob({ navigation, route }: AddJobProps) {
       const { jobId } = response;
 
       route.params.setJobData(prevJobs => prevJobs.filter(job => job._id !== jobId))
-      navigation.navigate("ListJobs");
+      navigation.navigate("JobLandingScreen");
     });
   };
 

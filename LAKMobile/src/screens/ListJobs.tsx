@@ -6,22 +6,32 @@ import { getJobs, JobData, JobOwnerView, PAGE_SIZE } from "../api";
 import { JobThumbnail, AppButton, AppTextInput } from "../components";
 import { COLORS } from '../../constants';
 import { PickerStyles, FlatListStyles } from '../styles';
-import { ListJobProps } from "../types/navigation";
 import { useFocusEffect, useIsFocused } from "@react-navigation/native";
 
-type JobTypePickerOption = 'Current Jobs' | 'Completed Jobs';
+type ListJobsModes = 'Add' | 'Find'
+type JobTypePickerOption = 'Current Jobs' | 'Completed Jobs' | 'Your Jobs' | 'Finished Jobs';
 
-export type JobUpdate = {
-    op: boolean // indicates whether this is a deletion
-    changedJob: JobOwnerView
-}
-const PICKER_OPTIONS: JobTypePickerOption[] = [
+const ADD_PICKER_OPTIONS: JobTypePickerOption[] = [
     'Current Jobs',
     'Completed Jobs'
 ]
 
-export function ListJobs({ navigation }: ListJobProps) {
-    const [displayJobOwned, setDisplayJobOwned] = useState<boolean>(true); // TODO toggle for add jobs/find jobs
+const FIND_PICKER_OPTIONS: JobTypePickerOption[] = [
+    'Your Jobs',
+    'Finished Jobs'
+]
+
+const LIST_MODES: ListJobsModes[] = [
+    'Add',
+    'Find'
+]
+
+interface ListJobsProps {
+    navigation: any
+    mode: ListJobsModes
+}
+
+export function ListJobs({ navigation, mode }: ListJobsProps) {
     const [jobListType, setJobListType] = useState<JobTypePickerOption>('Current Jobs');
     const [searchString, setSearchString] = useState<string | null>(null);
 
@@ -47,7 +57,7 @@ export function ListJobs({ navigation }: ListJobProps) {
     useEffect(() => {
         // Resets the states for the screen
         resetJobsOnPage()
-    }, [displayJobOwned, jobListType]);
+    }, [mode, jobListType]);
 
     useEffect(() => {
         debouncedResetJobs()
@@ -66,7 +76,10 @@ export function ListJobs({ navigation }: ListJobProps) {
         // Check if page already loaded
         if (jobs.length >= page * PAGE_SIZE) return;
         setLoading(true);
-        getJobs(searchString, displayJobOwned, jobListType === 'Completed Jobs', page)
+        const owned = mode === 'Add'
+        const assigned = jobListType === 'Finished Jobs'
+        const finished = jobListType === 'Completed Jobs' || jobListType === "Finished Jobs"
+        getJobs(searchString, owned, assigned, finished, page)
             .then(response => {
                 if (response === null) {
                     // TODO Handle Error
@@ -90,10 +103,9 @@ export function ListJobs({ navigation }: ListJobProps) {
         setRefreshing(true)
     }
 
-    return <>
-        {/* Temporary banner */}
-        <View style={{ height: 90, backgroundColor: COLORS.maroon }}></View>
+    const pickerOptions = mode === "Add" ? ADD_PICKER_OPTIONS : FIND_PICKER_OPTIONS;
 
+    return <>
         <View style={{ alignItems: 'center' }}>
             <View style={FlatListStyles.wrapper}>
                 <FlatList
@@ -104,14 +116,23 @@ export function ListJobs({ navigation }: ListJobProps) {
                     data={jobs}
                     keyExtractor={item => item._id}
                     renderItem={({ item, index }) => (
-                        <JobThumbnail
-                            onPress={() => navigation.navigate('JobApplicant', { jobData: (item as JobOwnerView), setJobData: setJobs })}
-                            onEdit={() => navigation.navigate('AddJob', { formType: "edit", jobData: (item as JobOwnerView), setJobData: setJobs })}
-                            onRepost={() => navigation.navigate('AddJob', { formType: "repost", jobData: (item as JobOwnerView), setJobData: setJobs })}
-                            isJobOwner={true}
-                            job={(item as JobOwnerView)}
-                            repostAllowed={jobListType === 'Completed Jobs'}
-                        />
+                        mode === "Add" ?
+                            <JobThumbnail
+                                onPress={() => navigation.navigate('JobApplicant', { jobData: (item as JobOwnerView), setJobData: setJobs })}
+                                onEdit={() => navigation.navigate('AddJob', { formType: "edit", jobData: (item as JobOwnerView), setJobData: setJobs })}
+                                onRepost={() => navigation.navigate('AddJob', { formType: "repost", jobData: (item as JobOwnerView), setJobData: setJobs })}
+                                isJobOwner={true}
+                                job={(item as JobOwnerView)}
+                                repostAllowed={jobListType === 'Completed Jobs'}
+                            /> :
+                            <JobThumbnail
+                                onPress={() => null}
+                                isJobOwner={false}
+                                job={item}
+                                applicantStatus={'Applied'}
+                            />
+
+
                     )}
                     scrollEnabled={true}
                     ListHeaderComponent={
@@ -123,27 +144,29 @@ export function ListJobs({ navigation }: ListJobProps) {
                                         onValueChange={(value, index) => setJobListType(value)}
                                         mode="dropdown" // Android only
                                     >
-                                        {PICKER_OPTIONS.map((option, index) => <Picker.Item key={index} label={option} value={option} />)}
+                                        {pickerOptions.map((option, index) => <Picker.Item key={index} label={option} value={option} />)}
                                     </Picker>
                                 </View>
                                 <View style={styles.spacer} />
-                                <AppButton
+                                {mode === 'Add' && <AppButton
                                     textStyle={styles.addJobBtnText}
                                     type="primary"
                                     size="small"
-                                    onPress={() => console.log('Add Job button pressed')}
+                                    onPress={() => navigation.navigate('AddJob', { formType: "add" })}
                                     title='Add Job'
-                                    style={styles.addJobBtn} />
+                                    style={styles.addJobBtn} />}
+
                             </View>
-                            <AppTextInput
+                            {mode === "Find" && <AppTextInput
                                 value={searchString ?? undefined}
                                 onChangeText={(text) => setSearchString(text)}
                                 style={[styles.searchTextInput]}
-                                placeholder="Search by title, location, and dellivery date"
+                                placeholder="Search by title, location, and delivery date"
                                 maxLength={100}
                                 keyboardType="default"
                                 icon="search"
-                            />
+                            />}
+
                         </View >
                     }
                     onEndReached={() => {

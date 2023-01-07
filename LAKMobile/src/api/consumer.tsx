@@ -7,8 +7,8 @@ import { API_URL } from "@env";
 import { JobData, JobOwnerView, UserData } from "./data";
 
 // change to http://10.0.2.2/api/jobs/ for Android Emulator
-export const GET_JOBS = `http://10.0.2.2:3000/api/jobs`;
-export const GET_USER = `http://10.0.2.2:3000/api/users`; // might need to change
+export const GET_JOBS = `http://localhost:3000/api/jobs`;
+export const GET_USER = `http://localhost:3000/api/users`; // might need to change
 
 export const getJobById = async (jobId: string): Promise<JobData | null> => {
     try {
@@ -72,10 +72,11 @@ export const getJobsByIds = async (jobIds: string[]): Promise<JobData[]> => {
 export const PAGE_SIZE = 5;
 
 // Gets the list of job documents (with pagination parameters)
-export const getJobs = async (search: string | null, owned: boolean, finished: boolean, page: number): Promise<{ jobs: JobData[] | JobOwnerView[], lastPage: boolean } | null> => {
+export const getJobs = async (search: string | null, owned: boolean, assigned: boolean, finished: boolean, page: number): Promise<{ jobs: JobData[] | JobOwnerView[], lastPage: boolean } | null> => {
     try {
         const url = `${GET_JOBS}?` + new URLSearchParams({
             owned: owned.toString(),
+            assigned: assigned.toString(),
             finished: finished.toString(),
             offset: ((page - 1) * PAGE_SIZE).toString(),
             limit: PAGE_SIZE.toString(),
@@ -106,6 +107,7 @@ export const postJob = async (
                 "content-type": "application/json",
             },
             body: JSON.stringify(newJob),
+
         });
         let data = await response.json();
         return { jobId: data.jobId };

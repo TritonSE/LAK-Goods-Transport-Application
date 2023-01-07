@@ -31,7 +31,6 @@ routes.post('/', upload, async (req, res, next) => {
     let job = null;
     try {
         const userId = getSessionUserId(req);
-
         // Create Job
         job = await createJob(
             userId,
@@ -59,7 +58,6 @@ routes.patch('/:jobid', upload, async (req, res, next) => {
         jobId = validateId(req.params.jobid);
         const payload = req.body;
         const userId = getSessionUserId(req);
-
         await updateJob(
             userId,
             jobId,
