@@ -1,5 +1,5 @@
 import React, { PropsWithChildren } from 'react';
-import { StyleSheet, View, Image, ImageSourcePropType, TouchableOpacity, TouchableHighlight, StyleProp, ViewStyle, Button, ButtonProps, TouchableOpacityProps } from 'react-native';
+import { GestureResponderEvent, StyleSheet, View, Image, ImageSourcePropType, TouchableOpacity, TouchableHighlight, StyleProp, ViewStyle, Button, ButtonProps, TouchableOpacityProps } from 'react-native';
 
 import { COLORS } from '../../constants';
 import { JobData, JobOwnerView, JobStatus } from '../api/data';
@@ -7,6 +7,7 @@ import { EditIcon, PhoneIcon } from '../icons';
 import { imageIdToSource } from '../api';
 import { AppText } from './AppText';
 import { AppButton } from './AppButton';
+import { useNavigation } from '@react-navigation/native';
 import { IconButtonWrapper } from './IconButtonWrapper'
 /**
  * Status Indicator
@@ -17,8 +18,8 @@ interface StatusIndicatorProps {
 }
 const StatusIndicatorStyles = StyleSheet.create({
     container: {
-        width: 76, 
-        height: 20, 
+        width: 76,
+        height: 20,
         paddingTop: 3,
         paddingBottom: 3,
         alignItems: 'center',
@@ -29,9 +30,9 @@ const StatusIndicatorStyles = StyleSheet.create({
         fontWeight: 'bold'
     }
 })
-function StatusIndicator({text, color}: StatusIndicatorProps) {
+function StatusIndicator({ text, color }: StatusIndicatorProps) {
     return (
-        <View style={[StatusIndicatorStyles.container, {backgroundColor: color}]}>
+        <View style={[StatusIndicatorStyles.container, { backgroundColor: color }]}>
             <AppText style={StatusIndicatorStyles.text}>{text}</AppText>
         </View>
     )
@@ -56,15 +57,18 @@ const diffDatesInDays = (start: Date, end: Date) => {
  */
 
 interface JobThumbnailOwnerViewProps {
+    onPress: ((event: GestureResponderEvent) => void) | undefined;
+    onEdit: ((event: GestureResponderEvent) => void) | undefined;
+    onRepost?: (() => void);
     isJobOwner: true;
     job: JobOwnerView;
     repostAllowed?: boolean;
 }
 
 interface JobThumbnailApplicantViewProps {
+    onPress: ((event: GestureResponderEvent) => void) | undefined;
     isJobOwner: false;
     job: JobData;
-    appliedDate: Date;
     applicantStatus: 'Applied' | 'Accepted' | 'Denied';
 }
 
@@ -97,67 +101,71 @@ const JOB_DISPLAY_STATUS_MAP: Record<JobStatus, DisplayStatus> = {
     'COMPLETED': 'Finished'
 } // Mapping between job status from backend to frontend
 
-export function JobThumbnail({isJobOwner, job, ...props}: JobThumbnailProps) {
+export function JobThumbnail({ isJobOwner, job, ...props }: JobThumbnailProps) {
     let displayStatus: DisplayStatus, daysAgo, numApplicants;
+    const navigation = useNavigation();
 
     if (isJobOwner) {
         props = props as JobThumbnailOwnerViewProps;
         displayStatus = JOB_DISPLAY_STATUS_MAP[job.status];
         daysAgo = diffDatesInDays(new Date(job.startDate), new Date());
         numApplicants = job.applicants.length;
+
     } else {
         props = props as JobThumbnailApplicantViewProps;
         displayStatus = props.applicantStatus;
-        daysAgo = diffDatesInDays(props.appliedDate as Date, new Date());
     }
-    
+
     const statusDisplayColor = displayStatus && STATUS_DISPLAY_COLOR[displayStatus];
 
     return (
-        <View style={CardStyles.card}>
-            <View style={[CardStyles.row, CardStyles.header]}>
-                <AppText style={CardStyles.title}>{job.title}</AppText>
-            </View>
-            
-            {isJobOwner && numApplicants == 0 && (
-                <IconButtonWrapper style={JobThumbnailStyles.editButton} onPress={() => console.log("Edit Button Pressed for job ", job._id)}>
-                    <EditIcon />
-                </IconButtonWrapper>
-            )}
+        <TouchableOpacity onPress={(props as JobThumbnailOwnerViewProps).onPress}>
 
-            <Image style={JobThumbnailStyles.jobImage} source={getDisplayImage(job)}/>
-            <View style={[CardStyles.row]}>
-                {statusDisplayColor && <StatusIndicator text={displayStatus} color={statusDisplayColor} /> }
-                { displayStatus === 'In Progress' && daysAgo != null && <AppText style={[JobThumbnailStyles.daysText, {marginLeft: 10}]}>Started {daysAgo} {(daysAgo == 1) ? "day" : "days"} ago</AppText>}
-                { displayStatus === 'Applied' && daysAgo != null && <AppText style={JobThumbnailStyles.daysText}>Applied {daysAgo} {(daysAgo == 1) ? "day" : "days"} ago</AppText>}
-                { displayStatus === 'Not Started' && isJobOwner && <AppText style={JobThumbnailStyles.ownerApplicantsText}>{numApplicants} {(numApplicants == 1) ? "applicant" : "applicants"}</AppText>}
-                { displayStatus === 'Not Started' && !isJobOwner && <AppText style={JobThumbnailStyles.clientApplicantsText}>{numApplicants} {(numApplicants == 1) ? "person has" : "people have"} applied</AppText>}
-            </View>
-            <View>
-                <AppText style={JobThumbnailStyles.bodyText}><AppText style={JobThumbnailStyles.bodyHeading}>Deliver by: </AppText>{job.deliveryDate}</AppText>
-                <AppText style={JobThumbnailStyles.bodyText}><AppText style={JobThumbnailStyles.bodyHeading}>Pick-up: </AppText>{job.pickupLocation}</AppText>
-                <AppText style={JobThumbnailStyles.bodyText}><AppText style={JobThumbnailStyles.bodyHeading}>Drop-off: </AppText>{job.dropoffLocation}</AppText>
-                { job.packageQuantity && <AppText style={JobThumbnailStyles.bodyText}><AppText style={JobThumbnailStyles.bodyHeading}>Package Quantity: </AppText>{job.packageQuantity}</AppText>}
-            </View>
-            
-            <View style={[CardStyles.row, CardStyles.footer]}>
-                {
-                    !isJobOwner &&
-                    <IconButtonWrapper style={JobThumbnailStyles.rowFlexBox} onPress={() => console.log('Call client button pressed')}>
-                        <PhoneIcon />
-                        <AppText style={[JobThumbnailStyles.callClientText, { marginLeft: 5}]}>Call {job.clientName}</AppText>
+            <View style={CardStyles.card}>
+                <View style={[CardStyles.row, CardStyles.header]}>
+                    <AppText style={CardStyles.title}>{job.title}</AppText>
+                </View>
+
+                {isJobOwner && numApplicants == 0 && (
+                    <IconButtonWrapper style={JobThumbnailStyles.editButton} onPress={(props as JobThumbnailOwnerViewProps).onEdit}>
+                        <EditIcon />
                     </IconButtonWrapper>
-                }
-                <View style={JobThumbnailStyles.flexSpacer} />
-                {
-                    isJobOwner &&
-                    (props as JobThumbnailOwnerViewProps).repostAllowed &&  
-                    <AppButton title='Repost' type='tertiary' size='small' onPress={() => console.log('Job attempted to repost')}/>
-                }   
-            </View>
-            
+                )}
 
-        </View>
+                <Image style={JobThumbnailStyles.jobImage} source={getDisplayImage(job)} />
+                <View style={[CardStyles.row]}>
+                    {statusDisplayColor && <StatusIndicator text={displayStatus} color={statusDisplayColor} />}
+                    {displayStatus === 'In Progress' && daysAgo != null && <AppText style={[JobThumbnailStyles.daysText, { marginLeft: 10 }]}>Started {daysAgo} {(daysAgo == 1) ? "day" : "days"} ago</AppText>}
+                    {displayStatus === 'Applied' && daysAgo != null && <AppText style={JobThumbnailStyles.daysText}>Applied</AppText>}
+                    {displayStatus === 'Not Started' && isJobOwner && <AppText style={JobThumbnailStyles.ownerApplicantsText}>{numApplicants} {(numApplicants == 1) ? "applicant" : "applicants"}</AppText>}
+                    {displayStatus === 'Not Started' && !isJobOwner && <AppText style={JobThumbnailStyles.clientApplicantsText}>{numApplicants} {(numApplicants == 1) ? "person has" : "people have"} applied</AppText>}
+                </View>
+                <View>
+                    <AppText style={JobThumbnailStyles.bodyText}><AppText style={JobThumbnailStyles.bodyHeading}>Deliver by: </AppText>{job.deliveryDate}</AppText>
+                    <AppText style={JobThumbnailStyles.bodyText}><AppText style={JobThumbnailStyles.bodyHeading}>Pick-up: </AppText>{job.pickupLocation}</AppText>
+                    <AppText style={JobThumbnailStyles.bodyText}><AppText style={JobThumbnailStyles.bodyHeading}>Drop-off: </AppText>{job.dropoffLocation}</AppText>
+                    {job.packageQuantity ? <AppText style={JobThumbnailStyles.bodyText}><AppText style={JobThumbnailStyles.bodyHeading}>Package Quantity: </AppText>{job.packageQuantity}</AppText> : null}
+                </View>
+
+                <View style={[CardStyles.row, CardStyles.footer]}>
+                    {
+                        !isJobOwner &&
+                        <IconButtonWrapper style={JobThumbnailStyles.rowFlexBox} onPress={() => console.log('Call client button pressed')}>
+                            <PhoneIcon />
+                            <AppText style={[JobThumbnailStyles.callClientText, { marginLeft: 5 }]}>Call {job.clientName}</AppText>
+                        </IconButtonWrapper>
+                    }
+                    <View style={JobThumbnailStyles.flexSpacer} />
+                    {
+                        isJobOwner &&
+                        (props as JobThumbnailOwnerViewProps).repostAllowed &&
+                        <AppButton title='Repost' type='tertiary' size='small' onPress={(props as JobThumbnailOwnerViewProps).onRepost} />
+                    }
+                </View>
+
+
+            </View>
+        </TouchableOpacity>
     )
 }
 
@@ -169,7 +177,7 @@ const CardStyles = StyleSheet.create({
         margin: 10,
 
         shadowColor: 'black',
-        shadowOffset: {width: 0, height: 2},
+        shadowOffset: { width: 0, height: 2 },
         shadowOpacity: 0.35,
         shadowRadius: 10,
         elevation: 7
