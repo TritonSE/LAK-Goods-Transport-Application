@@ -7,17 +7,40 @@
 import mongoose from "mongoose";
 const { Schema, model } = mongoose;
 
-export const PUBLICLY_VISIBLE_FIELDS = ['firstName', 'lastName', 'phone', 'location'];
+export const PUBLICLY_VISIBLE_FIELDS = ['firstName', 'lastName', 'phone', 'location', 'vehicleData'];
+export const OWNER_LIMITED_FIELDS = ['driverLicenseId'];
+
+const VehicleInformationSchema = new Schema({
+    vehicleType: {
+        type: String,
+        required: true,
+    },
+    vehicleModel: {
+        type: String,
+        required: true,
+    },
+    vehicleMake: {
+        type: String,
+        required: true,
+    },
+    vehicleColor: {
+        type: String,
+        required: true,
+    },
+    imageIds: [
+        {
+            type: String,
+            required: true,
+        }
+    ]
+})
+
 const UserSchema = new Schema({
     firstName: {
         type: String,
         required: true,
     },
     lastName: {
-        type: String,
-        required: true,
-    },
-    password: {
         type: String,
         required: true,
     },
@@ -29,7 +52,25 @@ const UserSchema = new Schema({
         type: String,
         required: true,
     },
-});
+    driverLicenseId: {
+        type: String,
+        required: false,
+    },
+    vehicleData: {
+        type: VehicleInformationSchema,
+        required: function() { return this.driverLicenseId != undefined; },
+    }
+}, {
+    toObject: {
+        transform: function(doc, ret) {
+            if (ret.driverLicenseId != undefined) {
+                delete ret.vehicleData._id
+            }
+        }
+    }
+}
+
+);
 
 const UserModel = model('User', UserSchema);
 

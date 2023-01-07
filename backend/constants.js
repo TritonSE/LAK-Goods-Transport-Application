@@ -1,6 +1,7 @@
 import { ValidationError } from "./errors";
 // Sample Users (for testing only)
 
+// NOT IN USE
 export const SAMPLE_USER_PAYLOAD = {
   firstName: 'Client2',
   lastName: 'User',
@@ -9,6 +10,7 @@ export const SAMPLE_USER_PAYLOAD = {
   location: 'location',
 };
 
+// NOT IN USE
 export const TEST_TRCUKER_1 = {
   firstName: 'Trucker1',
   lastName: 'User',
@@ -18,6 +20,7 @@ export const TEST_TRCUKER_1 = {
   _id: '635246c11402cc7134325d93',
 };
 
+// NOT IN USE
 export const TEST_TRCUKER_2 = {
   firstName: 'Trucker2',
   lastName: 'User',
@@ -33,16 +36,17 @@ export const TEST_CLIENT_1 = {
   password: 'password',
   phone: 'number',
   location: 'location',
-  _id: '635247cc2fdd8166dd9a3747'
+  _id: '63843c9907b5a9f8cf75fcc1'
 }
 
+// NOT IN USE
 export const TEST_CLIENT_2 = {
   firstName: 'Client2',
   lastName: 'User',
   password: 'password',
   phone: 'number',
   location: 'location',
-  _id: '635247d1b0ddabd341688615'
+  _id: '63845f73c9587bfaf9e81897'
 }
 
 export const getSessionUserId = (req) => { // For testing purposes
