@@ -36,7 +36,7 @@ export const TEST_CLIENT_1 = {
   password: 'password',
   phone: 'number',
   location: 'location',
-  _id: '63843c9907b5a9f8cf75fcc1'
+  _id: '635247cc2fdd8166dd9a3747'
 }
 
 // NOT IN USE

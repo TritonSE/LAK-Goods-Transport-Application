@@ -3,7 +3,7 @@ import { StatusBar } from 'expo-status-bar';
 import { ScreenHeader, ImageCarousel, ApplicantThumbnail } from './src/components';
 import { JobApplicant } from './src/screens/JobApplicant';
 import { StyleSheet, View } from 'react-native';
-import { SignupScreen, LoginScreen, ForgotPassword, OTP, ListJobs, ProfileScreen, JobLandingScreen } from './src/screens';
+import { SignupScreen, LoginScreen, ForgotPassword, OTP, AddJob, ProfileScreen, JobLandingScreen } from './src/screens';
 import { ResetSuccess } from "./src/screens/ResetSuccess";
 import { ResetPassword } from "./src/screens/ResetPassword";
 import { NavigationContainer } from '@react-navigation/native';
