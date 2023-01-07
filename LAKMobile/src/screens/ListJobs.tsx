@@ -152,7 +152,7 @@ export function ListJobs({ navigation, mode }: ListJobsProps) {
                                     textStyle={styles.addJobBtnText}
                                     type="primary"
                                     size="small"
-                                    onPress={() => navigation.navigate('AddJob', { formType: "add" })}
+                                    onPress={() => navigation.navigate('AddJob', { formType: "add", setJobData: setJobs })}
                                     title='Add Job'
                                     style={styles.addJobBtn} />}
 
