@@ -11,6 +11,7 @@ export type RootStackParamList = {
     JobApplicant: {jobData: JobOwnerView, setJobData: React.Dispatch<React.SetStateAction<JobData[] | JobOwnerView[]>>};
     AddJob: {formType: "add" | "edit" | "delete" | "repost", jobData?: JobOwnerView, setJobData: React.Dispatch<React.SetStateAction<JobData[] | JobOwnerView[]>>}
     JobLandingScreen: undefined;
+    ProfileScreen: { userId: string };
 };
 
 export type LoginProps = NativeStackScreenProps<RootStackParamList, 'Login'>;
@@ -22,3 +23,4 @@ export type ForgotPasswordProps = NativeStackScreenProps<RootStackParamList, 'Fo
 export type JobApplicantProps = NativeStackScreenProps<RootStackParamList, 'JobApplicant'>;
 export type AddJobProps = NativeStackScreenProps<RootStackParamList, 'AddJob'>;
 export type JobLandingScreenProps = NativeStackScreenProps<RootStackParamList, 'JobLandingScreen'>;
+export type ProfileScreenProps = NativeStackScreenProps<RootStackParamList, 'ProfileScreen'>;

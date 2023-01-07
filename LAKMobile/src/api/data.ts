@@ -22,18 +22,19 @@ export interface JobOwnerView extends JobData {
     startDate: string;
 }
 
-export interface ApplicantData {
-    firstName: string;
-    lastName: string;
-    phone: string;
-    vehicleInformation: string;
-    driverId?: string
+export interface VehicleData {
+    vehicleType: string;
+    vehicleModel: string;
+    vehicleMake: string;
+    vehicleColor: string;
+    imageIds: string[];
 }
 
-// TODO
 export interface UserData {
+    phone: string;
     firstName: string;
     lastName: string;
-    phone: string;
     location: string;
+    driverLicenseId?: string; // Hidden when anyone else other than the user viewing
+    vehicleData: VehicleData;
 }

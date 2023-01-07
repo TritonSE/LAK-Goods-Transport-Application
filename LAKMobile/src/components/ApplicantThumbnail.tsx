@@ -1,15 +1,14 @@
 import React from "react";
 import { StyleProp, StyleSheet, View, ViewStyle } from "react-native";
-import App from "../../App";
 
-import { ApplicantData } from '../api/data';
+import { UserData } from '../api/data';
 import { AppText } from "./AppText";
 import { AppButton } from './AppButton';
 import { COLORS } from '../../constants';
 
 // states 'Accepted' will not be used because page changes to tracking once an applicant is accepted
 interface ApplicantThumbnailProps {
-    applicantData: ApplicantData;
+    applicantData: UserData;
     status: 'Accepted' | 'Denied' | 'Unassigned';
     style?: StyleProp<ViewStyle>
     onAccept: (() => void)
@@ -22,7 +21,7 @@ export function ApplicantThumbnail({ applicantData, status, style, onAccept, onD
         <View style={[ThumbailStyles.container, style]}>
             <AppText style={[ThumbailStyles.nameFont, ThumbailStyles.containerItem]}>{applicantData.firstName} {applicantData.lastName}</AppText>
             <AppText style={[ThumbailStyles.phoneFont, ThumbailStyles.containerItem]}>{applicantData.phone}</AppText>
-            <AppText style={ThumbailStyles.containerItem}>{applicantData.vehicleInformation}</AppText>
+            <AppText style={ThumbailStyles.containerItem}>{applicantData.driverLicenseId}</AppText> {/** TODO Add vehicle info */}
 
             <View style={[ThumbailStyles.flex, status == 'Accepted' ? { justifyContent: 'space-between' } : null]}>
                 {status == 'Unassigned' && <AppButton type="tertiary" size="small" title="Deny" onPress={() => onDeny()} style={ThumbailStyles.flexItem} />}
