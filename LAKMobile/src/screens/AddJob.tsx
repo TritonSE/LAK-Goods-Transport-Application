@@ -238,9 +238,9 @@ export function AddJob({ navigation, route }: AddJobProps) {
       setQuantity(job.packageQuantity?.toString() || "");
       setPrice(job.price?.toString() || "");
       setPickupLocation(job.pickupLocation);
-      setPickupDistrict("");
+      setPickupDistrict(job.pickupDistrict);
       setDropoffLocation(job.dropoffLocation);
-      setDropoffDistrict("");
+      setDropoffDistrict(job.dropoffDistrict);
       dispatch({ type: "SET_IMAGES", payload: job.imageIds });
     }
   }, [formType, route.params.jobData]);
@@ -372,7 +372,7 @@ export function AddJob({ navigation, route }: AddJobProps) {
 
   return (
     <View>
-      <View style={styles.header}>
+      <View>
         <ScreenHeader showArrow>{screenHeader}</ScreenHeader>
       </View>
 
@@ -660,10 +660,6 @@ const styles = StyleSheet.create({
   container: {
     padding: 32,
     paddingBottom: 140,
-  },
-
-  header: {
-    marginBottom: 100,
   },
 
   photos: {

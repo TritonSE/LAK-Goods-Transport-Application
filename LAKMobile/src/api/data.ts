@@ -8,7 +8,9 @@ export interface JobData {
     receiverPhoneNumber: string;
     deliveryDate: string;
     pickupLocation: string;
+    pickupDistrict: string;
     dropoffLocation: string;
+    dropoffDistrict: string;
     description?: string;
     packageQuantity?: number;
     status: JobStatus;
