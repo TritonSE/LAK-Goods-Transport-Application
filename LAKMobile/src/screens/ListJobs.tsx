@@ -118,6 +118,7 @@ export function ListJobs({ navigation, mode }: ListJobsProps) {
                     renderItem={({ item, index }) => (
                         mode === "Add" ?
                             <JobThumbnail
+                                key={index}
                                 onPress={() => navigation.navigate('JobApplicant', { jobData: (item as JobOwnerView), setJobData: setJobs })}
                                 onEdit={() => navigation.navigate('AddJob', { formType: "edit", jobData: (item as JobOwnerView), setJobData: setJobs })}
                                 onRepost={() => navigation.navigate('AddJob', { formType: "repost", jobData: (item as JobOwnerView), setJobData: setJobs })}
@@ -126,6 +127,7 @@ export function ListJobs({ navigation, mode }: ListJobsProps) {
                                 repostAllowed={jobListType === 'Completed Jobs'}
                             /> :
                             <JobThumbnail
+                                key={index}
                                 onPress={() => null}
                                 isJobOwner={false}
                                 job={item}
