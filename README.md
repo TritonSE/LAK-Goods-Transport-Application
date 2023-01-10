@@ -13,7 +13,7 @@ cd LAKMobile
 npm install
 npm start
 ```
-
+Hello there
 The app will be live at http://localhost:19002.
 
 NOTE: When developing locally, you have to tell the Android emulator to map the backend localhost port to a port on the emulator. Otherwise it won't be able to find localhost:3000. Steps are as follows:
