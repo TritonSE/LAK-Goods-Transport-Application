@@ -43,7 +43,7 @@ routes.post('/', upload, async (req, res, next) => {
     }
 
     res.status(200).json({
-        message: 'Job ID $jobId was successfully created',
+        message: `Job ID ${jobId} was successfully created`,
         jobId: job._id,
     });
 });
@@ -70,7 +70,7 @@ routes.patch('/:jobid', upload, async (req, res, next) => {
     }
 
     res.status(200).json({
-        message: 'Job ID $jobId was successfully updated',
+        message: `Job ID ${jobId} was successfully updated`,
         jobId: jobId,
     });
 });
@@ -94,7 +94,7 @@ routes.delete('/:jobid', async (req, res, next) => {
     }
 
     res.status(200).json({
-        message: 'Job ID $jobId was successfully deleted',
+        message: `Job ID ${jobId} was successfully deleted`,
         jobId: jobId,
     });
 });
@@ -121,7 +121,7 @@ routes.delete('/:jobid', async (req, res, next) => {
         return;
     }
     res.status(200).json({
-        message: 'Job documents sent as ${jobs}',
+        message: `Job documents sent as ${jobs}`,
         jobs: jobs
     });
 });
@@ -143,7 +143,7 @@ routes.get('/:jobid', async (req, res, next) => {
         return;
     }
     res.status(200).json({
-        message: 'Job document sent as ${job}',
+        message: `Job document sent as ${job}`,
         job: job
     })
 });
@@ -191,7 +191,7 @@ routes.get('/', async (req, res, next) => {
     }
     
     res.status(200).json({
-        message: 'Job documents sent as ${jobs}',
+        message: `Job documents sent as ${jobs}`,
         jobs: jobs,
         lastPage: lastPage,
     })
@@ -215,7 +215,7 @@ routes.patch('/:jobid/apply', async (req, res, next) => {
     }
 
     res.status(200).json({
-        message: 'Job $jobId successfully applied by $userId',
+        message: `Job ${jobId} successfully applied by ${userId}`,
         jobId: jobId,
         userId: userId,
     });
@@ -241,7 +241,7 @@ routes.patch('/:jobid/assign-driver', async (req, res, next) => {
     }
 
     res.status(200).json({
-        message: 'Driver $driverId successfully assigned to $jobId',
+        message: `Driver ${driverId} successfully assigned to ${jobId}`,
         driverId: driverId,
         jobId: jobId,
     })
@@ -267,7 +267,7 @@ routes.patch('/:jobid/deny-driver', async (req, res, next) => {
     }
 
     res.status(200).json({
-        message: 'Driver $driverId successfully denied from $jobId',
+        message: `Driver ${driverId} successfully denied from ${jobId}`,
         driverId: driverId,
         jobId: jobId,
     })
@@ -291,7 +291,7 @@ routes.patch('/:jobid/complete', async (req, res, next) => {
     }
 
     res.status(200).json({
-        message: 'Job $jobId marked as completed',
+        message: `Job ${jobId} marked as completed`,
         jobId: jobId
     });
 })
