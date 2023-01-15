@@ -9,8 +9,10 @@ import { useNavigation } from '@react-navigation/native';
 import { BackArrowIcon } from '../icons/BackArrow';
 import { JobLandingScreenProps } from '../types/navigation';
 import { ListJobs } from './ListJobs';
-import { ScreenHeader } from '../components';
+import { IconButtonWrapper, ScreenHeader } from '../components';
 import { COLORS } from '../../constants';
+import { EditIcon } from '../icons';
+import { getCurrentUser } from '../api';
 
 
 const Tab = createMaterialTopTabNavigator();
@@ -18,7 +20,10 @@ const Tab = createMaterialTopTabNavigator();
 export function JobLandingScreen({ navigation }: JobLandingScreenProps) {
     return (
         <View style={styles.container}>
-            <View style={{ height: 50, backgroundColor: COLORS.maroon }}></View>
+            <View style={{ height: 50, backgroundColor: COLORS.maroon }}>
+                <TouchableOpacity style={styles.profileButton} onPress={() => navigation.navigate('ProfileScreen', {userId: getCurrentUser()})}>
+                </TouchableOpacity>
+            </View>
             <Tab.Navigator
                 initialRouteName="Add Jobs"
                 screenOptions={{
@@ -57,4 +62,12 @@ const styles = StyleSheet.create({
     tabBarText: {
         fontSize: 24,
     },
+    profileButton: {
+        position: 'absolute',
+        right: 25,
+        top: 25,
+        width: 22,
+        height: 22,
+        backgroundColor: 'blue',
+    }
 });
