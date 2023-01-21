@@ -27,6 +27,7 @@ interface ApplicantScreenProps {
     navigation: any
 }
 
+// Define the interface here
 interface ApplicantData{
     userData: UserData
     driverID: string
