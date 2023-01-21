@@ -1,6 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import { JobData, JobOwnerView } from '../api/data';
 import type { NativeStackScreenProps } from '@react-navigation/native-stack';
+import {Alert} from 'react-native';
 
 import {
     StyleSheet,
@@ -13,7 +14,7 @@ import {
     AppText,
 } from '../components';
 
-import { ApplicantData, UserData } from '../api/data';
+import { UserData } from '../api/data';
 import { assignDriver, denyDriver, getUsersByIds } from '../api';
 import { useNavigation, useNavigationState } from '@react-navigation/native';
 import { RootStackParamList } from '../types/navigation'
@@ -24,6 +25,11 @@ interface ApplicantScreenProps {
     setJobData: React.Dispatch<React.SetStateAction<JobData[] | JobOwnerView[]>>
     carousel: JSX.Element
     navigation: any
+}
+
+interface ApplicantData{
+    userData: UserData
+    driverID: string
 }
 
 
@@ -39,11 +45,8 @@ export function ApplicantsScreen({ jobData, setJobData, carousel, navigation }: 
             }
             const applicantUsers: Array<UserData> = response;
             setApplicants(applicantUsers.map((applicant, i) => ({
-                firstName: applicant.firstName,
-                lastName: applicant.lastName,
-                phone: applicant.phone,
-                vehicleInformation: "vehicle",
-                driverId: userIds[i],
+                userData: applicant,
+                driverID: userIds[i],
             }))
             )
         })
@@ -67,7 +70,34 @@ export function ApplicantsScreen({ jobData, setJobData, carousel, navigation }: 
         })
     }
 
+    // changes start here
+    const clientName = ((jobDataObject : JobData) => {
+        return jobDataObject.clientName;
+    });
+    
+    const clientPhoneNumber = ((jobDataObject : JobData) => {
+        return jobDataObject.phoneNumber;
+    });
+    
+    const title = "Apply to Job?";
+    const message = "By clicking confirm, you are agreeing to accept this job. Be sure to contact" +  
+                                clientName + "at the phone number" + clientPhoneNumber;
+    
+    const createTwoButtonAlert = () =>
+    Alert.alert(title, message, [
+        {
+        text: 'Cancel',
+        onPress: () => {console.log('Cancel button pressed'); return false;},
+        style: 'cancel',
+        },
+        {text: 'Accept', onPress: () => {console.log('Accept button pressed'); return true;}},
+    ]);
+  // changes end here
+
     const onAccept = (driverId?: string) => {
+        
+        createTwoButtonAlert();
+
         if (!driverId) return;
         assignDriver(jobData._id, driverId).then(response => {
             if (response === null) {
@@ -100,7 +130,7 @@ export function ApplicantsScreen({ jobData, setJobData, carousel, navigation }: 
 
             <ScrollView>
                 {
-                    applicants.map((applicant, index) => (<ApplicantThumbnail key={index} onAccept={() => onAccept(applicant.driverId)} onDeny={() => onDeny(applicant.driverId)} applicantData={applicant} status='Unassigned' />))
+                    applicants.map((applicant, index) => (<ApplicantThumbnail key={index} onAccept={() => onAccept(applicant.driverID)} onDeny={() => onDeny(applicant.driverID)} applicantData={applicant.userData} status='Unassigned' />))
                 }
 
             </ScrollView>

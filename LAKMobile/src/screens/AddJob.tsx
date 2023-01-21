@@ -71,7 +71,7 @@ const fieldNames = {
   imageSelect: "imageSelect",
 };
 
-export function AddJob({ navigation, route }: AddJobProps) {
+export function AddJob({ navigation, route }: AddJobProps) {  
   let formType = route.params.formType;
   let screenHeader;
   if (formType === "add") {

@@ -32,7 +32,9 @@ export function LoginScreen({ navigation }: LoginProps) {
             <AppButton
                 type='primary'
                 title='Log in'
-                onPress={() => navigation.navigate('JobLandingScreen')}
+                onPress={() => {
+                    navigation.navigate('JobLandingScreen')
+                }}
                 style={styles.submitButton}
             />
 
