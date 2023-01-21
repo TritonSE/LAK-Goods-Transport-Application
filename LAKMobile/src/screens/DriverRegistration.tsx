@@ -1,5 +1,6 @@
 import React from 'react';
 import { Button, StyleSheet, Text, TextInput, View } from 'react-native';
+import { DriverRegistrationProps } from '../types/navigation';
 
 //export default function DriverRegistration() {
 export function DriverRegistration({route}: DriverRegistrationProps) {
@@ -68,33 +69,33 @@ export function DriverRegistration({route}: DriverRegistrationProps) {
 }
 
 const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-    backgroundColor: '#fff',
-    fontFamily: 'Arial',
-    padding: 10,
-  },
-  inputBox: {
-    borderWidth: 1,
-    margin: 10,
-    borderRadius: 2,
-  },
-  horizontalLine: {
-    borderBottomColor: 'black',
-    borderBottomWidth: 1,
-    width: '90%',
-    margin: 10
-  },
-  uploadPhotoButton: {
-    margin: 10,
-    color: 'white'
-  },
-  title: {
-    fontSize: 16,
-    color: '#8B8B8B',
-  },
-  inputLabel: {
-    margin: 5,
-    fontSize: 14,
-  }
+    container: {
+        flex: 1,
+        backgroundColor: '#fff',
+        fontFamily: 'Arial',
+        padding: 10,
+    },
+    inputBox: {
+        borderWidth: 1,
+        margin: 10,
+        borderRadius: 2,
+    },
+    horizontalLine: {
+        borderBottomColor: 'black',
+        borderBottomWidth: 1,
+        width: '90%',
+        margin: 10
+    },
+    uploadPhotoButton: {
+        margin: 10,
+        color: 'white'
+    },
+    title: {
+        fontSize: 16,
+        color: '#8B8B8B',
+    },
+    inputLabel: {
+        margin: 5,
+        fontSize: 14,
+    }
 });
