@@ -12,7 +12,7 @@ import {
 import {PublicProfilePicDefault, EditIcon} from "../icons";
 import { ProfileScreenProps } from '../types/navigation';
 
-export function ProfileScreen({route}: ProfileScreenProps) {
+export function ProfileScreen({navigation, route}: ProfileScreenProps) {
     const [profileData, setProfileData] = useState<UserData | null>(null);
 
     useEffect(() => {
@@ -35,7 +35,7 @@ export function ProfileScreen({route}: ProfileScreenProps) {
                             {profileData?.firstName} {profileData?.lastName}
                         </AppText>
                     </View>
-                    {isUserTheViewer && <IconButtonWrapper style={styles.editButton}>
+                    {isUserTheViewer && <IconButtonWrapper style={styles.editButton} onPress={() => navigation.navigate('EditProfileScreen', {userId: getCurrentUser()})}>
                         <EditIcon />
                     </IconButtonWrapper>}
                     <View style={[styles.fieldContainer]}>
