@@ -9,7 +9,7 @@ import { useNavigation } from '@react-navigation/native';
 import { BackArrowIcon } from '../icons/BackArrow';
 import { JobLandingScreenProps } from '../types/navigation';
 import { ListJobs } from './ListJobs';
-import { IconButtonWrapper, ScreenHeader } from '../components';
+import { IconButtonWrapper, ScreenHeader} from '../components';
 import { COLORS } from '../../constants';
 import { EditIcon } from '../icons';
 import { getCurrentUser } from '../api';
@@ -23,7 +23,7 @@ export function JobLandingScreen({ navigation }: JobLandingScreenProps) {
     return (
         <View style={styles.container}>
             <View style={{ height: 50, backgroundColor: COLORS.maroon }}>
-                <IconButtonWrapper style={styles.profileButton} onPress={() => navigation.navigate('ProfileScreen', {userId: getCurrentUser()})}>
+                <IconButtonWrapper style={styles.profileButton} onPress={() => navigation.navigate('DriverRegistration')}>
                     <ProfileButtonIcon />
                 </IconButtonWrapper>
             </View>
