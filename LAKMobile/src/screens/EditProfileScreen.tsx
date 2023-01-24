@@ -92,23 +92,24 @@ export function EditProfileScreen({route}: ProfileScreenProps) {
                     defaultValue={profileData?.location}
                     />
                 </LabelWrapper>
-                <View style={[styles.pickerWrapper, styles.spacer]}>
+                <View style={[styles.picker, {width: '100%'}]}>
                     <Picker
                     mode="dropdown" // Android only
+                    
                     >
                     {LOCATIONS.map((location, index) => (
                         <Picker.Item key={index} label={location} value={location} />
                     ))}
                     </Picker>
                 </View>
-                {profileData?.vehicleData && 
+                {!profileData?.vehicleData && 
                     <View>
                         <View style={[styles.sectionTitleContainer]}>
                             <AppText style={styles.sectionTitle}>Vehicle Information</AppText>
                         </View>
 
                         <LabelWrapper label='Type'>
-                            <View style={[styles.pickerWrapper, {width: '45%'}]}>
+                            <View style={[styles.picker, {width: '45%'}]}>
                                 <Picker
                                 mode="dropdown" // Android only
                                 >
@@ -191,7 +192,8 @@ const styles = StyleSheet.create({
     nameContainer: {
         flexDirection:'row',
         alignItems:'center',
-        paddingVertical: 10
+        paddingVertical: 10,
+        marginVertical: 10,
     },
 
     nameText: {
@@ -218,7 +220,9 @@ const styles = StyleSheet.create({
         fontSize: 18,
         position: "absolute",
         bottom: 0,
-        left: 32
+        left: 32,
+        color: "#8B8B8B",
+        fontWeight: "700",
     },
 
     sectionTitleContainer: {
@@ -228,6 +232,7 @@ const styles = StyleSheet.create({
         paddingLeft: 32,
         marginLeft: -32,
         height: 36,
+        marginTop: 20
     },
 
     reportButton: {
@@ -269,7 +274,16 @@ const styles = StyleSheet.create({
         padding: 10,
         height: 40,
         marginBottom: 14,
-      },
+        fontSize: 16,
+    },
+    picker: {
+        borderWidth: 1,
+        borderRadius: 2,
+        borderColor: COLORS.mediumGrey,
+        height: 40,
+        alignContent: 'center',
+        marginBottom: 14,
+    },
     pickerWrapper: {
         padding: 0,
         margin: 0,
