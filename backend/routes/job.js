@@ -11,6 +11,7 @@ import {
     completeJob,
     getJobs,
     getJobIds,
+    denyDriver,
 } from '../services/job';
 import { ValidationError } from '../errors';
 import { getSessionUserId } from '../constants';
@@ -30,7 +31,6 @@ routes.post('/', upload, async (req, res, next) => {
     let job = null;
     try {
         const userId = getSessionUserId(req);
-
         // Create Job
         job = await createJob(
             userId,
@@ -43,7 +43,7 @@ routes.post('/', upload, async (req, res, next) => {
     }
 
     res.status(200).json({
-        message: 'Job ID $jobId was successfully created',
+        message: `Job ID ${jobId} was successfully created`,
         jobId: job._id,
     });
 });
@@ -53,19 +53,16 @@ routes.post('/', upload, async (req, res, next) => {
  */
 routes.patch('/:jobid', upload, async (req, res, next) => {
     console.info('ROUTE: Updating job:', req.params.jobid);
-    
     let jobId = null;
     try {
         jobId = validateId(req.params.jobid);
         const payload = req.body;
-
         const userId = getSessionUserId(req);
-
         await updateJob(
             userId,
             jobId,
             payload,
-            req.files,
+            req.files || [],
         );
     } catch (e) {
         next(e);
@@ -73,7 +70,7 @@ routes.patch('/:jobid', upload, async (req, res, next) => {
     }
 
     res.status(200).json({
-        message: 'Job ID $jobId was successfully updated',
+        message: `Job ID ${jobId} was successfully updated`,
         jobId: jobId,
     });
 });
@@ -97,7 +94,7 @@ routes.delete('/:jobid', async (req, res, next) => {
     }
 
     res.status(200).json({
-        message: 'Job ID $jobId was successfully deleted',
+        message: `Job ID ${jobId} was successfully deleted`,
         jobId: jobId,
     });
 });
@@ -124,7 +121,7 @@ routes.delete('/:jobid', async (req, res, next) => {
         return;
     }
     res.status(200).json({
-        message: 'Job documents sent as ${jobs}',
+        message: `Job documents sent as ${jobs}`,
         jobs: jobs
     });
 });
@@ -145,9 +142,8 @@ routes.get('/:jobid', async (req, res, next) => {
         next(e);
         return;
     }
-    
     res.status(200).json({
-        message: 'Job document sent as ${job}',
+        message: `Job document sent as ${job}`,
         job: job
     })
 });
@@ -195,7 +191,7 @@ routes.get('/', async (req, res, next) => {
     }
     
     res.status(200).json({
-        message: 'Job documents sent as ${jobs}',
+        message: `Job documents sent as ${jobs}`,
         jobs: jobs,
         lastPage: lastPage,
     })
@@ -219,7 +215,7 @@ routes.patch('/:jobid/apply', async (req, res, next) => {
     }
 
     res.status(200).json({
-        message: 'Job $jobId successfully applied by $userId',
+        message: `Job ${jobId} successfully applied by ${userId}`,
         jobId: jobId,
         userId: userId,
     });
@@ -245,7 +241,33 @@ routes.patch('/:jobid/assign-driver', async (req, res, next) => {
     }
 
     res.status(200).json({
-        message: 'Driver $driverId successfully assigned to $jobId',
+        message: `Driver ${driverId} successfully assigned to ${jobId}`,
+        driverId: driverId,
+        jobId: jobId,
+    })
+})
+
+/**
+ * PATCH Deny driver (remove from applicants list)
+ */
+routes.patch('/:jobid/deny-driver', async (req, res, next) => {
+    console.info('ROUTE: Deny driver for jobId: ', req.params.jobid, 'driverId: ', req.params.driverId)
+    
+    let driverId, jobId;
+    try {
+        jobId = validateId(req.params.jobid)
+        driverId = validateId(req.body.driverId)
+        const userId = getSessionUserId(req);
+
+        await denyDriver(jobId, userId, driverId);
+    } catch(e) {
+        console.log('error', e)
+        next(e);
+        return;
+    }
+
+    res.status(200).json({
+        message: `Driver ${driverId} successfully denied from ${jobId}`,
         driverId: driverId,
         jobId: jobId,
     })
@@ -269,7 +291,7 @@ routes.patch('/:jobid/complete', async (req, res, next) => {
     }
 
     res.status(200).json({
-        message: 'Job $jobId marked as completed',
+        message: `Job ${jobId} marked as completed`,
         jobId: jobId
     });
 })

@@ -69,6 +69,7 @@ export function initAdmin() {
  * Create and run app
  */
 const app = express()
+app.use(cors());
 const port = PORT || 3000; // TODO Revisit default PORT
 app.use(bodyParser.urlencoded({
     extended: true

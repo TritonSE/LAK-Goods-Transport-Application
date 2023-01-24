@@ -32,6 +32,14 @@ const JobSchema = new Schema(
             type: String,
             required: true,
         },
+        receiverName: {
+            type: String,
+            required: false,
+        },
+        receiverPhoneNumber: {
+            type: String,
+            required: false,
+        },
         deliveryDate: {
             type: String,
             required: true,
@@ -40,21 +48,29 @@ const JobSchema = new Schema(
             type: String,
             required: true,
         },
+        pickupDistrict: {
+            type: String,
+            required: true,
+        },
         dropoffLocation: {
+            type: String,
+            required: true,
+        },
+        dropoffDistrict: {
             type: String,
             required: true,
         },
         description: {
             type: String,
-            required: true,
+            required: false,
         },
         packageQuantity: {
             type: Number,
-            required: true,
+            required: false,
         },
         price: {
             type: Number,
-            required: true,
+            required: false,
         },
 
         // Server monitored attributes

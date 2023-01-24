@@ -4,3 +4,5 @@ export * from './AddJob';
 export * from './ForgotPassword';
 export * from './OTP';
 export * from './ListJobs';
+export * from './JobLandingScreen';
+export * from './ProfileScreen';
