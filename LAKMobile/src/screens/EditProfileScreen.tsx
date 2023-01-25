@@ -92,7 +92,7 @@ export function EditProfileScreen({route}: ProfileScreenProps) {
                     defaultValue={profileData?.location}
                     />
                 </LabelWrapper>
-                <View style={[styles.picker, {width: '100%'}]}>
+                <View style={[styles.pickerWrapper, styles.spacer]}>
                     <Picker
                     mode="dropdown" // Android only
                     
@@ -109,7 +109,7 @@ export function EditProfileScreen({route}: ProfileScreenProps) {
                         </View>
 
                         <LabelWrapper label='Type'>
-                            <View style={[styles.picker, {width: '45%'}]}>
+                            <View style={[styles.pickerWrapper, styles.spacer, {width: '45%'}]}>
                                 <Picker
                                 mode="dropdown" // Android only
                                 >
