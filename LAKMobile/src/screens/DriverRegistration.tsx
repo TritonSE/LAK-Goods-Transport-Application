@@ -63,7 +63,7 @@ export function DriverRegistration({route}: JobLandingScreenProps) {
                 </View>
 
                 <LabelWrapper label='Type'>
-                    <View style={[styles.pickerWrapper, {width: '45%'}]}>
+                    <View style={[styles.pickerWrapper]}>
                         <Picker
                         mode="dropdown" // Android only
                         >
@@ -95,22 +95,24 @@ export function DriverRegistration({route}: JobLandingScreenProps) {
                     keyboardType="default"
                     />
                 </LabelWrapper>
-
                 <View style={styles.center}>
+                    {/**type, textStyle*/}
                     <LabelWrapper label='Photo of Vehicle'>
                         <AppButton
-                            title = "Upload a Photo"
+                            style={styles.uploadPhotoButton}
+                            title = "Upload vehicle photo"
                             onPress={uploadPhoto}
+                            type="quaternary"
                         />
                     </LabelWrapper>
-                </View>             
+                </View>
 
                 <View style={styles.center}>
                     <AppButton
+                        style={styles.registerButton}
                         type='primary'
                         title='Register'
                         onPress={() => console.log('Driver information submitted')}
-                        style={styles.footerButton}
                     />
                 </View>
             </ScrollView>
@@ -127,7 +129,6 @@ const styles = StyleSheet.create({
     scrollContainer: {
         overflow: 'hidden',
         paddingHorizontal: 20,
-        color: 'black', // check this line here!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
     },
 
     sectionTitle: {
@@ -147,38 +148,28 @@ const styles = StyleSheet.create({
         height: 36,
     },
 
-    vehicleImage: {
-        width: 58,
-        height: 55,
-        marginHorizontal: 5,
-        marginTop: 10,
-        marginBottom: 20,
-    },
-
-    editButton: {
-        display: 'flex',
-        flexDirection: 'row-reverse',
-        marginHorizontal: 25
-    },
-
     center: {
         justifyContent: "center",
         alignItems: "center",
-        marginTop: 10,
     },
     
-    footerButton: {
-        marginBottom: 15
+    uploadPhotoButton: {
+        width: '60%',
+        borderRadius: 5,
+        color: COLORS.mediumGrey,
+        borderColor: COLORS.mediumGrey,
+        marginBottom: 10,
+        elevation: 2.5,
     },
 
-    footer: {
-        marginTop: 10,
-        bottom: 0,
+    registerButton: {
+        marginTop: 20,
+        marginBottom: 20
     },
 
     input: {
         borderWidth: 1,
-        borderRadius: 2,
+        borderRadius: 5,
         borderColor: COLORS.mediumGrey,
         padding: 10,
         height: 40,
@@ -188,48 +179,16 @@ const styles = StyleSheet.create({
     pickerWrapper: {
         padding: 0,
         margin: 0,
+        marginBottom: 20,
+        width: '45%',
         borderWidth: 1,
         borderRadius: 5,
         borderColor: COLORS.mediumGrey,
     },
 
-    spacer: {
-        marginBottom: 20,
-    },
-
-    container: {
-        flex: 1,
-        backgroundColor: '#fff',
-        fontFamily: 'Arial',
-        padding: 10,
-    },
-
-    inputBox: {
-        borderWidth: 1,
-        margin: 10,
-        borderRadius: 2,
-    },
-
-    horizontalLine: {
-        borderBottomColor: 'black',
-        borderBottomWidth: 1,
-        width: '90%',
-        margin: 10
-    },
-
-    uploadPhotoButton: {
-        margin: 10,
-        color: 'white'
-    },
-
     title: {
         fontSize: 16,
         color: '#8B8B8B',
-    },
-
-    inputLabel: {
-        margin: 5,
-        fontSize: 14,
     },
 });
   
