@@ -10,7 +10,8 @@ import {
     AppText,
     ScreenHeader,
     IconButtonWrapper,
-    LabelWrapper
+    LabelWrapper,
+    ImagePickerButton
 } from '../components';
 import {PublicProfilePicDefault, EditIcon} from "../icons";
 import { ProfileScreenProps } from '../types/navigation';
@@ -54,6 +55,7 @@ export function EditProfileScreen({route}: ProfileScreenProps) {
             setProfileData(user)
         })
     }, [route.params.userId])
+    
     
     const isUserTheViewer = getCurrentUser() === route.params.userId;
 
@@ -142,7 +144,13 @@ export function EditProfileScreen({route}: ProfileScreenProps) {
                             //defaultValue = {profileData?.vehicleData.vehicleColor}
                             />
                         </LabelWrapper>
+                        <View style={styles.photos}>
+                            <ImagePickerButton onSelect={() => console.log("Pressed 1")}/>
+                            <ImagePickerButton onSelect={() => console.log("Pressed 2")}/>
+                            <ImagePickerButton onSelect={() => console.log("Pressed 3")}/>
+                        </View>
                     </View>
+                    
                 }
             </ScrollView>
             <View style={styles.footer}>
@@ -294,6 +302,10 @@ const styles = StyleSheet.create({
     },      
     spacer: {
         marginBottom: 20,
+    },
+    photos: {
+        flexDirection: "row",
+        alignSelf: "center",
     },
 })
 
