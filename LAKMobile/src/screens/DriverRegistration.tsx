@@ -9,7 +9,8 @@ import {
     AppText,
     ScreenHeader,
     IconButtonWrapper,
-    LabelWrapper
+    LabelWrapper,
+    ImagePickerButton
 } from '../components';
 
 export function DriverRegistration({route}: JobLandingScreenProps) {
@@ -73,6 +74,7 @@ export function DriverRegistration({route}: JobLandingScreenProps) {
                         </Picker>
                     </View>
                 </LabelWrapper>
+                
                 <LabelWrapper label='Model'>
                     <TextInput
                     style={smallInputStyle}
@@ -95,8 +97,17 @@ export function DriverRegistration({route}: JobLandingScreenProps) {
                     keyboardType="default"
                     />
                 </LabelWrapper>
+
+                <LabelWrapper label='Photo of Vehicle'>
+                    <View style={styles.photos}>
+                        <ImagePickerButton onSelect={() => console.log("Pressed 1")}/>
+                        <ImagePickerButton onSelect={() => console.log("Pressed 2")}/>
+                        <ImagePickerButton onSelect={() => console.log("Pressed 3")}/>
+                    </View>
+                </LabelWrapper>
+
+                {/**
                 <View style={styles.center}>
-                    {/**type, textStyle*/}
                     <LabelWrapper label='Photo of Vehicle'>
                         <AppButton
                             style={styles.uploadPhotoButton}
@@ -106,6 +117,7 @@ export function DriverRegistration({route}: JobLandingScreenProps) {
                         />
                     </LabelWrapper>
                 </View>
+                */}
 
                 <View style={styles.center}>
                     <AppButton
@@ -151,6 +163,11 @@ const styles = StyleSheet.create({
     center: {
         justifyContent: "center",
         alignItems: "center",
+    },
+
+    photos: {
+        flexDirection: "row",
+        alignSelf: "center",
     },
     
     uploadPhotoButton: {
