@@ -158,15 +158,9 @@ export function EditProfileScreen({route}: ProfileScreenProps) {
                     isUserTheViewer && 
                     <View style={styles.center}>
                         <AppButton
-                            type='secondary'
-                            title='Change pin'
-                            onPress={() => console.log('Change pin pressed')}
-                            style={styles.footerButton}
-                        />
-                        <AppButton
                             type='primary'
-                            title='Log out'
-                            onPress={() => console.log('Log out pressed')}
+                            title='Save Changes'
+                            onPress={() => console.log('Save Changes pressed')}
                             style={styles.footerButton}
                         />
                     </View>
