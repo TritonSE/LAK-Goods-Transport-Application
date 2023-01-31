@@ -1,5 +1,5 @@
 import { Picker } from '@react-native-picker/picker';
-import React from 'react';
+import React, { useEffect, useState } from 'react';
 import { StyleSheet, TextInput, View, ScrollView } from 'react-native';
 import { DriverRegistrationProps, JobLandingScreenProps } from '../types/navigation';
 import { COLORS } from '../../constants';
@@ -12,8 +12,9 @@ import {
     LabelWrapper,
     ImagePickerButton
 } from '../components';
+import { getUser, UserData } from '../api';
 
-export function DriverRegistration({route}: JobLandingScreenProps) {
+export function DriverRegistration({route}: DriverRegistrationProps) {
     const PICKER_TYPE_DEFAULT = "-- Pick type --";
 
     const uploadPhoto = () => {
@@ -26,7 +27,16 @@ export function DriverRegistration({route}: JobLandingScreenProps) {
         "Private",
         "Truck",
     ];
+
+    const [profileData, setProfileData] = useState<UserData | null>(null);
     
+    useEffect(() => {
+        getUser(route.params.userId)
+        .then(user => {
+            setProfileData(user)
+        })
+    }, [route.params.userId])
+
     return (
         <View style={styles.mainContainer}>
             <ScreenHeader showArrow={true} children={"Driver Registration"}/>
@@ -39,7 +49,7 @@ export function DriverRegistration({route}: JobLandingScreenProps) {
                     <TextInput
                     style={styles.input}
                     keyboardType="default"
-                    placeholder=''
+                    defaultValue={profileData?.firstName + " " + profileData?.lastName}
                     />
                 </LabelWrapper>
 
@@ -47,7 +57,7 @@ export function DriverRegistration({route}: JobLandingScreenProps) {
                     <TextInput
                     style={styles.input}
                     keyboardType="default"
-                    placeholder=''
+                    defaultValue={profileData?.phone}
                     />
                 </LabelWrapper>
 
