@@ -28,7 +28,7 @@ export default function App() {
         <Stack.Screen name="JobApplicant" component={JobApplicant} />
         <Stack.Screen name="AddJob" component={AddJob} />
         <Stack.Screen name="ProfileScreen" component={ProfileScreen} initialParams={{ userId: getCurrentUser() }} />
-        <Stack.Screen name="DriverRegistration" component={DriverRegistration} />
+        <Stack.Screen name="DriverRegistration" component={DriverRegistration} initialParams={{ userId: getCurrentUser() }} />
       </Stack.Navigator>
     </NavigationContainer>
   </View >

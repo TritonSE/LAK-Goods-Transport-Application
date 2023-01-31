@@ -12,7 +12,7 @@ export type RootStackParamList = {
     AddJob: {formType: "add" | "edit" | "delete" | "repost", jobData?: JobOwnerView, setJobData: React.Dispatch<React.SetStateAction<JobData[] | JobOwnerView[]>>}
     JobLandingScreen: undefined;
     ProfileScreen: { userId: string };
-    DriverRegistration: undefined;
+    DriverRegistration: { userId: string };
 };
 
 export type LoginProps = NativeStackScreenProps<RootStackParamList, 'Login'>;

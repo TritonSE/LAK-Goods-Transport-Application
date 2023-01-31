@@ -72,4 +72,5 @@ routes.post('/', upload, async (req, res, next) => {
         userId: user._id
     });
 })
+
 export default routes;
