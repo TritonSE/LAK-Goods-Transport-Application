@@ -17,6 +17,7 @@ interface ApplicantThumbnailProps {
 
 export function ApplicantThumbnail({ applicantData, status, style, onAccept, onDeny }: ApplicantThumbnailProps) {
     const flexJustifyContent = 'space-between'
+
     return (
         <View style={[ThumbailStyles.container, style]}>
             <AppText style={[ThumbailStyles.nameFont, ThumbailStyles.containerItem]}>{applicantData.firstName} {applicantData.lastName}</AppText>

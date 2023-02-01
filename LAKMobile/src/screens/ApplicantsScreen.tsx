@@ -2,6 +2,7 @@ import React, { useEffect, useState } from 'react';
 import { JobData, JobOwnerView } from '../api/data';
 import type { NativeStackScreenProps } from '@react-navigation/native-stack';
 import {Alert} from 'react-native';
+import { ConfirmationBox } from '../components/ConfirmationBox';
 
 import {
     StyleSheet,
@@ -38,6 +39,7 @@ interface ApplicantData{
 export function ApplicantsScreen({ jobData, setJobData, carousel, navigation }: ApplicantScreenProps) {
     const userIds: Array<string> = jobData.applicants.map(applicant => applicant.userId)
     const [applicants, setApplicants] = useState<Array<ApplicantData>>([])
+    const [confirmationVisible, setConfirmationVisible] = useState(false);
 
     useEffect(() => {
         getUsersByIds(userIds).then(async (response) => {
@@ -71,33 +73,7 @@ export function ApplicantsScreen({ jobData, setJobData, carousel, navigation }: 
         })
     }
 
-    // changes start here
-    const clientName = ((jobDataObject : JobData) => {
-        return jobDataObject.clientName;
-    });
-    
-    const clientPhoneNumber = ((jobDataObject : JobData) => {
-        return jobDataObject.phoneNumber;
-    });
-    
-    const title = "Apply to Job?";
-    const message = "By clicking confirm, you are agreeing to accept this job. Be sure to contact" +  
-                                clientName + "at the phone number" + clientPhoneNumber;
-    
-    const createTwoButtonAlert = () =>
-    Alert.alert(title, message, [
-        {
-        text: 'Cancel',
-        onPress: () => {console.log('Cancel button pressed'); return false;},
-        style: 'cancel',
-        },
-        {text: 'Accept', onPress: () => {console.log('Accept button pressed'); return true;}},
-    ]);
-  // changes end here
-
     const onAccept = (driverId?: string) => {
-        
-        createTwoButtonAlert();
 
         if (!driverId) return;
         assignDriver(jobData._id, driverId).then(response => {
@@ -109,6 +85,8 @@ export function ApplicantsScreen({ jobData, setJobData, carousel, navigation }: 
             setJobData(prevJobs => prevJobs.map(job => (job._id === updatedJob._id ? updatedJob : job)))
             navigation.navigate("ListJobs")
         })
+
+        setConfirmationVisible(true)
     }
 
     const onDeny = (driverId?: string) => {
@@ -136,7 +114,19 @@ export function ApplicantsScreen({ jobData, setJobData, carousel, navigation }: 
 
             </ScrollView>
 
+            { confirmationVisible ? (<ConfirmationBox
+                rejectVisible = {true}
+                checkMarkAppear = {true}
+                title={"Apply to job?"}
+                body={"Be sure to contact client at phone number"}
+                acceptName={"Apply"}
+                rejectName={"Cancel"}
+                onAccept={() => navigation.navigate('DetailsScreen')}
+                onReject={() => setConfirmationVisible(false)} />) : null }
+        
         </View>
+
+        
     );
 
 }
