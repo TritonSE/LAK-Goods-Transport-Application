@@ -3,7 +3,7 @@ import { StatusBar } from 'expo-status-bar';
 import { ScreenHeader, ImageCarousel, ApplicantThumbnail } from './src/components';
 import { JobApplicant } from './src/screens/JobApplicant';
 import { StyleSheet, View } from 'react-native';
-import { SignupScreen, LoginScreen, ForgotPassword, OTP, AddJob, ProfileScreen, JobLandingScreen, DriverRegistration } from './src/screens';
+import { SignupScreen, LoginScreen, ForgotPassword, OTP, AddJob, ProfileScreen, JobLandingScreen, DriverRegistration, EditProfileScreen } from './src/screens';
 import { ResetSuccess } from "./src/screens/ResetSuccess";
 import { ResetPassword } from "./src/screens/ResetPassword";
 import { NavigationContainer } from '@react-navigation/native';
@@ -29,6 +29,7 @@ export default function App() {
         <Stack.Screen name="AddJob" component={AddJob} />
         <Stack.Screen name="ProfileScreen" component={ProfileScreen} initialParams={{ userId: getCurrentUser() }} />
         <Stack.Screen name="DriverRegistration" component={DriverRegistration} initialParams={{ userId: getCurrentUser() }} />
+        <Stack.Screen name="EditProfileScreen" component={EditProfileScreen} initialParams={{ userId: getCurrentUser() }} />
       </Stack.Navigator>
     </NavigationContainer>
   </View >

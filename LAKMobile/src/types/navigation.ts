@@ -13,6 +13,7 @@ export type RootStackParamList = {
     JobLandingScreen: undefined;
     ProfileScreen: { userId: string };
     DriverRegistration: { userId: string };
+    EditProfileScreen: {userId: string};
 };
 
 export type LoginProps = NativeStackScreenProps<RootStackParamList, 'Login'>;
@@ -26,3 +27,4 @@ export type AddJobProps = NativeStackScreenProps<RootStackParamList, 'AddJob'>;
 export type JobLandingScreenProps = NativeStackScreenProps<RootStackParamList, 'JobLandingScreen'>;
 export type ProfileScreenProps = NativeStackScreenProps<RootStackParamList, 'ProfileScreen'>;
 export type DriverRegistrationProps = NativeStackScreenProps<RootStackParamList, 'DriverRegistration'>;
+export type EditProfileScreenProps = NativeStackScreenProps<RootStackParamList, 'EditProfileScreen'>;
