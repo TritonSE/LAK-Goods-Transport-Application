@@ -16,7 +16,7 @@ import {
 import {PublicProfilePicDefault, EditIcon} from "../icons";
 import { ProfileScreenProps } from '../types/navigation';
 
-export function EditProfileScreen({route}: ProfileScreenProps) {
+export function EditProfileScreen({route}: EditProfileScreenProps) {
     const [profileData, setProfileData] = useState<UserData | null>(null);
     const PICKER_LOCATION_DEFAULT = "-- Select a district --";
     const PICKER_TYPE_DEFAULT = "-- Pick a type --";
@@ -43,12 +43,12 @@ export function EditProfileScreen({route}: ProfileScreenProps) {
         "Wangdue Phodrang",
         "Zhemgang",
       ];
-      const CARS = [
+    const CARS = [
         PICKER_TYPE_DEFAULT,
         "Taxi",
         "Private",
         "Truck",
-      ];
+    ];
     useEffect(() => {
         getUser(route.params.userId)
         .then(user => {
