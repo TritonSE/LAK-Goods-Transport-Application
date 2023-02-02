@@ -1,0 +1,19 @@
+{
+  "name": "lak-goods-transport-application",
+  "version": "1.0.0",
+  "description": "Goods and Transportation Application for Laktaa Bhutan",
+  "main": "index.js",
+  "scripts": {
+    "lint": "npm --prefix ./AdminPortal/ run lint"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/TritonSE/LAK-Goods-Transport-Application.git"
+  },
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/TritonSE/LAK-Goods-Transport-Application/issues"
+  },
+  "homepage": "https://github.com/TritonSE/LAK-Goods-Transport-Application#readme"
+}
