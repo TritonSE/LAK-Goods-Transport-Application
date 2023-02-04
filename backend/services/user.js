@@ -65,3 +65,38 @@ export async function registerUser(userData, imageFiles) {
         throw ServiceError.INVALID_USER_RECEIVED.addContext(e.stack);
     }
 }
+
+export async function updateJob(userId, userData, userImages) {
+    console.debug(`SERVICE: updateUser service runnning: userId - ${userId}`);
+    // Retrieve original user
+    let originalUser = await UserModel.findById(userId);
+    if (!originalUser) {
+        throw ServiceError.USER_NOT_FOUND;
+    }
+
+    //TODO Find a better way of updating images
+
+    // Delete existing images
+    let existingImageIds = originalUser.imageIds;
+    for (let imageId of existingImageIds) {
+        await deleteImage(imageId);
+    }
+
+    // Add new images
+    let newImageIds = [];
+    for (let image of userImages) {
+        let imageId = await saveImage(image);
+        newImageIds.push(imageId);
+    }
+    
+    userData = {
+        ...userData,
+        imageIds: newImageIds,
+    }
+
+    try {
+        await UserModel.findOneAndUpdate({'_id': userId}, userData)
+    } catch (e) {
+        throw ServiceError.INVALID_USER_RECEIVED.addContext(e.stack);
+    }
+}

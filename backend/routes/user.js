@@ -73,4 +73,21 @@ routes.post('/', upload, async (req, res, next) => {
     });
 })
 
+routes.put('/:userid', upload, async (req, res, next) => {
+    console.info('ROUTES: Editing user', req.query);
+
+    let user = null;
+    try {
+        user = await registerUser(req.body, req.files || []);
+    } catch(e) {
+        next(e);
+        return;
+    }
+
+    res.status(200).json({
+        message: 'User edited successfully',
+        userId: user._id
+    });
+})
+
 export default routes;

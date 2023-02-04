@@ -236,3 +236,20 @@ export const getUser = async (userId: string): Promise<UserData | null> => {
         return null;
     }
 }
+
+export const updateUser = async (
+    userId: string,
+    updatedUser: object
+): Promise<{ userId: string } | null> => {
+    try {
+        const url = `${USERS_URL}/${userId}?`;
+        const response = await fetch(url, {
+            method: "PUT",
+            body: JSON.stringify(updatedUser),
+        });
+        let data = await response.json();
+        return { userId: data.userId };
+    } catch {
+        return null;
+    }
+};
