@@ -4,7 +4,7 @@
 import express from 'express';
 import multer from 'multer'; 
 
-import { getUser, getUsers, registerUser } from '../services/user';
+import { getUser, getUsers, registerUser, updateUser } from '../services/user';
 import { validateId } from '../helpers';
 import { getSessionUserId } from '../constants';
 
@@ -74,11 +74,11 @@ routes.post('/', upload, async (req, res, next) => {
 })
 
 routes.put('/:userid', upload, async (req, res, next) => {
-    console.info('ROUTES: Editing user', req.query);
+    console.info('ROUTES: Editing user', req.originalUrl.split("/")[3]);
 
     let user = null;
     try {
-        user = await registerUser(req.body, req.files || []);
+        user = await updateUser(req.originalUrl.split("/")[3], req.body, req.files || []);
     } catch(e) {
         next(e);
         return;

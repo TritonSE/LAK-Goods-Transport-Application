@@ -66,7 +66,7 @@ export async function registerUser(userData, imageFiles) {
     }
 }
 
-export async function updateJob(userId, userData, userImages) {
+export async function updateUser(userId, userData, userImages) {
     console.debug(`SERVICE: updateUser service runnning: userId - ${userId}`);
     // Retrieve original user
     let originalUser = await UserModel.findById(userId);
