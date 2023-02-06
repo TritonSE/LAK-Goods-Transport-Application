@@ -1,9 +1,9 @@
 import React, { useState } from 'react';
 import Image from 'next/image';
 
-import LAAKTAlogo from '../images/LAAKTAlogo.png';
-import eyeOpenLogo from '../images/openeye.png';
-import eyeClosedLogo from '../images/closedeye.png';
+import LAAKTAlogo from '../../public/LAAKTAlogo.png';
+import eyeOpenLogo from '../../public/open-eye.svg';
+import eyeClosedLogo from '../../public/closed-eye.svg';
 import { Martian_Mono } from '@next/font/google';
 
 const styles = {
@@ -108,10 +108,10 @@ const styles = {
   },
 
   passwordLogo: {
-    width: '20px',
-    height: '17px',
+    width: '18.03px',
+    height: '18.03px',
     cursor: 'pointer',
-    'margin-left': '-105px',
+    'margin-left': '-100px',
     'padding-top': '4px',
   },
 };
