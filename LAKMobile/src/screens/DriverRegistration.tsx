@@ -1,6 +1,6 @@
 import { Picker } from '@react-native-picker/picker';
 import React, { useEffect, useState } from 'react';
-import { StyleSheet, TextInput, View, ScrollView } from 'react-native';
+import { StyleSheet, TextInput, View, ScrollView, Alert } from 'react-native';
 import { DriverRegistrationProps, JobLandingScreenProps } from '../types/navigation';
 import { COLORS } from '../../constants';
 import {
@@ -9,7 +9,8 @@ import {
     ScreenHeader,
     IconButtonWrapper,
     LabelWrapper,
-    ImagePickerButton
+    ImagePickerButton,
+    ModalAlert
 } from '../components';
 import { getCurrentUser, getUser, updateUser, UserData, VehicleData } from '../api';
 import { JobLandingScreen } from './JobLandingScreen';
@@ -24,6 +25,7 @@ export function DriverRegistration({navigation, route}: DriverRegistrationProps)
     const [vehicleModel, setVehicleModel] = useState("");
     const [vehicleMake, setVehicleMake] = useState("");
     const [vehicleColor, setVehicleColor] = useState("");
+    const [alertVisible, setAlertVisible] = useState(false);
     const PICKER_TYPE_DEFAULT = "-- Pick type --";
 
     const uploadPhoto = () => {
@@ -42,7 +44,7 @@ export function DriverRegistration({navigation, route}: DriverRegistrationProps)
         .then(user => {
             setProfileData(user)
         })
-    }, [route.params.userId])
+    }, [route.params])
 
     useEffect(() => {
         setUserName(profileData?.firstName + " " + profileData?.lastName);
@@ -58,38 +60,54 @@ export function DriverRegistration({navigation, route}: DriverRegistrationProps)
     }, [profileData])
 
     const submitChanges = async () => {
-        const updatedVehicleData : VehicleData = {
-            vehicleType: vehicleType.trim(),
-            vehicleModel: vehicleModel.trim(),
-            vehicleMake: vehicleMake.trim(),
-            vehicleColor: vehicleColor.trim(),
-            imageIds: [] //Change this once the image uploading is fixed
-        }
-
-        const updatedUser : UserData = {
-            phone: phoneNumber,
-            firstName: userName.split(" ")[0].trim(),
-            lastName: userName.split(" ")[1].trim(),
-            location: location,
-        }
-        if (driverLicenseId != "") {
-            updatedUser.driverLicenseId = driverLicenseId
-            updatedUser.vehicleData = updatedVehicleData
-        }
-
-        console.log(updatedUser)
-        updateUser(route.params.userId, updatedUser).then(response => {
-            if (response == null) {
-                return;
+        if (vehicleType == PICKER_TYPE_DEFAULT || vehicleModel == "" || vehicleMake == "" || vehicleColor == "" || driverLicenseId == "") {
+            setAlertVisible(true);
+        } else {
+            const updatedVehicleData : VehicleData = {
+                vehicleType: vehicleType.trim(),
+                vehicleModel: vehicleModel.trim(),
+                vehicleMake: vehicleMake.trim(),
+                vehicleColor: vehicleColor.trim(),
+                imageIds: [] //Change this once the image uploading is fixed
             }
-            setProfileData(updatedUser);
-            navigation.navigate('JobLandingScreen');
-        })
+
+            const updatedUser : UserData = {
+                phone: phoneNumber,
+                firstName: userName.split(" ")[0].trim(),
+                lastName: userName.split(" ")[1].trim(),
+                location: location,
+            }
+            if (driverLicenseId != "") {
+                updatedUser.driverLicenseId = driverLicenseId
+                updatedUser.vehicleData = updatedVehicleData
+            }
+
+            console.log(updatedUser)
+            updateUser(route.params.userId, updatedUser).then(response => {
+                if (response == null) {
+                    return;
+                }
+                setProfileData(updatedUser);
+                navigation.navigate('JobLandingScreen');
+            })
+        }
     }
 
     return (
         <View style={styles.mainContainer}>
             <ScreenHeader showArrow={true} children={"Driver Registration"}/>
+            <ModalAlert
+                title="Required Fields"
+                message="Please fill out all required fields! (Driver's License ID and Vehicle Information)"
+                buttons={[
+                {
+                    type: "primary",
+                    label: "Close",
+                    onPress: () => setAlertVisible(false),
+                },
+                ]}
+                visible={alertVisible}
+            />
             <ScrollView style={styles.scrollContainer}>
                 <View style={[styles.sectionTitleContainer]}>
                     <AppText style={styles.sectionTitle}>Personal Information</AppText>
@@ -144,7 +162,7 @@ export function DriverRegistration({navigation, route}: DriverRegistrationProps)
                     style={smallInputStyle}
                     keyboardType="default"
                     defaultValue={profileData?.vehicleData?.vehicleModel}
-                    onChangeText={(value) => setUserName(value)}
+                    onChangeText={(value) => setVehicleModel(value)}
                     />
                 </LabelWrapper>
 
