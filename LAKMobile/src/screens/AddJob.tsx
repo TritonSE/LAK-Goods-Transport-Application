@@ -601,7 +601,6 @@ export function AddJob({ navigation, route }: AddJobProps) {
         {formType === "edit" && (
           <AppButton
             onPress={() => setConfirmationVisible(true)}
-            //onPress = {handleDeleteJob}
             style={[styles.center, { width: "100%", margin: 15 }]}
             title="Delete"
             type="secondary"

@@ -1,11 +1,3 @@
-/**
- * Apply to job?
- * 
- * Be sure to contact <Client> at <phone number>
- * 
- * cancel, apply
- */
-
 import React, { useEffect, useState } from "react";
 import { JobData } from "../api";
 import { StyleSheet } from "react-native";
