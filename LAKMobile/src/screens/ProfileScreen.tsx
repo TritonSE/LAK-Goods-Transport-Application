@@ -68,10 +68,10 @@ export function ProfileScreen({navigation, route}: ProfileScreenProps) {
                                 <AppText style={styles.fieldText}>{profileData?.vehicleData.vehicleModel}</AppText>
                             </View>
                             <View style={styles.fieldContainer}>
-                                <AppText style={styles.fieldText}>{profileData?.vehicleData.vehicleType}</AppText>
+                                <AppText style={styles.fieldText}>{profileData?.vehicleData.vehicleMake}</AppText>
                             </View>
                             <View style={styles.fieldContainer}>
-                                <AppText style={styles.fieldText}>{profileData?.vehicleData.vehicleMake}</AppText>
+                                <AppText style={styles.fieldText}>{profileData?.vehicleData.vehicleColor}</AppText>
                             </View>
                         </View>}
                     { profileData?.vehicleData?.imageIds && <View>
