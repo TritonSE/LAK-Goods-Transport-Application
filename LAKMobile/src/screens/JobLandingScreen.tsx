@@ -23,7 +23,7 @@ export function JobLandingScreen({ navigation }: JobLandingScreenProps) {
     return (
         <View style={styles.container}>
             <View style={{ height: 50, backgroundColor: COLORS.maroon }}>
-                <IconButtonWrapper style={styles.profileButton} onPress={() => navigation.navigate('DriverRegistration')}>
+                <IconButtonWrapper style={styles.profileButton} onPress={() => navigation.navigate('ProfileScreen')}>
                     <ProfileButtonIcon />
                 </IconButtonWrapper>
             </View>

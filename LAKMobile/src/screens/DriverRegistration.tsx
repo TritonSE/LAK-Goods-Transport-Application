@@ -3,7 +3,6 @@ import React, { useEffect, useState } from 'react';
 import { StyleSheet, TextInput, View, ScrollView } from 'react-native';
 import { DriverRegistrationProps, JobLandingScreenProps } from '../types/navigation';
 import { COLORS } from '../../constants';
-
 import {
     AppButton,
     AppText,
@@ -12,9 +11,19 @@ import {
     LabelWrapper,
     ImagePickerButton
 } from '../components';
-import { getUser, UserData } from '../api';
+import { getCurrentUser, getUser, updateUser, UserData, VehicleData } from '../api';
+import { JobLandingScreen } from './JobLandingScreen';
 
-export function DriverRegistration({route}: DriverRegistrationProps) {
+export function DriverRegistration({navigation, route}: DriverRegistrationProps) {
+    const [profileData, setProfileData] = useState<UserData | null>(null);
+    const [userName, setUserName] = useState("");
+    const [phoneNumber, setPhoneNumber] = useState("");
+    const [location, setLocation] = useState("");
+    const [driverLicenseId, setDriverLicenseId] = useState("");
+    const [vehicleType, setVehicleType] = useState("");
+    const [vehicleModel, setVehicleModel] = useState("");
+    const [vehicleMake, setVehicleMake] = useState("");
+    const [vehicleColor, setVehicleColor] = useState("");
     const PICKER_TYPE_DEFAULT = "-- Pick type --";
 
     const uploadPhoto = () => {
@@ -27,8 +36,6 @@ export function DriverRegistration({route}: DriverRegistrationProps) {
         "Private",
         "Truck",
     ];
-
-    const [profileData, setProfileData] = useState<UserData | null>(null);
     
     useEffect(() => {
         getUser(route.params.userId)
@@ -36,6 +43,49 @@ export function DriverRegistration({route}: DriverRegistrationProps) {
             setProfileData(user)
         })
     }, [route.params.userId])
+
+    useEffect(() => {
+        setUserName(profileData?.firstName + " " + profileData?.lastName);
+        setPhoneNumber(profileData?.phone || "");
+        setLocation(profileData?.location || "");
+        setDriverLicenseId(profileData?.driverLicenseId || "");
+        if (profileData?.vehicleData) {
+            setVehicleType(profileData?.vehicleData.vehicleType || PICKER_TYPE_DEFAULT);
+            setVehicleModel(profileData?.vehicleData.vehicleModel || "");
+            setVehicleMake(profileData?.vehicleData.vehicleMake || "");
+            setVehicleColor(profileData?.vehicleData.vehicleColor || "");
+        }
+    }, [profileData])
+
+    const submitChanges = async () => {
+        const updatedVehicleData : VehicleData = {
+            vehicleType: vehicleType.trim(),
+            vehicleModel: vehicleModel.trim(),
+            vehicleMake: vehicleMake.trim(),
+            vehicleColor: vehicleColor.trim(),
+            imageIds: [] //Change this once the image uploading is fixed
+        }
+
+        const updatedUser : UserData = {
+            phone: phoneNumber,
+            firstName: userName.split(" ")[0].trim(),
+            lastName: userName.split(" ")[1].trim(),
+            location: location,
+        }
+        if (driverLicenseId != "") {
+            updatedUser.driverLicenseId = driverLicenseId
+            updatedUser.vehicleData = updatedVehicleData
+        }
+
+        console.log(updatedUser)
+        updateUser(route.params.userId, updatedUser).then(response => {
+            if (response == null) {
+                return;
+            }
+            setProfileData(updatedUser);
+            navigation.navigate('JobLandingScreen');
+        })
+    }
 
     return (
         <View style={styles.mainContainer}>
@@ -50,6 +100,7 @@ export function DriverRegistration({route}: DriverRegistrationProps) {
                     style={styles.input}
                     keyboardType="default"
                     defaultValue={profileData?.firstName + " " + profileData?.lastName}
+                    onChangeText={(value) => setUserName(value)}
                     />
                 </LabelWrapper>
 
@@ -58,6 +109,7 @@ export function DriverRegistration({route}: DriverRegistrationProps) {
                     style={styles.input}
                     keyboardType="default"
                     defaultValue={profileData?.phone}
+                    onChangeText={(value) => setPhoneNumber(value)}
                     />
                 </LabelWrapper>
 
@@ -65,7 +117,7 @@ export function DriverRegistration({route}: DriverRegistrationProps) {
                     <TextInput
                     style={styles.input}
                     keyboardType="default"
-                    placeholder=''
+                    onChangeText={(value) => setDriverLicenseId(value)}
                     />
                 </LabelWrapper>
                 
@@ -77,9 +129,11 @@ export function DriverRegistration({route}: DriverRegistrationProps) {
                     <View style={[styles.pickerWrapper]}>
                         <Picker
                         mode="dropdown" // Android only
+                        onValueChange={(itemValue : string) => setVehicleType(itemValue)}
+                        selectedValue={vehicleType}
                         >
-                        {CARS.map((location, index) => (
-                            <Picker.Item key={index} label={location} value={location} />
+                        {CARS.map((type, index) => (
+                            <Picker.Item key={index} label={type} value={type} />
                         ))}
                         </Picker>
                     </View>
@@ -89,7 +143,8 @@ export function DriverRegistration({route}: DriverRegistrationProps) {
                     <TextInput
                     style={smallInputStyle}
                     keyboardType="default"
-                    defaultValue = 'Ex. Civic'
+                    defaultValue={profileData?.vehicleData?.vehicleModel}
+                    onChangeText={(value) => setUserName(value)}
                     />
                 </LabelWrapper>
 
@@ -98,6 +153,8 @@ export function DriverRegistration({route}: DriverRegistrationProps) {
                     style={smallInputStyle}
                     keyboardType="default"
                     defaultValue = 'Ex. Honda'
+                    value={vehicleMake}
+                    onChangeText={(value) => setVehicleMake(value)}
                     />
                 </LabelWrapper>
 
@@ -105,6 +162,8 @@ export function DriverRegistration({route}: DriverRegistrationProps) {
                     <TextInput
                     style={smallInputStyle}
                     keyboardType="default"
+                    defaultValue={profileData?.vehicleData?.vehicleColor}
+                    onChangeText={(value) => setVehicleColor(value)}
                     />
                 </LabelWrapper>
 
@@ -116,25 +175,12 @@ export function DriverRegistration({route}: DriverRegistrationProps) {
                     </View>
                 </LabelWrapper>
 
-                {/**
-                <View style={styles.center}>
-                    <LabelWrapper label='Photo of Vehicle'>
-                        <AppButton
-                            style={styles.uploadPhotoButton}
-                            title = "Upload vehicle photo"
-                            onPress={uploadPhoto}
-                            type="quaternary"
-                        />
-                    </LabelWrapper>
-                </View>
-                */}
-
                 <View style={styles.center}>
                     <AppButton
                         style={styles.registerButton}
                         type='primary'
                         title='Register'
-                        onPress={() => console.log('Driver information submitted')}
+                        onPress={submitChanges}
                     />
                 </View>
             </ScrollView>
