@@ -20,7 +20,7 @@ export function ProfileScreen({navigation, route}: ProfileScreenProps) {
         .then(user => {
             setProfileData(user)
         })
-    }, [route.params.userId])
+    }, [route.params])
     
     const isUserTheViewer = getCurrentUser() === route.params.userId;
 
@@ -45,7 +45,7 @@ export function ProfileScreen({navigation, route}: ProfileScreenProps) {
                         <AppText style={styles.fieldText}>{profileData?.phone}</AppText>
                     </View>
                     <View style={styles.fieldContainer}>
-                        <AppText style={styles.fieldText}>{profileData?.location}</AppText>
+                        <AppText style={styles.fieldText}>{profileData?.location.split(";")[0]}</AppText>
                     </View>
 
                     { profileData?.driverLicenseId && <View>

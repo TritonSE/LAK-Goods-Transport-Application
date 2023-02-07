@@ -74,11 +74,10 @@ routes.post('/', upload, async (req, res, next) => {
 })
 
 routes.put('/:userid', upload, async (req, res, next) => {
-    console.info('ROUTES: Editing user', req.originalUrl.split("/")[3]);
-
+    console.info('ROUTES: Editing user', req.params.userid);
     let user = null;
     try {
-        user = await updateUser(req.originalUrl.split("/")[3], req.body, req.files || []);
+        user = await updateUser(req.params.userid, req.body, req.files || []);
     } catch(e) {
         next(e);
         return;

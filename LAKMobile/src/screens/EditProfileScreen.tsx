@@ -70,10 +70,10 @@ export function EditProfileScreen({navigation, route}: EditProfileScreenProps) {
         setUserName(profileData?.firstName + " " + profileData?.lastName);
         setPhoneNumber(profileData?.phone || "");
         setLocation(profileData?.location.split(";")[0] || "");
-        setDistrict(profileData?.location.split(";")[1] || "");
+        setDistrict(profileData?.location.split(";")[1] || PICKER_LOCATION_DEFAULT);
         setDriverLicenseId(profileData?.driverLicenseId || "");
         if (profileData?.vehicleData) {
-            setVehicleType(profileData?.vehicleData.vehicleType || "");
+            setVehicleType(profileData?.vehicleData.vehicleType || PICKER_TYPE_DEFAULT);
             setVehicleModel(profileData?.vehicleData.vehicleModel || "");
             setVehicleMake(profileData?.vehicleData.vehicleMake || "");
             setVehicleColor(profileData?.vehicleData.vehicleColor || "");
@@ -94,10 +94,13 @@ export function EditProfileScreen({navigation, route}: EditProfileScreenProps) {
             firstName: userName.split(" ")[0].trim(),
             lastName: userName.split(" ")[1].trim(),
             location: location.trim() + ";" + district.trim(),
-            driverLicenseId: driverLicenseId,
-            vehicleData: updatedVehicleData
+        }
+        if (driverLicenseId != "") {
+            updatedUser.driverLicenseId = driverLicenseId
+            updatedUser.vehicleData = updatedVehicleData
         }
 
+        console.log(updatedUser)
         updateUser(route.params.userId, updatedUser).then(response => {
             if (response == null) {
                 return;
@@ -123,7 +126,7 @@ export function EditProfileScreen({navigation, route}: EditProfileScreenProps) {
                     style={styles.input}
                     keyboardType="default"
                     defaultValue={profileData?.firstName + " " + profileData?.lastName}
-                    value={userName}
+                    onChangeText={(value) => setUserName(value)}
                     />
                 </LabelWrapper>
                 
@@ -136,7 +139,7 @@ export function EditProfileScreen({navigation, route}: EditProfileScreenProps) {
                     style={bigInputStyle}
                     keyboardType="default"
                     defaultValue={profileData?.phone}
-                    value={phoneNumber}
+                    onChangeText={(value) => setPhoneNumber(value)}
                     />
                 </LabelWrapper>
 
@@ -146,19 +149,21 @@ export function EditProfileScreen({navigation, route}: EditProfileScreenProps) {
                     keyboardType="default"
                     defaultValue={profileData?.location}
                     value={location}
+                    onChangeText={(value) => setLocation(value)}
                     />
                 </LabelWrapper>
                 <View style={[styles.pickerWrapper, styles.spacer]}>
                     <Picker
                     mode="dropdown" // Android only
-                    
+                    onValueChange={(itemValue : string) => setDistrict(itemValue)}
+                    selectedValue={district}
                     >
                     {LOCATIONS.map((location, index) => (
-                        <Picker.Item key={index} label={location} value={district} />
+                        <Picker.Item key={index} label={location} value={location}/>
                     ))}
                     </Picker>
                 </View>
-                {!profileData?.vehicleData && 
+                {profileData?.vehicleData && 
                     <View>
                         <View style={[styles.sectionTitleContainer]}>
                             <AppText style={styles.sectionTitle}>Vehicle Information</AppText>
@@ -168,9 +173,11 @@ export function EditProfileScreen({navigation, route}: EditProfileScreenProps) {
                             <View style={[styles.pickerWrapper, styles.spacer, {width: '45%'}]}>
                                 <Picker
                                 mode="dropdown" // Android only
+                                onValueChange={(itemValue : string) => setVehicleType(itemValue)}
+                                selectedValue={vehicleType}
                                 >
                                 {CARS.map((type, index) => (
-                                    <Picker.Item key={index} label={type} value={vehicleModel} />
+                                    <Picker.Item key={index} label={type} value={type} />
                                 ))}
                                 </Picker>
                             </View>
@@ -179,8 +186,9 @@ export function EditProfileScreen({navigation, route}: EditProfileScreenProps) {
                             <TextInput
                             style={smallInputStyle}
                             keyboardType="default"
-                            //defaultValue = {profileData?.vehicleData.vehicleModel}
+                            defaultValue={profileData?.vehicleData?.vehicleModel}
                             value={vehicleModel}
+                            onChangeText={(value) => setVehicleModel(value)}
                             />
                         </LabelWrapper>
 
@@ -188,8 +196,9 @@ export function EditProfileScreen({navigation, route}: EditProfileScreenProps) {
                             <TextInput
                             style={smallInputStyle}
                             keyboardType="default"
-                            //defaultValue = {profileData?.vehicleData.vehicleMake}
+                            defaultValue={profileData?.vehicleData?.vehicleMake}
                             value={vehicleMake}
+                            onChangeText={(value) => setVehicleMake(value)}
                             />
                         </LabelWrapper>
 
@@ -197,8 +206,9 @@ export function EditProfileScreen({navigation, route}: EditProfileScreenProps) {
                             <TextInput
                             style={smallInputStyle}
                             keyboardType="default"
-                            //defaultValue = {profileData?.vehicleData.vehicleColor}
+                            defaultValue={profileData?.vehicleData?.vehicleColor}
                             value={vehicleColor}
+                            onChangeText={(value) => setVehicleColor(value)}
                             />
                         </LabelWrapper>
                         <View style={styles.photos}>

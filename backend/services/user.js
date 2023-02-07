@@ -7,12 +7,10 @@ import { saveImage } from './image';
 
 export async function getUser(requestedUserId, requestingUserId) {
     console.debug(`SERVICE: getUser service running: requestedUserId - ${requestedUserId}`);
-
-    let user = await UserModel.findById(requestedUserId);
+    let user = await UserModel.findById('635247cc2fdd8166dd9a3747');
     if (!user) throw ServiceError.USER_NOT_FOUND.addContext('requestedUserId - ', requestedUserId);
     
     user = user.toObject();
-
     if (!requestedUserId.equals(requestingUserId)) {
         OWNER_LIMITED_FIELDS.forEach(field => delete user[field]);
     }
@@ -76,26 +74,26 @@ export async function updateUser(userId, userData, userImages) {
 
     //TODO Find a better way of updating images
 
-    // Delete existing images
-    let existingImageIds = originalUser.imageIds;
-    for (let imageId of existingImageIds) {
-        await deleteImage(imageId);
-    }
+    // // Delete existing images
+    // let existingImageIds = originalUser.imageIds;
+    // for (let imageId of existingImageIds) {
+    //     await deleteImage(imageId);
+    // }
 
-    // Add new images
-    let newImageIds = [];
-    for (let image of userImages) {
-        let imageId = await saveImage(image);
-        newImageIds.push(imageId);
-    }
+    // // Add new images
+    // let newImageIds = [];
+    // for (let image of userImages) {
+    //     let imageId = await saveImage(image);
+    //     newImageIds.push(imageId);
+    // }
     
-    userData = {
-        ...userData,
-        imageIds: newImageIds,
-    }
+    // userData = {
+    //     ...userData,
+    //     imageIds: newImageIds,
+    // }
 
     try {
-        await UserModel.findOneAndUpdate({'_id': userId}, userData)
+        return await UserModel.findOneAndUpdate({'_id': userId}, userData)
     } catch (e) {
         throw ServiceError.INVALID_USER_RECEIVED.addContext(e.stack);
     }

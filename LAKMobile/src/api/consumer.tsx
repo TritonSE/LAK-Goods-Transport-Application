@@ -242,9 +242,12 @@ export const updateUser = async (
     updatedUser: object
 ): Promise<{ userId: string } | null> => {
     try {
-        const url = `${USERS_URL}/${userId}?`;
+        const url = `${USERS_URL}/${userId}?` + new URLSearchParams({ user: 'client1' });
         const response = await fetch(url, {
             method: "PUT",
+            headers: {
+                "Content-Type": "application/json",
+            },
             body: JSON.stringify(updatedUser),
         });
         let data = await response.json();
