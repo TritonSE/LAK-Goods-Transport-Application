@@ -20,7 +20,7 @@ export function Sidebar({ currentPage }: SidebarProps) {
                 className={styles.sidebarLogo}
                 alt="LAKTAA Logo"
               />
-              Laakta
+              Laktaa
             </a>
           </button>
           <div className={styles.menu}>
