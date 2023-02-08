@@ -9,17 +9,9 @@ export default function Admin() {
   return (
     <>
       <main className={styles.main}>
-        
         {<div>{'This is the admin page!'}</div>}
-        <Sidebar 
-          currentPage={"/admin"}/>
-        
+        <Sidebar currentPage={'/admin'} />
       </main>
-      
-      
-      
-    
     </>
-  
-  )
+  );
 }

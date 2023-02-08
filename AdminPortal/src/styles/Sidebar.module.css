@@ -5,32 +5,27 @@
   
 .sidebar {
     position: fixed;
+    left: 0;
     width: 240px;
     height: 100%;
+    padding: 4rem 0rem 2.5rem 1.5rem;
     z-index: 100;
-    top: 0px;
-    left: 0px;
-    padding-top: 73px;
-    padding-right: 22px;
-    padding-left: 22px;
     background: #F9F9F9;
     box-shadow: 0px 4px 4px rgba(0, 0, 0, 0.25);
-    overflow: auto; 
-    /* overflow:scroll; */
-    overscroll-behavior: none;
-    display: grid;
-    grid-template-rows: 20vh auto 20vh; 
-
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    overflow: scroll;
   }
 
   .sidebarButton {
-    width: 44px;
+    text-align: left;
+    width: auto;
     height: 44px;
+    line-height: 44px;
     background: transparent;
     border: 0px;
-    padding-bottom: 50px;
-    cursor: pointer;
-    
+    margin-bottom: 3rem;
   }
 
   .buttonText {
@@ -39,8 +34,8 @@
     font-style: normal;
     font-weight: 400;
     white-space: nowrap;
-    
-
+    font-family: 'Lato', sans-serif;
+    cursor: pointer;
   }
 
   .active {
@@ -48,64 +43,40 @@
     font-weight: 700;
     font-size: 20px;
     white-space: nowrap;
-
+    cursor: pointer;
   }
 
   .menu {
-    padding-top: 73px;
-    display: grid;
-  }
-
-  .sidebarTabs {
-    align-self: center;
-    display: grid;
-    height: 100%;
-    align-items: center;
-    margin-bottom: 25px;
-    
+    display: flex;
+    flex-direction: column;
+    margin-top: 5rem;
   }
 
   .sidebarLogo {
     background: transparent;
     border: 0px;  
     position: relative;
-    
   }
   
   .sidebarLogo img{
     cursor: pointer;
-    margin-right: 17px;
-    width: 50px;
-    vertical-align: middle; 
-    position: relative;
-    
-    
+    margin-right: 1rem;
   }
 
   .sidebarLogoText {
     color: #000000;
     font-weight: 700;
     font-size: 30px;
-    vertical-align: middle;
-    margin-right: 25px;
-    
+    display: flex;
+    align-items: center;
   }
 
   .sidebarProfile {
     background: transparent;
-    border: 0px;  
-    position: relative;
+    border: 0px;
+    width: 31px;
   }
 
   .sidebarProfile img {
     cursor: pointer;
-    width: 31px;
-    position: absolute;
-    top: 410px;
-    bottom: 30px;
-    left: 5px;
-    /* display: flex; */
   }
-
-
-
