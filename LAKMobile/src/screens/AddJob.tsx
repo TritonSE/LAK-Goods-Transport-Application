@@ -9,6 +9,7 @@ import { ScrollView, StyleSheet, View } from "react-native";
 import { Picker } from "@react-native-picker/picker";
 import * as ImagePicker from "expo-image-picker";
 import type { ImagePickerErrorResult } from "expo-image-picker";
+import { ConfirmationBox } from '../components/ConfirmationBox';
 import {
   AppText,
   LabelWrapper,
@@ -71,7 +72,7 @@ const fieldNames = {
   imageSelect: "imageSelect",
 };
 
-export function AddJob({ navigation, route }: AddJobProps) {
+export function AddJob({ navigation, route }: AddJobProps) {  
   let formType = route.params.formType;
   let screenHeader;
   if (formType === "add") {
@@ -139,6 +140,7 @@ export function AddJob({ navigation, route }: AddJobProps) {
   const [pickupDistrict, setPickupDistrict] = useState("");
   const [dropoffLocation, setDropoffLocation] = useState("");
   const [dropoffDistrict, setDropoffDistrict] = useState("");
+  const [confirmationVisible, setConfirmationVisible] = useState(false);
 
   type ImagesReducerState = string[];
 
@@ -359,6 +361,8 @@ export function AddJob({ navigation, route }: AddJobProps) {
     if (!route.params.jobData) {
       return;
     }
+    
+    
     deleteJob(route.params.jobData._id).then(response => {
       if (response === null) {
         return;
@@ -368,6 +372,9 @@ export function AddJob({ navigation, route }: AddJobProps) {
       route.params.setJobData(prevJobs => prevJobs.filter(job => job._id !== jobId))
       navigation.navigate("JobLandingScreen");
     });
+    
+    
+
   };
 
   return (
@@ -593,7 +600,7 @@ export function AddJob({ navigation, route }: AddJobProps) {
         />
         {formType === "edit" && (
           <AppButton
-            onPress={handleDeleteJob}
+            onPress={() => setConfirmationVisible(true)}
             style={[styles.center, { width: "100%", margin: 15 }]}
             title="Delete"
             type="secondary"
@@ -629,6 +636,15 @@ export function AddJob({ navigation, route }: AddJobProps) {
         ]}
         visible={imagePickPromptVisible}
       />
+      { confirmationVisible ? (<ConfirmationBox
+                checkMarkAppear = {false}
+                rejectVisible = {true}
+                title={"Delete job post?"}
+                body={"This will be removed from the job board permanently."}
+                acceptName={"Delete"}
+                rejectName={"Cancel"}
+                onAccept={() => handleDeleteJob()}
+                onReject={() => setConfirmationVisible(false)} />) : null }
     </View>
   );
 }
