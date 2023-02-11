@@ -7,7 +7,7 @@ import { saveImage } from './image';
 
 export async function getUser(requestedUserId, requestingUserId) {
     console.debug(`SERVICE: getUser service running: requestedUserId - ${requestedUserId}`);
-    let user = await UserModel.findById('635247cc2fdd8166dd9a3747');
+    let user = await UserModel.findById(requestedUserId);
     if (!user) throw ServiceError.USER_NOT_FOUND.addContext('requestedUserId - ', requestedUserId);
     
     user = user.toObject();
