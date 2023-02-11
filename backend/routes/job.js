@@ -30,6 +30,8 @@ routes.post('/', upload, async (req, res, next) => {
     
     let job = null;
     try {
+        console.log("FILES HERE:")
+        console.log(req.files);
         const userId = getSessionUserId(req);
         // Create Job
         job = await createJob(
@@ -43,7 +45,7 @@ routes.post('/', upload, async (req, res, next) => {
     }
 
     res.status(200).json({
-        message: `Job ID ${jobId} was successfully created`,
+        message: `Job ID ${job._id} was successfully created`,
         jobId: job._id,
     });
 });
