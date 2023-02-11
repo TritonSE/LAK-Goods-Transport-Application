@@ -13,7 +13,7 @@ const routes = express.Router();
 const upload = multer({ storage: multer.memoryStorage() }).array("images");
 
 routes.get('/:userid', async (req, res, next) => {
-    console.info('ROUTES: Getting user by ID');
+    console.info(`ROUTES: Getting user by ID ${req.params.userid}`);
 
     let user = null;
     try {
@@ -36,8 +36,8 @@ routes.get('/:userid', async (req, res, next) => {
 // mutate our DB in any way but since GET requests don't support a body, 
 // we are using a POST type
 routes.post('/get-by-ids', async (req, res, next) => {
-    console.info('ROUTES: Getting user data by IDs');
-   
+    console.info(`ROUTES: Getting user data by IDs ${req.body.userIds}`);
+    console.info(req.body.userIds);
     let users = null;
     try {
         let userIds = req.body.userIds;

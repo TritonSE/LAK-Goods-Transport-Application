@@ -30,8 +30,6 @@ routes.post('/', upload, async (req, res, next) => {
     
     let job = null;
     try {
-        console.log("FILES HERE:")
-        console.log(req.files);
         const userId = getSessionUserId(req);
         // Create Job
         job = await createJob(
@@ -40,10 +38,12 @@ routes.post('/', upload, async (req, res, next) => {
             req.files || [],
         );
     } catch (e) { 
+        console.error(e);
         next(e);
         return;
     }
 
+    console.log("RESPONDING WITH 200");
     res.status(200).json({
         message: `Job ID ${job._id} was successfully created`,
         jobId: job._id,
@@ -70,7 +70,6 @@ routes.patch('/:jobid', upload, async (req, res, next) => {
         next(e);
         return;
     }
-
     res.status(200).json({
         message: `Job ID ${jobId} was successfully updated`,
         jobId: jobId,

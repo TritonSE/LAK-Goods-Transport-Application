@@ -107,7 +107,6 @@ export const postJob = async (
             },
             body: newJob,
         });
-        console.log(response);
         let data = await response.json();
         return { jobId: data.jobId };
     } catch (e) {
@@ -126,7 +125,6 @@ export const updateJob = async (
             new URLSearchParams({
                 user: "client1",
             });
-        console.log("MAKING API REQUEST")
         const response = await fetch(url, {
             method: "PATCH",
             mode: 'cors',
@@ -135,9 +133,7 @@ export const updateJob = async (
             },
             body: updatedJob,
         });
-        console.log(response);
         let data = await response.json();
-        console.log("API RESPONSE: HERE");
         return { jobId: data.jobId };
     } catch (e) {
         console.error(e);

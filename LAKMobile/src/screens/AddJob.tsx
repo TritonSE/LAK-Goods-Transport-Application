@@ -109,15 +109,11 @@ export function AddJob({ navigation, route }: AddJobProps) {
       case "ADD_IMAGE":
         const index = newState.findIndex((value) => value === "");
         newState[index] = action.payload.uri;
-        console.log(imageInfo)
-        console.log(newState[index]);
         if (imageInfo) {
-          console.log("HERE")
           let newImageInfo = imageInfo.map((im, i) => {
             return (i === index ? action.payload : im)
           })
           setImageInfo(newImageInfo)
-          console.log(imageInfo);
         }
         setIsValid({ ...isValid, ["imageSelect"]: true });
         break;
