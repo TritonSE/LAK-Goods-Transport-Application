@@ -108,7 +108,17 @@ export function AddJob({ navigation, route }: AddJobProps) {
     switch (action.type) {
       case "ADD_IMAGE":
         const index = newState.findIndex((value) => value === "");
-        newState[index] = action.payload;
+        newState[index] = action.payload.uri;
+        console.log(imageInfo)
+        console.log(newState[index]);
+        if (imageInfo) {
+          console.log("HERE")
+          let newImageInfo = imageInfo.map((im, i) => {
+            return (i === index ? action.payload : im)
+          })
+          setImageInfo(newImageInfo)
+          console.log(imageInfo);
+        }
         setIsValid({ ...isValid, ["imageSelect"]: true });
         break;
       case "REMOVE_IMAGE":
@@ -125,6 +135,7 @@ export function AddJob({ navigation, route }: AddJobProps) {
   };
 
   const [imageURIs, dispatch] = useReducer(reducer, ["", "", ""]);
+  const [imageInfo, setImageInfo] = useState<Array<ImagePicker.ImageInfo | null>>([null, null, null])
   const [permissionAlertVisible, setPermissionAlertVisible] = useState(false);
   const [imagePickPromptVisible, setImagePickPromptVisible] = useState(false);
   const [jobTitle, setJobTitle] = useState("");
@@ -146,7 +157,7 @@ export function AddJob({ navigation, route }: AddJobProps) {
 
   interface ImagesReducerAddAction {
     type: "ADD_IMAGE";
-    payload: string;
+    payload: ImagePicker.ImageInfo;
   }
 
   interface ImagesReducerRemoveAction {
@@ -258,7 +269,7 @@ export function AddJob({ navigation, route }: AddJobProps) {
       mediaTypes: ImagePicker.MediaTypeOptions.Images,
     });
     if (!pickerResult.cancelled) {
-      dispatch({ type: "ADD_IMAGE", payload: pickerResult.uri });
+      dispatch({ type: "ADD_IMAGE", payload: pickerResult });
     }
     setImagePickPromptVisible(false);
   }, []);
@@ -271,7 +282,7 @@ export function AddJob({ navigation, route }: AddJobProps) {
     }
     const cameraResult = await ImagePicker.launchCameraAsync();
     if (!cameraResult.cancelled) {
-      dispatch({ type: "ADD_IMAGE", payload: cameraResult.uri });
+      dispatch({ type: "ADD_IMAGE", payload: cameraResult });
     }
     setImagePickPromptVisible(false);
   }, []);
@@ -301,6 +312,33 @@ export function AddJob({ navigation, route }: AddJobProps) {
     }) as JobOwnerView
   }
 
+  const createFormData = (images: Array<ImagePicker.ImageInfo | null>, body: { [key: string]: any }) => {
+    const data = new FormData();
+    if (images !== null && images[0] !== null) {
+      images.map((image) => {
+        if (image !== null) {
+          const uriArray = image.uri.split(".");
+          const fileExtension = uriArray[uriArray.length - 1];  // e.g.: "jpg"
+          const fileTypeExtended = `${image.type}/${fileExtension}`; // e.g.: "image/jpg"
+          console.log(fileTypeExtended)
+          data.append("images", {
+            name: "demo.jpg",
+            uri: image.uri,
+            type: "image/jpeg",
+          } as unknown as Blob)
+        }
+      })
+    }
+
+    Object.keys(body).forEach((key) => {
+      data.append(key, body[key]);
+    });
+
+    console.log(data)
+
+    return data;
+  }
+
   const submitJob = async () => {
     // TODO: when submitting, remember to filter out empty strings from imageURIs
     if (!validateFields()) {
@@ -322,8 +360,10 @@ export function AddJob({ navigation, route }: AddJobProps) {
       dropoffDistrict: dropoffDistrict.trim(),
       imageIds: imageURIs.filter((value) => value !== ""),
     };
+    const formedJob: FormData = createFormData(imageInfo, newJob)
     if (formType === "add" || formType == "repost") {
-      postJob(newJob).then(response => {
+      postJob(formedJob).then(response => {
+        console.log(`API RESPONSE: ${response}`);
         if (response == null) {
           return;
         }
@@ -342,7 +382,7 @@ export function AddJob({ navigation, route }: AddJobProps) {
         return;
       }
 
-      updateJob(route.params.jobData._id, newJob).then(response => {
+      updateJob(route.params.jobData._id, formedJob).then(response => {
         if (response === null) {
           return;
         }
