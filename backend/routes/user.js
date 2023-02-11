@@ -37,7 +37,6 @@ routes.get('/:userid', async (req, res, next) => {
 // we are using a POST type
 routes.post('/get-by-ids', async (req, res, next) => {
     console.info(`ROUTES: Getting user data by IDs ${req.body.userIds}`);
-    console.info(req.body.userIds);
     let users = null;
     try {
         let userIds = req.body.userIds;

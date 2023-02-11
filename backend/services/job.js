@@ -76,7 +76,6 @@ export async function createJob(userId, jobData, jobImages) {
             imageIds: imageIds,
             status: JOB_STATUS_CREATED,
         });
-        console.log("JOB CREATED");
     } catch (e) {
         throw ServiceError.INVALID_JOB_RECEIVED.addContext(e.stack);
     }

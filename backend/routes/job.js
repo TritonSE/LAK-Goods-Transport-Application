@@ -43,7 +43,6 @@ routes.post('/', upload, async (req, res, next) => {
         return;
     }
 
-    console.log("RESPONDING WITH 200");
     res.status(200).json({
         message: `Job ID ${job._id} was successfully created`,
         jobId: job._id,

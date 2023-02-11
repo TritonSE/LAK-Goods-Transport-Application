@@ -13,7 +13,6 @@ export async function saveImage(rawImage) {
 
     try {
         const newImage = await image.save();
-        console.info("IMAGE SAVED");
         return newImage._id;
     } catch (e) {
         console.error(e);
