@@ -1,0 +1,82 @@
+.main {
+    overscroll-behavior: none;
+    overflow: auto;
+  }
+  
+.sidebar {
+    position: fixed;
+    left: 0;
+    width: 240px;
+    height: 100%;
+    padding: 4rem 0rem 2.5rem 1.5rem;
+    z-index: 100;
+    background: #F9F9F9;
+    box-shadow: 0px 4px 4px rgba(0, 0, 0, 0.25);
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    overflow: scroll;
+  }
+
+  .sidebarButton {
+    text-align: left;
+    width: auto;
+    height: 44px;
+    line-height: 44px;
+    background: transparent;
+    border: 0px;
+    margin-bottom: 3rem;
+  }
+
+  .buttonText {
+    color: #000000;
+    font-size: 20px;
+    font-style: normal;
+    font-weight: 400;
+    white-space: nowrap;
+    font-family: 'Lato', sans-serif;
+    cursor: pointer;
+  }
+
+  .active {
+    color: #94100C;
+    font-weight: 700;
+    font-size: 20px;
+    white-space: nowrap;
+    cursor: pointer;
+  }
+
+  .menu {
+    display: flex;
+    flex-direction: column;
+    margin-top: 5rem;
+  }
+
+  .sidebarLogo {
+    background: transparent;
+    border: 0px;  
+    position: relative;
+  }
+  
+  .sidebarLogo img{
+    cursor: pointer;
+    margin-right: 1rem;
+  }
+
+  .sidebarLogoText {
+    color: #000000;
+    font-weight: 700;
+    font-size: 30px;
+    display: flex;
+    align-items: center;
+  }
+
+  .sidebarProfile {
+    background: transparent;
+    border: 0px;
+    width: 31px;
+  }
+
+  .sidebarProfile img {
+    cursor: pointer;
+  }
