@@ -9,8 +9,8 @@ export default function Profile() {
   return (
     <>
       <main className={styles.main}>
-        {<div>{'This is the profile page!'}</div>}
         <Sidebar currentPage={'/profile'} />
+        <div>{'This is the profile page!'}</div>
       </main>
     </>
   );

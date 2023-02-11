@@ -9,8 +9,8 @@ export default function Settings() {
   return (
     <>
       <main className={styles.main}>
-        {<div>{'This is the settings page!'}</div>}
         <Sidebar currentPage={'/settings'} />
+        <div>{'This is the settings page!'}</div>
       </main>
     </>
   );

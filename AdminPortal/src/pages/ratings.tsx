@@ -9,8 +9,8 @@ export default function Ratings() {
   return (
     <>
       <main className={styles.main}>
-        {<div>{'This is the ratings page!'}</div>}
         <Sidebar currentPage={'/ratings'} />
+        <div>{'This is the ratings page!'}</div>
       </main>
     </>
   );
