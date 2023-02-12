@@ -56,7 +56,7 @@ const LOCATIONS = [
 ];
 
 type Validator = (text: string) => boolean;
-
+type ImagesReducerState = string[];
 type ValidatedField = {
   fieldName: string;
   fieldValue: string;
@@ -149,7 +149,7 @@ export function AddJob({ navigation, route }: AddJobProps) {
   const [dropoffDistrict, setDropoffDistrict] = useState("");
   const [confirmationVisible, setConfirmationVisible] = useState(false);
 
-  type ImagesReducerState = string[];
+ 
 
   interface ImagesReducerAddAction {
     type: "ADD_IMAGE";
@@ -184,12 +184,20 @@ export function AddJob({ navigation, route }: AddJobProps) {
     return valid;
   };
 
+  const validateImageUpload: Validator = () => {
+    if (imageURIs.findIndex((value) => value !== "") === -1){
+      return false;
+    }
+    return true;
+  };
+
   const validators = {
     presence: validatePresence,
     phoneNumber: validatePhoneNumber,
     recieverPhoneNumber: validatePhoneNumber,
     date: validateDate,
     picker: validatePickerSelect,
+    image: validateImageUpload
   };
 
   const validatedFields: Array<ValidatedField> = [
@@ -217,6 +225,11 @@ export function AddJob({ navigation, route }: AddJobProps) {
       fieldName: fieldNames.dropoffLocation,
       fieldValue: dropoffLocation,
       validator: validators.presence,
+    },
+    {
+      fieldName: fieldNames.imageSelect,
+      fieldValue: "",
+      validator: validators.image,
     },
   ];
 
@@ -611,16 +624,23 @@ export function AddJob({ navigation, route }: AddJobProps) {
             />
           ))}
         </View>
-
-        <View style={[styles.spacer]}>
-          <AppText style={styles.photoInstructions}>
+        {isValid[fieldNames.imageSelect] ? (
+          <>
+          </>
+        ): (
+          <View>
+          <AppText style={styles.errText}>
             At least one photo of the package is required. Tap on a photo to
             remove it.
           </AppText>
-          <AppText style={styles.photoInstructions}>
+          </View>
+          
+        )}
+          <View>
+            <AppText style={styles.instructionText}>
             Note: The first photo will be the thumbnail of the job listing.
-          </AppText>
-        </View>
+            </AppText>
+          </View>
 
         <AppButton
           onPress={submitJob}
@@ -698,6 +718,15 @@ const styles = StyleSheet.create({
     borderRadius: 4,
     borderColor: COLORS.red,
     height: 40,
+  },
+  errText: {
+    color: COLORS.red,
+    fontSize: 12,
+    paddingBottom: 20  // this is adding margin below null errMsg as well
+  },
+  instructionText: {
+    fontSize: 12,
+    paddingBottom: 20  // this is adding margin below null instructionText as well
   },
 
   multilineInput: {
