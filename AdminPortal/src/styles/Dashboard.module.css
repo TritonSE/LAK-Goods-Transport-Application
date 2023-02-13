@@ -1,0 +1,145 @@
+.outer{
+    margin-left: 286px;
+    display: flex;
+    flex-direction: column;
+    margin-right: 101px;
+    height: 100%;
+}
+
+.title{
+    
+    position: relative;
+    margin-top: 100px;
+
+    font-family: Lato;
+    font-weight: 700;
+    font-size: 48px;
+
+    color: #000000;
+}
+
+
+.tabs{
+    display: flex;
+    position: relative;
+    margin-top: 2px;
+
+    gap: 54px;
+
+    height: 72px;
+    width: 834;
+
+    margin-bottom: 21px;
+}
+
+.tabsButton{
+    font-family: 'Lato';
+    font-style: normal;
+    font-weight: 700;
+    font-size: 24px;
+    line-height: 29px;
+
+    border: none;
+
+    background-color: transparent;
+    cursor: pointer;
+}
+
+.tabsButtonSelected{
+    font-family: 'Lato';
+    font-style: normal;
+    font-weight: 700;
+    font-size: 24px;
+    line-height: 29px;
+
+    border: none;
+
+    background-color: transparent;
+    cursor: pointer;
+
+    border-bottom:7px solid #FFD84D;
+    
+    border-radius: 4px;
+}
+
+.horizontalLine{
+    border: 1px solid #C4C4C4;
+    margin-bottom: 22px;
+}
+
+.dropdownAndExportBar{
+    height: 50px;
+    margin-bottom: 50px;
+    display: flex;
+    justify-content: space-between;
+}
+
+.dropdown{
+    background-color: transparent;
+    color: black;
+    border: 1.78571px solid #C4C4C4;
+    height: 100%;
+
+    font-family: 'Lato';
+    font-style: normal;
+    font-weight: 400;
+    font-size: 24px;
+    line-height: 29px;
+
+}
+
+.dropdown:hover{
+    background-color: #C4C4C4;
+    border: 1.78571px solid #C4C4C4;
+}
+
+
+.exportButton{
+
+    right: auto;
+    width: 232px;
+
+    background: #94100C;
+    border-radius: 4px;
+    font-family: 'Lato';
+    font-style: normal;
+    font-weight: 700;
+    font-size: 24px;
+    line-height: 29px;
+    color: white;
+}
+
+.tableHead{
+
+    background-color: #94100C;
+    height: 74px;
+    color: white;
+    font-family: 'Lato';
+    font-style: normal;
+    font-weight: 400;
+    font-size: 24px;
+    line-height: 29px;
+
+    text-align: center;
+}
+
+.tableBody{
+    margin-top: 10px;
+}
+
+.tableData{
+    padding: 20px;   
+    font-family: 'Lato';
+    font-style: normal;
+    font-weight: 400;
+    font-size: 20px;
+    line-height: 24px;
+
+    text-align: center;
+
+    
+}
+
+.tableData:not(:last-child) {
+    border-right: 1px solid black;
+  }

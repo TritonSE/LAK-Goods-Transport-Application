@@ -1,0 +1,42 @@
+[
+    {
+      "id": 1,
+      "dateApplied": "2022-01-01",
+      "name": "John Doe",
+      "mobileNumber": "+1 123 456 7890",
+      "licenseID": "A1234567",
+      "licensePlate": "ABC-123"
+    },
+    {
+      "id": 2,
+      "dateApplied": "2022-02-01",
+      "name": "Jane Doe",
+      "mobileNumber": "+1 987 654 3210",
+      "licenseID": "B2345678",
+      "licensePlate": "DEF-456"
+    },
+    {
+      "id": 3,
+      "dateApplied": "2022-03-01",
+      "name": "Jim Smith",
+      "mobileNumber": "+1 111 222 3333",
+      "licenseID": "C3456789",
+      "licensePlate": "GHI-789"
+    },
+    {
+      "id": 4,
+      "dateApplied": "2022-01-01",
+      "name": "John Doe",
+      "mobileNumber": "+1 123 456 7890",
+      "licenseID": "A1234567",
+      "licensePlate": "ABC-123"
+    },
+    {
+      "id": 5,
+      "dateApplied": "2022-02-01",
+      "name": "Jane Doe",
+      "mobileNumber": "+1 987 654 3210",
+      "licenseID": "B2345678",
+      "licensePlate": "DEF-456"
+    }
+]
