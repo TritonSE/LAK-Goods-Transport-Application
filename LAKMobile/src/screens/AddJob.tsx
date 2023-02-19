@@ -277,8 +277,8 @@ export function AddJob({ navigation, route }: AddJobProps) {
     const pickerResult = await ImagePicker.launchImageLibraryAsync({
       mediaTypes: ImagePicker.MediaTypeOptions.Images,
     });
-    if (!pickerResult.cancelled) {
-      dispatch({ type: "ADD_IMAGE", payload: pickerResult });
+    if (!pickerResult.canceled) {
+      dispatch({ type: "ADD_IMAGE", payload: pickerResult.assets[0] });
     }
     setImagePickPromptVisible(false);
   }, []);
@@ -290,14 +290,14 @@ export function AddJob({ navigation, route }: AddJobProps) {
       return;
     }
     const cameraResult = await ImagePicker.launchCameraAsync();
-    if (!cameraResult.cancelled) {
-      dispatch({ type: "ADD_IMAGE", payload: cameraResult });
+    if (!cameraResult.canceled) {
+      dispatch({ type: "ADD_IMAGE", payload: cameraResult.assets[0] });
     }
     setImagePickPromptVisible(false);
   }, []);
 
   const handleTapImage = useCallback(
-    (index) => {
+    (index:any) => {
       if (imageURIs[index] === "") {
         setImagePickPromptVisible(true);
       } else {
