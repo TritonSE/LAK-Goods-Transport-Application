@@ -111,11 +111,9 @@ export function AddJob({ navigation, route }: AddJobProps) {
     switch (action.type) {
       case "ADD_IMAGE":
         const index = newState.findIndex((value) => value === "");
-        console.log(`ADD_IMAGE: ${index}`)
         newState[index] = action.payload.uri;
         if (imageInfo) {
           let newImageInfo = imageInfo.map((im, i) => {
-            console.log(`I AM HERE... ${i}`)
             return (i === index ? action.payload : im)
           })
           setImageInfo(newImageInfo)
@@ -292,10 +290,7 @@ export function AddJob({ navigation, route }: AddJobProps) {
     }
     const cameraResult = await ImagePicker.launchCameraAsync();
     if (!cameraResult.canceled) {
-      console.log("HERHERHERHERHE");
-      console.log(cameraResult.assets[0]);
       dispatch({ type: "ADD_IMAGE", payload: cameraResult.assets[0] });
-      console.log(imageInfo);
     }
     setImagePickPromptVisible(false);
   }, []);
@@ -327,8 +322,6 @@ export function AddJob({ navigation, route }: AddJobProps) {
 
   const createFormData = (images: Array<ImagePicker.ImagePickerAsset | null>, body: { [key: string]: any }) => {
     const data = new FormData();
-    console.log("CREATEFORMDATA")
-    console.log(images);
     if (images !== null && images[0] !== null) {
       images.map((image) => {
         if (image !== null) {
@@ -339,7 +332,7 @@ export function AddJob({ navigation, route }: AddJobProps) {
           data.append("images", {
             name: "demo.jpg",
             uri: image.uri,
-            type: "image/jpeg",
+            type: fileTypeExtended,
           } as unknown as Blob)
         }
       })
@@ -376,10 +369,6 @@ export function AddJob({ navigation, route }: AddJobProps) {
       imageIds: imageURIs.filter((value) => value !== ""),
     };
     const formedJob: FormData = createFormData(imageInfo, newJob);
-    console.log("IMAGEINFO")
-    console.log(imageInfo);
-    console.log("IMAGEIDS");
-    console.log(newJob.imageIds);
     if (formType === "add" || formType == "repost") {
       postJob(formedJob).then(response => {
         console.log(response);
