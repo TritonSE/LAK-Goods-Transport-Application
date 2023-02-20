@@ -103,14 +103,19 @@ export function AddJob({ navigation, route }: AddJobProps) {
 
   type ImagesReducer = Reducer<ImagesReducerState, ImagesReducerAction>;
 
+
+  const [imageInfo, setImageInfo] = useState<Array<ImagePicker.ImagePickerAsset | null>>([null, null, null])
+
   const reducer: ImagesReducer = (state, action): ImagesReducerState => {
     let newState = state.slice();
     switch (action.type) {
       case "ADD_IMAGE":
         const index = newState.findIndex((value) => value === "");
+        console.log(`ADD_IMAGE: ${index}`)
         newState[index] = action.payload.uri;
         if (imageInfo) {
           let newImageInfo = imageInfo.map((im, i) => {
+            console.log(`I AM HERE... ${i}`)
             return (i === index ? action.payload : im)
           })
           setImageInfo(newImageInfo)
@@ -131,7 +136,6 @@ export function AddJob({ navigation, route }: AddJobProps) {
   };
 
   const [imageURIs, dispatch] = useReducer(reducer, ["", "", ""]);
-  const [imageInfo, setImageInfo] = useState<Array<ImagePicker.ImageInfo | null>>([null, null, null])
   const [permissionAlertVisible, setPermissionAlertVisible] = useState(false);
   const [imagePickPromptVisible, setImagePickPromptVisible] = useState(false);
   const [jobTitle, setJobTitle] = useState("");
@@ -153,7 +157,7 @@ export function AddJob({ navigation, route }: AddJobProps) {
 
   interface ImagesReducerAddAction {
     type: "ADD_IMAGE";
-    payload: ImagePicker.ImageInfo;
+    payload: ImagePicker.ImagePickerAsset;
   }
 
   interface ImagesReducerRemoveAction {
@@ -185,10 +189,7 @@ export function AddJob({ navigation, route }: AddJobProps) {
   };
 
   const validateImageUpload: Validator = () => {
-    if (imageURIs.findIndex((value) => value !== "") === -1){
-      return false;
-    }
-    return true;
+    return imageURIs.findIndex((value) => value !== "") !== -1;
   };
 
   const validators = {
@@ -291,13 +292,16 @@ export function AddJob({ navigation, route }: AddJobProps) {
     }
     const cameraResult = await ImagePicker.launchCameraAsync();
     if (!cameraResult.canceled) {
+      console.log("HERHERHERHERHE");
+      console.log(cameraResult.assets[0]);
       dispatch({ type: "ADD_IMAGE", payload: cameraResult.assets[0] });
+      console.log(imageInfo);
     }
     setImagePickPromptVisible(false);
   }, []);
 
   const handleTapImage = useCallback(
-    (index:any) => {
+    (index: any) => {
       if (imageURIs[index] === "") {
         setImagePickPromptVisible(true);
       } else {
@@ -321,15 +325,17 @@ export function AddJob({ navigation, route }: AddJobProps) {
     }) as JobOwnerView
   }
 
-  const createFormData = (images: Array<ImagePicker.ImageInfo | null>, body: { [key: string]: any }) => {
+  const createFormData = (images: Array<ImagePicker.ImagePickerAsset | null>, body: { [key: string]: any }) => {
     const data = new FormData();
+    console.log("CREATEFORMDATA")
+    console.log(images);
     if (images !== null && images[0] !== null) {
       images.map((image) => {
         if (image !== null) {
           const uriArray = image.uri.split(".");
           const fileExtension = uriArray[uriArray.length - 1];  // e.g.: "jpg"
           const fileTypeExtended = `${image.type}/${fileExtension}`; // e.g.: "image/jpg"
-          console.log(fileTypeExtended)
+          console.log(`Extended file type: ${fileTypeExtended}`)
           data.append("images", {
             name: "demo.jpg",
             uri: image.uri,
@@ -369,10 +375,14 @@ export function AddJob({ navigation, route }: AddJobProps) {
       dropoffDistrict: dropoffDistrict.trim(),
       imageIds: imageURIs.filter((value) => value !== ""),
     };
-    const formedJob: FormData = createFormData(imageInfo, newJob)
+    const formedJob: FormData = createFormData(imageInfo, newJob);
+    console.log("IMAGEINFO")
+    console.log(imageInfo);
+    console.log("IMAGEIDS");
+    console.log(newJob.imageIds);
     if (formType === "add" || formType == "repost") {
       postJob(formedJob).then(response => {
-        console.log(`API RESPONSE: ${response}`);
+        console.log(response);
         if (response == null) {
           return;
         }
