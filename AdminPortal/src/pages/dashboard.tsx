@@ -3,6 +3,7 @@ import styles from "@/styles/Dashboard.module.css";
 import Dropdown from 'react-bootstrap/Dropdown';
 import 'bootstrap/dist/css/bootstrap.min.css';
 import data from '../data/data.json'
+import { Lato } from '@next/font/google';
 
 interface DataItem {
   id: number;
@@ -90,11 +91,11 @@ export default function App() {
       <table>
         <thead className={styles.tableHead}>
           <tr>
-            <th>Date Applied</th>
-            <th>Name</th>
-            <th>Mobile Number</th>
-            <th>License ID</th>
-            <th>License Plate #</th>
+            <th className={styles.tableHeadItem}>Date Applied</th>
+            <th className={styles.tableHeadItem}>Name</th>
+            <th className={styles.tableHeadItem}>Mobile Number</th>
+            <th className={styles.tableHeadItem}>License ID</th>
+            <th className={styles.tableHeadItem}>License Plate #</th>
           </tr>
         </thead>
         <tbody className={styles.tableBody}>

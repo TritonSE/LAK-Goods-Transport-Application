@@ -11,9 +11,11 @@
     position: relative;
     margin-top: 100px;
 
-    font-family: Lato;
+    font-family: 'Lato', sans-serif;
+    font-style: normal;
     font-weight: 700;
     font-size: 48px;
+    line-height: 58px;
 
     color: #000000;
 }
@@ -33,11 +35,13 @@
 }
 
 .tabsButton{
-    font-family: 'Lato';
+    font-family: 'Lato', sans-serif;
     font-style: normal;
-    font-weight: 700;
+    font-weight: 400;
     font-size: 24px;
     line-height: 29px;
+
+    color: #000000;
 
     border: none;
 
@@ -46,7 +50,7 @@
 }
 
 .tabsButtonSelected{
-    font-family: 'Lato';
+    font-family: 'Lato', sans-serif;
     font-style: normal;
     font-weight: 700;
     font-size: 24px;
@@ -56,6 +60,7 @@
 
     background-color: transparent;
     cursor: pointer;
+    color: black;
 
     border-bottom:7px solid #FFD84D;
     
@@ -80,7 +85,7 @@
     border: 1.78571px solid #C4C4C4;
     height: 100%;
 
-    font-family: 'Lato';
+    font-family: 'Lato', sans-serif;
     font-style: normal;
     font-weight: 400;
     font-size: 24px;
@@ -101,26 +106,30 @@
 
     background: #94100C;
     border-radius: 4px;
-    font-family: 'Lato';
+
+    font-family: 'Lato', sans-serif;
     font-style: normal;
     font-weight: 700;
     font-size: 24px;
     line-height: 29px;
-    color: white;
 }
 
 .tableHead{
 
     background-color: #94100C;
     height: 74px;
+}
+
+.tableHeadItem{
     color: white;
-    font-family: 'Lato';
+    font-family: 'Lato', sans-serif;
     font-style: normal;
     font-weight: 400;
     font-size: 24px;
     line-height: 29px;
-
-    text-align: center;
+    
+    text-align: left;
+    padding-left: 20px;
 }
 
 .tableBody{
@@ -129,13 +138,13 @@
 
 .tableData{
     padding: 20px;   
-    font-family: 'Lato';
+    font-family: 'Lato', sans-serif;
     font-style: normal;
     font-weight: 400;
     font-size: 20px;
     line-height: 24px;
 
-    text-align: center;
+    text-align: left;
 
     
 }
@@ -143,3 +152,21 @@
 .tableData:not(:last-child) {
     border-right: 1px solid black;
   }
+
+.dropdown {
+    --bs-btn-color: black;
+    --bs-btn-bg: white;
+    --bs-btn-border-color: gray;
+    --bs-btn-hover-color: #fff;
+    --bs-btn-hover-bg: white;
+    --bs-btn-hover-border-color: black;
+    --bs-btn-focus-shadow-rgb: 49,132,253;
+    --bs-btn-active-color: black;
+    --bs-btn-active-bg: white;
+    --bs-btn-active-border-color: gray;
+    --bs-btn-active-shadow: inset 0 3px 5px rgba(0, 0, 0, 0.125);
+    --bs-btn-disabled-color: #fff;
+    --bs-btn-disabled-bg: white;
+    --bs-btn-disabled-border-color: gray;
+  }
+  
