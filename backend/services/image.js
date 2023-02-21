@@ -15,6 +15,7 @@ export async function saveImage(rawImage) {
         const newImage = await image.save();
         return newImage._id;
     } catch (e) {
+        console.error(e);
         throw InternalError.IMAGE_UPLOAD_ERROR.addContext(e.stack);
     }
 }

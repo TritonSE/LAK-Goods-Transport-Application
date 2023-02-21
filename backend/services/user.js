@@ -21,7 +21,7 @@ export async function getUser(requestedUserId, requestingUserId) {
 }
 
 export async function getUsers(userIds, requestingUserId) {
-    console.debug(`SERVICE: getUsers service running: userIds - ${userIds}`);
+    console.debug(`SERVICE: getUsers service running: userIds - ${userIds} requested by ${requestingUserId}`);
 
     const users = [];
     for (let userId of userIds) {
