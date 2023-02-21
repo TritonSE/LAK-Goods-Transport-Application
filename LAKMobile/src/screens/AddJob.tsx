@@ -328,7 +328,6 @@ export function AddJob({ navigation, route }: AddJobProps) {
           const uriArray = image.uri.split(".");
           const fileExtension = uriArray[uriArray.length - 1];  // e.g.: "jpg"
           const fileTypeExtended = `${image.type}/${fileExtension}`; // e.g.: "image/jpg"
-          console.log(`Extended file type: ${fileTypeExtended}`)
           data.append("images", {
             name: "demo.jpg",
             uri: image.uri,
@@ -341,8 +340,6 @@ export function AddJob({ navigation, route }: AddJobProps) {
     Object.keys(body).forEach((key) => {
       data.append(key, body[key]);
     });
-
-    console.log(data)
 
     return data;
   }
@@ -394,6 +391,7 @@ export function AddJob({ navigation, route }: AddJobProps) {
         if (response === null) {
           return;
         }
+        console.log(response);
         const { jobId } = response;
         const updatedJob: JobOwnerView = createUpdateFromId(jobId, newJob)
         route.params.setJobData(prevJobs => prevJobs.map(job => job._id === updatedJob._id ? updatedJob : job))
