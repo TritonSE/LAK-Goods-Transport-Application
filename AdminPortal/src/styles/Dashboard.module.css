@@ -153,7 +153,7 @@
     border-right: 1px solid black;
   }
 
-.dropdown {
+.dropdown > button {
     --bs-btn-color: black;
     --bs-btn-bg: white;
     --bs-btn-border-color: gray;
@@ -169,4 +169,3 @@
     --bs-btn-disabled-bg: white;
     --bs-btn-disabled-border-color: gray;
   }
-  

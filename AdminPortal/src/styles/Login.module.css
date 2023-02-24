@@ -29,11 +29,7 @@
     width: 554.91px;
     height: 496.64px;
 
-    /*position: absolute;
-    left: 756.71px;
-    top: 247.62px;*/
-
-    /*margin-top: auto;*/
+    flex: 1;
 
     background: #FFFFFF;
     box-shadow: 0px 8.32361px 41.6181px rgba(0, 0, 0, 0.25);

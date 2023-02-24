@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useState } from 'react';
 import { StyleSheet, TextInput, View } from 'react-native';
 import { AppText, LabelWrapper, AppButton } from '../components';
 import { COLORS } from '../../constants';
@@ -7,6 +7,7 @@ import { createNativeStackNavigator, NativeStackScreenProps } from '@react-navig
 import { LoginProps } from '../types/navigation';
 
 export function LoginScreen({ navigation }: LoginProps) {
+    
     return (
         <View style={styles.container}>
             <LabelWrapper label='Mobile Number'>
@@ -45,6 +46,7 @@ export function LoginScreen({ navigation }: LoginProps) {
                     style={styles.signupLink}
                 />
             </View>
+            
         </View>
     )
 }

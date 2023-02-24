@@ -38,7 +38,7 @@ export default function App() {
 
   return (
     <div className={styles.outer}>
-      <h1 className={styles.title}>Driver Registeration</h1>
+      <h1 className={styles.title}>Driver Registration</h1>
 
       <div className={styles.tabs}>
         <button
