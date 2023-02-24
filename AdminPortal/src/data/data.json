@@ -5,7 +5,8 @@
       "name": "John Doe",
       "mobileNumber": "+1 123 456 7890",
       "licenseID": "A1234567",
-      "licensePlate": "ABC-123"
+      "licensePlate": "ABC-123",
+      "isChecked": false
     },
     {
       "id": 2,
@@ -13,7 +14,8 @@
       "name": "Jane Doe",
       "mobileNumber": "+1 987 654 3210",
       "licenseID": "B2345678",
-      "licensePlate": "DEF-456"
+      "licensePlate": "DEF-456",
+      "isChecked": false
     },
     {
       "id": 3,
@@ -21,7 +23,8 @@
       "name": "Jim Smith",
       "mobileNumber": "+1 111 222 3333",
       "licenseID": "C3456789",
-      "licensePlate": "GHI-789"
+      "licensePlate": "GHI-789",
+      "isChecked": false
     },
     {
       "id": 4,
@@ -29,7 +32,8 @@
       "name": "John Doe",
       "mobileNumber": "+1 123 456 7890",
       "licenseID": "A1234567",
-      "licensePlate": "ABC-123"
+      "licensePlate": "ABC-123",
+      "isChecked": false
     },
     {
       "id": 5,
@@ -37,6 +41,7 @@
       "name": "Jane Doe",
       "mobileNumber": "+1 987 654 3210",
       "licenseID": "B2345678",
-      "licensePlate": "DEF-456"
+      "licensePlate": "DEF-456",
+      "isChecked": false
     }
 ]
