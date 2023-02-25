@@ -33,7 +33,7 @@ export async function getUsers(userIds, requestingUserId) {
 
 export async function registerUser(userData, imageFiles) {
     console.debug(`SERVICE - registerUser service running: userData - ${JSON.stringify(userData)}`);
-    const { firstName, lastName, phone, location, driverLicenseId, ...vehicleData } = userData;
+    const { userId, firstName, lastName, phone, location, driverLicenseId, ...vehicleData } = userData;
 
     // Store images
     const imageIds = [];
@@ -48,6 +48,7 @@ export async function registerUser(userData, imageFiles) {
     let user = null;
     try {
         user = await UserModel({
+            _id: userId,
             firstName, 
             lastName, 
             phone,
@@ -58,9 +59,9 @@ export async function registerUser(userData, imageFiles) {
     } catch (e) {
         throw ServiceError.INVALID_USER_RECEIVED.addContext(e.stack);
     }
-
     try {
-        return await user.save();
+        const response = await user.save();
+        return response;
     } catch (e) {
         throw ServiceError.INVALID_USER_RECEIVED.addContext(e.stack);
     }

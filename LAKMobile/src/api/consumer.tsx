@@ -4,7 +4,7 @@
 
 import { ImageSourcePropType } from 'react-native';
 import { API_URL } from '@env';
-import { JobData, JobOwnerView, UserData } from './data';
+import { JobData, JobOwnerView, UserData, CreateUserForm } from './data';
 
 export const GET_JOBS = `${API_URL}/api/jobs`;
 export const USERS_URL = `${API_URL}/api/users`;
@@ -235,6 +235,28 @@ export const getUser = async (userId: string): Promise<UserData | null> => {
         let data = await response.json();
         data = data.user as UserData;
         return data;
+    } catch {
+        return null;
+    }
+}
+
+/**
+ * @param formData Information from the Create New Account form
+ * @returns The newly created user's UUID, or null if there was an error
+ */
+export const createNewUser = async (formData: CreateUserForm): Promise<String | null> => {
+    try {
+        const url = `${USERS_URL}`;
+        const response = await fetch(url, {
+            method: "POST",
+            headers: {
+                "Content-Type": "application/json",
+            },
+            body: JSON.stringify(formData),
+        });
+        let data = await response.json();
+        console.log(data);
+        return data.userId;
     } catch {
         return null;
     }

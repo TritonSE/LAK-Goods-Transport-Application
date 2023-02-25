@@ -1,25 +1,38 @@
 import React, { useState } from 'react';
 import { StyleSheet, TextInput, View } from 'react-native';
-import { AppText, LabelWrapper, AppButton } from '../components';
+import { AppText, LabelWrapper, AppButton, AppTextInput } from '../components';
 import { COLORS } from '../../constants';
 import { NavigationContainer } from '@react-navigation/native';
 import { createNativeStackNavigator, NativeStackScreenProps } from '@react-navigation/native-stack';
 import { LoginProps } from '../types/navigation';
+import { signIn } from '../auth';
 
 export function LoginScreen({ navigation }: LoginProps) {
     
+    const [phoneNumber, setPhoneNumber] = useState("");
+    const [pin, setPin] = useState("");
     return (
         <View style={styles.container}>
             <LabelWrapper label='Mobile Number'>
-                <TextInput
+                <AppTextInput
+                    value={phoneNumber}
                     style={bigInputStyle}
+                    changeAction={setPhoneNumber}
+                    type="phoneNumber"
+                    maxLength={10}
                     keyboardType="default"
                 />
             </LabelWrapper>
 
             <LabelWrapper label='4 Digit PIN'>
-                <TextInput
+                <AppTextInput
+                    value={pin}
                     style={smallInputStyle}
+                    changeAction={setPin}
+                    type="pin"
+                    isValid={true}
+                    errMsg="Required field"
+                    maxLength={4}
                     keyboardType="numeric"
                 />
             </LabelWrapper>
@@ -33,7 +46,15 @@ export function LoginScreen({ navigation }: LoginProps) {
             <AppButton
                 type='primary'
                 title='Log in'
-                onPress={() => navigation.navigate('JobLandingScreen')}
+                onPress={async () => {
+                    try {
+                        const user = await signIn(phoneNumber, pin);
+                        console.log(user);
+                        navigation.navigate('JobLandingScreen');
+                    } catch (e) {
+                        // Failed to sign in ...
+                    }
+                }}
                 style={styles.submitButton}
             />
 

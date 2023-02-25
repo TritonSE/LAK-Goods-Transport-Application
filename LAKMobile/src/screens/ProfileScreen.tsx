@@ -12,7 +12,7 @@ import {
 import {PublicProfilePicDefault, EditIcon} from "../icons";
 import { ProfileScreenProps } from '../types/navigation';
 
-export function ProfileScreen({route}: ProfileScreenProps) {
+export function ProfileScreen({navigation, route}: ProfileScreenProps) {
     const [profileData, setProfileData] = useState<UserData | null>(null);
 
     useEffect(() => {
@@ -93,13 +93,13 @@ export function ProfileScreen({route}: ProfileScreenProps) {
                         <AppButton
                             type='secondary'
                             title='Change pin'
-                            onPress={() => console.log('Change pin pressed')}
+                            onPress={() => navigation.navigate('ResetPassword')}
                             style={styles.footerButton}
                         />
                         <AppButton
                             type='primary'
                             title='Log out'
-                            onPress={() => console.log('Log out pressed')}
+                            onPress={() => navigation.navigate("Login")}
                             style={styles.footerButton}
                         />
                     </View>
