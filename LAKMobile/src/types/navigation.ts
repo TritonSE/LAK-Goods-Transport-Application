@@ -8,7 +8,7 @@ export type RootStackParamList = {
     OTP: undefined;
     ResetSuccess: undefined;
     ForgotPassword: undefined;
-    JobApplicant: {jobData: JobOwnerView, setJobData: React.Dispatch<React.SetStateAction<JobData[] | JobOwnerView[]>>};
+    JobApplicant: {jobData: JobOwnerView, setJobData: React.Dispatch<React.SetStateAction<JobData[] | JobOwnerView[]>>, userType: "Add" | "Find"};
     AddJob: {formType: "add" | "edit" | "delete" | "repost", jobData?: JobOwnerView, setJobData: React.Dispatch<React.SetStateAction<JobData[] | JobOwnerView[]>>}
     JobLandingScreen: undefined;
     ProfileScreen: { userId: string };

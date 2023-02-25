@@ -119,7 +119,7 @@ export function ListJobs({ navigation, mode }: ListJobsProps) {
                         mode === "Add" ?
                             <JobThumbnail
                                 key={index}
-                                onPress={() => navigation.navigate('JobApplicant', { jobData: (item as JobOwnerView), setJobData: setJobs })}
+                                onPress={() => navigation.navigate('JobApplicant', { jobData: (item as JobOwnerView), setJobData: setJobs, userType: mode })}
                                 onEdit={() => navigation.navigate('AddJob', { formType: "edit", jobData: (item as JobOwnerView), setJobData: setJobs })}
                                 onRepost={() => navigation.navigate('AddJob', { formType: "repost", jobData: (item as JobOwnerView), setJobData: setJobs })}
                                 isJobOwner={true}
@@ -128,7 +128,7 @@ export function ListJobs({ navigation, mode }: ListJobsProps) {
                             /> :
                             <JobThumbnail
                                 key={index}
-                                onPress={() => null}
+                                onPress={() => navigation.navigate('JobApplicant', { jobData: (item as JobOwnerView), setJobData: setJobs, userType: mode })}
                                 isJobOwner={false}
                                 job={item}
                                 applicantStatus={'Applied'}

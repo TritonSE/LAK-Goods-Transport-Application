@@ -2,6 +2,7 @@ import { createMaterialTopTabNavigator } from '@react-navigation/material-top-ta
 import { View, StyleSheet, TouchableOpacity, Image } from 'react-native';
 import { AppText } from '../components/AppText';
 import { DetailsScreen } from '../screens/DetailsScreen';
+import { ApplyScreen } from '../screens/ApplyScreen'; 
 import { ApplicantsScreen } from '../screens/ApplicantsScreen';
 import { JobData, JobOwnerView } from '../api/data';
 import { ImageCarousel } from '../components/ImageCarousel'
@@ -42,9 +43,17 @@ export function JobApplicant({ navigation, route }: JobApplicantProps) {
                     tabBarStyle: { backgroundColor: '#94100C' },
                     tabBarIndicatorStyle: { backgroundColor: '#FFD84D', paddingTop: 3, }
                 }}>
-                <Tab.Screen name="Details">
-                    {props => <DetailsScreen {...props} carousel={carousel} jobData={route.params.jobData} />}
-                </Tab.Screen>
+                {
+                    route.params.userType === "Add" ?
+                        <Tab.Screen name="Details">
+                            {props => <DetailsScreen {...props} carousel={carousel} jobData={route.params.jobData} />}
+                        </Tab.Screen>
+                        :
+                        <Tab.Screen name="Apply">
+                            {props => <ApplyScreen {...props} carousel={carousel} jobData={route.params.jobData} />}
+                        </Tab.Screen>
+                }
+                
                 {
                     // Track has preventDefault as placeholder
                     route.params.jobData.status === "ASSIGNED" ?

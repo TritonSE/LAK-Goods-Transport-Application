@@ -37,7 +37,9 @@ interface ApplicantData{
 
 
 export function ApplicantsScreen({ jobData, setJobData, carousel, navigation }: ApplicantScreenProps) {
-    const userIds: Array<string> = jobData.applicants.map(applicant => applicant.userId)
+    //temporary fix until we figure out the true data structure for applicants in a job
+    const applicantsProps = jobData.applicants || [];
+    const userIds: Array<string> = applicantsProps.map(applicant => applicant.userId);
     const [applicants, setApplicants] = useState<Array<ApplicantData>>([])
     const [confirmationVisible, setConfirmationVisible] = useState(false);
 
