@@ -1,10 +1,9 @@
 import React, { useState } from 'react';
 import Image from 'next/image';
 
-import LAAKTAlogo from '../../public/LAAKTAlogo.png';
+import LAAKTAlogo from '../../public/Logo.svg';
 import eyeOpenLogo from '../../public/open-eye.svg';
 import eyeClosedLogo from '../../public/closed-eye.svg';
-import { Martian_Mono } from '@next/font/google';
 
 import styles from "@/styles/Login.module.css";
 

@@ -1,6 +1,8 @@
 import React, { useEffect, useState } from 'react';
 import { JobData, JobOwnerView } from '../api/data';
 import type { NativeStackScreenProps } from '@react-navigation/native-stack';
+import {Alert} from 'react-native';
+import { ConfirmationBox } from '../components/ConfirmationBox';
 
 import {
     StyleSheet,
@@ -13,7 +15,7 @@ import {
     AppText,
 } from '../components';
 
-import { ApplicantData, UserData } from '../api/data';
+import { UserData } from '../api/data';
 import { assignDriver, denyDriver, getUsersByIds } from '../api';
 import { useNavigation, useNavigationState } from '@react-navigation/native';
 import { RootStackParamList } from '../types/navigation'
@@ -26,27 +28,33 @@ interface ApplicantScreenProps {
     navigation: any
 }
 
+// Define the interface here
+interface ApplicantData{
+    userData: UserData
+    driverID: string
+}
+
 
 
 export function ApplicantsScreen({ jobData, setJobData, carousel, navigation }: ApplicantScreenProps) {
     const userIds: Array<string> = jobData.applicants.map(applicant => applicant.userId)
     const [applicants, setApplicants] = useState<Array<ApplicantData>>([])
+    const [confirmationVisible, setConfirmationVisible] = useState(false);
 
     useEffect(() => {
-        getUsersByIds(userIds).then(async (response) => {
-            if (response == null) {
-                return null;
-            }
-            const applicantUsers: Array<UserData> = response;
-            setApplicants(applicantUsers.map((applicant, i) => ({
-                firstName: applicant.firstName,
-                lastName: applicant.lastName,
-                phone: applicant.phone,
-                vehicleInformation: "vehicle",
-                driverId: userIds[i],
-            }))
-            )
-        })
+        if (userIds.length) {
+            getUsersByIds(userIds).then(async (response) => {
+                if (response == null) {
+                    return null;
+                }
+                const applicantUsers: Array<UserData> = response;
+                setApplicants(applicantUsers.map((applicant, i) => ({
+                    userData: applicant,
+                    driverID: userIds[i],
+                }))
+                )
+            })
+        }
     }, [jobData])
 
     const updateWithAssigned = (driverId: string): JobOwnerView => {
@@ -68,6 +76,7 @@ export function ApplicantsScreen({ jobData, setJobData, carousel, navigation }: 
     }
 
     const onAccept = (driverId?: string) => {
+
         if (!driverId) return;
         assignDriver(jobData._id, driverId).then(response => {
             if (response === null) {
@@ -78,6 +87,8 @@ export function ApplicantsScreen({ jobData, setJobData, carousel, navigation }: 
             setJobData(prevJobs => prevJobs.map(job => (job._id === updatedJob._id ? updatedJob : job)))
             navigation.navigate("ListJobs")
         })
+
+        setConfirmationVisible(true)
     }
 
     const onDeny = (driverId?: string) => {
@@ -100,12 +111,24 @@ export function ApplicantsScreen({ jobData, setJobData, carousel, navigation }: 
 
             <ScrollView>
                 {
-                    applicants.map((applicant, index) => (<ApplicantThumbnail key={index} onAccept={() => onAccept(applicant.driverId)} onDeny={() => onDeny(applicant.driverId)} applicantData={applicant} status='Unassigned' />))
+                    applicants.map((applicant, index) => (<ApplicantThumbnail key={index} onAccept={() => onAccept(applicant.driverID)} onDeny={() => onDeny(applicant.driverID)} applicantData={applicant.userData} status='Unassigned' />))
                 }
 
             </ScrollView>
 
+            { confirmationVisible ? (<ConfirmationBox
+                rejectVisible = {true}
+                checkMarkAppear = {true}
+                title={"Apply to job?"}
+                body={"Be sure to contact client at phone number"}
+                acceptName={"Apply"}
+                rejectName={"Cancel"}
+                onAccept={() => navigation.navigate('DetailsScreen')}
+                onReject={() => setConfirmationVisible(false)} />) : null }
+        
         </View>
+
+        
     );
 
 }

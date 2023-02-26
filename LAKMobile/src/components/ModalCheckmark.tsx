@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useRef, useState } from "react";
 import { Modal, StyleSheet, View } from "react-native";
 import { CheckmarkIcon } from "../icons";
 
@@ -11,14 +11,22 @@ interface ModalCheckmarkProps {
 
 export function ModalCheckmark({ visible, onTimeout }: ModalCheckmarkProps) {
   const [timerRunning, setTimerRunning] = useState(false);
+  // Track if the component is mounted so we don't try to modify the state of an unmounted item
+  const componentMounted = useRef(false);
 
   useEffect(() => {
     if (visible && !timerRunning) {
-      setTimeout(() => {
-        setTimerRunning(false);
+      componentMounted.current = true;
+      const timeout = setTimeout(() => {
+        if (componentMounted.current) {
+          setTimerRunning(false);
+        }
         onTimeout();
       }, TIMEOUT);
       setTimerRunning(true);
+      return () => { 
+        componentMounted.current = false;
+      };
     }
   }, [visible, onTimeout, timerRunning]);
 

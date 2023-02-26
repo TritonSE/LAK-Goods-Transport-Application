@@ -17,11 +17,12 @@ interface ApplicantThumbnailProps {
 
 export function ApplicantThumbnail({ applicantData, status, style, onAccept, onDeny }: ApplicantThumbnailProps) {
     const flexJustifyContent = 'space-between'
+
     return (
         <View style={[ThumbailStyles.container, style]}>
             <AppText style={[ThumbailStyles.nameFont, ThumbailStyles.containerItem]}>{applicantData.firstName} {applicantData.lastName}</AppText>
             <AppText style={[ThumbailStyles.phoneFont, ThumbailStyles.containerItem]}>{applicantData.phone}</AppText>
-            <AppText style={ThumbailStyles.containerItem}>{applicantData.driverLicenseId}</AppText> {/** TODO Add vehicle info */}
+            <AppText style={ThumbailStyles.containerItem}>{applicantData.vehicleData.vehicleType}</AppText>
 
             <View style={[ThumbailStyles.flex, status == 'Accepted' ? { justifyContent: 'space-between' } : null]}>
                 {status == 'Unassigned' && <AppButton type="tertiary" size="small" title="Deny" onPress={() => onDeny()} style={ThumbailStyles.flexItem} />}
