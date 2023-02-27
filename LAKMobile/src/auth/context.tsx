@@ -1,6 +1,6 @@
 import { initializeApp } from '@firebase/app';
 import { getAuth, createUserWithEmailAndPassword, signInWithEmailAndPassword,
-    signOut, updatePassword, User } from "firebase/auth";
+    signOut, User } from "firebase/auth";
 import firebaseConfig from './firebase-config.json';
 import React, { createContext, useEffect, useMemo, useState } from 'react';
 import * as crypto from "expo-crypto";
