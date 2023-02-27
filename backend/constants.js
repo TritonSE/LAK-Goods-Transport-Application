@@ -58,5 +58,8 @@ export const getSessionUserId = (req) => { // For testing purposes
   }
   if (!('user' in req.query)) return map['client1']._id;
   const alias = req.query.user;
-  return map[alias]._id;
+  if (alias in map) {
+    return map[alias]._id;
+  }
+  return req.query.user;
 };

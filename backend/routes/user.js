@@ -5,7 +5,6 @@ import express from 'express';
 import multer from 'multer'; 
 
 import { getUser, getUsers, registerUser } from '../services/user';
-import { validateId } from '../helpers';
 import { getSessionUserId } from '../constants';
 
 
@@ -17,7 +16,7 @@ routes.get('/:userid', async (req, res, next) => {
 
     let user = null;
     try {
-        const userId = validateId(req.params.userid);
+        const userId = req.params.userid;
         const requestingUserId = getSessionUserId(req);
 
         user = await getUser(userId, requestingUserId);
@@ -40,14 +39,9 @@ routes.post('/get-by-ids', async (req, res, next) => {
     let users = null;
     try {
         let userIds = req.body.userIds;
-        let validatedIds = []
-        // Validate IDs
-        for (let userId of userIds) {
-            validatedIds.push(validateId(userId));
-        }
 
         const requestingUserId = getSessionUserId(req);
-        users = await getUsers(validatedIds, requestingUserId);
+        users = await getUsers(userIds, requestingUserId);
     } catch (e) {
         next(e);
         return;

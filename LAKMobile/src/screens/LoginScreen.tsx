@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useContext, useState } from 'react';
 import { StyleSheet, TextInput, View } from 'react-native';
 import { AppText, LabelWrapper, AppButton, AppTextInput } from '../components';
 import { COLORS } from '../../constants';
@@ -6,11 +6,15 @@ import { NavigationContainer } from '@react-navigation/native';
 import { createNativeStackNavigator, NativeStackScreenProps } from '@react-navigation/native-stack';
 import { LoginProps } from '../types/navigation';
 import { signIn } from '../auth';
+import { AuthContext } from '../auth/context';
 
 export function LoginScreen({ navigation }: LoginProps) {
     
     const [phoneNumber, setPhoneNumber] = useState("");
     const [pin, setPin] = useState("");
+
+    const auth = useContext(AuthContext);
+
     return (
         <View style={styles.container}>
             <LabelWrapper label='Mobile Number'>
@@ -47,12 +51,12 @@ export function LoginScreen({ navigation }: LoginProps) {
                 type='primary'
                 title='Log in'
                 onPress={async () => {
-                    try {
-                        const user = await signIn(phoneNumber, pin);
-                        console.log(user);
+                    auth.clearError();
+                    await auth.login(phoneNumber, pin);
+                    if (auth.user !== null) {
                         navigation.navigate('JobLandingScreen');
-                    } catch (e) {
-                        // Failed to sign in ...
+                    } else {
+                        // Display the error now...
                     }
                 }}
                 style={styles.submitButton}

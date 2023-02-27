@@ -1,28 +1,36 @@
-import React, {useEffect, useState} from 'react';
-import {StyleSheet, View, Image, FlatList, ScrollView} from 'react-native';
+import React, {useContext, useEffect, useState} from 'react';
+import { StyleSheet, View, Image, FlatList, ScrollView } from 'react-native';
 
-import { getCurrentUser, getUser, UserData } from '../api';
+import { getUser, UserData } from '../api';
 import { imageIdToSource } from '../api/consumer';
+import { AuthContext } from '../auth/context';
 import {
     AppButton,
     AppText,
     ScreenHeader,
     IconButtonWrapper
 } from '../components';
-import {PublicProfilePicDefault, EditIcon} from "../icons";
+import { PublicProfilePicDefault, EditIcon } from "../icons";
 import { ProfileScreenProps } from '../types/navigation';
 
 export function ProfileScreen({navigation, route}: ProfileScreenProps) {
     const [profileData, setProfileData] = useState<UserData | null>(null);
+    const auth = useContext(AuthContext);
+
+    if (!route.params.userId || !auth.user) {
+        navigation.navigate('JobLandingScreen');
+    }
+    
+    const currentUser = auth.user ? auth.user.uid : '';
 
     useEffect(() => {
-        getUser(route.params.userId)
+        getUser(currentUser, route.params.userId)
         .then(user => {
             setProfileData(user)
         })
     }, [route.params.userId])
-    
-    const isUserTheViewer = getCurrentUser() === route.params.userId;
+
+    const isUserTheViewer = auth.user && auth.user.uid === route.params.userId;
 
     return (
         <View style={styles.mainContainer}>
@@ -99,7 +107,10 @@ export function ProfileScreen({navigation, route}: ProfileScreenProps) {
                         <AppButton
                             type='primary'
                             title='Log out'
-                            onPress={() => navigation.navigate("Login")}
+                            onPress={() => {
+                                auth.logout();
+                                navigation.navigate("Login")
+                            }}
                             style={styles.footerButton}
                         />
                     </View>

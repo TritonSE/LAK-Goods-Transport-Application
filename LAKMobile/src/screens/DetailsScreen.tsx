@@ -16,7 +16,6 @@ type DetailsScreenProps = {
 }
 
 export function DetailsScreen({ carousel, jobData }: DetailsScreenProps) {
-    // temporary dummy data
     return (
         <>
             {carousel}

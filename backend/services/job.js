@@ -108,7 +108,7 @@ export async function updateJob(userId, jobId, jobData, jobImages) {
     }
 
     // Validate client job ownership
-    if (!originalJob.client.equals(userId)) {
+    if (!originalJob.client === userId) {
         throw ServiceError.JOB_EDIT_PERMISSION_DENIED;
     }
 
@@ -158,7 +158,7 @@ export async function deleteJob(userId, jobId) {
     }
 
     // Validate client job ownership
-    if (!originalJob.client.equals(userId)) {
+    if (originalJob.client !== userId) {
         throw ServiceError.JOB_EDIT_PERMISSION_DENIED;
     }
 
@@ -212,7 +212,7 @@ export async function getJob(jobId, userId) {
     job = job.toObject();
 
     // Extract parameters only relevant for the request
-    if (!job.client.equals(userId)) { 
+    if (job.client !== userId) { 
         // If owner did not perform request
         OWNER_LIMITED_FIELDS.forEach(field => delete job[field]);
     }
@@ -235,7 +235,7 @@ export async function addJobApplicant(jobId, userId) {
         throw ServiceError.JOB_CLOSED_FOR_APPLICATION;
     }
     
-    if (job.applicants.find(applicant => applicant.userId.equals(userId))) {
+    if (job.applicants.find(applicant => applicant.userId === userId)) {
         throw ServiceError.DUPLICATE_JOB_APPLICATION_ATTEMPTED;
     }
     
@@ -262,11 +262,11 @@ export async function denyDriver(jobId, userId, driverId) {
     if (!job) throw ServiceError.JOB_NOT_FOUND;
 
     // Validate client job ownership
-    if (!job.client.equals(userId)) {
+    if (job.client !== userId) {
         throw ServiceError.JOB_EDIT_PERMISSION_DENIED;
     }
 
-    const applicantIndex = job.applicants.findIndex(applicant => applicant.userId.equals(driverId))
+    const applicantIndex = job.applicants.findIndex(applicant => applicant.userId === driverId)
 
     if (applicantIndex === -1) {
         throw ServiceError.DRIVER_MUST_BE_APPLICANT;
@@ -294,7 +294,7 @@ export async function assignDriver(jobId, userId, driverId) {
     if (!job) throw ServiceError.JOB_NOT_FOUND;
 
     // Validate client job ownership
-    if (!job.client.equals(userId)) {
+    if (job.client !== userId) {
         throw ServiceError.JOB_EDIT_PERMISSION_DENIED;
     }
 
@@ -302,7 +302,7 @@ export async function assignDriver(jobId, userId, driverId) {
         throw ServiceError.DRIVER_ALREADY_ASSIGNED;
     }
 
-    if (!job.applicants.find(applicant => applicant.userId.equals(driverId))) {
+    if (!job.applicants.find(applicant => applicant.userId === driverId)) {
         throw ServiceError.DRIVER_MUST_BE_APPLICANT;
     }
 
@@ -321,7 +321,7 @@ export async function completeJob(jobId, userId) {
     if (!job) throw ServiceError.JOB_NOT_FOUND;
 
     // Validate client job ownership
-    if (!job.client.equals(userId)) {
+    if (job.client !== userId) {
         throw ServiceError.JOB_EDIT_PERMISSION_DENIED;
     }
     

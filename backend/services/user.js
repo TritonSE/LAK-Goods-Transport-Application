@@ -8,12 +8,13 @@ import { saveImage } from './image';
 export async function getUser(requestedUserId, requestingUserId) {
     console.debug(`SERVICE: getUser service running: requestedUserId - ${requestedUserId}`);
 
-    let user = await UserModel.findById(requestedUserId);
+    let user = await UserModel.findOne({_id: requestedUserId});
+    
     if (!user) throw ServiceError.USER_NOT_FOUND.addContext('requestedUserId - ', requestedUserId);
     
     user = user.toObject();
 
-    if (!requestedUserId.equals(requestingUserId)) {
+    if (requestedUserId !== requestingUserId) {
         OWNER_LIMITED_FIELDS.forEach(field => delete user[field]);
     }
 

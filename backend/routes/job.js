@@ -230,7 +230,7 @@ routes.patch('/:jobid/assign-driver', async (req, res, next) => {
     let driverId, jobId;
     try {
         jobId = validateId(req.params.jobid);
-        driverId = validateId(req.body.driverId);
+        driverId = req.body.driverId;
         const userId = getSessionUserId(req);
 
         await assignDriver(jobId, userId, driverId);
@@ -255,8 +255,8 @@ routes.patch('/:jobid/deny-driver', async (req, res, next) => {
     
     let driverId, jobId;
     try {
-        jobId = validateId(req.params.jobid)
-        driverId = validateId(req.body.driverId)
+        jobId = validateId(req.params.jobid);
+        driverId = req.body.driverId;
         const userId = getSessionUserId(req);
 
         await denyDriver(jobId, userId, driverId);

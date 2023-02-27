@@ -2,8 +2,9 @@ import { StyleSheet, View } from 'react-native';
 import { AppButton, LabelWrapper, AppText, AppTextInput } from '../components';
 import { COLORS } from '../../constants';
 import {SignupProps} from '../types/navigation';
-import { useState } from 'react';
+import { useContext, useState } from 'react';
 import { createAccount } from '../auth';
+import { AuthContext } from '../auth/context';
 
 export function SignupScreen({navigation}: SignupProps) {
   const [name, setName] = useState("");
@@ -12,19 +13,19 @@ export function SignupScreen({navigation}: SignupProps) {
   const [pin, setPin] = useState("");
   const [confirmPin, setConfirmPin] = useState("");
 
-  const handleSubmit = async () => {
-    // TODO: Verify fields before submitting...
-    console.log({
-      name, phoneNumber, location, pin, confirmPin
-    })
+  const auth = useContext(AuthContext);
 
+  const handleSubmit = async () => {
     const firstName = name.split(" ")[0];
     const lastName = name.split(" ")[1];
-    const user = await createAccount(firstName, lastName, phoneNumber, location, pin);
-    if (user) {
-      console.log(user.uid);
+
+    auth.clearError();
+    await auth.signup(firstName, lastName, phoneNumber, location, pin);
+    if (auth.user !== null) {
+      console.log(auth.user.uid);
+      navigation.navigate('JobLandingScreen')
     } else {
-      // Log errors here! (invalid password, email already in use, etc.)
+      // Display errors now! (invalid password, email already in use, etc.)
     }
   }
 

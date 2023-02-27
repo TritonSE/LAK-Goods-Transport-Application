@@ -75,7 +75,7 @@ const JobSchema = new Schema(
 
         // Server monitored attributes
         client: {
-            type: mongoose.Types.ObjectId,
+            type: String,
             ref: "User",
             required: true,
         },
@@ -86,7 +86,7 @@ const JobSchema = new Schema(
         },
         applicants: [{
             userId: {
-                type: mongoose.Types.ObjectId,
+                type: String,
                 ref: "User",
                 required: true,
             },
@@ -102,7 +102,7 @@ const JobSchema = new Schema(
             }
         ],
         assignedDriverId: {
-            type: mongoose.Types.ObjectId,
+            type: String,
             ref: "User",
             required: false,
         },

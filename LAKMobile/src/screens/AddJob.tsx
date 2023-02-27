@@ -1,6 +1,7 @@
 import React, {
   Reducer,
   useCallback,
+  useContext,
   useEffect,
   useReducer,
   useState,
@@ -29,6 +30,7 @@ import {
   deleteJob,
 } from "../api";
 import { AddJobProps } from "../types/navigation";
+import { AuthContext } from "../auth/context";
 
 const PICKER_DEFAULT = "-- Select a district --";
 const LOCATIONS = [
@@ -151,7 +153,13 @@ export function AddJob({ navigation, route }: AddJobProps) {
   const [dropoffDistrict, setDropoffDistrict] = useState("");
   const [confirmationVisible, setConfirmationVisible] = useState(false);
 
- 
+  const auth = useContext(AuthContext);
+
+  if (auth.user === null) {
+    navigation.navigate('Login');
+  }
+
+  const userId = auth.user ? auth.user.uid : '';
 
   interface ImagesReducerAddAction {
     type: "ADD_IMAGE";
@@ -367,7 +375,7 @@ export function AddJob({ navigation, route }: AddJobProps) {
     };
     const formedJob: FormData = createFormData(imageInfo, newJob);
     if (formType === "add" || formType == "repost") {
-      postJob(formedJob).then(response => {
+      postJob(userId, formedJob).then(response => {
         console.log(response);
         if (response == null) {
           return;
@@ -387,7 +395,7 @@ export function AddJob({ navigation, route }: AddJobProps) {
         return;
       }
 
-      updateJob(route.params.jobData._id, formedJob).then(response => {
+      updateJob(userId, route.params.jobData._id, formedJob).then(response => {
         if (response === null) {
           return;
         }
@@ -409,7 +417,7 @@ export function AddJob({ navigation, route }: AddJobProps) {
     }
     
     
-    deleteJob(route.params.jobData._id).then(response => {
+    deleteJob(userId, route.params.jobData._id).then(response => {
       if (response === null) {
         return;
       }
