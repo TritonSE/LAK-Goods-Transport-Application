@@ -5,7 +5,6 @@ import { COLORS } from '../../constants';
 import { NavigationContainer } from '@react-navigation/native';
 import { createNativeStackNavigator, NativeStackScreenProps } from '@react-navigation/native-stack';
 import { LoginProps } from '../types/navigation';
-import { signIn } from '../auth';
 import { AuthContext } from '../auth/context';
 
 export function LoginScreen({ navigation }: LoginProps) {

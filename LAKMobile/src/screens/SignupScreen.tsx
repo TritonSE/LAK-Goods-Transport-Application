@@ -3,7 +3,6 @@ import { AppButton, LabelWrapper, AppText, AppTextInput } from '../components';
 import { COLORS } from '../../constants';
 import {SignupProps} from '../types/navigation';
 import { useContext, useState } from 'react';
-import { createAccount } from '../auth';
 import { AuthContext } from '../auth/context';
 
 export function SignupScreen({navigation}: SignupProps) {

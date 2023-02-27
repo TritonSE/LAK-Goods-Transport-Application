@@ -9,7 +9,6 @@ import React, {
 import { ScrollView, StyleSheet, View } from "react-native";
 import { Picker } from "@react-native-picker/picker";
 import * as ImagePicker from "expo-image-picker";
-import type { ImagePickerErrorResult } from "expo-image-picker";
 import { ConfirmationBox } from '../components/ConfirmationBox';
 import {
   AppText,
@@ -22,8 +21,6 @@ import {
 } from "../components";
 import { COLORS } from "../../constants";
 import {
-  getJobById,
-  JobData,
   JobOwnerView,
   postJob,
   updateJob,
