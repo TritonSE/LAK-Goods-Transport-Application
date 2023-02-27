@@ -130,4 +130,4 @@ const styles = StyleSheet.create({
     red: {
         color: COLORS.red
     },
-});  
+});

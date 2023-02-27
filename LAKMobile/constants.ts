@@ -8,7 +8,9 @@ export const COLORS = {
     red: '#DA5C5C',
     gray: '#BABABA',
     deepGreen: '#0F920D',
-    darkGrey: "#333333"
+    darkGrey: '#333333',
+    blue: '#335BC2'
+
 }
 
 // TODO Remove (only for development phase)

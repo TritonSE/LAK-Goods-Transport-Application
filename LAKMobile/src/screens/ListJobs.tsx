@@ -3,7 +3,7 @@ import { View, FlatList, StyleSheet } from "react-native";
 import { Picker } from "@react-native-picker/picker";
 import debounce from 'lodash.debounce';
 import { getJobs, JobData, JobOwnerView, PAGE_SIZE } from "../api";
-import { JobThumbnail, AppButton, AppTextInput } from "../components";
+import { JobThumbnail, AppButton, AppTextInput, NoJobs } from "../components";
 import { COLORS } from '../../constants';
 import { PickerStyles, FlatListStyles } from '../styles';
 import { useFocusEffect, useIsFocused } from "@react-navigation/native";
@@ -104,10 +104,21 @@ export function ListJobs({ navigation, mode }: ListJobsProps) {
     }
 
     const pickerOptions = mode === "Add" ? ADD_PICKER_OPTIONS : FIND_PICKER_OPTIONS;
-
+    // if there are no jobs {
+    //     return <></>
+    // }
     return <>
         <View style={{ alignItems: 'center' }}>
-            <View style={FlatListStyles.wrapper}>
+            <NoJobs
+                title = {"No current jobs."}
+                body = {"You don't have any in progress jobs at the moment."}
+                buttonVisible = {true}
+                buttonName = {"Add a Job Now"}
+                onButtonClick = {navigation.navigate('LoginScreen')}
+                type = {"noAvailableJobs"}
+                
+                />
+            {/* <View style={FlatListStyles.wrapper}>
                 <FlatList
                     onRefresh={() => onRefresh()}
                     refreshing={isRefreshing}
@@ -178,7 +189,7 @@ export function ListJobs({ navigation, mode }: ListJobsProps) {
                     }}
                     onEndReachedThreshold={0}
                 />
-            </View >
+            </View > */}
         </View >
     </>
 }
