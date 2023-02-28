@@ -10,7 +10,7 @@ import { AuthContext } from '../auth/context';
 export function LoginScreen({ navigation }: LoginProps) {
     
     const [phoneNumber, setPhoneNumber] = useState("");
-    const [pin, setPin] = useState("");
+    const [pin, setPIN] = useState("");
 
     const auth = useContext(AuthContext);
 
@@ -31,7 +31,7 @@ export function LoginScreen({ navigation }: LoginProps) {
                 <AppTextInput
                     value={pin}
                     style={smallInputStyle}
-                    changeAction={setPin}
+                    changeAction={setPIN}
                     type="pin"
                     isValid={true}
                     errMsg="Required field"
@@ -53,6 +53,8 @@ export function LoginScreen({ navigation }: LoginProps) {
                     auth.clearError();
                     await auth.login(phoneNumber, pin);
                     if (auth.user !== null) {
+                        setPhoneNumber("");
+                        setPIN("");
                         navigation.navigate('JobLandingScreen');
                     } else {
                         // Display the error now...
