@@ -1,0 +1,13 @@
+name: ci
+
+on:
+  pull_request:
+    branches: [master]
+jobs:
+  web:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Clone
+        uses: actions/checkout@v2
+      - name: Lint
+        run: npm run lint-check

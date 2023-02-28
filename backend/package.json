@@ -6,7 +6,9 @@
   "scripts": {
     "start": "node --experimental-specifier-resolution=node ./index.js",
     "dev": "nodemon --experimental-specifier-resolution=node ./index.js",
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "lint-fix": "(eslint --fix --report-unused-disable-directives . || true) && prettier --write .",
+    "lint-check": "eslint --report-unused-disable-directives . && prettier --check ."
   },
   "author": "Triton Software Engineering",
   "license": "ISC",
@@ -22,7 +24,18 @@
     "pine": "^1.1.1"
   },
   "devDependencies": {
-    "nodemon": "^2.0.15"
+    "eslint": "^8.35.0",
+    "eslint-config-airbnb": "^19.0.4",
+    "eslint-config-node": "^4.1.0",
+    "eslint-config-prettier": "^8.6.0",
+    "eslint-plugin-import": "^2.27.5",
+    "eslint-plugin-jsx-a11y": "^6.7.1",
+    "eslint-plugin-node": "^11.1.0",
+    "eslint-plugin-prettier": "^4.2.1",
+    "eslint-plugin-react": "^7.32.2",
+    "eslint-plugin-react-hooks": "^4.6.0",
+    "nodemon": "^2.0.15",
+    "prettier": "^2.8.4"
   },
   "type": "module"
 }

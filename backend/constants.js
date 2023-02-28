@@ -1,4 +1,3 @@
-import { ValidationError } from "./errors";
 // Sample Users (for testing only)
 
 // NOT IN USE
@@ -36,8 +35,8 @@ export const TEST_CLIENT_1 = {
   password: 'password',
   phone: 'number',
   location: 'location',
-  _id: '635247cc2fdd8166dd9a3747'
-}
+  _id: '635247cc2fdd8166dd9a3747',
+};
 
 // NOT IN USE
 export const TEST_CLIENT_2 = {
@@ -46,17 +45,18 @@ export const TEST_CLIENT_2 = {
   password: 'password',
   phone: 'number',
   location: 'location',
-  _id: '63845f73c9587bfaf9e81897'
-}
+  _id: '63845f73c9587bfaf9e81897',
+};
 
-export const getSessionUserId = (req) => { // For testing purposes
+export const getSessionUserId = (req) => {
+  // For testing purposes
   const map = {
-    'client1': TEST_CLIENT_1,
-    'client2': TEST_CLIENT_2,
-    'trucker1': TEST_TRCUKER_1,
-    'trucker2': TEST_TRCUKER_2,
-  }
-  if (!('user' in req.query)) return map['client1']._id;
+    client1: TEST_CLIENT_1,
+    client2: TEST_CLIENT_2,
+    trucker1: TEST_TRCUKER_1,
+    trucker2: TEST_TRCUKER_2,
+  };
+  if (!('user' in req.query)) return map.client1._id;
   const alias = req.query.user;
   if (alias in map) {
     return map[alias]._id;
