@@ -9,5 +9,7 @@ jobs:
     steps:
       - name: Clone
         uses: actions/checkout@v2
+      - name: Install dependencies
+        uses: npm install
       - name: Lint
         run: npm run lint-check
