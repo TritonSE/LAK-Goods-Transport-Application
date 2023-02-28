@@ -5,6 +5,7 @@ import 'bootstrap/dist/css/bootstrap.min.css';
 import data from '../data/data.json'
 import { Lato } from '@next/font/google';
 import Select from 'react-select'
+import { Sidebar } from '@/components/sidebar';
 
 interface DataItem {
   id: number;
@@ -102,6 +103,7 @@ export default function App() {
 
   return (
     <div className={styles.page}>
+    <Sidebar currentPage="Dashboard"></Sidebar>
     <div className={styles.outer}>
       <h1 className={styles.title}>Driver Registration</h1>
 

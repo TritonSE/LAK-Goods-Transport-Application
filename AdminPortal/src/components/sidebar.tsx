@@ -26,9 +26,9 @@ export function Sidebar({ currentPage }: SidebarProps) {
           <div className={styles.menu}>
             <button type="button" className={styles.sidebarButton}>
               <a
-                href="./admin"
+                href="./dashboard"
                 className={
-                  currentPage === '/admin' ? styles.active : styles.buttonText
+                  currentPage === '/dashboard' ? styles.active : styles.buttonText
                 }
               >
                 Driver Registration
