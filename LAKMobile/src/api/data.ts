@@ -40,3 +40,11 @@ export interface UserData {
     driverLicenseId?: string; // Hidden when anyone else other than the user viewing
     vehicleData: VehicleData;
 }
+
+export interface CreateUserForm {
+    userId: string,
+    firstName: string,
+    lastName: string,
+    phone: string,
+    location: string
+}
