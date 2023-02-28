@@ -10,6 +10,7 @@ jobs:
       - name: Clone
         uses: actions/checkout@v2
       - name: Install dependencies
-        uses: npm install
+        run:
+          - "npm --prefix ./AdminPortal/ ci && npm --prefix ./backend/ ci"
       - name: Lint
         run: npm run lint-check
