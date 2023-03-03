@@ -121,7 +121,7 @@ export default function App() {
   const handleDropdownClick = (selectedOption: Option) => {
     setSelected(selectedOption);
     
-    setItems(items.map(item => (item.isChecked === true) ? { ...item, category: selectedOption.label} : item));
+    setItems(items.map(item => (item.isChecked === true) ? { ...item, isChecked:false,category: selectedOption.label} : item));
   
     setSelectAllClicked(new Array(4).fill(false));
 };
