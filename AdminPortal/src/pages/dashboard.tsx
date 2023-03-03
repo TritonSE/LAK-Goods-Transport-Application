@@ -128,8 +128,13 @@ export default function App() {
 
   const handleSelectAll = (): void => {
     setSelectAllClicked((prevState: Array<boolean>) => {
-      const indexToFlip = tabMapping.get(activeTab);
-    
+      let indexToFlip = tabMapping.get(activeTab);
+      
+      // convering to 0 based indexing
+      indexToFlip = indexToFlip - 1;
+
+      console.log(indexToFlip);
+
       let newState: boolean[] = [];
     
       for(let i = 0; i < 4; i++){
@@ -140,11 +145,16 @@ export default function App() {
           newState.push(prevState[i]);
         }
       }
+
+      console.log(newState);
       return newState;
     });
-
-    setItems(items.map(item => (item.category === activeTab) ? { ...item, isChecked: !item.isChecked } : item));
   };
+
+  useEffect(() => {
+    setItems(items.map(item => (item.category === activeTab) ? { ...item, isChecked: selectAllClicked[tabMapping.get(activeTab) - 1]} : item));
+  }, [selectAllClicked]);
+  
 
   const handleItemCheckbox = (id: number): void => {
     setItems(items.map(item => (item.id === id) ? {...item, isChecked:!item.isChecked} : item));
@@ -208,7 +218,7 @@ export default function App() {
               <input 
               type="checkbox" 
               className={styles.checkbox} 
-              checked={selectAllClicked[tabMapping.get(activeTab)]}
+              checked={selectAllClicked[tabMapping.get(activeTab) - 1]}
               onChange={handleSelectAll}
               >
               </input>
