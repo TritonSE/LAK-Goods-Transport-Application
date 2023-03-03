@@ -28,7 +28,9 @@ export function Sidebar({ currentPage }: SidebarProps) {
               <a
                 href="./dashboard"
                 className={
-                  currentPage === '/dashboard' ? styles.active : styles.buttonText
+                  currentPage === '/dashboard'
+                    ? styles.active
+                    : styles.buttonText
                 }
               >
                 Driver Registration

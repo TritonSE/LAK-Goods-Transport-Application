@@ -6,18 +6,14 @@ import eyeOpenLogo from '../../public/open-eye.svg';
 import eyeClosedLogo from '../../public/closed-eye.svg';
 import { Martian_Mono } from '@next/font/google';
 
-import styles from "@/styles/Login.module.css";
+import styles from '@/styles/Login.module.css';
 
 export default function Login() {
   const [showPassword, setShowPassword] = useState(false);
 
   return (
     <div className={styles.outer}>
-      <Image
-        src={LAAKTAlogo}
-        alt="LAAKTAlogo"
-        className={styles.LAAKTAlogo}
-      />
+      <Image src={LAAKTAlogo} alt="LAAKTAlogo" className={styles.LAAKTAlogo} />
 
       <div className={styles.formContainer}>
         <form>
