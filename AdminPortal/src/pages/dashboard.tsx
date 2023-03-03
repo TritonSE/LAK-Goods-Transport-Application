@@ -4,8 +4,8 @@ import Dropdown from 'react-bootstrap/Dropdown';
 import 'bootstrap/dist/css/bootstrap.min.css';
 import data from '../data/data.json'
 import { Lato } from '@next/font/google';
-import Select from 'react-select'
 import { Sidebar } from '@/components/sidebar';
+import Select, {InputActionMeta} from 'react-select';
 
 interface DataItem {
   id: number;
@@ -18,13 +18,33 @@ interface DataItem {
   category: String;
 }
 
+
+interface Option {
+  label: string;
+  value: string;
+}
+
 interface ControlStyles {
   [key: string]: unknown;
 }
 
 export default function App() {
+
   const [activeTab, setActiveTab] = useState<string>('Needs Review');
-  const [isChecked, setIsChecked] = useState(false);
+
+  const [selectAllClicked, setSelectAllClicked] = useState(new Array(4).fill(false));
+  
+  // for the dropdown
+  const [selected, setSelected] = useState<Option | null>(null);
+
+  
+  // mapping the tabs to an integer key
+  const tabMapping = new Map();
+  tabMapping.set("Needs Review", 1);
+  tabMapping.set("In Review", 2);
+  tabMapping.set("Verified", 3);
+  tabMapping.set("Disapproved", 4);
+  
   const [items, setItems] = useState<DataItem[]>([
     {
       "id": 1,
@@ -98,9 +118,32 @@ export default function App() {
     setActiveTab(tab);
   };
 
+  const handleDropdownClick = (selectedOption: Option) => {
+    setSelected(selectedOption);
+    
+    setItems(items.map(item => (item.isChecked === true) ? { ...item, category: selectedOption.label} : item));
+  
+    setSelectAllClicked(new Array(4).fill(false));
+};
+
   const handleSelectAll = (): void => {
-    setIsChecked(!isChecked);
-    setItems(items.map(item => ({ ...item, isChecked: !isChecked })));
+    setSelectAllClicked((prevState: Array<boolean>) => {
+      const indexToFlip = tabMapping.get(activeTab);
+    
+      let newState: boolean[] = [];
+    
+      for(let i = 0; i < 4; i++){
+        if (i === indexToFlip){
+          newState.push(!prevState[i]);
+        }
+        else{
+          newState.push(prevState[i]);
+        }
+      }
+      return newState;
+    });
+
+    setItems(items.map(item => (item.category === activeTab) ? { ...item, isChecked: !item.isChecked } : item));
   };
 
   const handleItemCheckbox = (id: number): void => {
@@ -146,8 +189,10 @@ export default function App() {
       <div className={styles.dropdownAndExportBar}>
         <Select 
           options={options} 
+          onChange={handleDropdownClick}
           styles={customStyle}
           placeholder="Change Status To"
+          blurInputOnSelect={true} 
         />
 
         <button className={styles.exportButton}>
@@ -163,7 +208,7 @@ export default function App() {
               <input 
               type="checkbox" 
               className={styles.checkbox} 
-              checked={isChecked}
+              checked={selectAllClicked[tabMapping.get(activeTab)]}
               onChange={handleSelectAll}
               >
               </input>
