@@ -14,7 +14,8 @@ interface DataItem {
   mobileNumber: string;
   licenseID: string;
   licensePlate: string;
-  isChecked: boolean
+  isChecked: boolean;
+  category: String;
 }
 
 interface ControlStyles {
@@ -22,60 +23,66 @@ interface ControlStyles {
 }
 
 export default function App() {
-  const [activeTab, setActiveTab] = useState<string>('Needs_Review');
+  const [activeTab, setActiveTab] = useState<string>('Needs Review');
   const [isChecked, setIsChecked] = useState(false);
   const [items, setItems] = useState<DataItem[]>([
     {
       "id": 1,
       "dateApplied": "2022-01-01",
-      "name": "John Doe",
+      "name": "Hello 1",
       "mobileNumber": "+1 123 456 7890",
       "licenseID": "A1234567",
       "licensePlate": "ABC-123",
-      "isChecked": false
+      "isChecked": false,
+      "category": "Needs Review"
     },
     {
       "id": 2,
       "dateApplied": "2022-02-01",
-      "name": "Jane Doe",
+      "name": "Hello 2",
       "mobileNumber": "+1 987 654 3210",
       "licenseID": "B2345678",
       "licensePlate": "DEF-456",
-      "isChecked": false
+      "isChecked": false,
+      "category": "In Review"
     },
     {
       "id": 3,
       "dateApplied": "2022-03-01",
-      "name": "Jim Smith",
+      "name": "Hello 3",
       "mobileNumber": "+1 111 222 3333",
       "licenseID": "C3456789",
       "licensePlate": "GHI-789",
-      "isChecked": false
+      "isChecked": false,
+      "category": "Verified"
     },
     {
       "id": 4,
       "dateApplied": "2022-01-01",
-      "name": "John Doe",
+      "name": "Hello 4",
       "mobileNumber": "+1 123 456 7890",
       "licenseID": "A1234567",
       "licensePlate": "ABC-123",
-      "isChecked": false
+      "isChecked": false,
+      "category": "Needs Review"
     },
     {
       "id": 5,
       "dateApplied": "2022-02-01",
-      "name": "Jane Doe",
+      "name": "Hello 5",
       "mobileNumber": "+1 987 654 3210",
       "licenseID": "B2345678",
       "licensePlate": "DEF-456",
-      "isChecked": false
+      "isChecked": false,
+      "category": "Disapproved"
     }
 ]);
 
   const options = [
-    { value: 'option1', label: 'option1' },
-    { value: 'option2', label: 'option2' },
-    { value: 'option3', label: 'option3' }
+    { value: 'Needs Review', label: 'Needs Review' },
+    { value: 'In Review', label: 'In Review' },
+    { value: 'Verified', label: 'Verified' },
+    { value: 'Disapproved', label: 'Disapproved' }
   ]
 
   const customStyle = {
@@ -109,14 +116,14 @@ export default function App() {
 
       <div className={styles.tabs}>
         <button
-          className={activeTab !== 'Needs_Review' ? styles.tabsButton : styles.tabsButtonSelected}
-          onClick={() => handleTabClick('Needs_Review')}
+          className={activeTab !== 'Needs Review' ? styles.tabsButton : styles.tabsButtonSelected}
+          onClick={() => handleTabClick('Needs Review')}
         >
           Needs Review
         </button>
         <button
-          className={activeTab !== 'In_Review' ? styles.tabsButton : styles.tabsButtonSelected}
-          onClick={() => handleTabClick('In_Review')}
+          className={activeTab !== 'In Review' ? styles.tabsButton : styles.tabsButtonSelected}
+          onClick={() => handleTabClick('In Review')}
         >
           In Review
         </button>
@@ -169,7 +176,7 @@ export default function App() {
           </tr>
         </thead>
         <tbody className={styles.tableBody}>
-          {items.map(item => (
+          {items.filter(item => item.category == activeTab).map(item => (
             <tr key={item.id}>
               <td className={styles.tableData}>
                 <input 
