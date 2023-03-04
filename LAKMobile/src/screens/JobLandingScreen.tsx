@@ -1,29 +1,28 @@
 import { createMaterialTopTabNavigator } from '@react-navigation/material-top-tabs';
 import { View, StyleSheet, TouchableOpacity, Image } from 'react-native';
-import { AppText } from '../components/AppText';
-import { DetailsScreen } from '../screens/DetailsScreen';
-import { ApplicantsScreen } from '../screens/ApplicantsScreen';
-import { JobData, JobOwnerView } from '../api/data';
-import { ImageCarousel } from '../components/ImageCarousel'
-import { useNavigation } from '@react-navigation/native';
-import { BackArrowIcon } from '../icons/BackArrow';
 import { JobLandingScreenProps } from '../types/navigation';
 import { ListJobs } from './ListJobs';
 import { IconButtonWrapper, ScreenHeader } from '../components';
 import { COLORS } from '../../constants';
-import { EditIcon } from '../icons';
-import { getCurrentUser } from '../api';
-import Svg, { Path } from "react-native-svg";
 import { ProfileButtonIcon } from '../icons/ProfileButtonIcon';
+import { useContext } from 'react';
+import { AuthContext } from '../auth/context';
 
 
 const Tab = createMaterialTopTabNavigator();
 
 export function JobLandingScreen({ navigation }: JobLandingScreenProps) {
+    const auth = useContext(AuthContext);
+
+    if (auth.user === null) {
+        navigation.navigate('Login');
+    }
+    const userId = auth.user ? auth.user.uid : '';
+
     return (
         <View style={styles.container}>
             <View style={{ height: 50, backgroundColor: COLORS.maroon }}>
-                <IconButtonWrapper style={styles.profileButton} onPress={() => navigation.navigate('ProfileScreen', {userId: getCurrentUser()})}>
+                <IconButtonWrapper style={styles.profileButton} onPress={() => navigation.navigate('ProfileScreen', {userId})}>
                     <ProfileButtonIcon />
                 </IconButtonWrapper>
             </View>

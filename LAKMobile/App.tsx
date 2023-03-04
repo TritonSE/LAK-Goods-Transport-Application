@@ -8,29 +8,33 @@ import { ResetSuccess } from "./src/screens/ResetSuccess";
 import { ResetPassword } from "./src/screens/ResetPassword";
 import { NavigationContainer } from '@react-navigation/native';
 import { createNativeStackNavigator } from '@react-navigation/native-stack';
-import { getCurrentUser } from './src/api';
+import { AuthProvider } from './src/auth/context';
 
 const Stack = createNativeStackNavigator();
 
 export default function App() {
-  return <View style={styles.container}>
-    <NavigationContainer>
-      <Stack.Navigator initialRouteName="Login" screenOptions={{
-        headerShown: false
-      }}>
-        <Stack.Screen name="Login" component={LoginScreen} />
-        <Stack.Screen name="Signup" component={SignupScreen} />
-        <Stack.Screen name="ResetPassword" component={ResetPassword} />
-        <Stack.Screen name="ForgotPassword" component={ForgotPassword} />
-        <Stack.Screen name="ResetSuccess" component={ResetSuccess} />
-        <Stack.Screen name="OTP" component={OTP} />
-        <Stack.Screen name="JobLandingScreen" component={JobLandingScreen} />
-        <Stack.Screen name="JobApplicant" component={JobApplicant} />
-        <Stack.Screen name="AddJob" component={AddJob} />
-        <Stack.Screen name="ProfileScreen" component={ProfileScreen} initialParams={{ userId: getCurrentUser() }} />
-      </Stack.Navigator>
-    </NavigationContainer>
-  </View >
+  return (
+    <AuthProvider>
+      <View style={styles.container}>
+        <NavigationContainer>
+          <Stack.Navigator initialRouteName="Login" screenOptions={{
+            headerShown: false
+          }}>
+            <Stack.Screen name="Login" component={LoginScreen} />
+            <Stack.Screen name="Signup" component={SignupScreen} />
+            <Stack.Screen name="ResetPassword" component={ResetPassword} />
+            <Stack.Screen name="ForgotPassword" component={ForgotPassword} />
+            <Stack.Screen name="ResetSuccess" component={ResetSuccess} />
+            <Stack.Screen name="OTP" component={OTP} />
+            <Stack.Screen name="JobLandingScreen" component={JobLandingScreen} />
+            <Stack.Screen name="JobApplicant" component={JobApplicant} />
+            <Stack.Screen name="AddJob" component={AddJob} />
+            <Stack.Screen name="ProfileScreen" component={ProfileScreen} />
+          </Stack.Navigator>
+        </NavigationContainer>
+      </View >
+    </AuthProvider>
+  );
 }
 
 const styles = StyleSheet.create({

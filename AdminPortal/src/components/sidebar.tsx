@@ -50,11 +50,9 @@ export function Sidebar({ currentPage }: SidebarProps) {
 
             <button type="button" className={styles.sidebarButton}>
               <a
-                href="./settings"
+                href="./admin"
                 className={
-                  currentPage === '/settings'
-                    ? styles.active
-                    : styles.buttonText
+                  currentPage === '/admin' ? styles.active : styles.buttonText
                 }
               >
                 Manage Admin

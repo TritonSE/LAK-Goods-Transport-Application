@@ -1,24 +1,18 @@
 import React, { useEffect, useState } from 'react';
 import { JobData, JobOwnerView } from '../api/data';
-import type { NativeStackScreenProps } from '@react-navigation/native-stack';
-import {Alert} from 'react-native';
 import { ConfirmationBox } from '../components/ConfirmationBox';
 
 import {
     StyleSheet,
     View,
-    Linking,
     ScrollView
 } from 'react-native';
 import {
     ApplicantThumbnail,
-    AppText,
 } from '../components';
 
 import { UserData } from '../api/data';
 import { assignDriver, denyDriver, getUsersByIds } from '../api';
-import { useNavigation, useNavigationState } from '@react-navigation/native';
-import { RootStackParamList } from '../types/navigation'
 
 
 interface ApplicantScreenProps {
@@ -42,17 +36,19 @@ export function ApplicantsScreen({ jobData, setJobData, carousel, navigation }: 
     const [confirmationVisible, setConfirmationVisible] = useState(false);
 
     useEffect(() => {
-        getUsersByIds(userIds).then(async (response) => {
-            if (response == null) {
-                return null;
-            }
-            const applicantUsers: Array<UserData> = response;
-            setApplicants(applicantUsers.map((applicant, i) => ({
-                userData: applicant,
-                driverID: userIds[i],
-            }))
-            )
-        })
+        if (userIds.length) {
+            getUsersByIds(userIds).then(async (response) => {
+                if (response == null) {
+                    return null;
+                }
+                const applicantUsers: Array<UserData> = response;
+                setApplicants(applicantUsers.map((applicant, i) => ({
+                    userData: applicant,
+                    driverID: userIds[i],
+                }))
+                )
+            })
+        }
     }, [jobData])
 
     const updateWithAssigned = (driverId: string): JobOwnerView => {

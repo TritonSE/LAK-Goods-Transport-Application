@@ -1,6 +1,7 @@
 import React, {
   Reducer,
   useCallback,
+  useContext,
   useEffect,
   useReducer,
   useState,
@@ -8,7 +9,6 @@ import React, {
 import { ScrollView, StyleSheet, View } from "react-native";
 import { Picker } from "@react-native-picker/picker";
 import * as ImagePicker from "expo-image-picker";
-import type { ImagePickerErrorResult } from "expo-image-picker";
 import { ConfirmationBox } from '../components/ConfirmationBox';
 import {
   AppText,
@@ -21,14 +21,13 @@ import {
 } from "../components";
 import { COLORS } from "../../constants";
 import {
-  getJobById,
-  JobData,
   JobOwnerView,
   postJob,
   updateJob,
   deleteJob,
 } from "../api";
 import { AddJobProps } from "../types/navigation";
+import { AuthContext } from "../auth/context";
 
 const PICKER_DEFAULT = "-- Select a district --";
 const LOCATIONS = [
@@ -56,7 +55,7 @@ const LOCATIONS = [
 ];
 
 type Validator = (text: string) => boolean;
-
+type ImagesReducerState = string[];
 type ValidatedField = {
   fieldName: string;
   fieldValue: string;
@@ -103,12 +102,21 @@ export function AddJob({ navigation, route }: AddJobProps) {
 
   type ImagesReducer = Reducer<ImagesReducerState, ImagesReducerAction>;
 
+
+  const [imageInfo, setImageInfo] = useState<Array<ImagePicker.ImagePickerAsset | null>>([null, null, null])
+
   const reducer: ImagesReducer = (state, action): ImagesReducerState => {
     let newState = state.slice();
     switch (action.type) {
       case "ADD_IMAGE":
         const index = newState.findIndex((value) => value === "");
-        newState[index] = action.payload;
+        newState[index] = action.payload.uri;
+        if (imageInfo) {
+          let newImageInfo = imageInfo.map((im, i) => {
+            return (i === index ? action.payload : im)
+          })
+          setImageInfo(newImageInfo)
+        }
         setIsValid({ ...isValid, ["imageSelect"]: true });
         break;
       case "REMOVE_IMAGE":
@@ -142,11 +150,17 @@ export function AddJob({ navigation, route }: AddJobProps) {
   const [dropoffDistrict, setDropoffDistrict] = useState("");
   const [confirmationVisible, setConfirmationVisible] = useState(false);
 
-  type ImagesReducerState = string[];
+  const auth = useContext(AuthContext);
+
+  if (auth.user === null) {
+    navigation.navigate('Login');
+  }
+
+  const userId = auth.user ? auth.user.uid : '';
 
   interface ImagesReducerAddAction {
     type: "ADD_IMAGE";
-    payload: string;
+    payload: ImagePicker.ImagePickerAsset;
   }
 
   interface ImagesReducerRemoveAction {
@@ -177,12 +191,17 @@ export function AddJob({ navigation, route }: AddJobProps) {
     return valid;
   };
 
+  const validateImageUpload: Validator = () => {
+    return imageURIs.findIndex((value) => value !== "") !== -1;
+  };
+
   const validators = {
     presence: validatePresence,
     phoneNumber: validatePhoneNumber,
     recieverPhoneNumber: validatePhoneNumber,
     date: validateDate,
     picker: validatePickerSelect,
+    image: validateImageUpload
   };
 
   const validatedFields: Array<ValidatedField> = [
@@ -210,6 +229,11 @@ export function AddJob({ navigation, route }: AddJobProps) {
       fieldName: fieldNames.dropoffLocation,
       fieldValue: dropoffLocation,
       validator: validators.presence,
+    },
+    {
+      fieldName: fieldNames.imageSelect,
+      fieldValue: "",
+      validator: validators.image,
     },
   ];
 
@@ -257,8 +281,8 @@ export function AddJob({ navigation, route }: AddJobProps) {
     const pickerResult = await ImagePicker.launchImageLibraryAsync({
       mediaTypes: ImagePicker.MediaTypeOptions.Images,
     });
-    if (!pickerResult.cancelled) {
-      dispatch({ type: "ADD_IMAGE", payload: pickerResult.uri });
+    if (!pickerResult.canceled) {
+      dispatch({ type: "ADD_IMAGE", payload: pickerResult.assets[0] });
     }
     setImagePickPromptVisible(false);
   }, []);
@@ -270,14 +294,14 @@ export function AddJob({ navigation, route }: AddJobProps) {
       return;
     }
     const cameraResult = await ImagePicker.launchCameraAsync();
-    if (!cameraResult.cancelled) {
-      dispatch({ type: "ADD_IMAGE", payload: cameraResult.uri });
+    if (!cameraResult.canceled) {
+      dispatch({ type: "ADD_IMAGE", payload: cameraResult.assets[0] });
     }
     setImagePickPromptVisible(false);
   }, []);
 
   const handleTapImage = useCallback(
-    (index) => {
+    (index: any) => {
       if (imageURIs[index] === "") {
         setImagePickPromptVisible(true);
       } else {
@@ -301,6 +325,30 @@ export function AddJob({ navigation, route }: AddJobProps) {
     }) as JobOwnerView
   }
 
+  const createFormData = (images: Array<ImagePicker.ImagePickerAsset | null>, body: { [key: string]: any }) => {
+    const data = new FormData();
+    if (images !== null && images[0] !== null) {
+      images.map((image) => {
+        if (image !== null) {
+          const uriArray = image.uri.split(".");
+          const fileExtension = uriArray[uriArray.length - 1];  // e.g.: "jpg"
+          const fileTypeExtended = `${image.type}/${fileExtension}`; // e.g.: "image/jpg"
+          data.append("images", {
+            name: "demo.jpg",
+            uri: image.uri,
+            type: fileTypeExtended,
+          } as unknown as Blob)
+        }
+      })
+    }
+
+    Object.keys(body).forEach((key) => {
+      data.append(key, body[key]);
+    });
+
+    return data;
+  }
+
   const submitJob = async () => {
     // TODO: when submitting, remember to filter out empty strings from imageURIs
     if (!validateFields()) {
@@ -322,8 +370,10 @@ export function AddJob({ navigation, route }: AddJobProps) {
       dropoffDistrict: dropoffDistrict.trim(),
       imageIds: imageURIs.filter((value) => value !== ""),
     };
+    const formedJob: FormData = createFormData(imageInfo, newJob);
     if (formType === "add" || formType == "repost") {
-      postJob(newJob).then(response => {
+      postJob(userId, formedJob).then(response => {
+        console.log(response);
         if (response == null) {
           return;
         }
@@ -342,10 +392,11 @@ export function AddJob({ navigation, route }: AddJobProps) {
         return;
       }
 
-      updateJob(route.params.jobData._id, newJob).then(response => {
+      updateJob(userId, route.params.jobData._id, formedJob).then(response => {
         if (response === null) {
           return;
         }
+        console.log(response);
         const { jobId } = response;
         const updatedJob: JobOwnerView = createUpdateFromId(jobId, newJob)
         route.params.setJobData(prevJobs => prevJobs.map(job => job._id === updatedJob._id ? updatedJob : job))
@@ -363,7 +414,7 @@ export function AddJob({ navigation, route }: AddJobProps) {
     }
     
     
-    deleteJob(route.params.jobData._id).then(response => {
+    deleteJob(userId, route.params.jobData._id).then(response => {
       if (response === null) {
         return;
       }
@@ -575,16 +626,23 @@ export function AddJob({ navigation, route }: AddJobProps) {
             />
           ))}
         </View>
-
-        <View style={[styles.spacer]}>
-          <AppText style={styles.photoInstructions}>
+        {isValid[fieldNames.imageSelect] ? (
+          <>
+          </>
+        ): (
+          <View>
+          <AppText style={styles.errText}>
             At least one photo of the package is required. Tap on a photo to
             remove it.
           </AppText>
-          <AppText style={styles.photoInstructions}>
+          </View>
+          
+        )}
+          <View>
+            <AppText style={styles.instructionText}>
             Note: The first photo will be the thumbnail of the job listing.
-          </AppText>
-        </View>
+            </AppText>
+          </View>
 
         <AppButton
           onPress={submitJob}
@@ -662,6 +720,15 @@ const styles = StyleSheet.create({
     borderRadius: 4,
     borderColor: COLORS.red,
     height: 40,
+  },
+  errText: {
+    color: COLORS.red,
+    fontSize: 12,
+    paddingBottom: 20  // this is adding margin below null errMsg as well
+  },
+  instructionText: {
+    fontSize: 12,
+    paddingBottom: 20  // this is adding margin below null instructionText as well
   },
 
   multilineInput: {

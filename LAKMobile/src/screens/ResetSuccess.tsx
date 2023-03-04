@@ -1,6 +1,6 @@
 import React from 'react';
-import { StyleSheet, TextInput, View } from 'react-native';
-import { AppText, LabelWrapper, AppButton, ScreenHeader } from '../components';
+import { StyleSheet, View } from 'react-native';
+import { AppText, AppButton, ScreenHeader } from '../components';
 import { COLORS } from '../../constants';
 import {ResetSuccessProps} from "../types/navigation";
 
