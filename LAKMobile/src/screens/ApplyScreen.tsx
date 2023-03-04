@@ -7,7 +7,9 @@ import {
 } from 'react-native';
 import { JobData } from '../api/data';
 import {
+    AppButton,
     AppText,
+    ModalAlert,
 } from '../components';
 
 type ApplyScreenProps = {
@@ -15,8 +17,12 @@ type ApplyScreenProps = {
     carousel: JSX.Element
 }
 
+
+
 export function ApplyScreen({ carousel, jobData }: ApplyScreenProps) {
     // temporary dummy data
+    const [confirmationAlertVisible, setConfirmationAlertVisible] = useState(false);
+
     return (
         <>
             {carousel}
@@ -76,6 +82,41 @@ export function ApplyScreen({ carousel, jobData }: ApplyScreenProps) {
                         </AppText> : null}
                 </View>
             </ScrollView>
+            <View style={styles.footer}>
+                <View style={styles.center}>
+                    <AppButton
+                        type='secondary'
+                        title='Call Client'
+                        //onPress={submitChanges}
+                        style={styles.footerButton}
+                    />
+                </View>
+                <View style={styles.center}>
+                    <AppButton
+                        type='primary'
+                        title='Apply'
+                        onPress={() => setConfirmationAlertVisible(true)}
+                        style={styles.footerButton}
+                    />
+                </View>
+            </View>
+            <ModalAlert
+                title="Apply to Job?"
+                message={'Be sure to contact ' + jobData.clientName + ' at ' + jobData.phoneNumber}
+                buttons={[
+                    {
+                        type: "secondary",
+                        label: "Cancel",
+                        onPress: () => setConfirmationAlertVisible(false),
+                    },
+                    {
+                        type: "primary",
+                        label: "Apply",
+                        onPress: () => setConfirmationAlertVisible(false),
+                    },
+                ]}
+                visible={confirmationAlertVisible}
+            /> 
         </>
 
     );
@@ -146,6 +187,20 @@ const styles = StyleSheet.create({
 
     phoneNumber: {
         color: 'blue',
-    }
+    },
+    
+    footer: {
+        marginTop: 10,
+        bottom: 0,
+    },
+
+    footerButton: {
+        marginBottom: 15
+    },
+
+    center: {
+        justifyContent: "center",
+        alignItems: "center",
+    },
 })
 

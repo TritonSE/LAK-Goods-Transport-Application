@@ -59,7 +59,7 @@ export function JobApplicant({ navigation, route }: JobApplicantProps) {
                             {() => null}
                         </Tab.Screen>
                         :
-                        <Tab.Screen name="Applicants" listeners={{ tabPress: e => { if (route.params.jobData.applicants.length === 0) { e.preventDefault(); } } }}>
+                        <Tab.Screen name="Applicants" listeners={{ tabPress: e => { if (route.params.jobData.applicants /* Temp Fix */ && route.params.jobData.applicants.length === 0) { e.preventDefault(); } } }}> 
                             {props => <ApplicantsScreen {...props} carousel={carousel} jobData={route.params.jobData} setJobData={route.params.setJobData} />}
                         </Tab.Screen>
                 }
