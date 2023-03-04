@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useMemo } from "react";
+import React, { useState, useEffect, useMemo, useContext } from "react";
 import { View, FlatList, StyleSheet } from "react-native";
 import { Picker } from "@react-native-picker/picker";
 import debounce from 'lodash.debounce';
@@ -7,6 +7,7 @@ import { JobThumbnail, AppButton, AppTextInput, NoJobs } from "../components";
 import { COLORS } from '../../constants';
 import { PickerStyles, FlatListStyles } from '../styles';
 import { useFocusEffect, useIsFocused } from "@react-navigation/native";
+import { AuthContext } from "../auth/context";
 
 type ListJobsModes = 'Add' | 'Find'
 type JobTypePickerOption = 'Current Jobs' | 'Completed Jobs' | 'Your Jobs' | 'Finished Jobs';
@@ -46,6 +47,14 @@ export function ListJobs({ navigation, mode }: ListJobsProps) {
     const [isRefreshing, setRefreshing] = useState(false);
     const [allLoaded, setAllLoaded] = useState(false);
 
+    const auth = useContext(AuthContext);
+
+    if (auth.user === null) {
+        navigation.navigate('Login');
+    }
+
+    const userId = auth.user? auth.user.uid : '';
+
 
     const resetJobsOnPage = () => {
         setJobs([]);
@@ -79,15 +88,14 @@ export function ListJobs({ navigation, mode }: ListJobsProps) {
         const owned = mode === 'Add'
         const assigned = jobListType === 'Finished Jobs'
         const finished = jobListType === 'Completed Jobs' || jobListType === "Finished Jobs"
-        getJobs(searchString, owned, assigned, finished, page)
+        getJobs(userId, searchString, owned, assigned, finished, page)
             .then(response => {
                 if (response === null) {
                     // TODO Handle Error
                     return;
                 }
 
-                const { jobs: newJobs, lastPage } = response;
-
+                let { jobs: newJobs = [], lastPage } = response;
                 setAllLoaded(lastPage);
                 const filteredNewJobs = newJobs.filter(newjob => !(jobs.some(job => job._id === newjob._id)))
                 setJobs([...jobs, ...filteredNewJobs]);

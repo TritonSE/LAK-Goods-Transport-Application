@@ -28,7 +28,9 @@ export function Sidebar({ currentPage }: SidebarProps) {
               <a
                 href="./settings"
                 className={
-                  currentPage === '/settings' ? styles.active : styles.buttonText
+                  currentPage === '/settings'
+                    ? styles.active
+                    : styles.buttonText
                 }
               >
                 Driver Registration
@@ -50,9 +52,7 @@ export function Sidebar({ currentPage }: SidebarProps) {
               <a
                 href="./admin"
                 className={
-                  currentPage === '/admin'
-                    ? styles.active
-                    : styles.buttonText
+                  currentPage === '/admin' ? styles.active : styles.buttonText
                 }
               >
                 Manage Admin
