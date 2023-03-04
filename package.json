@@ -4,7 +4,8 @@
   "description": "Goods and Transportation Application for Laktaa Bhutan",
   "main": "index.js",
   "scripts": {
-    "lint": "npm --prefix ./AdminPortal/ run lint"
+    "lint": "npm --prefix ./AdminPortal/ run lint && npm --prefix ./backend/ run lint-fix",
+    "lint-check": "npm --prefix ./AdminPortal/ run lint-check && npm --prefix ./backend/ run lint-check"
   },
   "repository": {
     "type": "git",
