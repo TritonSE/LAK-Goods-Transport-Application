@@ -26,9 +26,9 @@ export function Sidebar({ currentPage }: SidebarProps) {
           <div className={styles.menu}>
             <button type="button" className={styles.sidebarButton}>
               <a
-                href="./admin"
+                href="./settings"
                 className={
-                  currentPage === '/admin' ? styles.active : styles.buttonText
+                  currentPage === '/settings' ? styles.active : styles.buttonText
                 }
               >
                 Driver Registration
@@ -48,9 +48,9 @@ export function Sidebar({ currentPage }: SidebarProps) {
 
             <button type="button" className={styles.sidebarButton}>
               <a
-                href="./settings"
+                href="./admin"
                 className={
-                  currentPage === '/settings'
+                  currentPage === '/admin'
                     ? styles.active
                     : styles.buttonText
                 }

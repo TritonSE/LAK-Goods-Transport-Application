@@ -38,12 +38,13 @@ routes.post('/', upload, async (req, res, next) => {
             req.files || [],
         );
     } catch (e) { 
+        console.error(e);
         next(e);
         return;
     }
 
     res.status(200).json({
-        message: `Job ID ${jobId} was successfully created`,
+        message: `Job ID ${job._id} was successfully created`,
         jobId: job._id,
     });
 });
@@ -68,7 +69,6 @@ routes.patch('/:jobid', upload, async (req, res, next) => {
         next(e);
         return;
     }
-
     res.status(200).json({
         message: `Job ID ${jobId} was successfully updated`,
         jobId: jobId,

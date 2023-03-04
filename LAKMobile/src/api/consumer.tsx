@@ -91,7 +91,7 @@ export const getJobs = async (search: string | null, owned: boolean, assigned: b
 };
 
 export const postJob = async (
-    newJob: object
+    newJob: FormData
 ): Promise<{ jobId: string } | null> => {
     try {
         const url =
@@ -101,23 +101,23 @@ export const postJob = async (
             });
         const response = await fetch(url, {
             method: "POST",
-            mode: "cors",
+            mode: 'cors',
             headers: {
-                "content-type": "application/json",
+                'Content-Type': 'multipart/form-data',
             },
-            body: JSON.stringify(newJob),
-
+            body: newJob,
         });
         let data = await response.json();
         return { jobId: data.jobId };
-    } catch {
+    } catch (e) {
+        console.error(e);
         return null;
     }
 };
 
 export const updateJob = async (
     jobId: string,
-    updatedJob: object
+    updatedJob: FormData
 ): Promise<{ jobId: string } | null> => {
     try {
         const url =
@@ -127,15 +127,16 @@ export const updateJob = async (
             });
         const response = await fetch(url, {
             method: "PATCH",
-            mode: "cors",
+            mode: 'cors',
             headers: {
-                "content-type": "application/json",
+                'Content-Type': 'multipart/form-data',
             },
-            body: JSON.stringify(updatedJob),
+            body: updatedJob,
         });
         let data = await response.json();
         return { jobId: data.jobId };
-    } catch {
+    } catch (e) {
+        console.error(e);
         return null;
     }
 };
@@ -212,9 +213,11 @@ export const denyDriver = async (
     }
 }
 
-export const imageIdToSource = (imageId: string): ImageSourcePropType => ({
-    uri: `${API_URL}/api/images/${imageId}`,
-});
+export const imageIdToSource = (imageId: string): ImageSourcePropType => {
+    return {
+        uri: `${API_URL}/api/images/${imageId}`,
+    }
+};
 
 /*
 * Users

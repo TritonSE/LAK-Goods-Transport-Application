@@ -44,17 +44,19 @@ export function ApplicantsScreen({ jobData, setJobData, carousel, navigation }: 
     const [confirmationVisible, setConfirmationVisible] = useState(false);
 
     useEffect(() => {
-        getUsersByIds(userIds).then(async (response) => {
-            if (response == null) {
-                return null;
-            }
-            const applicantUsers: Array<UserData> = response;
-            setApplicants(applicantUsers.map((applicant, i) => ({
-                userData: applicant,
-                driverID: userIds[i],
-            }))
-            )
-        })
+        if (userIds.length) {
+            getUsersByIds(userIds).then(async (response) => {
+                if (response == null) {
+                    return null;
+                }
+                const applicantUsers: Array<UserData> = response;
+                setApplicants(applicantUsers.map((applicant, i) => ({
+                    userData: applicant,
+                    driverID: userIds[i],
+                }))
+                )
+            })
+        }
     }, [jobData])
 
     const updateWithAssigned = (driverId: string): JobOwnerView => {
