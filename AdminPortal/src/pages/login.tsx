@@ -1,33 +1,37 @@
 import React, { useState } from 'react';
 import Image from 'next/image';
 
-import LAAKTAlogo from '../../public/LAAKTAlogo.png';
+import LAKTAAlogo from '../../public/Logo.svg';
 import eyeOpenLogo from '../../public/open-eye.svg';
 import eyeClosedLogo from '../../public/closed-eye.svg';
-import { Martian_Mono } from '@next/font/google';
 
-import styles from '@/styles/Login.module.css';
+import styles from "@/styles/Login.module.css";
 
 export default function Login() {
   const [showPassword, setShowPassword] = useState(false);
 
   return (
     <div className={styles.outer}>
-      <Image src={LAAKTAlogo} alt="LAAKTAlogo" className={styles.LAAKTAlogo} />
+      <Image
+        src={LAKTAAlogo}
+        alt="LAKTAAlogo"
+        className={styles.LAKTAAlogo}
+      />
 
       <div className={styles.formContainer}>
+        <div className={styles.formAllContents}>
         <form>
           <div className={styles.emailPassword}>
             <input
               type="email"
               placeholder="Email"
-              className={styles.emailInput}
+              className={`${styles.textInputField} ${styles.emailInput}`}
               required
             />
             <p>
               <input
                 placeholder="Password"
-                className={styles.passwordInput}
+                className={`${styles.textInputField} ${styles.passwordInput}`}
                 type={showPassword ? 'text' : 'password'}
                 required
               />
@@ -55,6 +59,7 @@ export default function Login() {
             Login
           </button>
         </form>
+      </div>
       </div>
     </div>
   );
