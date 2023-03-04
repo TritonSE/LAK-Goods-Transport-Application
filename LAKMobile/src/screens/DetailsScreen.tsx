@@ -1,4 +1,4 @@
-import React, { Children, useEffect, useState } from 'react';
+import React from 'react';
 import {
     StyleSheet,
     View,
@@ -16,7 +16,6 @@ type DetailsScreenProps = {
 }
 
 export function DetailsScreen({ carousel, jobData }: DetailsScreenProps) {
-    // temporary dummy data
     return (
         <>
             {carousel}

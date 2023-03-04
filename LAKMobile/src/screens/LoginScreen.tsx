@@ -1,25 +1,41 @@
-import React, { useState } from 'react';
+import React, { useContext, useState } from 'react';
 import { StyleSheet, TextInput, View } from 'react-native';
-import { AppText, LabelWrapper, AppButton } from '../components';
+import { AppText, LabelWrapper, AppButton, AppTextInput } from '../components';
 import { COLORS } from '../../constants';
 import { NavigationContainer } from '@react-navigation/native';
 import { createNativeStackNavigator, NativeStackScreenProps } from '@react-navigation/native-stack';
 import { LoginProps } from '../types/navigation';
+import { AuthContext } from '../auth/context';
 
 export function LoginScreen({ navigation }: LoginProps) {
     
+    const [phoneNumber, setPhoneNumber] = useState("");
+    const [pin, setPIN] = useState("");
+
+    const auth = useContext(AuthContext);
+
     return (
         <View style={styles.container}>
             <LabelWrapper label='Mobile Number'>
-                <TextInput
+                <AppTextInput
+                    value={phoneNumber}
                     style={bigInputStyle}
+                    changeAction={setPhoneNumber}
+                    type="phoneNumber"
+                    maxLength={10}
                     keyboardType="default"
                 />
             </LabelWrapper>
 
             <LabelWrapper label='4 Digit PIN'>
-                <TextInput
+                <AppTextInput
+                    value={pin}
                     style={smallInputStyle}
+                    changeAction={setPIN}
+                    type="pin"
+                    isValid={true}
+                    errMsg="Required field"
+                    maxLength={4}
                     keyboardType="numeric"
                 />
             </LabelWrapper>
@@ -33,7 +49,17 @@ export function LoginScreen({ navigation }: LoginProps) {
             <AppButton
                 type='primary'
                 title='Log in'
-                onPress={() => navigation.navigate('JobLandingScreen')}
+                onPress={async () => {
+                    auth.clearError();
+                    await auth.login(phoneNumber, pin);
+                    if (auth.user !== null) {
+                        setPhoneNumber("");
+                        setPIN("");
+                        navigation.navigate('JobLandingScreen');
+                    } else {
+                        // Display the error now...
+                    }
+                }}
                 style={styles.submitButton}
             />
 

@@ -1,6 +1,6 @@
 import React from 'react';
 import { StyleSheet, TextInput, View } from 'react-native';
-import { AppText, LabelWrapper, AppButton, ScreenHeader } from '../components';
+import { LabelWrapper, AppButton, ScreenHeader } from '../components';
 import { COLORS } from '../../constants';
 import {ResetPasswordProps} from '../types/navigation';
 

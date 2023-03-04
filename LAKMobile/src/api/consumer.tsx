@@ -4,7 +4,7 @@
 
 import { ImageSourcePropType } from 'react-native';
 import { API_URL } from '@env';
-import { JobData, JobOwnerView, UserData } from './data';
+import { JobData, JobOwnerView, UserData, CreateUserForm } from './data';
 
 export const GET_JOBS = `${API_URL}/api/jobs`;
 export const USERS_URL = `${API_URL}/api/users`;
@@ -44,12 +44,12 @@ export const getUsersByIds = async (
 };
 
 /** Might consider removing */
-export const getJobsByIds = async (jobIds: string[]): Promise<JobData[]> => {
+export const getJobsByIds = async (user: string, jobIds: string[]): Promise<JobData[]> => {
     try {
         const url =
             `${GET_JOBS}/get-by-ids?` +
             new URLSearchParams({
-                user: "client1",
+                user
             });
         const response = await fetch(url, {
             method: "POST",
@@ -71,7 +71,7 @@ export const getJobsByIds = async (jobIds: string[]): Promise<JobData[]> => {
 export const PAGE_SIZE = 5;
 
 // Gets the list of job documents (with pagination parameters)
-export const getJobs = async (search: string | null, owned: boolean, assigned: boolean, finished: boolean, page: number): Promise<{ jobs: JobData[] | JobOwnerView[], lastPage: boolean } | null> => {
+export const getJobs = async (userId: string, search: string | null, owned: boolean, assigned: boolean, finished: boolean, page: number): Promise<{ jobs: JobData[] | JobOwnerView[], lastPage: boolean } | null> => {
     try {
         const url = `${GET_JOBS}?` + new URLSearchParams({
             owned: owned.toString(),
@@ -79,7 +79,7 @@ export const getJobs = async (search: string | null, owned: boolean, assigned: b
             finished: finished.toString(),
             offset: ((page - 1) * PAGE_SIZE).toString(),
             limit: PAGE_SIZE.toString(),
-            user: 'client1', // TODO Remove after auth
+            user: userId, // The user making the API call
             ...(search ? { search: search } : {})
         });
         const response = await fetch(url);
@@ -91,13 +91,14 @@ export const getJobs = async (search: string | null, owned: boolean, assigned: b
 };
 
 export const postJob = async (
+    userId: string,
     newJob: FormData
 ): Promise<{ jobId: string } | null> => {
     try {
         const url =
             `${GET_JOBS}?` +
             new URLSearchParams({
-                user: "client1",
+                user: userId,
             });
         const response = await fetch(url, {
             method: "POST",
@@ -116,6 +117,7 @@ export const postJob = async (
 };
 
 export const updateJob = async (
+    userId: string,
     jobId: string,
     updatedJob: FormData
 ): Promise<{ jobId: string } | null> => {
@@ -123,7 +125,7 @@ export const updateJob = async (
         const url =
             `${GET_JOBS}/${jobId}?` +
             new URLSearchParams({
-                user: "client1",
+                user: userId,
             });
         const response = await fetch(url, {
             method: "PATCH",
@@ -142,13 +144,14 @@ export const updateJob = async (
 };
 
 export const deleteJob = async (
+    userId: string,
     jobId: string
 ): Promise<{ jobId: string } | null> => {
     try {
         const url =
             `${GET_JOBS}/${jobId}?` +
             new URLSearchParams({
-                user: "client1",
+                user: userId,
             });
 
         const response = await fetch(url, {
@@ -223,18 +226,35 @@ export const imageIdToSource = (imageId: string): ImageSourcePropType => {
 * Users
 */
 
-// TODO remove (Dummy data)
-export const getCurrentUser = (): string => {
-    return '635247cc2fdd8166dd9a3747';
-}
-
-export const getUser = async (userId: string): Promise<UserData | null> => {
+export const getUser = async (requestingUserId: string, userId: string): Promise<UserData | null> => {
     try {
-        const url = `${USERS_URL}/${userId}?` + new URLSearchParams({ user: 'client1' });
+        const url = `${USERS_URL}/${userId}?` + new URLSearchParams({ user: requestingUserId });
         const response = await fetch(url)
         let data = await response.json();
         data = data.user as UserData;
         return data;
+    } catch {
+        return null;
+    }
+}
+
+/**
+ * @param formData Information from the Create New Account form
+ * @returns The newly created user's UUID, or null if there was an error
+ */
+export const createNewUser = async (formData: CreateUserForm): Promise<String | null> => {
+    try {
+        const url = `${USERS_URL}`;
+        const response = await fetch(url, {
+            method: "POST",
+            headers: {
+                "Content-Type": "application/json",
+            },
+            body: JSON.stringify(formData),
+        });
+        let data = await response.json();
+        console.log(data);
+        return data.userId;
     } catch {
         return null;
     }
