@@ -1,133 +1,138 @@
-import React, { useEffect, useState } from "react";
-import { JobData } from "../api";
-import { StyleSheet } from "react-native";
-import { View } from "react-native";
-import { Modal } from "react-native";
-import { ModalCheckmark } from "./ModalCheckmark";
-import { wrap } from "lodash";
-import { AppButton } from "./AppButton";
-import { AppText } from "./AppText";
-import { COLORS } from "../../constants";
+import React, { useState } from 'react';
+import { StyleSheet } from 'react-native';
+import { View } from 'react-native';
+import { Modal } from 'react-native';
+import { ModalCheckmark } from './ModalCheckmark';
+import { AppButton } from './AppButton';
+import { AppText } from './AppText';
+import { COLORS } from '../../constants';
 
-const TIMEOUT = 2000;
+//const TIMEOUT = 2000;
 
 interface ConfirmationBoxProps {
-    title: string;
-    body: string;
-    acceptName: string;
-    rejectName: string;
-    rejectVisible: boolean;
-    checkMarkAppear: boolean;
-    onAccept: () => void;
-    onReject: () => void;
+  title: string;
+  body: string;
+  acceptName: string;
+  rejectName: string;
+  rejectVisible: boolean;
+  checkMarkAppear: boolean;
+  onAccept: () => void;
+  onReject: () => void;
 }
 
-export const ConfirmationBox = ({title, body, acceptName, rejectName, onAccept, onReject, rejectVisible, checkMarkAppear}: ConfirmationBoxProps) => {
-    const [checkmarkVisible, setCheckmarkVisible] = useState(false);
+export const ConfirmationBox = ({
+  title,
+  body,
+  acceptName,
+  rejectName,
+  onAccept,
+  onReject,
+  rejectVisible,
+  checkMarkAppear,
+}: ConfirmationBoxProps) => {
+  const [checkmarkVisible, setCheckmarkVisible] = useState(false);
 
-    return (
+  return (
+    <Modal animationType="fade" transparent={true}>
+      <View style={styles.modalWrapper}>
+        <View style={styles.modalBox}>
+          <AppText style={styles.heading}>{title}</AppText>
 
-        <Modal animationType="fade" transparent = {true}>
-            <View style={styles.modalWrapper}>
-                <View style={styles.modalBox}>
-            
-                    <AppText style={styles.heading}>{title}</AppText>
+          <AppText style={[styles.body]}>{body}</AppText>
 
-                    <AppText style={[styles.body]}>{body}</AppText>
+          <View style={styles.buttonContainer}>
+            {rejectVisible ? (
+              <AppButton
+                style={styles.rejectButton}
+                textStyle={styles.grey}
+                type="primary"
+                title={rejectName}
+                onPress={onReject}
+              />
+            ) : null}
 
-                    <View style={styles.buttonContainer}>
-                        { rejectVisible ? 
-                        (<AppButton 
-                            style={styles.rejectButton}
-                            textStyle={styles.grey}
-                            type='primary'
-                            title={rejectName} 
-                            onPress={onReject}/>) : null }
+            <AppButton
+              style={styles.acceptButton}
+              textStyle={styles.red}
+              type="primary"
+              title={acceptName}
+              onPress={() => {
+                checkMarkAppear ? setCheckmarkVisible(true) : onAccept();
+              }}
+            />
+          </View>
 
-                        <AppButton 
-                            style={styles.acceptButton}
-                            textStyle={styles.red}
-                            type='primary'
-                            title={acceptName} 
-                            onPress={() => {
-                              checkMarkAppear ? (
-                              setCheckmarkVisible(true)
-                              ) : onAccept()   
-                            }}/>
-
-                    </View>
-                    
-                    { checkmarkVisible ? (<ModalCheckmark
-                        visible={true}
-                        onTimeout={() => {
-                            onAccept(); 
-                            // We call onReject to clean up the modal after the checkmark is displayed
-                            onReject();
-                        }}
-                    />): null}
-                </View>
-            </View>
-        </Modal>
-    );
-}
+          {checkmarkVisible ? (
+            <ModalCheckmark
+              visible={true}
+              onTimeout={() => {
+                onAccept();
+                // We call onReject to clean up the modal after the checkmark is displayed
+                onReject();
+              }}
+            />
+          ) : null}
+        </View>
+      </View>
+    </Modal>
+  );
+};
 
 const styles = StyleSheet.create({
-    modalWrapper: {
-      width: "100%",
-      height: "100%",
-      justifyContent: "center",
-      alignItems: "center",
-      backgroundColor: "transparent",
-      //backfaceVisibility: "visible"
-    },
-    
-    modalBox: {
-      width: 320,
-      height: 284,
-      backgroundColor: "#f5f5f5",
-      display: "flex",
-      justifyContent: "space-evenly",
-      alignItems: "center",
-      elevation: 4,
-      
-    },
+  modalWrapper: {
+    width: '100%',
+    height: '100%',
+    justifyContent: 'center',
+    alignItems: 'center',
+    backgroundColor: 'transparent',
+    //backfaceVisibility: "visible"
+  },
 
-    heading :{
-        fontSize: 16,
-        fontWeight: 'bold',
-        alignItems: "center"
-    },
+  modalBox: {
+    width: 320,
+    height: 284,
+    backgroundColor: '#f5f5f5',
+    display: 'flex',
+    justifyContent: 'space-evenly',
+    alignItems: 'center',
+    elevation: 4,
+  },
 
-    body: {
-        fontSize: 16,
-        textAlign: "center",
-        
-    },
+  heading: {
+    fontSize: 16,
+    fontWeight: 'bold',
+    alignItems: 'center',
+  },
 
-    buttonContainer: {
-        flexDirection: "row",
-        justifyContent: "space-evenly",
-        flexWrap: "wrap",
-    },
+  body: {
+    fontSize: 16,
+    textAlign: 'center',
+  },
 
-    rejectButton: {
-        width: 130,
-        marginRight: 20,
-        backgroundColor: "transparent",
-        elevation: 0,
-    },
+  buttonContainer: {
+    flexDirection: 'row',
+    justifyContent: 'space-evenly',
+    flexWrap: 'wrap',
+  },
 
-    acceptButton: {
-        width: 130,
-        backgroundColor: "transparent",
-        elevation: 0,
-    },
+  rejectButton: {
+    width: 130,
+    marginRight: 20,
+    backgroundColor: 'transparent',
+    elevation: 0,
+  },
 
-    grey: {
-        color: COLORS.darkGrey
-    },
+  acceptButton: {
+    width: 130,
+    backgroundColor: 'transparent',
+    elevation: 0,
+  },
 
-    red: {
-        color: COLORS.red
-    },
-});  
+  grey: {
+    color: COLORS.darkGrey,
+  },
+
+  red: {
+    color: COLORS.red,
+  },
+});

@@ -6,7 +6,7 @@
     "dev": "next dev",
     "build": "next build",
     "start": "next start",
-    "lint": "next lint --fix && npx stylelint --fix '**/*.css'",
+    "lint-fix": "next lint --fix && npx stylelint --fix '**/*.css'",
     "lint-check": "next lint && npx stylelint '**/*.css'"
   },
   "dependencies": {
