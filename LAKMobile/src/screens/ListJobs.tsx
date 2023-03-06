@@ -122,11 +122,11 @@ export function ListJobs({ navigation, mode }: ListJobsProps) {
                 body = {"You don't have any in progress jobs at the moment."}
                 buttonVisible = {true}
                 buttonName = {"Add a Job Now"}
-                onButtonClick = {navigation.navigate('LoginScreen')}
+                onButtonClick = {navigation.navigate('Login')}
                 type = {"noAvailableJobs"}
                 
-                />
-            {/* <View style={FlatListStyles.wrapper}>
+        />
+            {<View style={FlatListStyles.wrapper}>
                 <FlatList
                     onRefresh={() => onRefresh()}
                     refreshing={isRefreshing}
@@ -197,7 +197,7 @@ export function ListJobs({ navigation, mode }: ListJobsProps) {
                     }}
                     onEndReachedThreshold={0}
                 />
-            </View > */}
+            </View >}
         </View >
     </>
 }

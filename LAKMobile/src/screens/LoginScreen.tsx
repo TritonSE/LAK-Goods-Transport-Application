@@ -58,6 +58,7 @@ export function LoginScreen({ navigation }: LoginProps) {
                         navigation.navigate('JobLandingScreen');
                     } else {
                         // Display the error now...
+                        console.error(auth.error?.message);
                     }
                 }}
                 style={styles.submitButton}
