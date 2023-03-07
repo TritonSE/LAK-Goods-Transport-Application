@@ -6,7 +6,7 @@ import { ListJobs } from './ListJobs';
 import { IconButtonWrapper } from '../components';
 import { COLORS } from '../../constants';
 import { ProfileButtonIcon } from '../icons/ProfileButtonIcon';
-import { useContext } from 'react';
+import { useContext, useEffect } from 'react';
 import { AuthContext } from '../auth/context';
 
 const Tab = createMaterialTopTabNavigator();
@@ -14,10 +14,20 @@ const Tab = createMaterialTopTabNavigator();
 export function JobLandingScreen({ navigation }: JobLandingScreenProps) {
   const auth = useContext(AuthContext);
 
+<<<<<<< Updated upstream
   if (auth.user === null) {
     navigation.navigate('Login');
   }
   const userId = auth.user ? auth.user.uid : '';
+=======
+    useEffect(() => {
+        if (auth.user === null) {
+            navigation.navigate('Login');
+        }
+    }, [auth, navigation]);
+    
+    const userId = auth.user ? auth.user.uid : '';
+>>>>>>> Stashed changes
 
   return (
     <View style={styles.container}>

@@ -141,14 +141,16 @@ export function AddJob({ navigation, route }: AddJobProps) {
   const [dropoffDistrict, setDropoffDistrict] = useState('');
   const [confirmationVisible, setConfirmationVisible] = useState(false);
 
+
   const auth = useContext(AuthContext);
 
-  if (auth.user === null) {
-    navigation.navigate('Login');
-  }
+  useEffect(() => {
+    if (auth.user === null) {
+      navigation.navigate('Login');
+    }
+  }, [auth, navigation]);
 
   const userId = auth.user ? auth.user.uid : '';
-
   interface ImagesReducerAddAction {
     type: 'ADD_IMAGE';
     payload: ImagePicker.ImagePickerAsset;

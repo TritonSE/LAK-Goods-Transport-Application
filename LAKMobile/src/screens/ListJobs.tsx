@@ -40,6 +40,7 @@ export function ListJobs({ navigation, mode }: ListJobsProps) {
 
   const auth = useContext(AuthContext);
 
+<<<<<<< Updated upstream
   if (auth.user === null) {
     navigation.navigate('Login');
   }
@@ -68,6 +69,13 @@ export function ListJobs({ navigation, mode }: ListJobsProps) {
       setPage(1);
       return;
     }
+=======
+    useEffect(() => {
+        if (auth.user === null) {
+            navigation.navigate('Login');
+        }
+    }, [auth, navigation]);
+>>>>>>> Stashed changes
 
     if (allLoaded || loading) {
       return;

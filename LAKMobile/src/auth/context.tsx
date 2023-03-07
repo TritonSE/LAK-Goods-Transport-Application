@@ -156,6 +156,7 @@ export const AuthProvider: React.FC<Props> = ({ children }) => {
     }
   };
 
+<<<<<<< Updated upstream
   // /**
   //  * Verifies user through Recaptcha, feeds into sendOTP
   //  * @param phone Phone number to send one time password to
@@ -171,6 +172,35 @@ export const AuthProvider: React.FC<Props> = ({ children }) => {
   //         }
   //     }, auth);
   // }
+=======
+    const signup = async (firstName: string, lastName: string, phone: string, location: string, pin: string): Promise<void> => {
+        try {
+            // First, let's try to save the user credentials in Firebase.
+            const email = phoneNumberToEmail(phone);
+            const password = await pinToPass(pin);
+            const auth = getAuth(app);
+            const userCredential =  await createUserWithEmailAndPassword(auth, email, password)
+            const user = userCredential.user
+    
+            // Next, we make a call to save this user in our backend.
+            await createNewUser({
+                userId: user.uid,
+                firstName,
+                lastName,
+                phone,
+                location
+            });
+            setUser(user);
+        } catch (e) {
+            if (e instanceof FirebaseError) {
+                setFirebaseError(e);
+            } else {
+                setError(e as Error);
+            }
+            setUser(null);
+        }
+    }
+>>>>>>> Stashed changes
 
   // /**
   //  * Sends a one-time-password to the given phone number to sign in with.

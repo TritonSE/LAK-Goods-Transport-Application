@@ -26,6 +26,7 @@ export function SignupScreen({ navigation }: SignupProps) {
       navigation.navigate('JobLandingScreen');
     } else {
       // Display errors now! (invalid password, email already in use, etc.)
+      console.error(auth.error);
     }
   };
 
