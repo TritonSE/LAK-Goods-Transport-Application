@@ -128,12 +128,6 @@ const styles = StyleSheet.create({
     elevation: 0,
   },
 
-<<<<<<< HEAD
-    red: {
-        color: COLORS.red
-    },
-});
-=======
   grey: {
     color: COLORS.darkGrey,
   },
@@ -142,4 +136,3 @@ const styles = StyleSheet.create({
     color: COLORS.red,
   },
 });
->>>>>>> main

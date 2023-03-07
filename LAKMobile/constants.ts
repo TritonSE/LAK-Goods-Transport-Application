@@ -1,7 +1,6 @@
 import { JobData, ApplicantData } from './src/api/data';
 
 export const COLORS = {
-<<<<<<< HEAD
     white: "#ffffff",
     maroon: "#94100C",
     turquoise: "#3A9A89",
@@ -13,17 +12,6 @@ export const COLORS = {
     blue: '#335BC2'
 
 }
-=======
-  white: '#ffffff',
-  maroon: '#94100C',
-  turquoise: '#3A9A89',
-  mediumGrey: '#8B8B8B',
-  red: '#DA5C5C',
-  gray: '#BABABA',
-  deepGreen: '#0F920D',
-  darkGrey: '#333333',
-};
->>>>>>> main
 
 // TODO Remove (only for development phase)
 export const MOCK_JOB_DATA: JobData = {
