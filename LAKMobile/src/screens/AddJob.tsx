@@ -1,14 +1,7 @@
-import React, {
-  Reducer,
-  useCallback,
-  useContext,
-  useEffect,
-  useReducer,
-  useState,
-} from "react";
-import { ScrollView, StyleSheet, View } from "react-native";
-import { Picker } from "@react-native-picker/picker";
-import * as ImagePicker from "expo-image-picker";
+import React, { Reducer, useCallback, useContext, useEffect, useReducer, useState } from 'react';
+import { ScrollView, StyleSheet, View } from 'react-native';
+import { Picker } from '@react-native-picker/picker';
+import * as ImagePicker from 'expo-image-picker';
 import { ConfirmationBox } from '../components/ConfirmationBox';
 import {
   AppText,
@@ -18,40 +11,35 @@ import {
   AppTextInput,
   ImagePickerButton,
   ModalAlert,
-} from "../components";
-import { COLORS } from "../../constants";
-import {
-  JobOwnerView,
-  postJob,
-  updateJob,
-  deleteJob,
-} from "../api";
-import { AddJobProps } from "../types/navigation";
-import { AuthContext } from "../auth/context";
+} from '../components';
+import { COLORS } from '../../constants';
+import { JobOwnerView, postJob, updateJob, deleteJob } from '../api';
+import { AddJobProps } from '../types/navigation';
+import { AuthContext } from '../auth/context';
 
-const PICKER_DEFAULT = "-- Select a district --";
+const PICKER_DEFAULT = '-- Select a district --';
 const LOCATIONS = [
   PICKER_DEFAULT,
-  "Bumthang",
-  "Chhukha",
-  "Dagana",
-  "Gasa",
-  "Haa",
-  "Lhuentse",
-  "Mongar",
-  "Paro",
-  "Pema Gatshel",
-  "Punakha",
-  "Samdrup Jongkhar",
-  "Samtse",
-  "Sarpang",
-  "Thimphu",
-  "Trashigang",
-  "Trashi Yangtse",
-  "Trongsa",
-  "Tsirang",
-  "Wangdue Phodrang",
-  "Zhemgang",
+  'Bumthang',
+  'Chhukha',
+  'Dagana',
+  'Gasa',
+  'Haa',
+  'Lhuentse',
+  'Mongar',
+  'Paro',
+  'Pema Gatshel',
+  'Punakha',
+  'Samdrup Jongkhar',
+  'Samtse',
+  'Sarpang',
+  'Thimphu',
+  'Trashigang',
+  'Trashi Yangtse',
+  'Trongsa',
+  'Tsirang',
+  'Wangdue Phodrang',
+  'Zhemgang',
 ];
 
 type Validator = (text: string) => boolean;
@@ -63,23 +51,23 @@ type ValidatedField = {
 };
 
 const fieldNames = {
-  jobTitle: "jobTitle",
-  phoneNumber: "phoneNumber",
-  deliveryDate: "deliveryDate",
-  pickupLocation: "pickupLocation",
-  dropoffLocation: "dropoffLocation",
-  imageSelect: "imageSelect",
+  jobTitle: 'jobTitle',
+  phoneNumber: 'phoneNumber',
+  deliveryDate: 'deliveryDate',
+  pickupLocation: 'pickupLocation',
+  dropoffLocation: 'dropoffLocation',
+  imageSelect: 'imageSelect',
 };
 
-export function AddJob({ navigation, route }: AddJobProps) {  
-  let formType = route.params.formType;
+export function AddJob({ navigation, route }: AddJobProps) {
+  const formType = route.params.formType;
   let screenHeader;
-  if (formType === "add") {
-    screenHeader = "Add Job"
-  } else if (formType === "edit") {
-    screenHeader = "Edit Job"
+  if (formType === 'add') {
+    screenHeader = 'Add Job';
+  } else if (formType === 'edit') {
+    screenHeader = 'Edit Job';
   } else {
-    screenHeader = "Repost Job"
+    screenHeader = 'Repost Job';
   }
 
   const [isValid, setIsValid] = useState({
@@ -91,7 +79,7 @@ export function AddJob({ navigation, route }: AddJobProps) {
     [fieldNames.imageSelect]: true,
   });
   interface ImagesReducerSetAction {
-    type: "SET_IMAGES";
+    type: 'SET_IMAGES';
     payload: string[];
   }
 
@@ -102,97 +90,100 @@ export function AddJob({ navigation, route }: AddJobProps) {
 
   type ImagesReducer = Reducer<ImagesReducerState, ImagesReducerAction>;
 
-
-  const [imageInfo, setImageInfo] = useState<Array<ImagePicker.ImagePickerAsset | null>>([null, null, null])
+  const [imageInfo, setImageInfo] = useState<Array<ImagePicker.ImagePickerAsset | null>>([
+    null,
+    null,
+    null,
+  ]);
 
   const reducer: ImagesReducer = (state, action): ImagesReducerState => {
     let newState = state.slice();
     switch (action.type) {
-      case "ADD_IMAGE":
-        const index = newState.findIndex((value) => value === "");
+      case 'ADD_IMAGE':
+        const index = newState.findIndex((value) => value === '');
         newState[index] = action.payload.uri;
         if (imageInfo) {
-          let newImageInfo = imageInfo.map((im, i) => {
-            return (i === index ? action.payload : im)
-          })
-          setImageInfo(newImageInfo)
+          const newImageInfo = imageInfo.map((im, i) => {
+            return i === index ? action.payload : im;
+          });
+          setImageInfo(newImageInfo);
         }
-        setIsValid({ ...isValid, ["imageSelect"]: true });
+        setIsValid({ ...isValid, ['imageSelect']: true });
         break;
-      case "REMOVE_IMAGE":
-        newState[action.payload] = "";
-        newState = newState.filter((value) => value !== "");
+      case 'REMOVE_IMAGE':
+        newState[action.payload] = '';
+        newState = newState.filter((value) => value !== '');
         while (newState.length < 3) {
-          newState.push("");
+          newState.push('');
         }
-        let valid = newState.some((v) => v !== "");
-        setIsValid({ ...isValid, ["imageSelect"]: valid });
+        const valid = newState.some((v) => v !== '');
+        setIsValid({ ...isValid, ['imageSelect']: valid });
         break;
     }
     return newState;
   };
 
-  const [imageURIs, dispatch] = useReducer(reducer, ["", "", ""]);
+  const [imageURIs, dispatch] = useReducer(reducer, ['', '', '']);
   const [permissionAlertVisible, setPermissionAlertVisible] = useState(false);
   const [imagePickPromptVisible, setImagePickPromptVisible] = useState(false);
-  const [jobTitle, setJobTitle] = useState("");
-  const [clientName, setClientName] = useState("");
-  const [phoneNumber, setPhoneNumber] = useState("");
-  const [receiverName, setReceiverName] = useState("");
-  const [receiverPhoneNumber, setReceiverPhoneNumber] = useState("");
-  const [deliveryDate, setDeliveryDate] = useState("");
-  const [description, setDescription] = useState("");
-  const [quantity, setQuantity] = useState("");
-  const [price, setPrice] = useState("");
-  const [pickupLocation, setPickupLocation] = useState("");
-  const [pickupDistrict, setPickupDistrict] = useState("");
-  const [dropoffLocation, setDropoffLocation] = useState("");
-  const [dropoffDistrict, setDropoffDistrict] = useState("");
+  const [jobTitle, setJobTitle] = useState('');
+  const [clientName, setClientName] = useState('');
+  const [phoneNumber, setPhoneNumber] = useState('');
+  const [receiverName, setReceiverName] = useState('');
+  const [receiverPhoneNumber, setReceiverPhoneNumber] = useState('');
+  const [deliveryDate, setDeliveryDate] = useState('');
+  const [description, setDescription] = useState('');
+  const [quantity, setQuantity] = useState('');
+  const [price, setPrice] = useState('');
+  const [pickupLocation, setPickupLocation] = useState('');
+  const [pickupDistrict, setPickupDistrict] = useState('');
+  const [dropoffLocation, setDropoffLocation] = useState('');
+  const [dropoffDistrict, setDropoffDistrict] = useState('');
   const [confirmationVisible, setConfirmationVisible] = useState(false);
 
   const auth = useContext(AuthContext);
 
-  if (auth.user === null) {
-    navigation.navigate('Login');
-  }
+  useEffect(() => {
+    if (auth.user === null) {
+      navigation.navigate('Login');
+    }
+  }, [auth, navigation]);
 
   const userId = auth.user ? auth.user.uid : '';
-
   interface ImagesReducerAddAction {
-    type: "ADD_IMAGE";
+    type: 'ADD_IMAGE';
     payload: ImagePicker.ImagePickerAsset;
   }
 
   interface ImagesReducerRemoveAction {
-    type: "REMOVE_IMAGE";
+    type: 'REMOVE_IMAGE';
     payload: number;
   }
 
   //TODO: Abstract text validation to make more DRY
   const validatePresence: Validator = (text: string) => {
-    let valid = text.length > 0;
+    const valid = text.length > 0;
     return valid;
   };
 
   const validatePhoneNumber: Validator = (text: string) => {
-    let valid =
-      (text.startsWith("1") || text.startsWith("7")) && text.length == 8;
+    const valid = (text.startsWith('1') || text.startsWith('7')) && text.length == 8;
     return valid;
   };
 
   const validateDate: Validator = (text: string) => {
-    let date_regex = /^(0[1-9]|1[0-2])\/(0[1-9]|1\d|2\d|3[01])\/(19|20)\d{2}$/;
-    let valid = date_regex.test(text);
+    const date_regex = /^(0[1-9]|1[0-2])\/(0[1-9]|1\d|2\d|3[01])\/(19|20)\d{2}$/;
+    const valid = date_regex.test(text);
     return valid;
   };
 
   const validatePickerSelect: Validator = (value: string) => {
-    let valid = value !== PICKER_DEFAULT;
+    const valid = value !== PICKER_DEFAULT;
     return valid;
   };
 
   const validateImageUpload: Validator = () => {
-    return imageURIs.findIndex((value) => value !== "") !== -1;
+    return imageURIs.findIndex((value) => value !== '') !== -1;
   };
 
   const validators = {
@@ -201,7 +192,7 @@ export function AddJob({ navigation, route }: AddJobProps) {
     recieverPhoneNumber: validatePhoneNumber,
     date: validateDate,
     picker: validatePickerSelect,
-    image: validateImageUpload
+    image: validateImageUpload,
   };
 
   const validatedFields: Array<ValidatedField> = [
@@ -232,16 +223,16 @@ export function AddJob({ navigation, route }: AddJobProps) {
     },
     {
       fieldName: fieldNames.imageSelect,
-      fieldValue: "",
+      fieldValue: '',
       validator: validators.image,
     },
   ];
 
   const validateFields = () => {
-    let isAllValid: boolean = true;
+    let isAllValid = true;
     const currentValid = { ...isValid };
     validatedFields.forEach((validatedField) => {
-      let valid = validatedField.validator(validatedField.fieldValue);
+      const valid = validatedField.validator(validatedField.fieldValue);
       currentValid[validatedField.fieldName] = valid;
       if (!valid) {
         isAllValid = false;
@@ -252,7 +243,7 @@ export function AddJob({ navigation, route }: AddJobProps) {
   };
 
   useEffect(() => {
-    if (formType !== "add" && route.params.jobData) {
+    if (formType !== 'add' && route.params.jobData) {
       const job: JobOwnerView = route.params.jobData;
       setJobTitle(job.title);
       setClientName(job.clientName);
@@ -260,20 +251,19 @@ export function AddJob({ navigation, route }: AddJobProps) {
       setReceiverName(job.receiverName);
       setReceiverPhoneNumber(job.receiverPhoneNumber);
       setDeliveryDate(job.deliveryDate);
-      setDescription(job.description || "");
-      setQuantity(job.packageQuantity?.toString() || "");
-      setPrice(job.price?.toString() || "");
+      setDescription(job.description || '');
+      setQuantity(job.packageQuantity?.toString() || '');
+      setPrice(job.price?.toString() || '');
       setPickupLocation(job.pickupLocation);
       setPickupDistrict(job.pickupDistrict);
       setDropoffLocation(job.dropoffLocation);
       setDropoffDistrict(job.dropoffDistrict);
-      dispatch({ type: "SET_IMAGES", payload: job.imageIds });
+      dispatch({ type: 'SET_IMAGES', payload: job.imageIds });
     }
   }, [formType, route.params.jobData]);
 
   const openImageLibrary = useCallback(async () => {
-    const permissionResult =
-      await ImagePicker.requestMediaLibraryPermissionsAsync();
+    const permissionResult = await ImagePicker.requestMediaLibraryPermissionsAsync();
     if (!permissionResult.granted) {
       setPermissionAlertVisible(true);
       return;
@@ -282,7 +272,7 @@ export function AddJob({ navigation, route }: AddJobProps) {
       mediaTypes: ImagePicker.MediaTypeOptions.Images,
     });
     if (!pickerResult.canceled) {
-      dispatch({ type: "ADD_IMAGE", payload: pickerResult.assets[0] });
+      dispatch({ type: 'ADD_IMAGE', payload: pickerResult.assets[0] });
     }
     setImagePickPromptVisible(false);
   }, []);
@@ -290,56 +280,56 @@ export function AddJob({ navigation, route }: AddJobProps) {
   const openCamera = useCallback(async () => {
     const permissionResult = await ImagePicker.requestCameraPermissionsAsync();
     if (!permissionResult.granted) {
-      setPermissionAlertVisible(true)
+      setPermissionAlertVisible(true);
       return;
     }
     const cameraResult = await ImagePicker.launchCameraAsync();
     if (!cameraResult.canceled) {
-      dispatch({ type: "ADD_IMAGE", payload: cameraResult.assets[0] });
+      dispatch({ type: 'ADD_IMAGE', payload: cameraResult.assets[0] });
     }
     setImagePickPromptVisible(false);
   }, []);
 
   const handleTapImage = useCallback(
     (index: any) => {
-      if (imageURIs[index] === "") {
+      if (imageURIs[index] === '') {
         setImagePickPromptVisible(true);
       } else {
-        dispatch({ type: "REMOVE_IMAGE", payload: index });
+        dispatch({ type: 'REMOVE_IMAGE', payload: index });
       }
     },
     [imageURIs]
   );
 
-  const createUpdateFromId = (
-    jobId: string,
-    newJob: object
-  ): JobOwnerView => {
-    return ({
+  const createUpdateFromId = (jobId: string, newJob: object): JobOwnerView => {
+    return {
       _id: jobId,
       ...newJob,
       applicants: route.params.jobData?.applicants || [],
-      assignedDriverId: route.params.jobData?.assignedDriverId || "",
-      startDate: route.params.jobData?.startDate || "",
-      status: "CREATED",
-    }) as JobOwnerView
-  }
+      assignedDriverId: route.params.jobData?.assignedDriverId || '',
+      startDate: route.params.jobData?.startDate || '',
+      status: 'CREATED',
+    } as JobOwnerView;
+  };
 
-  const createFormData = (images: Array<ImagePicker.ImagePickerAsset | null>, body: { [key: string]: any }) => {
+  const createFormData = (
+    images: Array<ImagePicker.ImagePickerAsset | null>,
+    body: { [key: string]: any }
+  ) => {
     const data = new FormData();
     if (images !== null && images[0] !== null) {
       images.map((image) => {
         if (image !== null) {
-          const uriArray = image.uri.split(".");
-          const fileExtension = uriArray[uriArray.length - 1];  // e.g.: "jpg"
+          const uriArray = image.uri.split('.');
+          const fileExtension = uriArray[uriArray.length - 1]; // e.g.: "jpg"
           const fileTypeExtended = `${image.type}/${fileExtension}`; // e.g.: "image/jpg"
-          data.append("images", {
-            name: "demo.jpg",
+          data.append('images', {
+            name: 'demo.jpg',
             uri: image.uri,
             type: fileTypeExtended,
-          } as unknown as Blob)
+          } as unknown as Blob);
         }
-      })
+      });
     }
 
     Object.keys(body).forEach((key) => {
@@ -347,7 +337,7 @@ export function AddJob({ navigation, route }: AddJobProps) {
     });
 
     return data;
-  }
+  };
 
   const submitJob = async () => {
     // TODO: when submitting, remember to filter out empty strings from imageURIs
@@ -368,39 +358,41 @@ export function AddJob({ navigation, route }: AddJobProps) {
       pickupDistrict: pickupDistrict.trim(),
       dropoffLocation: dropoffLocation.trim(),
       dropoffDistrict: dropoffDistrict.trim(),
-      imageIds: imageURIs.filter((value) => value !== ""),
+      imageIds: imageURIs.filter((value) => value !== ''),
     };
     const formedJob: FormData = createFormData(imageInfo, newJob);
-    if (formType === "add" || formType == "repost") {
-      postJob(userId, formedJob).then(response => {
+    if (formType === 'add' || formType == 'repost') {
+      postJob(userId, formedJob).then((response) => {
         console.log(response);
         if (response == null) {
           return;
         }
         const { jobId } = response;
-        const updatedJob: JobOwnerView = createUpdateFromId(jobId, newJob)
-        route.params.setJobData(prevJobs => [...prevJobs, updatedJob])
-        navigation.navigate("JobLandingScreen");
+        const updatedJob: JobOwnerView = createUpdateFromId(jobId, newJob);
+        route.params.setJobData((prevJobs) => [...prevJobs, updatedJob]);
+        navigation.navigate('JobLandingScreen');
       });
-    } else if (formType === "edit") {
-      const body = {
-        //TODO pickup and dropoff district
-        ...newJob,
-      };
+    } else if (formType === 'edit') {
+      // const body = {
+      //   //TODO pickup and dropoff district
+      //   ...newJob,
+      // };
       //TODO
       if (!route.params.jobData) {
         return;
       }
 
-      updateJob(userId, route.params.jobData._id, formedJob).then(response => {
+      updateJob(userId, route.params.jobData._id, formedJob).then((response) => {
         if (response === null) {
           return;
         }
         console.log(response);
         const { jobId } = response;
-        const updatedJob: JobOwnerView = createUpdateFromId(jobId, newJob)
-        route.params.setJobData(prevJobs => prevJobs.map(job => job._id === updatedJob._id ? updatedJob : job))
-        navigation.navigate("JobLandingScreen");
+        const updatedJob: JobOwnerView = createUpdateFromId(jobId, newJob);
+        route.params.setJobData((prevJobs) =>
+          prevJobs.map((job) => (job._id === updatedJob._id ? updatedJob : job))
+        );
+        navigation.navigate('JobLandingScreen');
       });
     } else {
       //TODO
@@ -412,20 +404,16 @@ export function AddJob({ navigation, route }: AddJobProps) {
     if (!route.params.jobData) {
       return;
     }
-    
-    
-    deleteJob(userId, route.params.jobData._id).then(response => {
+
+    deleteJob(userId, route.params.jobData._id).then((response) => {
       if (response === null) {
         return;
       }
       const { jobId } = response;
 
-      route.params.setJobData(prevJobs => prevJobs.filter(job => job._id !== jobId))
-      navigation.navigate("JobLandingScreen");
+      route.params.setJobData((prevJobs) => prevJobs.filter((job) => job._id !== jobId));
+      navigation.navigate('JobLandingScreen');
     });
-    
-    
-
   };
 
   return (
@@ -439,11 +427,7 @@ export function AddJob({ navigation, route }: AddJobProps) {
           <AppTextInput
             value={jobTitle}
             changeAction={setJobTitle}
-            style={
-              isValid[fieldNames.jobTitle]
-                ? [inputStyle2, styles.spacer]
-                : [inputStyleErr2]
-            }
+            style={isValid[fieldNames.jobTitle] ? [inputStyle2, styles.spacer] : [inputStyleErr]}
             placeholder="Ex. Box of apples"
             isValid={isValid[fieldNames.jobTitle]}
             type="jobTitle"
@@ -469,11 +453,7 @@ export function AddJob({ navigation, route }: AddJobProps) {
             value={phoneNumber}
             changeAction={setPhoneNumber}
             isValid={isValid[fieldNames.phoneNumber]}
-            style={
-              isValid["phoneNumber"]
-                ? [inputStyle2, styles.spacer]
-                : inputStyleErr2
-            }
+            style={isValid['phoneNumber'] ? [inputStyle2, styles.spacer] : inputStyleErr}
             placeholder="Ex. 17113456"
             icon="phone-in-talk"
             keyboardType="numeric"
@@ -510,7 +490,7 @@ export function AddJob({ navigation, route }: AddJobProps) {
             value={deliveryDate}
             changeAction={setDeliveryDate}
             isValid={isValid[fieldNames.deliveryDate]}
-            style={isValid["deliveryDate"] ? inputStyle2 : inputStyleErr2}
+            style={isValid['deliveryDate'] ? inputStyle2 : inputStyleErr}
             placeholder="Ex. MM/DD/YYYY"
             maxLength={10}
             type="deliveryDate"
@@ -528,7 +508,7 @@ export function AddJob({ navigation, route }: AddJobProps) {
             style={[styles.multilineInput, styles.spacer]}
             maxLength={1000}
             placeholder={
-              "Tell us about your package. Add any extra detail about its size. \n\n Ex. Package will fill up 1/3 of a truck."
+              'Tell us about your package. Add any extra detail about its size. \n\n Ex. Package will fill up 1/3 of a truck.'
             }
           />
         </LabelWrapper>
@@ -560,11 +540,7 @@ export function AddJob({ navigation, route }: AddJobProps) {
             value={pickupLocation}
             onChangeText={setPickupLocation}
             isValid={isValid[fieldNames.pickupLocation]}
-            style={
-              isValid[fieldNames.pickupLocation]
-                ? inputStyleFull
-                : inputStyleErrFull
-            }
+            style={isValid[fieldNames.pickupLocation] ? inputStyleFull : inputStyleErrFull}
             placeholder="Ex. Insert address or landmark"
             maxLength={100}
             icon="location-pin"
@@ -590,11 +566,7 @@ export function AddJob({ navigation, route }: AddJobProps) {
           <AppTextInput
             value={dropoffLocation}
             onChangeText={setDropoffLocation}
-            style={
-              isValid[fieldNames.dropoffLocation]
-                ? inputStyleFull
-                : inputStyleErrFull
-            }
+            style={isValid[fieldNames.dropoffLocation] ? inputStyleFull : inputStyleErrFull}
             isValid={isValid[fieldNames.dropoffLocation]}
             placeholder="Ex. Insert address or landmark"
             maxLength={100}
@@ -619,47 +591,34 @@ export function AddJob({ navigation, route }: AddJobProps) {
 
         <View style={styles.photos}>
           {imageURIs.map((uri, index) => (
-            <ImagePickerButton
-              key={index}
-              sourceURI={uri}
-              onSelect={() => handleTapImage(index)}
-            />
+            <ImagePickerButton key={index} sourceURI={uri} onSelect={() => handleTapImage(index)} />
           ))}
         </View>
         {isValid[fieldNames.imageSelect] ? (
-          <>
-          </>
-        ): (
+          <></>
+        ) : (
           <View>
-          <AppText style={styles.errText}>
-            At least one photo of the package is required. Tap on a photo to
-            remove it.
-          </AppText>
-          </View>
-          
-        )}
-          <View>
-            <AppText style={styles.instructionText}>
-            Note: The first photo will be the thumbnail of the job listing.
+            <AppText style={styles.errText}>
+              At least one photo of the package is required. Tap on a photo to remove it.
             </AppText>
           </View>
+        )}
+        <View>
+          <AppText style={styles.instructionText}>
+            Note: The first photo will be the thumbnail of the job listing.
+          </AppText>
+        </View>
 
         <AppButton
           onPress={submitJob}
-          style={[styles.center, { width: "100%" }]}
+          style={[styles.center, { width: '100%' }]}
           type="primary"
-          title={
-            formType === "add"
-              ? "Post Job"
-              : formType === "edit"
-                ? "Update"
-                : "Repost"
-          }
+          title={formType === 'add' ? 'Post Job' : formType === 'edit' ? 'Update' : 'Repost'}
         />
-        {formType === "edit" && (
+        {formType === 'edit' && (
           <AppButton
             onPress={() => setConfirmationVisible(true)}
-            style={[styles.center, { width: "100%", margin: 15 }]}
+            style={[styles.center, { width: '100%', margin: 15 }]}
             title="Delete"
             type="secondary"
           />
@@ -670,8 +629,8 @@ export function AddJob({ navigation, route }: AddJobProps) {
         message="Please allow access to photos in Settings!"
         buttons={[
           {
-            type: "primary",
-            label: "Close",
+            type: 'primary',
+            label: 'Close',
             onPress: () => setPermissionAlertVisible(false),
           },
         ]}
@@ -681,28 +640,31 @@ export function AddJob({ navigation, route }: AddJobProps) {
         title="Add Photo"
         buttons={[
           {
-            type: "primary",
-            label: "Upload from library",
+            type: 'primary',
+            label: 'Upload from library',
             onPress: openImageLibrary,
           },
-          { type: "primary", label: "Take with camera", onPress: openCamera },
+          { type: 'primary', label: 'Take with camera', onPress: openCamera },
           {
-            type: "secondary",
-            label: "Cancel",
+            type: 'secondary',
+            label: 'Cancel',
             onPress: () => setImagePickPromptVisible(false),
           },
         ]}
         visible={imagePickPromptVisible}
       />
-      { confirmationVisible ? (<ConfirmationBox
-                checkMarkAppear = {false}
-                rejectVisible = {true}
-                title={"Delete job post?"}
-                body={"This will be removed from the job board permanently."}
-                acceptName={"Delete"}
-                rejectName={"Cancel"}
-                onAccept={() => handleDeleteJob()}
-                onReject={() => setConfirmationVisible(false)} />) : null }
+      {confirmationVisible ? (
+        <ConfirmationBox
+          checkMarkAppear={false}
+          rejectVisible={true}
+          title={'Delete job post?'}
+          body={'This will be removed from the job board permanently.'}
+          acceptName={'Delete'}
+          rejectName={'Cancel'}
+          onAccept={() => handleDeleteJob()}
+          onReject={() => setConfirmationVisible(false)}
+        />
+      ) : null}
     </View>
   );
 }
@@ -724,17 +686,17 @@ const styles = StyleSheet.create({
   errText: {
     color: COLORS.red,
     fontSize: 12,
-    paddingBottom: 20  // this is adding margin below null errMsg as well
+    paddingBottom: 20, // this is adding margin below null errMsg as well
   },
   instructionText: {
     fontSize: 12,
-    paddingBottom: 20  // this is adding margin below null instructionText as well
+    paddingBottom: 20, // this is adding margin below null instructionText as well
   },
 
   multilineInput: {
     borderWidth: 1,
     height: 75,
-    width: "80%",
+    width: '80%',
     borderRadius: 4,
     paddingHorizontal: 5,
     borderColor: COLORS.mediumGrey,
@@ -746,15 +708,15 @@ const styles = StyleSheet.create({
   },
 
   photos: {
-    flexDirection: "row",
-    alignSelf: "center",
+    flexDirection: 'row',
+    alignSelf: 'center',
   },
   photoInstructions: {
     fontSize: 12,
   },
 
   center: {
-    alignSelf: "center",
+    alignSelf: 'center',
   },
   pickerWrapper: {
     padding: 0,
@@ -772,40 +734,34 @@ const styles = StyleSheet.create({
 const inputStyle1 = StyleSheet.flatten([
   styles.input,
   {
-    width: "40%",
+    width: '40%',
   },
 ]);
 
 const inputStyle2 = StyleSheet.flatten([
   styles.input,
   {
-    width: "60%",
+    width: '60%',
   },
 ]);
 
 const inputStyleFull = StyleSheet.flatten([
   styles.input,
   {
-    width: "100%",
-  },
-]);
-const inputStyleErr1 = StyleSheet.flatten([
-  styles.errInput,
-  {
-    width: "40%",
+    width: '100%',
   },
 ]);
 
-const inputStyleErr2 = StyleSheet.flatten([
+const inputStyleErr = StyleSheet.flatten([
   styles.errInput,
   {
-    width: "60%",
+    width: '60%',
   },
 ]);
 
 const inputStyleErrFull = StyleSheet.flatten([
   styles.errInput,
   {
-    width: "100%",
+    width: '100%',
   },
 ]);
