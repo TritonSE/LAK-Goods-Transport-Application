@@ -14,20 +14,13 @@ const Tab = createMaterialTopTabNavigator();
 export function JobLandingScreen({ navigation }: JobLandingScreenProps) {
   const auth = useContext(AuthContext);
 
-<<<<<<< Updated upstream
-  if (auth.user === null) {
-    navigation.navigate('Login');
-  }
+  useEffect(() => {
+    if (auth.user === null) {
+      navigation.navigate('Login');
+    }
+  }, [auth, navigation]);
+
   const userId = auth.user ? auth.user.uid : '';
-=======
-    useEffect(() => {
-        if (auth.user === null) {
-            navigation.navigate('Login');
-        }
-    }, [auth, navigation]);
-    
-    const userId = auth.user ? auth.user.uid : '';
->>>>>>> Stashed changes
 
   return (
     <View style={styles.container}>

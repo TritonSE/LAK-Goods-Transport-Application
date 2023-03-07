@@ -141,7 +141,6 @@ export function AddJob({ navigation, route }: AddJobProps) {
   const [dropoffDistrict, setDropoffDistrict] = useState('');
   const [confirmationVisible, setConfirmationVisible] = useState(false);
 
-
   const auth = useContext(AuthContext);
 
   useEffect(() => {
