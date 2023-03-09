@@ -40,7 +40,7 @@ const VehicleInformationSchema = new Schema({
     },
   ],
 });
-
+hello
 const UserSchema = new Schema(
   {
     _id: {
@@ -58,6 +58,9 @@ const UserSchema = new Schema(
     phone: {
       type: String,
       required: true,
+      minlength: 10,
+      maxlength: 20,
+      match: /^(\+\d{1,2}\s)?\(?\d{3}\)?[\s.-]\d{3}[\s.-]\d{4}$/
     },
     location: {
       type: String,

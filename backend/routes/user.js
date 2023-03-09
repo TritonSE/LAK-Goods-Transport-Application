@@ -10,6 +10,7 @@ import { getSessionUserId } from '../constants';
 const routes = express.Router();
 const upload = multer({ storage: multer.memoryStorage() }).array('images');
 
+// getting one of the users by their id
 routes.get('/:userid', async (req, res, next) => {
   console.info(`ROUTES: Getting user by ID ${req.params.userid}`);
 
@@ -49,6 +50,7 @@ routes.post('/get-by-ids', async (req, res, next) => {
     .status(200)
     .json({ message: `User documents sent as ${users}`, users: users });
 });
+
 
 routes.post('/', upload, async (req, res, next) => {
   console.info('ROUTES: Creating new user', req.query);
