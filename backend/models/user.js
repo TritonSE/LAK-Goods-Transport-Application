@@ -40,7 +40,7 @@ const VehicleInformationSchema = new Schema({
     },
   ],
 });
-hello
+
 const UserSchema = new Schema(
   {
     _id: {
