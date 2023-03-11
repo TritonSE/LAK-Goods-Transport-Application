@@ -58,9 +58,6 @@ const UserSchema = new Schema(
     phone: {
       type: String,
       required: true,
-      minlength: 10,
-      maxlength: 20,
-      match: /^(\+\d{1,2}\s)?\(?\d{3}\)?[\s.-]\d{3}[\s.-]\d{4}$/
     },
     location: {
       type: String,
@@ -76,6 +73,11 @@ const UserSchema = new Schema(
         return this.driverLicenseId !== undefined;
       },
     },
+    verificationStatus: {
+      type: String,
+      enum: ["Not Applied", "Applied", "In Review", "Verified", "Disapproved", "Suspended"],
+      default: "Not Applied"
+    }
   },
   {
     toObject: {
