@@ -93,3 +93,34 @@ export async function registerUser(userData, imageFiles) {
     throw ServiceError.INVALID_USER_RECEIVED.addContext(e.stack);
   }
 }
+
+/**
+ * This function takes as input the userId of a user, and updates a user's
+ * verification status to the parameter newVerificationStatus
+ */
+export async function updateUserVerificationStatus(userId, newVerificationStatus){
+
+  console.debug(`SERVICE - updateUserVerificationStatus running: userId - ${userId} newVerificationStatus - ${newVerificationStatus}`);
+
+  try{
+    let user = await UserModel.findOne({ _id: userId });
+
+    if (!user){
+      throw ServiceError.USER_NOT_FOUND.addContext(
+        'requestedUserId - ',
+        requestedUserId
+      );
+    }
+
+    user.verificationStatus = verificationStatus;
+    await user.save();
+
+    console.debug("USER SAVED");
+
+    return user;
+
+  }
+  catch(e){
+    throw ServiceError.INVALID_USER_RECEIVED.addContext(e.stack);
+  }
+}
