@@ -3,8 +3,10 @@
  */
 import express from 'express';
 import multer from 'multer';
+import bodyParser from 'body-parser'
 
-import { getUser, getUsers, registerUser } from '../services/user';
+
+import { getUser, getUsers, registerUser, updateUserVerificationStatus} from '../services/user';
 import { getSessionUserId } from '../constants';
 
 const routes = express.Router();
@@ -68,4 +70,49 @@ routes.post('/', upload, async (req, res, next) => {
     userId: user._id,
   });
 });
+
+/**
+ * We want to set up a route that changes the verification status for a user.
+ * 
+ * Route parameters:
+ * userId => the id of the user in the mongoDB database whose verification 
+ *            status is to be changed
+ * verificationStatus => a string representing the new verification status. 
+ *                       The schema is set up in way such that it can only have 
+ *                       one among 6 pre-defined values
+ * [Not Applied, Applied, In Review, Verified, Disapproved, Suspended]
+ * 
+ * What the method does:
+ * Performs a PUT request to change the verificationStatus as required
+ */
+
+routes.put('/update-verification-status/:userid', async (req, res, next) => {
+
+  console.info(`ROUTES: Updating user verification status for userId = ${req.params.userid}`);
+
+  let updatedUser = null;
+
+  try{
+    const userId = req.params.userid;
+
+    const verificationStatus = req.body.verificationStatus;
+
+    const validVerificationStatuses = ["Not Applied", "Applied", "In Review", "Verified", "Disapproved", "Suspended"];
+    if (!validVerificationStatuses.includes(verificationStatus)) {
+      return res.status(400).json({ error: 'Invalid verification status' });
+    }
+
+    updatedUser = await updateUserVerificationStatus(userId, verificationStatus);
+  }
+  catch(e){
+    next(e);
+    return;
+  }
+
+  res.status(200).json({
+    message: `Verification status of ${req.params.userId} updated successfully`,
+    user: updatedUser
+  });
+})
+
 export default routes;

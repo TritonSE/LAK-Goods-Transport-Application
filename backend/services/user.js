@@ -112,7 +112,8 @@ export async function updateUserVerificationStatus(userId, newVerificationStatus
       );
     }
 
-    user.verificationStatus = verificationStatus;
+    user.verificationStatus = newVerificationStatus;
+
     await user.save();
 
     console.debug("USER SAVED");
