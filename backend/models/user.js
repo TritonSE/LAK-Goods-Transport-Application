@@ -75,9 +75,16 @@ const UserSchema = new Schema(
     },
     verificationStatus: {
       type: String,
-      enum: ["Not Applied", "Applied", "In Review", "Verified", "Disapproved", "Suspended"],
-      default: "Not Applied"
-    }
+      enum: [
+        'Not Applied',
+        'Applied',
+        'In Review',
+        'Verified',
+        'Disapproved',
+        'Suspended',
+      ],
+      default: 'Not Applied',
+    },
   },
   {
     toObject: {

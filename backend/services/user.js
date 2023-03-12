@@ -81,7 +81,7 @@ export async function registerUser(userData, imageFiles) {
       location,
       driverLicenseId,
       ...(driverLicenseId === undefined ? {} : { vehicleData: vehicleData }),
-      verificationStatus: "Not Applied"
+      verificationStatus: 'Not Applied',
     });
   } catch (e) {
     throw ServiceError.INVALID_USER_RECEIVED.addContext(e.stack);
@@ -98,14 +98,18 @@ export async function registerUser(userData, imageFiles) {
  * This function takes as input the userId of a user, and updates a user's
  * verification status to the parameter newVerificationStatus
  */
-export async function updateUserVerificationStatus(userId, newVerificationStatus){
+export async function updateUserVerificationStatus(
+  userId,
+  newVerificationStatus
+) {
+  console.debug(
+    `SERVICE - updateUserVerificationStatus running: userId - ${userId} newVerificationStatus - ${newVerificationStatus}`
+  );
 
-  console.debug(`SERVICE - updateUserVerificationStatus running: userId - ${userId} newVerificationStatus - ${newVerificationStatus}`);
+  try {
+    const user = await UserModel.findOne({ _id: userId });
 
-  try{
-    let user = await UserModel.findOne({ _id: userId });
-
-    if (!user){
+    if (!user) {
       throw ServiceError.USER_NOT_FOUND.addContext(
         'requestedUserId - ',
         requestedUserId
@@ -116,12 +120,10 @@ export async function updateUserVerificationStatus(userId, newVerificationStatus
 
     await user.save();
 
-    console.debug("USER SAVED");
+    console.debug('USER SAVED');
 
     return user;
-
-  }
-  catch(e){
+  } catch (e) {
     throw ServiceError.INVALID_USER_RECEIVED.addContext(e.stack);
   }
 }
