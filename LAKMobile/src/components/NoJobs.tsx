@@ -16,24 +16,28 @@ interface NoJobProps {
     buttonName: string;
     buttonVisible: boolean;
     onButtonClick: () => void;
+    iconType?: React.ReactElement
+    errorImageType: React.ReactElement
 }
 
-export const NoJobs = ({type, title, body, buttonName, buttonVisible, onButtonClick}: NoJobProps) => {
-    let displayIcon;
-    switch (type) {
-        case 'noAvailableJobs':
-            displayIcon = <NoAvailableJobsIcon />;
-        case 'noJobs':
-            displayIcon = <NoJobsIcon />;
-        default:
-            displayIcon = <NoMatchingJobsIcon />;
-    }
+export const NoJobs = ({type, title, body, buttonName, buttonVisible, onButtonClick, iconType, errorImageType}: NoJobProps) => {
+    // let displayIcon;
+    // switch (type) {
+    //     case 'noAvailableJobs':
+    //         displayIcon = <NoAvailableJobsIcon />;
+
+    //     case 'noJobs':
+    //         displayIcon = <NoJobsIcon />;
+    //         console.log("in the case sqitch");
+    //     default:
+    //         displayIcon = <NoMatchingJobsIcon />;
+    // }
     return (
         <View style={styles.container}>
             
             {/* icon stuff here */}
             <View style={styles.icon}>
-                {displayIcon}
+                {errorImageType}
             </View> 
             
             <AppText style={styles.heading}>{title}</AppText>
@@ -44,11 +48,10 @@ export const NoJobs = ({type, title, body, buttonName, buttonVisible, onButtonCl
                 { buttonVisible ? 
                     (<AppButton 
                         style={styles.button}
-                        //change textStyle and type later
                         textStyle={styles.buttonText}
                         type='primary'
                         title={buttonName}
-                        icon = {<PlusSignIcon />}
+                        icon = {iconType}
                         onPress={onButtonClick}
                     />) : null }
             </View>
@@ -74,7 +77,6 @@ const styles = StyleSheet.create({
         width: 75,
         paddingBottom: 100,
         
-        
     },
     
     body: {
@@ -88,7 +90,7 @@ const styles = StyleSheet.create({
         alignItems: "center",
         paddingBottom: 10
     },
-
+ 
     buttonContainer: {
         width: "100%",
         display: "flex",
@@ -97,17 +99,16 @@ const styles = StyleSheet.create({
     },
 
     button: {
-        // width: 200,
-        // backgroundColor: "transparent",
-        elevation: 0,
-        backgroundColor: COLORS.maroon,
-        'text-align': 'left'
+        width: 110,
+        backgroundColor: "transparent",
+        elevation: 0
     },
 
     buttonText: {
-        color: COLORS.white,
+        color: COLORS.blue,
         fontSize: 16,
-        textAlign: "left"
+        textAlign: "left",
+        
     
     }
 });

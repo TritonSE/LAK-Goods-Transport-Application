@@ -8,6 +8,7 @@ import { COLORS } from '../../constants';
 import { PickerStyles, FlatListStyles } from '../styles';
 import { useIsFocused } from '@react-navigation/native';
 import { AuthContext } from '../auth/context';
+import { NoAvailableJobsIcon, NoJobsIcon, NoMatchingJobsIcon, PlusSignIcon } from '../icons';
 
 type ListJobsModes = 'Add' | 'Find';
 type JobTypePickerOption = 'Current Jobs' | 'Completed Jobs' | 'Your Jobs' | 'Finished Jobs';
@@ -105,11 +106,22 @@ export function ListJobs({ navigation, mode }: ListJobsProps) {
   };
 
   const pickerOptions = mode === 'Add' ? ADD_PICKER_OPTIONS : FIND_PICKER_OPTIONS;
-
+  // check if no jobs are on screen --> render no jobs component
   return (
     <>
       <View style={{ alignItems: 'center' }}>
-        <View style={FlatListStyles.wrapper}>
+        <NoJobs
+            title = {"No current jobs."}
+            body = {"You don't have any in progress job at the moment."}
+            buttonVisible = {true}
+            buttonName = {"Add a Job Now"}
+            onButtonClick = {navigation.navigate('LoginScreen')}
+            type = {"noJobs"}
+            iconType = {<PlusSignIcon/>}
+            errorImageType = {<NoMatchingJobsIcon/>}
+
+            />
+        {/* <View style={FlatListStyles.wrapper}>
           <FlatList
             onRefresh={() => onRefresh()}
             refreshing={isRefreshing}
@@ -204,7 +216,7 @@ export function ListJobs({ navigation, mode }: ListJobsProps) {
             }}
             onEndReachedThreshold={0}
           />
-        </View>
+        </View> */}
       </View>
     </>
   );
