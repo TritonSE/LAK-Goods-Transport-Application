@@ -117,32 +117,25 @@ const SIZE_STYLE_MAP = {
 };
 
 type AppButtonProps = {
-  type?: 'link' | 'primary' | 'secondary' | 'tertiary' | 'disabled';
-  size?: 'large' | 'medium' | 'small';
-  onPress?: () => void;
-  title: string;
-  style?: StyleProp<ViewStyle>;
-  textStyle?: StyleProp<TextStyle>;
-};
+    type?: 'link' | 'primary' | 'secondary' | 'tertiary' | 'disabled',
+    size?: 'large' | 'medium' | 'small',
+    onPress?: () => void,
+    title: string,
+    style?: StyleProp<ViewStyle>,
+    textStyle?: StyleProp<TextStyle>,
+    icon?: React.ReactElement
+}
 
-export function AppButton({ title, size, style, onPress, type, textStyle }: AppButtonProps) {
-  if (!type || !(type in TYPE_STYLE_MAP)) type = 'secondary';
-  if (type != 'link' && (!size || !(size in SIZE_STYLE_MAP))) size = 'large';
+export function AppButton({title, size, style, onPress, type, textStyle, icon}: AppButtonProps) {
+    if (!type || !(type in TYPE_STYLE_MAP)) type = 'secondary';
+    if (type != 'link' && (!size || !(size in SIZE_STYLE_MAP))) size = 'large';
 
-  return (
-    <TouchableOpacity
-      onPress={onPress}
-      disabled={type === 'disabled'}
-      style={[
-        COMMON_STYLE.container,
-        TYPE_STYLE_MAP[type].container,
-        size && SIZE_STYLE_MAP[size].container,
-        style,
-      ]}
-    >
-      <AppText style={[TYPE_STYLE_MAP[type].text, size && SIZE_STYLE_MAP[size].text, textStyle]}>
-        {title}
-      </AppText>
-    </TouchableOpacity>
-  );
+    return (
+        <TouchableOpacity 
+            onPress={onPress}
+            disabled = {type === 'disabled'}
+            style={[COMMON_STYLE.container, TYPE_STYLE_MAP[type].container, size && SIZE_STYLE_MAP[size].container, style]}>
+            <AppText style={[TYPE_STYLE_MAP[type].text, size && SIZE_STYLE_MAP[size].text, textStyle]}>{icon} {title}</AppText>
+        </TouchableOpacity>
+    )
 }

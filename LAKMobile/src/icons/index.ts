@@ -5,3 +5,4 @@ export * from "./PublicProfilePicDefault";
 export * from "./NoAvailableJobsIcon";
 export * from "./NoJobsIcon";
 export * from "./NoMatchingJobsIcon";
+export * from "./PlusSignIcon";

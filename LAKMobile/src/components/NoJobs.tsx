@@ -5,7 +5,7 @@ import { AppButton } from "./AppButton";
 import { AppText } from "./AppText";
 import { COLORS } from "../../constants";
 import { IconButtonWrapper} from '../components';
-import { NoAvailableJobsIcon, NoJobsIcon, NoMatchingJobsIcon } from '../icons'
+import { NoAvailableJobsIcon, NoJobsIcon, NoMatchingJobsIcon, PlusSignIcon } from '../icons'
 import { ProfileButtonIcon } from '../icons/ProfileButtonIcon';
 
 
@@ -19,21 +19,22 @@ interface NoJobProps {
 }
 
 export const NoJobs = ({type, title, body, buttonName, buttonVisible, onButtonClick}: NoJobProps) => {
-
+    let displayIcon;
+    switch (type) {
+        case 'noAvailableJobs':
+            displayIcon = <NoAvailableJobsIcon />;
+        case 'noJobs':
+            displayIcon = <NoJobsIcon />;
+        default:
+            displayIcon = <NoMatchingJobsIcon />;
+    }
     return (
         <View style={styles.container}>
             
             {/* icon stuff here */}
             <View style={styles.icon}>
-                <NoAvailableJobsIcon />
-                {/* if (type == 'noAvailableJobs') {
-                    <NoAvailableJobsIcon />
-                } else if (type == 'noJobs') {
-                    <NoJobsIcon />
-                } else {
-                    <NoMatchingJobsIcon />
-                } */}
-            </View>
+                {displayIcon}
+            </View> 
             
             <AppText style={styles.heading}>{title}</AppText>
 
@@ -47,7 +48,9 @@ export const NoJobs = ({type, title, body, buttonName, buttonVisible, onButtonCl
                         textStyle={styles.buttonText}
                         type='primary'
                         title={buttonName}
-                        onPress={onButtonClick}/>) : null }
+                        icon = {<PlusSignIcon />}
+                        onPress={onButtonClick}
+                    />) : null }
             </View>
 
         </View>
@@ -69,7 +72,9 @@ const styles = StyleSheet.create({
     icon: {
         height: 72,
         width: 75,
-        paddingBottom: 100
+        paddingBottom: 100,
+        
+        
     },
     
     body: {
@@ -88,18 +93,21 @@ const styles = StyleSheet.create({
         width: "100%",
         display: "flex",
         alignItems: "flex-start"
-    },
-
-    button: {
-        width: 110,
-        backgroundColor: "transparent",
-        elevation: 0,
         
     },
 
+    button: {
+        // width: 200,
+        // backgroundColor: "transparent",
+        elevation: 0,
+        backgroundColor: COLORS.maroon,
+        'text-align': 'left'
+    },
+
     buttonText: {
-        color: COLORS.blue,
+        color: COLORS.white,
         fontSize: 16,
         textAlign: "left"
+    
     }
 });
