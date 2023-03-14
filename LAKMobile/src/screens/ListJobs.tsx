@@ -8,7 +8,7 @@ import { COLORS } from '../../constants';
 import { PickerStyles, FlatListStyles } from '../styles';
 import { useIsFocused } from '@react-navigation/native';
 import { AuthContext } from '../auth/context';
-import { NoAvailableJobsIcon, NoJobsIcon, NoMatchingJobsIcon, PlusSignIcon } from '../icons';
+import { NoAvailableJobsIcon, NoJobsIcon, NoMatchingJobsIcon, PlusSignIcon, SearchIcon} from '../icons';
 
 type ListJobsModes = 'Add' | 'Find';
 type JobTypePickerOption = 'Current Jobs' | 'Completed Jobs' | 'Your Jobs' | 'Finished Jobs';
@@ -105,32 +105,36 @@ export function ListJobs({ navigation, mode }: ListJobsProps) {
     setRefreshing(true);
   };
 
-  let noJobsComponent = null;
+ 
 
   const searchResults = (text: string) => {
     setSearchString(text);
     setNoJobs(jobs.length == 0);
     console.log(jobs.length);
-    
-    if(jobs.length == 0) {
-      console.log("the component is now changed to no jobs BEFORE");
-      noJobsComponent = <NoJobs
-                          title = {"No current jobs."}
-                          body = {"You don't have any in progress job at the moment."}
-                          buttonVisible = {true}
-                          buttonName = {"Add a Job"}
-                          onButtonClick = {() => (console.log)}
-                          iconType = {<PlusSignIcon/>}
-                          errorImageType = {<NoAvailableJobsIcon/>}
-                        />;
-      console.log("the component is now changed to no jobs AFTER");
-    } else {
-      noJobsComponent = null;
-      console.log("the component is now changed yes jobs");
-    }
+
   }
 
   const pickerOptions = mode === 'Add' ? ADD_PICKER_OPTIONS : FIND_PICKER_OPTIONS;
+
+  let noJobsComponent = null;
+
+  if(jobs.length == 0) {
+    console.log("the component is now changed to no jobs BEFORE");
+    //need to check whether we are on your jobs or finished jobs
+    noJobsComponent = <NoJobs
+                        title = {"Your job box is empty."}
+                        body = {"You don't have any in progress jobs at the moment."}
+                        buttonVisible = {true}
+                        buttonName = {"Search to Find a Job"}
+                        onButtonClick = {() => (console.log)}
+                        iconType = {<SearchIcon/>}
+                        errorImageType = {<NoJobsIcon/>}
+                      />;
+    console.log("the component is now changed to no jobs AFTER");
+  } else {
+    noJobsComponent = null;
+    console.log("the component is now changed yes jobs");
+  }
 
   return (
     <>
@@ -223,46 +227,12 @@ export function ListJobs({ navigation, mode }: ListJobsProps) {
                       keyboardType="default"
                       icon="search"
                     />
+                    
                     {noJobsComponent}
                   </View>
                 )} 
 
-                {/* {mode === 'Find' && (
-                  noJobs ? (
-                    <View>
-                      <AppTextInput
-                        value={searchString ?? undefined}
-                        // onChangeText={(text) => setSearchString(text)}
-                        onChangeText={(text) => searchResults(text)}
-                        style={[styles.searchTextInput]}
-                        placeholder="Search by title, location, and delivery date"
-                        maxLength={100}
-                        keyboardType="default"
-                        icon="search"
-                      />
-                      <NoJobs
-                        title = {"No current jobs."}
-                        body = {"You don't have any in progress job at the moment."}
-                        buttonVisible = {true}
-                        buttonName = {"Add a Job"}
-                        onButtonClick = {navigation.navigate('LoginScreen')}
-                        iconType = {<PlusSignIcon/>}
-                        errorImageType = {<NoAvailableJobsIcon/>}
-                      />
-                    </View>
-                  ) : (
-                    <AppTextInput
-                    value={searchString ?? undefined}
-                    // onChangeText={(text) => setSearchString(text)}
-                    onChangeText={(text) => searchResults(text)}
-                    style={[styles.searchTextInput]}
-                    placeholder="Search by title, location, and delivery date"
-                    maxLength={100}
-                    keyboardType="default"
-                    icon="search"
-                  /> */}
-                  {/* )
-                )} */}
+               
               </View>
             }
             onEndReached={() => {
