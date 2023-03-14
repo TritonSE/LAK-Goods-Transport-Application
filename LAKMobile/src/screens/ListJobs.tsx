@@ -134,7 +134,31 @@ export function ListJobs({ navigation, mode }: ListJobsProps) {
                         errorImageType = {<NoJobsIcon/>}
                       />;
     console.log("the component is now changed to no jobs AFTER");
-  } else {
+  } 
+  
+  else if(jobs.length == 0 && jobListType === 'Finished Jobs') {
+    noJobsComponent = <NoJobs
+                        title = {"No finished jobs."}
+                        body = {"You don't have any finished jobs yet."}
+                        buttonVisible = {false}
+                        onButtonClick = {() => (console.log)}
+                        errorImageType = {<NoJobsIcon/>}
+                      />;
+  }
+  
+  else if(jobs.length == 0 && jobListType === 'Current Jobs') {
+    noJobsComponent = <NoJobs
+                        title = {"No current jobs."}
+                        body = {"You don't have any in progress jobs at the moment."}
+                        buttonVisible = {true}
+                        buttonName = "Add a Job Now"
+                        iconType={<PlusSignIcon/>}
+                        onButtonClick = {() => (console.log)}
+                        errorImageType = {<NoJobsIcon/>}
+                      />;
+  }
+
+  else {
     noJobsComponent = null;
     console.log(jobListType);
     console.log("the component is now changed yes jobs");
@@ -205,8 +229,10 @@ export function ListJobs({ navigation, mode }: ListJobsProps) {
                       ))}
                     </Picker>
                   </View>
+                  
                   <View style={styles.spacer} />
                   {mode === 'Add' && (
+                    
                     <AppButton
                       textStyle={styles.addJobBtnText}
                       type="primary"
@@ -217,8 +243,12 @@ export function ListJobs({ navigation, mode }: ListJobsProps) {
                       title="Add Job"
                       style={styles.addJobBtn}
                     />
-                  )}
+                    
+                    // isn't letting me put this here {noJobsComponent}
+                  ) } 
                 </View>
+                
+                    
                  {mode === 'Find' && (
                   <View>
                     <AppTextInput
