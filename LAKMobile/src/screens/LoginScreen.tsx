@@ -43,23 +43,23 @@ export function LoginScreen({ navigation }: LoginProps) {
         style={styles.forgotPIN}
       />
 
-            <AppButton
-                type='primary'
-                title='Log in'
-                onPress={async () => {
-                    auth.clearError();
-                    await auth.login(phoneNumber, pin);
-                    if (auth.user !== null) {
-                        setPhoneNumber("");
-                        setPIN("");
-                        navigation.navigate('JobLandingScreen');
-                    } else {
-                        // Display the error now...
-                        console.error(auth.error?.message);
-                    }
-                }}
-                style={styles.submitButton}
-            />
+      <AppButton
+        type="primary"
+        title="Log in"
+        onPress={async () => {
+          auth.clearError();
+          await auth.login(phoneNumber, pin);
+          if (auth.user !== null) {
+            setPhoneNumber('');
+            setPIN('');
+            navigation.navigate('JobLandingScreen');
+          } else {
+            // Display the error now...
+            console.error(auth.error?.message);
+          }
+        }}
+        style={styles.submitButton}
+      />
 
       <View style={styles.signupPrompt}>
         <AppText>{"Don't have an account?"}</AppText>

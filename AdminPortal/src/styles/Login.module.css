@@ -1,122 +1,109 @@
 .outer {
-	display: flex;
-	height: 600px;
+  display: flex;
+  height: 600px;
 
-	/*align-items: baseline;*/
+  /* align-items: baseline; */
 
-	margin: 0;
-	position: absolute;
-	top: 50%;
-	left: 50%;
-	-ms-transform: translate(-50%, -50%);
-	transform: translate(-50%, -50%);
-
-	gap: 10.275rem;
+  margin: 0;
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  gap: 10.275rem;
 }
 
 .LAAKTAlogo {
-	
-	width: 445px;
-	height: 445px;
-	margin-top: -40px;
-
+  width: 445px;
+  height: 445px;
+  margin-top: -40px;
 }
 
 .formContainer {
-	width: 36vw;
-	height: 500px;
-
-	background: #FFFFFF;
-	box-shadow: 0px 8px 40px rgba(0, 0, 0, 0.25);
-	border-radius: 25px;
+  width: 36vw;
+  height: 500px;
+  background: #fff;
+  box-shadow: 0 8px 40px rgb(0 0 0 / 25%);
+  border-radius: 25px;
 }
 
-.formAllContents{
-	margin-left: 4.5vw;
-	margin-right: 4.5vw;
-
-	position: relative;
-  	top: 15%;
+.formAllContents {
+  margin-left: 4.5vw;
+  margin-right: 4.5vw;
+  position: relative;
+  top: 15%;
 }
 
 .emailPassword {
-	display: flex;
-	flex-direction: column;
+  display: flex;
+  flex-direction: column;
 }
 
-.textInputField{
-	box-sizing: border-box;
-	background: #FFFFFF;
-	color: black;
-	border: 1.3px solid #C4C4C4;
-	height: 38px;
-	width: 27vw;
-	border-radius: 5px;
+.textInputField {
+  box-sizing: border-box;
+  background: #fff;
+  color: black;
+  border: 1.25px solid #c4c4c4;
+  height: 38px;
+  width: 27vw;
+  border-radius: 5px;
 }
 
 .emailInput {
-	padding-left: 10px;	
-}	
+  padding-left: 10px;
+}
 
-.passwordInput {	
-	margin-top: 15px;
-	padding-left: 10px;
+.passwordInput {
+  margin-top: 15px;
+  padding-left: 10px;
 }
 
 .loginButton {
-	width: 27vw;;
-	height: 45px;
-
-	background: #94100C;
-
-	margin-top: 17px;
-	color: white;
-
-	border-radius: 5px;
-
-	cursor: pointer;
+  width: 27vw;
+  height: 45px;
+  background: #94100c;
+  margin-top: 17px;
+  color: white;
+  border-radius: 5px;
+  cursor: pointer;
 }
 
 .rememberUserAndForgotPassword {
-	display: flex;
-	margin-top: 18px;
+  display: flex;
+  margin-top: 18px;
 }
 
 .checkbox {
-	box-sizing: border-box;
-	width: 16.65px;
-	height: 16.65px;
-	border: 1.38727px solid #000000;
-	margin: 0px 7px 0px 0px;
-	cursor: pointer;
+  box-sizing: border-box;
+  width: 16.5px;
+  height: 16.5px;
+  border: 1.25px solid #000;
+  margin: 0 7px 0 0;
+  cursor: pointer;
 }
 
 .keepSignedInText {
-	font-family: Lato;
-	font-style: normal;
-	font-weight: 400;
-	font-size: 16.6472px;
-	line-height: 20px;
-	color: black;
-	letter-spacing: 0.2px;
+  font-style: normal;
+  font-weight: 400;
+  font-size: 16.5px;
+  line-height: 20px;
+  color: black;
+  letter-spacing: 0.2px;
 }
 
 .forgotPasswordText {
-	font-family: Lato;
-	font-style: normal;
-	font-weight: 400;
-	font-size: 16.6472px;
-	line-height: 20px;
-	color: black;
-	align: right;
-	margin-left: auto;
-	letter-spacing: 0.2px;
+  font-style: normal;
+  font-weight: 400;
+  font-size: 16.5px;
+  line-height: 20px;
+  color: black;
+  margin-left: auto;
+  letter-spacing: 0.2px;
 }
 
 .passwordLogo {
-	width: 18.03px;
-	height: 18.03px;
-	cursor: pointer;
-	margin-left: -30px;
-	padding-top: 4px;
+  width: 18px;
+  height: 18px;
+  cursor: pointer;
+  margin-left: -30px;
+  padding-top: 4px;
 }

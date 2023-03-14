@@ -9,5 +9,5 @@ export * from './ApplicantThumbnail';
 export * from './ModalAlert';
 export * from './ModalCheckmark';
 export * from './JobThumbnail';
-export * from "./IconButtonWrapper"
-export * from "./NoJobs"
+export * from './IconButtonWrapper';
+export * from './NoJobs';
