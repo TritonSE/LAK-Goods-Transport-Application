@@ -22,10 +22,11 @@ const LIST_MODES: ListJobsModes[] = ['Add', 'Find'];
 interface ListJobsProps {
   navigation: any;
   mode: ListJobsModes;
+  
 }
 
 export function ListJobs({ navigation, mode }: ListJobsProps) {
-  const [jobListType, setJobListType] = useState<JobTypePickerOption>('Current Jobs');
+  const [jobListType, setJobListType] = mode === 'Add' ? useState<JobTypePickerOption>('Current Jobs'): useState<JobTypePickerOption>('Your Jobs');
   const [searchString, setSearchString] = useState<string | null>(null);
   const [jobs, setJobs] = useState<JobData[] | JobOwnerView[]>([]);
   const [noJobs, setNoJobs] = useState<boolean>(false);
@@ -114,11 +115,13 @@ export function ListJobs({ navigation, mode }: ListJobsProps) {
 
   }
 
+  
   const pickerOptions = mode === 'Add' ? ADD_PICKER_OPTIONS : FIND_PICKER_OPTIONS;
 
   let noJobsComponent = null;
+ 
 
-  if(jobs.length == 0) {
+  if(jobs.length == 0 && jobListType === 'Your Jobs') {
     console.log("the component is now changed to no jobs BEFORE");
     //need to check whether we are on your jobs or finished jobs
     noJobsComponent = <NoJobs
@@ -133,6 +136,7 @@ export function ListJobs({ navigation, mode }: ListJobsProps) {
     console.log("the component is now changed to no jobs AFTER");
   } else {
     noJobsComponent = null;
+    console.log(jobListType);
     console.log("the component is now changed yes jobs");
   }
 
@@ -226,11 +230,13 @@ export function ListJobs({ navigation, mode }: ListJobsProps) {
                       maxLength={100}
                       keyboardType="default"
                       icon="search"
-                    />
+                    /> 
                     
                     {noJobsComponent}
+                    
                   </View>
-                )} 
+                  
+                ) } 
 
                
               </View>
