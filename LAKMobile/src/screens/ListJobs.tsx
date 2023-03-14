@@ -248,6 +248,11 @@ export function ListJobs({ navigation, mode }: ListJobsProps) {
                   ) } 
                 </View>
                 
+                {mode === 'Add' && (
+                    <View>
+                    {noJobsComponent}
+                    </View>
+                )}
                     
                  {mode === 'Find' && (
                   <View>
