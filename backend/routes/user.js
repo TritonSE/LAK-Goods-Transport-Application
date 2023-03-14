@@ -4,12 +4,7 @@
 import express from 'express';
 import multer from 'multer';
 
-import {
-  getUser,
-  getUsers,
-  registerUser,
-  updateUser,
-} from '../services/user';
+import { getUser, getUsers, registerUser, updateUser } from '../services/user';
 import { getSessionUserId } from '../constants';
 
 const routes = express.Router();
@@ -70,52 +65,8 @@ routes.post('/', upload, async (req, res, next) => {
   });
 });
 
-/**
- * PUT request to update the user having a given
- */
-
-routes.put('/update-verification-status/:userid', async (req, res, next) => {
-  console.info(
-    `ROUTES: Updating user verification status for userId = ${req.params.userid}`
-  );
-
-  let updatedUser = null;
-
-  try {
-    const userId = req.params.userid;
-
-    const { verificationStatus } = req.body;
-
-    const validVerificationStatuses = [
-      'Not Applied',
-      'Applied',
-      'In Review',
-      'Verified',
-      'Disapproved',
-      'Suspended',
-    ];
-    if (!validVerificationStatuses.includes(verificationStatus)) {
-      return res.status(400).json({ error: 'Invalid verification status' });
-    }
-
-    updatedUser = await updateUserVerificationStatus(
-      userId,
-      verificationStatus
-    );
-  } catch (e) {
-    next(e);
-  }
-
-  return res.status(200).json({
-    message: `Verification status of ${req.params.userId} updated successfully`,
-    user: updatedUser,
-  });
-});
-
 routes.put('/update-user/:userid', async (req, res, next) => {
-  console.info(
-    `ROUTES: Updating user with userId = ${req.params.userid}`
-  );
+  console.info(`ROUTES: Updating user with userId = ${req.params.userid}`);
 
   let updatedUser = null;
 
@@ -125,14 +76,36 @@ routes.put('/update-user/:userid', async (req, res, next) => {
     const user = req.body;
 
     // Validate user object properties
-    const { firstName, lastName, phone, location, driverLicenseId, vehicleData, verificationStatus } = user;
+    const {
+      firstName,
+      lastName,
+      phone,
+      location,
+      driverLicenseId,
+      vehicleData,
+      verificationStatus,
+    } = user;
     if (!firstName || !lastName || !phone || !location) {
-      return res.status(400).json({ error: 'Missing required user properties' });
+      return res
+        .status(400)
+        .json({ error: 'Missing required user properties' });
     }
     if (driverLicenseId && !vehicleData) {
-      return res.status(400).json({ error: 'Missing required vehicleData for driver' });
+      return res
+        .status(400)
+        .json({ error: 'Missing required vehicleData for driver' });
     }
-    if (verificationStatus && !['Not Applied', 'Applied', 'In Review', 'Verified', 'Disapproved', 'Suspended'].includes(verificationStatus)) {
+    if (
+      verificationStatus &&
+      ![
+        'Not Applied',
+        'Applied',
+        'In Review',
+        'Verified',
+        'Disapproved',
+        'Suspended',
+      ].includes(verificationStatus)
+    ) {
       return res.status(400).json({ error: 'Invalid verification status' });
     }
 
@@ -146,7 +119,5 @@ routes.put('/update-user/:userid', async (req, res, next) => {
     user: updatedUser,
   });
 });
-
-
 
 export default routes;

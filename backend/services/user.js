@@ -95,18 +95,18 @@ export async function registerUser(userData, imageFiles) {
 }
 
 export async function updateUser(userId, user) {
-
   console.debug(
-    `SERVICE - updateUser service running: userData - ${JSON.stringify(
-      user
-    )}`
+    `SERVICE - updateUser service running: userData - ${JSON.stringify(user)}`
   );
 
   try {
     const existingUser = await UserModel.findOne({ _id: userId });
 
     if (!existingUser) {
-      throw ServiceError.USER_NOT_FOUND.addContext('requestedUserId - ', userId);
+      throw ServiceError.USER_NOT_FOUND.addContext(
+        'requestedUserId - ',
+        userId
+      );
     }
 
     existingUser.firstName = user.firstName;
