@@ -64,11 +64,12 @@ export const NoJobs = ({title, body, buttonName, buttonVisible, onButtonClick, i
 
 const styles = StyleSheet.create({
     container: {
-        paddingTop: 150,
+        paddingTop: 100,
         width: 300,
         alignItems: "center",
         backgroundColor: "transparent",
-        display: "flex", 
+        display: "flex",
+        alignSelf: "center",
     },
 
     icon: {
