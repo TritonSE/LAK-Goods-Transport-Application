@@ -1,11 +1,13 @@
-import React, { Children, useEffect, useState } from 'react';
+import React, { Children, useContext, useEffect, useState } from 'react';
 import {
     StyleSheet,
     View,
     Linking,
     ScrollView
 } from 'react-native';
-import { JobData } from '../api/data';
+import { updateJob } from '../api';
+import { JobOwnerView } from '../api/data';
+import { AuthContext } from '../auth/context';
 import {
     AppButton,
     AppText,
@@ -13,15 +15,43 @@ import {
 } from '../components';
 
 type ApplyScreenProps = {
-    jobData: JobData
+    jobData: JobOwnerView
     carousel: JSX.Element
 }
-
-
 
 export function ApplyScreen({ carousel, jobData }: ApplyScreenProps) {
     // temporary dummy data
     const [confirmationAlertVisible, setConfirmationAlertVisible] = useState(false);
+
+    const auth = useContext(AuthContext);
+    const userId = auth.user ? auth.user.uid : '';
+
+    const applyForJob = () => {
+        let updatedJob = jobData
+        if (updatedJob.applicants) {
+            updatedJob.applicants.push({
+                userId: userId,
+                applyDate: "03/14/2023"
+            })
+        } else {
+            updatedJob.applicants = [{
+                userId: userId,
+                applyDate: "03/14/2023"
+            }]
+        }
+        console.log(updatedJob._id)
+        updateJob(userId, updatedJob._id, createFormData(updatedJob))
+        setConfirmationAlertVisible(false)
+    }
+
+    const createFormData = (body: { [key: string]: any }) => {
+        const data = new FormData();
+        Object.keys(body).forEach((key) => {
+          data.append(key, body[key]);
+        });
+        return data;
+      }
+    
 
     return (
         <>
@@ -112,7 +142,7 @@ export function ApplyScreen({ carousel, jobData }: ApplyScreenProps) {
                     {
                         type: "primary",
                         label: "Apply",
-                        onPress: () => setConfirmationAlertVisible(false),
+                        onPress: () => applyForJob(),
                     },
                 ]}
                 visible={confirmationAlertVisible}
