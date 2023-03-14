@@ -8,7 +8,7 @@ import {
   getUser,
   getUsers,
   registerUser,
-  updateUserVerificationStatus,
+  updateUser,
 } from '../services/user';
 import { getSessionUserId } from '../constants';
 
@@ -71,18 +71,7 @@ routes.post('/', upload, async (req, res, next) => {
 });
 
 /**
- * We want to set up a route that changes the verification status for a user.
- *
- * Route parameters:
- * userId => the id of the user in the mongoDB database whose verification
- *            status is to be changed
- * verificationStatus => a string representing the new verification status.
- *                       The schema is set up in way such that it can only have
- *                       one among 6 pre-defined values
- * [Not Applied, Applied, In Review, Verified, Disapproved, Suspended]
- *
- * What the method does:
- * Performs a PUT request to change the verificationStatus as required
+ * PUT request to update the user having a given
  */
 
 routes.put('/update-verification-status/:userid', async (req, res, next) => {
@@ -122,5 +111,42 @@ routes.put('/update-verification-status/:userid', async (req, res, next) => {
     user: updatedUser,
   });
 });
+
+routes.put('/update-user/:userid', async (req, res, next) => {
+  console.info(
+    `ROUTES: Updating user with userId = ${req.params.userid}`
+  );
+
+  let updatedUser = null;
+
+  try {
+    const userId = req.params.userid;
+
+    const user = req.body;
+
+    // Validate user object properties
+    const { firstName, lastName, phone, location, driverLicenseId, vehicleData, verificationStatus } = user;
+    if (!firstName || !lastName || !phone || !location) {
+      return res.status(400).json({ error: 'Missing required user properties' });
+    }
+    if (driverLicenseId && !vehicleData) {
+      return res.status(400).json({ error: 'Missing required vehicleData for driver' });
+    }
+    if (verificationStatus && !['Not Applied', 'Applied', 'In Review', 'Verified', 'Disapproved', 'Suspended'].includes(verificationStatus)) {
+      return res.status(400).json({ error: 'Invalid verification status' });
+    }
+
+    updatedUser = await updateUser(userId, user);
+  } catch (e) {
+    next(e);
+  }
+
+  return res.status(200).json({
+    message: `User record of ${req.params.userId} updated successfully`,
+    user: updatedUser,
+  });
+});
+
+
 
 export default routes;
