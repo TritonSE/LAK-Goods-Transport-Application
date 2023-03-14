@@ -3,7 +3,6 @@
  */
 import express from 'express';
 import multer from 'multer';
-import bodyParser from 'body-parser';
 
 import {
   getUser,
@@ -28,7 +27,6 @@ routes.get('/:userid', async (req, res, next) => {
     user = await getUser(userId, requestingUserId);
   } catch (e) {
     next(e);
-    return;
   }
 
   res.status(200).json({
@@ -50,9 +48,8 @@ routes.post('/get-by-ids', async (req, res, next) => {
     users = await getUsers(userIds, requestingUserId);
   } catch (e) {
     next(e);
-    return;
   }
-  res
+  return res
     .status(200)
     .json({ message: `User documents sent as ${users}`, users: users });
 });
@@ -65,10 +62,9 @@ routes.post('/', upload, async (req, res, next) => {
     user = await registerUser(req.body, req.files || []);
   } catch (e) {
     next(e);
-    return;
   }
 
-  res.status(200).json({
+  return res.status(200).json({
     message: 'User created successfully',
     userId: user._id,
   });
@@ -119,10 +115,9 @@ routes.put('/update-verification-status/:userid', async (req, res, next) => {
     );
   } catch (e) {
     next(e);
-    return;
   }
 
-  res.status(200).json({
+  return res.status(200).json({
     message: `Verification status of ${req.params.userId} updated successfully`,
     user: updatedUser,
   });

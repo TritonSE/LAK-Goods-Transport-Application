@@ -112,7 +112,7 @@ export async function updateUserVerificationStatus(
     if (!user) {
       throw ServiceError.USER_NOT_FOUND.addContext(
         'requestedUserId - ',
-        requestedUserId
+        userId
       );
     }
 
