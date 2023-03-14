@@ -10,17 +10,17 @@ import { ProfileButtonIcon } from '../icons/ProfileButtonIcon';
 
 
 interface NoJobProps {
-    type?: 'noAvailableJobs' | 'noJobs' | 'noMatchingJobs';
+    // type?: 'noAvailableJobs' | 'noJobs' | 'noMatchingJobs';
     title: string;
     body: string;
-    buttonName: string;
+    buttonName?: string;
     buttonVisible: boolean;
     onButtonClick: () => void;
-    iconType?: React.ReactElement
-    errorImageType: React.ReactElement
+    iconType?: React.ReactElement;
+    errorImageType: React.ReactElement;
 }
 
-export const NoJobs = ({type, title, body, buttonName, buttonVisible, onButtonClick, iconType, errorImageType}: NoJobProps) => {
+export const NoJobs = ({title, body, buttonName, buttonVisible, onButtonClick, iconType, errorImageType}: NoJobProps) => {
     // let displayIcon;
     // switch (type) {
     //     case 'noAvailableJobs':
@@ -45,7 +45,7 @@ export const NoJobs = ({type, title, body, buttonName, buttonVisible, onButtonCl
             <AppText style={[styles.body]}>{body}</AppText>
 
             <View style={styles.buttonContainer}>
-                { buttonVisible ? 
+                { buttonVisible && buttonName? 
                     (<AppButton 
                         style={styles.button}
                         textStyle={styles.buttonText}
@@ -66,7 +66,6 @@ const styles = StyleSheet.create({
     container: {
         paddingTop: 150,
         width: 300,
-        justifyContent: "center",
         alignItems: "center",
         backgroundColor: "transparent",
         display: "flex", 
@@ -77,6 +76,7 @@ const styles = StyleSheet.create({
         width: 75,
         paddingBottom: 100,
         
+        // alignSelf: "start"
     },
     
     body: {
@@ -94,21 +94,19 @@ const styles = StyleSheet.create({
     buttonContainer: {
         width: "100%",
         display: "flex",
-        alignItems: "flex-start"
+        alignItems: "flex-start",
         
     },
 
     button: {
-        width: 110,
+        width: "auto",
         backgroundColor: "transparent",
-        elevation: 0
+        textAlign: "left",
+        elevation: 0,
     },
 
     buttonText: {
         color: COLORS.blue,
         fontSize: 16,
-        textAlign: "left",
-        
-    
     }
 });
