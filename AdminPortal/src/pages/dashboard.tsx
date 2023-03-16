@@ -28,10 +28,12 @@ interface ControlStyles {
 }
 
 export default function App() {
+  const numTabs = 4;
+
   const [activeTab, setActiveTab] = useState<string>('Needs Review');
 
   const [selectAllClicked, setSelectAllClicked] = useState(
-    new Array(4).fill(false)
+    new Array(numTabs).fill(false)
   );
 
   // for the dropdown
@@ -128,7 +130,7 @@ export default function App() {
       )
     );
 
-    setSelectAllClicked(new Array(4).fill(false));
+    setSelectAllClicked(new Array(numTabs).fill(false));
   };
 
   const handleSelectAll = (): void => {
@@ -138,11 +140,9 @@ export default function App() {
       // convering to 0 based indexing
       indexToFlip = indexToFlip - 1;
 
-      console.log(indexToFlip);
-
       let newState: boolean[] = [];
 
-      for (let i = 0; i < 4; i++) {
+      for (let i = 0; i < numTabs; i++) {
         if (i === indexToFlip) {
           newState.push(!prevState[i]);
         } else {
@@ -150,7 +150,6 @@ export default function App() {
         }
       }
 
-      console.log(newState);
       return newState;
     });
   };
