@@ -1,0 +1,15 @@
+name: ci
+
+on:
+  pull_request:
+    branches: [main]
+jobs:
+  web:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Clone
+        uses: actions/checkout@v2
+      - name: Install dependencies
+        run: "npm --prefix ./AdminPortal/ ci && npm --prefix ./backend/ ci && npm --prefix ./LAKMobile/ ci"
+      - name: Lint
+        run: npm run lint-check

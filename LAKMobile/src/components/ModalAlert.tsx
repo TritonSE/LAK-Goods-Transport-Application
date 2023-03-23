@@ -1,8 +1,8 @@
-import React from "react";
-import { Modal, Pressable, StyleSheet, Text, View } from "react-native";
+import React from 'react';
+import { Modal, Pressable, StyleSheet, Text, View } from 'react-native';
 
 interface ModalButtonOptions {
-  type: "primary" | "secondary";
+  type: 'primary' | 'secondary';
   label: string;
   onPress: () => void;
 }
@@ -69,18 +69,13 @@ export function ModalAlert({ title, message, buttons, visible }: ModalProps) {
               <Pressable
                 key={index}
                 onPress={button.onPress}
-                android_ripple={{ color: "#ccc" }}
-                style={[
-                  styles.modalButton,
-                  buttons.length > 2 ? styles.modalButtonVertical : null,
-                ]}
+                android_ripple={{ color: '#ccc' }}
+                style={[styles.modalButton, buttons.length > 2 ? styles.modalButtonVertical : null]}
               >
                 <Text
                   style={[
                     styles.modalButtonLabel,
-                    button.type === "primary"
-                      ? styles.modalButtonLabelPrimary
-                      : null,
+                    button.type === 'primary' ? styles.modalButtonLabelPrimary : null,
                   ]}
                 >
                   {button.label}
@@ -96,61 +91,61 @@ export function ModalAlert({ title, message, buttons, visible }: ModalProps) {
 
 const styles = StyleSheet.create({
   modalWrapper: {
-    width: "100%",
-    height: "100%",
-    justifyContent: "center",
-    alignItems: "center",
+    width: '100%',
+    height: '100%',
+    justifyContent: 'center',
+    alignItems: 'center',
   },
   modalBox: {
     width: 320,
-    height: "auto",
+    height: 'auto',
     padding: 40,
-    backgroundColor: "#f5f5f5",
-    alignItems: "center",
+    backgroundColor: '#f5f5f5',
+    alignItems: 'center',
     elevation: 4,
   },
   modalTitle: {
-    fontFamily: "Roboto",
+    fontFamily: 'Roboto',
     fontSize: 18,
-    fontWeight: "700",
-    color: "#333",
-    textAlign: "center",
+    fontWeight: '700',
+    color: '#333',
+    textAlign: 'center',
   },
   modalMessage: {
     marginTop: 40,
-    fontFamily: "Roboto",
+    fontFamily: 'Roboto',
     fontSize: 16,
-    fontWeight: "400",
-    color: "#333",
-    textAlign: "center",
+    fontWeight: '400',
+    color: '#333',
+    textAlign: 'center',
   },
   modalButtonWrapper: {
     marginTop: 40,
-    width: "100%",
-    height: "auto",
-    flexDirection: "row",
-    justifyContent: "center",
+    width: '100%',
+    height: 'auto',
+    flexDirection: 'row',
+    justifyContent: 'center',
   },
   modalButtonWrapperVertical: {
-    flexDirection: "column",
-    alignItems: "stretch",
+    flexDirection: 'column',
+    alignItems: 'stretch',
   },
   modalButton: {
     flex: 1,
-    alignItems: "center",
+    alignItems: 'center',
     paddingVertical: 10,
   },
   modalButtonVertical: {
     flex: 0,
   },
   modalButtonLabel: {
-    fontFamily: "Roboto",
+    fontFamily: 'Roboto',
     fontSize: 16,
-    fontWeight: "700",
-    color: "#333",
-    textAlign: "center",
+    fontWeight: '700',
+    color: '#333',
+    textAlign: 'center',
   },
   modalButtonLabelPrimary: {
-    color: "#da5c5c",
+    color: '#da5c5c',
   },
 });
