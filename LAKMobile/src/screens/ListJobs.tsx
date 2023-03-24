@@ -7,7 +7,7 @@ import { JobThumbnail, AppButton, AppTextInput } from '../components';
 import { COLORS } from '../../constants';
 import { PickerStyles, FlatListStyles } from '../styles';
 import { useIsFocused } from '@react-navigation/native';
-import { AuthContext } from '../auth/context';
+import { AuthContext } from '../context/AuthContext';
 
 type ListJobsModes = 'Add' | 'Find';
 type JobTypePickerOption = 'Current Jobs' | 'Completed Jobs' | 'Your Jobs' | 'Finished Jobs';

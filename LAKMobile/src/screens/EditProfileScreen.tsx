@@ -5,7 +5,7 @@ import { COLORS } from '../../constants';
 
 import { getUser, updateUser, UserData, VehicleData } from '../api';
 import { imageIdToSource } from '../api/consumer';
-import { AuthContext } from '../auth/context';
+import { AuthContext } from '../context/AuthContext';
 import { AppButton, AppText, ScreenHeader, LabelWrapper, ImagePickerButton } from '../components';
 import { PublicProfilePicDefault } from '../icons';
 import { EditProfileScreenProps } from '../types/navigation';
@@ -215,16 +215,22 @@ export function EditProfileScreen({ navigation, route }: EditProfileScreenProps)
         )}
       </ScrollView>
       <View style={styles.footer}>
-        {isUserTheViewer && (
-          <View style={styles.center}>
+        <View style={styles.center}>
+          {!profileData?.vehicleData && (
             <AppButton
-              type="primary"
-              title="Save Changes"
-              onPress={submitChanges}
+              type="secondary"
+              title="Register as Driver"
+              onPress={() => navigation.navigate('DriverRegistration')}
               style={styles.footerButton}
             />
-          </View>
-        )}
+          )}
+          <AppButton
+            type="primary"
+            title="Save Changes"
+            onPress={submitChanges}
+            style={styles.footerButton}
+          />
+        </View>
       </View>
     </View>
   );

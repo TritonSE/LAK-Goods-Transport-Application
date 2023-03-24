@@ -3,7 +3,7 @@ import { StyleSheet, View, Image, FlatList, ScrollView } from 'react-native';
 
 import { getUser, UserData } from '../api';
 import { imageIdToSource } from '../api/consumer';
-import { AuthContext } from '../auth/context';
+import { AuthContext } from '../context/AuthContext';
 import { AppButton, AppText, ScreenHeader, IconButtonWrapper } from '../components';
 import { PublicProfilePicDefault, EditIcon } from '../icons';
 import { ProfileScreenProps } from '../types/navigation';
@@ -23,7 +23,7 @@ export function ProfileScreen({ navigation, route }: ProfileScreenProps) {
     getUser(currentUser, route.params.userId).then((user) => {
       setProfileData(user);
     });
-  }, [route.params.userId]);
+  }, [route.params.userId, navigation]);
 
   const isUserTheViewer = auth.user && auth.user.uid === route.params.userId;
 

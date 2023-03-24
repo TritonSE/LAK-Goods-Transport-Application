@@ -12,9 +12,9 @@ import {
   ModalAlert,
 } from '../components';
 import { getUser, updateUser, UserData, VehicleData } from '../api';
-import { AuthContext } from '../auth/context';
+import { AuthContext } from '../context/AuthContext';
 
-export function DriverRegistration({ navigation, route }: DriverRegistrationProps) {
+export function DriverRegistration({ navigation }: DriverRegistrationProps) {
   const auth = useContext(AuthContext);
 
   useEffect(() => {
@@ -47,7 +47,7 @@ export function DriverRegistration({ navigation, route }: DriverRegistrationProp
     getUser(userId, userId).then((user) => {
       setProfileData(user);
     });
-  }, [route.params]);
+  }, [userId]);
 
   useEffect(() => {
     setUserName(profileData?.firstName + ' ' + profileData?.lastName);
@@ -92,12 +92,12 @@ export function DriverRegistration({ navigation, route }: DriverRegistrationProp
       }
 
       console.log(updatedUser);
-      updateUser(route.params.userId, updatedUser).then((response) => {
+      updateUser(userId, updatedUser).then((response) => {
         if (response == null) {
           return;
         }
         setProfileData(updatedUser);
-        navigation.navigate('JobLandingScreen');
+        navigation.navigate('ProfileScreen', { userId });
       });
     }
   };

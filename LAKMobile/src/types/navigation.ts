@@ -25,7 +25,7 @@ export type RootStackParamList = {
     carousel: JSX.Element;
   };
 
-  DriverRegistration: { userId: string };
+  DriverRegistration: undefined;
   EditProfileScreen: { userId: string };
 };
 
