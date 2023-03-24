@@ -14,6 +14,8 @@ jobs:
       - name: Lint ./LAKMobile
         run: npm --prefix ./LAKMobile/ run lint-check
       - name: Lint ./AdminPortal
+        if: always()
         run: npm --prefix ./AdminPortal/ run lint-check
       - name: Lint ./backend
+        if: always()
         run: npm --prefix ./backend/ run lint-check
