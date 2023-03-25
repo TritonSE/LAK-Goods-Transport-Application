@@ -85,7 +85,7 @@ export function EditProfileScreen({ navigation, route }: EditProfileScreenProps)
 
   const createFormData = (
     images: Array<ImagePicker.ImagePickerAsset | null>,
-    body: { [key: string]: any }
+    body: { [key: string]: string }
   ) => {
     const data = new FormData();
     if (images !== null && images[0] !== null) {
@@ -237,7 +237,10 @@ export function EditProfileScreen({ navigation, route }: EditProfileScreenProps)
                 onChangeText={(value) => setVehicleColor(value)}
               />
             </LabelWrapper>
-            <ImageUploadArea />
+
+            <LabelWrapper label="Vehicle Photo">
+              <ImageUploadArea />
+            </LabelWrapper>
           </View>
         )}
       </ScrollView>

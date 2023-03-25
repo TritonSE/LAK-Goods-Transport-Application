@@ -59,7 +59,7 @@ export function DriverRegistration({ navigation }: DriverRegistrationProps) {
 
   const createFormData = (
     images: Array<ImagePicker.ImagePickerAsset | null>,
-    body: { [key: string]: any }
+    body: { [key: string]: string }
   ) => {
     const data = new FormData();
     if (images !== null && images[0] !== null) {
