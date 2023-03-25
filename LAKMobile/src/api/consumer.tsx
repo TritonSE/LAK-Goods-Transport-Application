@@ -250,16 +250,16 @@ export const getUser = async (
 
 export const updateUser = async (
   userId: string,
-  updatedUser: object
+  updatedUser: FormData
 ): Promise<{ userId: string } | null> => {
   try {
-    const url = `${USERS_URL}/${userId}?` + new URLSearchParams({ user: 'client1' });
+    const url = `${USERS_URL}/${userId}`;
     const response = await fetch(url, {
       method: 'PUT',
       headers: {
-        'Content-Type': 'application/json',
+        'Content-Type': 'multipart/form-data',
       },
-      body: JSON.stringify(updatedUser),
+      body: updatedUser,
     });
     const data = await response.json();
     return { userId: data.userId };

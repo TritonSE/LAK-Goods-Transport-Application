@@ -1,16 +1,18 @@
 import { Picker } from '@react-native-picker/picker';
 import React, { useContext, useEffect, useState } from 'react';
-import { StyleSheet, View, Image, FlatList, ScrollView, TextInput } from 'react-native';
+import { StyleSheet, View, ScrollView, TextInput } from 'react-native';
 import { COLORS } from '../../constants';
-
+import * as ImagePicker from 'expo-image-picker';
 import { getUser, updateUser, UserData, VehicleData } from '../api';
-import { imageIdToSource } from '../api/consumer';
 import { AuthContext } from '../context/AuthContext';
-import { AppButton, AppText, ScreenHeader, LabelWrapper, ImagePickerButton } from '../components';
+import { AppButton, AppText, ScreenHeader, LabelWrapper } from '../components';
 import { PublicProfilePicDefault } from '../icons';
 import { EditProfileScreenProps } from '../types/navigation';
+import { ImageUploadContext } from '../context/ImageUploadContext';
+import { ImageUploadArea } from '../components/ImageUploadArea';
 
 export function EditProfileScreen({ navigation, route }: EditProfileScreenProps) {
+  const { dispatch, imageURIs, imageInfo } = useContext(ImageUploadContext);
   const auth = useContext(AuthContext);
 
   useEffect(() => {
@@ -58,25 +60,55 @@ export function EditProfileScreen({ navigation, route }: EditProfileScreenProps)
     'Zhemgang',
   ];
   const CARS = [PICKER_TYPE_DEFAULT, 'Taxi', 'Private', 'Truck'];
+
   useEffect(() => {
     getUser(userId, userId).then((user) => {
       setProfileData(user);
     });
-  }, [route.params.userId]);
+  }, [userId]);
 
   useEffect(() => {
+    dispatch({ type: 'CLEAR_IMAGES' });
     setUserName(profileData?.firstName + ' ' + profileData?.lastName);
     setPhoneNumber(profileData?.phone || '');
     setLocation(profileData?.location.split(';')[0] || '');
     setDistrict(profileData?.location.split(';')[1] || PICKER_LOCATION_DEFAULT);
     setDriverLicenseId(profileData?.driverLicenseId || '');
     if (profileData?.vehicleData) {
-      setVehicleType(profileData?.vehicleData.vehicleType || PICKER_TYPE_DEFAULT);
-      setVehicleModel(profileData?.vehicleData.vehicleModel || '');
-      setVehicleMake(profileData?.vehicleData.vehicleMake || '');
-      setVehicleColor(profileData?.vehicleData.vehicleColor || '');
+      setVehicleType(profileData.vehicleData.vehicleType || PICKER_TYPE_DEFAULT);
+      setVehicleModel(profileData.vehicleData.vehicleModel || '');
+      setVehicleMake(profileData.vehicleData.vehicleMake || '');
+      setVehicleColor(profileData.vehicleData.vehicleColor || '');
+      dispatch({ type: 'SET_IMAGES', payload: profileData.vehicleData.imageIds });
     }
   }, [profileData]);
+
+  const createFormData = (
+    images: Array<ImagePicker.ImagePickerAsset | null>,
+    body: { [key: string]: any }
+  ) => {
+    const data = new FormData();
+    if (images !== null && images[0] !== null) {
+      images.map((image) => {
+        if (image !== null) {
+          const uriArray = image.uri.split('.');
+          const fileExtension = uriArray[uriArray.length - 1]; // e.g.: "jpg"
+          const fileTypeExtended = `${image.type}/${fileExtension}`; // e.g.: "image/jpg"
+          data.append('images', {
+            name: 'demo.jpg',
+            uri: image.uri,
+            type: fileTypeExtended,
+          } as unknown as Blob);
+        }
+      });
+    }
+
+    Object.keys(body).forEach((key) => {
+      data.append(key, body[key]);
+    });
+
+    return data;
+  };
 
   const submitChanges = async () => {
     const updatedVehicleData: VehicleData = {
@@ -84,26 +116,30 @@ export function EditProfileScreen({ navigation, route }: EditProfileScreenProps)
       vehicleModel: vehicleModel.trim(),
       vehicleMake: vehicleMake.trim(),
       vehicleColor: vehicleColor.trim(),
-      imageIds: [], //Change this once the image uploading is fixed
+      imageIds: imageURIs.filter((value) => value !== ''),
     };
 
     const updatedUser: UserData = {
       phone: phoneNumber,
       firstName: userName.split(' ')[0].trim(),
       lastName: userName.split(' ')[1].trim(),
-      location: location.trim() + ';' + district.trim(),
+      location: location,
     };
     if (driverLicenseId != '') {
       updatedUser.driverLicenseId = driverLicenseId;
       updatedUser.vehicleData = updatedVehicleData;
     }
 
-    console.log(updatedUser);
-    updateUser(route.params.userId, updatedUser).then((response) => {
+    const formData = createFormData(imageInfo, {
+      ...updatedUser,
+      vehicleData: JSON.stringify(updatedVehicleData),
+    });
+    updateUser(route.params.userId, formData).then((response) => {
       if (response == null) {
         return;
       }
       setProfileData(updatedUser);
+      dispatch({ type: 'CLEAR_IMAGES' });
       navigation.navigate('ProfileScreen', { userId });
     });
   };
@@ -130,12 +166,7 @@ export function EditProfileScreen({ navigation, route }: EditProfileScreenProps)
         </View>
 
         <LabelWrapper label="Mobile Number">
-          <TextInput
-            style={bigInputStyle}
-            keyboardType="default"
-            defaultValue={profileData?.phone}
-            onChangeText={(value) => setPhoneNumber(value)}
-          />
+          <AppText style={bigInputStyle}>{phoneNumber}</AppText>
         </LabelWrapper>
 
         <LabelWrapper label="Location">
@@ -206,11 +237,7 @@ export function EditProfileScreen({ navigation, route }: EditProfileScreenProps)
                 onChangeText={(value) => setVehicleColor(value)}
               />
             </LabelWrapper>
-            <View style={styles.photos}>
-              <ImagePickerButton onSelect={() => console.log('Pressed 1')} />
-              <ImagePickerButton onSelect={() => console.log('Pressed 2')} />
-              <ImagePickerButton onSelect={() => console.log('Pressed 3')} />
-            </View>
+            <ImageUploadArea />
           </View>
         )}
       </ScrollView>
@@ -330,6 +357,7 @@ const styles = StyleSheet.create({
     marginTop: 10,
     bottom: 0,
   },
+
   input: {
     borderWidth: 1,
     borderRadius: 2,
@@ -339,6 +367,7 @@ const styles = StyleSheet.create({
     marginBottom: 14,
     fontSize: 16,
   },
+
   picker: {
     borderWidth: 1,
     borderRadius: 2,
@@ -347,6 +376,7 @@ const styles = StyleSheet.create({
     alignContent: 'center',
     marginBottom: 14,
   },
+
   pickerWrapper: {
     padding: 0,
     margin: 0,
@@ -355,9 +385,11 @@ const styles = StyleSheet.create({
     borderColor: COLORS.mediumGrey,
     marginBottom: 14,
   },
+
   spacer: {
     marginBottom: 20,
   },
+
   photos: {
     flexDirection: 'row',
     alignSelf: 'center',

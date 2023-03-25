@@ -1,20 +1,17 @@
 import { Picker } from '@react-native-picker/picker';
 import React, { useContext, useEffect, useState } from 'react';
 import { StyleSheet, TextInput, View, ScrollView } from 'react-native';
+import * as ImagePicker from 'expo-image-picker';
 import { DriverRegistrationProps } from '../types/navigation';
 import { COLORS } from '../../constants';
-import {
-  AppButton,
-  AppText,
-  ScreenHeader,
-  LabelWrapper,
-  ImagePickerButton,
-  ModalAlert,
-} from '../components';
+import { AppButton, AppText, ScreenHeader, LabelWrapper, ModalAlert } from '../components';
 import { getUser, updateUser, UserData, VehicleData } from '../api';
 import { AuthContext } from '../context/AuthContext';
+import { ImageUploadContext } from '../context/ImageUploadContext';
+import { ImageUploadArea } from '../components/ImageUploadArea';
 
 export function DriverRegistration({ navigation }: DriverRegistrationProps) {
+  const { dispatch, imageURIs, imageInfo } = useContext(ImageUploadContext);
   const auth = useContext(AuthContext);
 
   useEffect(() => {
@@ -37,10 +34,6 @@ export function DriverRegistration({ navigation }: DriverRegistrationProps) {
   const [alertVisible, setAlertVisible] = useState(false);
   const PICKER_TYPE_DEFAULT = '-- Pick type --';
 
-  const uploadPhoto = () => {
-    console.log('temp');
-  };
-
   const CARS = [PICKER_TYPE_DEFAULT, 'Taxi', 'Private', 'Truck'];
 
   useEffect(() => {
@@ -50,17 +43,46 @@ export function DriverRegistration({ navigation }: DriverRegistrationProps) {
   }, [userId]);
 
   useEffect(() => {
+    dispatch({ type: 'CLEAR_IMAGES' });
     setUserName(profileData?.firstName + ' ' + profileData?.lastName);
     setPhoneNumber(profileData?.phone || '');
     setLocation(profileData?.location || '');
     setDriverLicenseId(profileData?.driverLicenseId || '');
     if (profileData?.vehicleData) {
-      setVehicleType(profileData?.vehicleData.vehicleType || PICKER_TYPE_DEFAULT);
-      setVehicleModel(profileData?.vehicleData.vehicleModel || '');
-      setVehicleMake(profileData?.vehicleData.vehicleMake || '');
-      setVehicleColor(profileData?.vehicleData.vehicleColor || '');
+      setVehicleType(profileData.vehicleData.vehicleType || PICKER_TYPE_DEFAULT);
+      setVehicleModel(profileData.vehicleData.vehicleModel || '');
+      setVehicleMake(profileData.vehicleData.vehicleMake || '');
+      setVehicleColor(profileData.vehicleData.vehicleColor || '');
+      dispatch({ type: 'SET_IMAGES', payload: profileData.vehicleData.imageIds });
     }
   }, [profileData]);
+
+  const createFormData = (
+    images: Array<ImagePicker.ImagePickerAsset | null>,
+    body: { [key: string]: any }
+  ) => {
+    const data = new FormData();
+    if (images !== null && images[0] !== null) {
+      images.map((image) => {
+        if (image !== null) {
+          const uriArray = image.uri.split('.');
+          const fileExtension = uriArray[uriArray.length - 1]; // e.g.: "jpg"
+          const fileTypeExtended = `${image.type}/${fileExtension}`; // e.g.: "image/jpg"
+          data.append('images', {
+            name: 'demo.jpg',
+            uri: image.uri,
+            type: fileTypeExtended,
+          } as unknown as Blob);
+        }
+      });
+    }
+
+    Object.keys(body).forEach((key) => {
+      data.append(key, body[key]);
+    });
+
+    return data;
+  };
 
   const submitChanges = async () => {
     if (
@@ -77,7 +99,7 @@ export function DriverRegistration({ navigation }: DriverRegistrationProps) {
         vehicleModel: vehicleModel.trim(),
         vehicleMake: vehicleMake.trim(),
         vehicleColor: vehicleColor.trim(),
-        imageIds: [], //Change this once the image uploading is fixed
+        imageIds: imageURIs.filter((value) => value !== ''),
       };
 
       const updatedUser: UserData = {
@@ -91,12 +113,16 @@ export function DriverRegistration({ navigation }: DriverRegistrationProps) {
         updatedUser.vehicleData = updatedVehicleData;
       }
 
-      console.log(updatedUser);
-      updateUser(userId, updatedUser).then((response) => {
+      const formData = createFormData(imageInfo, {
+        ...updatedUser,
+        vehicleData: JSON.stringify(updatedVehicleData),
+      });
+      updateUser(userId, formData).then((response) => {
         if (response == null) {
           return;
         }
         setProfileData(updatedUser);
+        dispatch({ type: 'CLEAR_IMAGES' });
         navigation.navigate('ProfileScreen', { userId });
       });
     }
@@ -132,12 +158,7 @@ export function DriverRegistration({ navigation }: DriverRegistrationProps) {
         </LabelWrapper>
 
         <LabelWrapper label="Mobile Number">
-          <TextInput
-            style={styles.input}
-            keyboardType="default"
-            defaultValue={profileData?.phone}
-            onChangeText={(value) => setPhoneNumber(value)}
-          />
+          <AppText style={styles.input}>{phoneNumber}</AppText>
         </LabelWrapper>
 
         <LabelWrapper label="Driver's License ID">
@@ -195,11 +216,7 @@ export function DriverRegistration({ navigation }: DriverRegistrationProps) {
         </LabelWrapper>
 
         <LabelWrapper label="Photo of Vehicle">
-          <View style={styles.photos}>
-            <ImagePickerButton onSelect={() => console.log('Pressed 1')} />
-            <ImagePickerButton onSelect={() => console.log('Pressed 2')} />
-            <ImagePickerButton onSelect={() => console.log('Pressed 3')} />
-          </View>
+          <ImageUploadArea />
         </LabelWrapper>
 
         <View style={styles.center}>

@@ -16,6 +16,13 @@ export const PUBLICLY_VISIBLE_FIELDS = [
 ];
 export const OWNER_LIMITED_FIELDS = ['driverLicenseId'];
 
+export const FIELDS_USER_PERMITTED_TO_UPDATE = [
+  'firstName',
+  'lastName',
+  'location',
+  'vehicleData',
+];
+
 const VehicleInformationSchema = new Schema({
   vehicleType: {
     type: String,
