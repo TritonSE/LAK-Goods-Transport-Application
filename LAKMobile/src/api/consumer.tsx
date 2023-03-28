@@ -248,6 +248,25 @@ export const getUser = async (
   }
 };
 
+export const updateUser = async (
+  userId: string,
+  updatedUser: FormData
+): Promise<{ userId: string } | null> => {
+  try {
+    const url = `${USERS_URL}/${userId}`;
+    const response = await fetch(url, {
+      method: 'PUT',
+      headers: {
+        'Content-Type': 'multipart/form-data',
+      },
+      body: updatedUser,
+    });
+    const data = await response.json();
+    return { userId: data.userId };
+  } catch {
+    return null;
+  }
+};
 /**
  * @param formData Information from the Create New Account form
  * @returns The newly created user's UUID, or null if there was an error

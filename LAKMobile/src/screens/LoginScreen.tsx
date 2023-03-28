@@ -3,7 +3,7 @@ import { StyleSheet, View } from 'react-native';
 import { AppText, LabelWrapper, AppButton, AppTextInput } from '../components';
 import { COLORS } from '../../constants';
 import { LoginProps } from '../types/navigation';
-import { AuthContext } from '../auth/context';
+import { AuthContext } from '../context/AuthContext';
 
 export function LoginScreen({ navigation }: LoginProps) {
   const [phoneNumber, setPhoneNumber] = useState('');

@@ -4,7 +4,7 @@
 import express from 'express';
 import multer from 'multer';
 
-import { getUser, getUsers, registerUser } from '../services/user';
+import { getUser, getUsers, registerUser, updateUser } from '../services/user';
 import { getSessionUserId } from '../constants';
 
 const routes = express.Router();
@@ -66,4 +66,21 @@ routes.post('/', upload, async (req, res, next) => {
     userId: user._id,
   });
 });
+
+routes.put('/:userid', upload, async (req, res, next) => {
+  console.info('ROUTES: Editing user', req.params.userid);
+  let user = null;
+  try {
+    user = await updateUser(req.params.userid, req.body, req.files || []);
+  } catch (e) {
+    next(e);
+    return;
+  }
+
+  res.status(200).json({
+    message: 'User edited successfully',
+    userId: user._id,
+  });
+});
+
 export default routes;

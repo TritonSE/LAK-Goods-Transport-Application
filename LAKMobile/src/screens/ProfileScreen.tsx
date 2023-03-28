@@ -3,7 +3,7 @@ import { StyleSheet, View, Image, FlatList, ScrollView } from 'react-native';
 
 import { getUser, UserData } from '../api';
 import { imageIdToSource } from '../api/consumer';
-import { AuthContext } from '../auth/context';
+import { AuthContext } from '../context/AuthContext';
 import { AppButton, AppText, ScreenHeader, IconButtonWrapper } from '../components';
 import { PublicProfilePicDefault, EditIcon } from '../icons';
 import { ProfileScreenProps } from '../types/navigation';
@@ -16,13 +16,14 @@ export function ProfileScreen({ navigation, route }: ProfileScreenProps) {
     navigation.navigate('JobLandingScreen');
   }
 
+  // currentUser is the user currently viewing the profile screen.
   const currentUser = auth.user ? auth.user.uid : '';
 
   useEffect(() => {
     getUser(currentUser, route.params.userId).then((user) => {
       setProfileData(user);
     });
-  }, [route.params.userId]);
+  }, [route.params.userId, navigation]);
 
   const isUserTheViewer = auth.user && auth.user.uid === route.params.userId;
 
@@ -38,7 +39,10 @@ export function ProfileScreen({ navigation, route }: ProfileScreenProps) {
             </AppText>
           </View>
           {isUserTheViewer && (
-            <IconButtonWrapper style={styles.editButton}>
+            <IconButtonWrapper
+              style={styles.editButton}
+              onPress={() => navigation.navigate('EditProfileScreen', { userId: currentUser })}
+            >
               <EditIcon />
             </IconButtonWrapper>
           )}
@@ -49,7 +53,7 @@ export function ProfileScreen({ navigation, route }: ProfileScreenProps) {
             <AppText style={styles.fieldText}>{profileData?.phone}</AppText>
           </View>
           <View style={styles.fieldContainer}>
-            <AppText style={styles.fieldText}>{profileData?.location}</AppText>
+            <AppText style={styles.fieldText}>{profileData?.location.replace(';', ', ')}</AppText>
           </View>
 
           {profileData?.driverLicenseId && (

@@ -125,7 +125,7 @@ export async function createJob(userId, jobData, jobImages) {
  */
 export async function updateJob(userId, jobId, jobData, jobImages) {
   console.debug(
-    `SERVICE: updateJob service runnning: jobId - ${jobId}, userId - ${userId}, jobData - payload, jobImages - files`
+    `SERVICE: updateJob service runnning: jobId - ${jobId}, userId - ${userId}, jobData - ${jobData}, jobImages - files`
   );
   // Retrieve original job
   const originalJob = await JobModel.findById(jobId);

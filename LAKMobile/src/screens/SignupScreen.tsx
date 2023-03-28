@@ -4,7 +4,7 @@ import { AppButton, LabelWrapper, AppText, AppTextInput } from '../components';
 import { COLORS } from '../../constants';
 import { SignupProps } from '../types/navigation';
 import { useContext, useState } from 'react';
-import { AuthContext } from '../auth/context';
+import { AuthContext } from '../context/AuthContext';
 
 export function SignupScreen({ navigation }: SignupProps) {
   const [name, setName] = useState('');
