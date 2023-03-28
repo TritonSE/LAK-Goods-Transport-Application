@@ -5,6 +5,10 @@ import * as ImagePicker from 'expo-image-picker';
 import { ModalAlert } from './ModalAlert';
 import { ImageUploadContext } from '../context/ImageUploadContext';
 
+/**
+ * This component handles the image uploading interface for forms like AddJob, EditProfileScreen,
+ * and DriverRegistration. The forms can then access the uploaded images through ImageUploadContext.
+ */
 export function ImageUploadArea() {
   const { dispatch, imageURIs } = useContext(ImageUploadContext);
   const [permissionAlertVisible, setPermissionAlertVisible] = useState(false);

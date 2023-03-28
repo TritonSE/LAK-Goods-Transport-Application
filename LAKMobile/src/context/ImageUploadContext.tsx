@@ -1,3 +1,8 @@
+/**
+ * This context stores the images uploaded through components/ImageUploadArea.tsx.
+ * By using this context along with ImageUploadArea, forms can access and submit the
+ * images uploaded by the user to our backend.
+ */
 import React, { createContext, Reducer, useReducer, useState } from 'react';
 import * as ImagePicker from 'expo-image-picker';
 
@@ -40,7 +45,7 @@ export type ImageUploadState = {
 };
 
 const init: ImageUploadState = {
-  dispatch: (_image: ImagesReducerAction) => undefined,
+  dispatch: () => undefined,
   imageURIs: new Array(MAX_IMAGES).fill(''),
   imageInfo: new Array(MAX_IMAGES).fill(null),
   validateImageUpload: () => false,
@@ -74,6 +79,9 @@ export const ImageUploadProvider: React.FC<Props> = ({ children }) => {
         }
         break;
       case 'SET_IMAGES':
+        // This should take a list of preexisting images on the backend and add them to the state.
+        // Note: We might be able to store the imageIDs under the imageURIs.
+        // Then, under the backend, we need to check if the imageIDs already exist and not delete them if so.
         break;
       case 'CLEAR_IMAGES':
         newState = new Array(MAX_IMAGES).fill('');
@@ -87,6 +95,7 @@ export const ImageUploadProvider: React.FC<Props> = ({ children }) => {
   );
   const [imageURIs, dispatch] = useReducer(reducer, new Array(MAX_IMAGES).fill(''));
 
+  // This function checks if at least 1 image has been added to the upload area.
   const validateImageUpload = (): boolean => {
     return imageURIs.findIndex((value) => value !== '') !== -1;
   };

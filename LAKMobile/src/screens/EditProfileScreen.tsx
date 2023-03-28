@@ -118,12 +118,15 @@ export function EditProfileScreen({ navigation, route }: EditProfileScreenProps)
       vehicleColor: vehicleColor.trim(),
       imageIds: imageURIs.filter((value) => value !== ''),
     };
-
+    let formattedLocation = location;
+    if (district !== PICKER_LOCATION_DEFAULT) {
+      formattedLocation = `${location};${district}`;
+    }
     const updatedUser: UserData = {
       phone: phoneNumber,
       firstName: userName.split(' ')[0].trim(),
       lastName: userName.split(' ')[1].trim(),
-      location: location,
+      location: formattedLocation,
     };
     if (driverLicenseId != '') {
       updatedUser.driverLicenseId = driverLicenseId;

@@ -53,7 +53,7 @@ export function ProfileScreen({ navigation, route }: ProfileScreenProps) {
             <AppText style={styles.fieldText}>{profileData?.phone}</AppText>
           </View>
           <View style={styles.fieldContainer}>
-            <AppText style={styles.fieldText}>{profileData?.location}</AppText>
+            <AppText style={styles.fieldText}>{profileData?.location.replace(';', ', ')}</AppText>
           </View>
 
           {profileData?.driverLicenseId && (
