@@ -361,7 +361,6 @@ export async function assignDriver(jobId, userId, driverId) {
   job.assignedDriverId = driverId;
   job.status = JOB_STATUS_ASSIGNED;
   job.startDate = new Date();
-  console.log(job);
   try {
     await job.save();
   } catch (e) {

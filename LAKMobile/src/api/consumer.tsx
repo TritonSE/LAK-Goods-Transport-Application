@@ -181,7 +181,6 @@ export const assignDriver = async (
   driverId: string
 ): Promise<{ message: string; driverId: string; jobId: string } | null> => {
   try {
-    console.log({ jobId, driverId });
     const url =
       `${GET_JOBS}/${jobId}/assign-driver?` +
       new URLSearchParams({

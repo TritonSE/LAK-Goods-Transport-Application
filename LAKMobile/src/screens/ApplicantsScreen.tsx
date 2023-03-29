@@ -77,7 +77,6 @@ export function ApplicantsScreen({
     if (!driverId) return;
     assignDriver(currentUserId, jobData._id, driverId).then((response) => {
       if (response === null) {
-        console.log('I AM HERE');
         return;
       }
       const resDriverId = response.driverId;
