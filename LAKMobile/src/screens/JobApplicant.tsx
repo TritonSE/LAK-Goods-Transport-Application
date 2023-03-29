@@ -11,18 +11,23 @@ import { JobApplicantProps } from '../types/navigation';
 const Tab = createMaterialTopTabNavigator();
 
 type NumberOfApplicantsProps = {
+  color: string;
   numApplicants: number;
 };
-function NumberOfApplicants({ numApplicants }: NumberOfApplicantsProps) {
+function NumberOfApplicants({ color, numApplicants }: NumberOfApplicantsProps) {
   return (
     <View style={styles.applicantNumber}>
-      <AppText style={styles.numApplicantsText}>{numApplicants}</AppText>
+      <AppText style={{ fontSize: 18, marginRight: 10, color }}>APPLICANTS</AppText>
+      <AppText style={{ backgroundColor: color, ...styles.numApplicantsText }}>
+        {numApplicants}
+      </AppText>
     </View>
   );
 }
 
 export function JobApplicant({ navigation, route }: JobApplicantProps) {
   const carousel = <ImageCarousel imageIds={route.params.jobData.imageIds} />;
+  const numApplicants = route.params.jobData.applicants.length;
   return (
     <View style={styles.container}>
       <View style={styles.backView}>
@@ -60,9 +65,14 @@ export function JobApplicant({ navigation, route }: JobApplicantProps) {
           ) : (
             <Tab.Screen
               name="Applicants"
+              options={{
+                tabBarLabel: ({ color }) => (
+                  <NumberOfApplicants color={color} numApplicants={numApplicants} />
+                ),
+              }}
               listeners={{
                 tabPress: (e) => {
-                  if (route.params.jobData.applicants.length === 0) {
+                  if (numApplicants === 0) {
                     e.preventDefault();
                   }
                 },
@@ -114,16 +124,16 @@ const styles = StyleSheet.create({
     paddingTop: 20,
   },
   applicantNumber: {
-    backgroundColor: '#F5C7C5',
-    borderRadius: 5,
-    width: '7%',
     display: 'flex',
     flexDirection: 'row',
     justifyContent: 'center',
-    marginTop: 5,
-    marginRight: 5,
+    alignItems: 'center',
   },
   numApplicantsText: {
+    paddingLeft: 7.5,
+    paddingRight: 7.5,
+    borderRadius: 5,
     color: '#94100C',
+    textAlign: 'center',
   },
 });
