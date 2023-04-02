@@ -12,12 +12,17 @@
     "lint-check": "eslint ."
   },
   "dependencies": {
+    "@expo/config-plugins": "^6.0.1",
     "@react-native-picker/picker": "2.4.8",
     "@react-navigation/material-top-tabs": "^6.3.0",
     "@react-navigation/native": "^6.0.10",
     "@react-navigation/native-stack": "^6.6.2",
     "colors": "^1.4.0",
+<<<<<<< Updated upstream
     "expo": "^47.0.0",
+=======
+    "expo": "^48.0.0",
+>>>>>>> Stashed changes
     "expo-crypto": "~12.0.0",
     "expo-image-picker": "~14.0.2",
     "expo-status-bar": "~1.4.2",

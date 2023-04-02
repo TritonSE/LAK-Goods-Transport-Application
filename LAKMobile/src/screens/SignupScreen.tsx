@@ -8,12 +8,19 @@ import { AuthContext } from '../context/AuthContext';
 
 export function SignupScreen({ navigation }: SignupProps) {
   const [name, setName] = useState('');
+  const [isNameValid, setIsNameValid] = useState(false);
+
   const [phoneNumber, setPhoneNumber] = useState('');
   const [location, setLocation] = useState('');
   const [pin, setPin] = useState('');
   const [confirmPin, setConfirmPin] = useState('');
 
   const auth = useContext(AuthContext);
+
+  const [isPhoneValid, setIsPhoneValid] = useState(false);
+  const [isPINValid, setIsPINValid] = useState(false);
+
+  const [isSignupPressed, setIsSignupPressed] = useState(false);
 
   const handleSubmit = async () => {
     const firstName = name.split(' ')[0];
@@ -38,7 +45,7 @@ export function SignupScreen({ navigation }: SignupProps) {
           style={bigInputStyle}
           changeAction={setName}
           type="name"
-          isValid={true}
+          isValid={!isSignupPressed || isNameValid}
           errMsg="Required field"
           maxLength={100}
           keyboardType="default"

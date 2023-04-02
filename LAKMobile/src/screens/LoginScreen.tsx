@@ -1,9 +1,11 @@
 import React, { useContext, useState } from 'react';
-import { StyleSheet, View } from 'react-native';
+import { NativeSyntheticEvent, StyleSheet, Text, TextInputChangeEventData, View } from 'react-native';
 import { AppText, LabelWrapper, AppButton, AppTextInput } from '../components';
 import { COLORS } from '../../constants';
 import { LoginProps } from '../types/navigation';
-import { AuthContext } from '../context/AuthContext';
+import { AuthContext, AuthState } from '../context/AuthContext';
+import { useEffect } from 'react';
+
 
 export function LoginScreen({ navigation }: LoginProps) {
   const [phoneNumber, setPhoneNumber] = useState('');
@@ -13,6 +15,7 @@ export function LoginScreen({ navigation }: LoginProps) {
 
   return (
     <View style={styles.container}>
+            <Text style={styles.errText}>{isLoginPressed && authError && authError.message}</Text>
       <LabelWrapper label="Mobile Number">
         <AppTextInput
           value={phoneNumber}
@@ -21,9 +24,49 @@ export function LoginScreen({ navigation }: LoginProps) {
           type="phoneNumber"
           maxLength={10}
           keyboardType="default"
+                    isValid={!isLoginPressed || isPhoneValid}
+                    errMsg="Valid mobile number required"
         />
       </LabelWrapper>
 
+            <LabelWrapper label='4 Digit PIN'>
+                <AppTextInput
+                    value={pin}
+                    style={smallInputStyle}
+                    changeAction={setPIN}
+                    type="pin"
+                    isValid={!isLoginPressed || isPINValid}
+                    maxLength={4}
+                    keyboardType="numeric"
+                    errMsg="Valid PIN required"
+                />
+            </LabelWrapper>
+            <AppButton
+                type='link'
+                title='Forgot PIN?'
+                onPress={() => navigation.navigate('ForgotPassword')}
+                style={styles.forgotPIN}
+            />
+            
+            <AppButton
+                type='primary'
+                title='Log in'
+                onPress={async () => {
+                    setAuthError(null);
+                    auth.clearError();
+                    setIsLoginPressed(true);
+                    await auth.login(phoneNumber, pin);
+                    if (auth.user !== null) {
+                        setPhoneNumber("");
+                        setPIN("");
+                        navigation.navigate('JobLandingScreen');
+                    } else {
+                        //Sets the Firebase error, which then displays it
+                        setAuthError(auth.error)
+                    }
+                }}
+                style={styles.submitButton}
+            />
       <LabelWrapper label="4 Digit PIN">
         <AppTextInput
           value={pin}
@@ -109,9 +152,15 @@ const styles = StyleSheet.create({
     justifyContent: 'flex-start',
   },
 
-  signupLink: {
-    marginLeft: 5,
-  },
+    signupLink: {
+        marginLeft: 5
+    },
+
+    errText: {
+        color: COLORS.red,
+        fontSize: 12,
+        paddingBottom: 20  // this is adding margin below null errMsg as well
+      }
 });
 
 const bigInputStyle = StyleSheet.flatten([
@@ -127,3 +176,5 @@ const smallInputStyle = StyleSheet.flatten([
     width: '45%',
   },
 ]);
+
+
