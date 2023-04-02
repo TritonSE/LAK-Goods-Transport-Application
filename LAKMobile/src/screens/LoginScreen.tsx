@@ -1,5 +1,5 @@
 import React, { useContext, useState } from 'react';
-import { NativeSyntheticEvent, StyleSheet, Text, TextInputChangeEventData, View } from 'react-native';
+import { NativeSyntheticEvent, StyleSheet, Text, TextInput, TextInputChangeEventData, View } from 'react-native';
 import { AppText, LabelWrapper, AppButton, AppTextInput } from '../components';
 import { COLORS } from '../../constants';
 import { LoginProps } from '../types/navigation';
@@ -11,23 +11,39 @@ export function LoginScreen({ navigation }: LoginProps) {
   const [phoneNumber, setPhoneNumber] = useState('');
   const [pin, setPIN] = useState('');
 
-  const auth = useContext(AuthContext);
+    const [isPhoneValid, setIsPhoneValid] = useState(false);
+    const [isPINValid, setIsPINValid] = useState(false);
 
-  return (
-    <View style={styles.container}>
+    const [isLoginPressed, setIsLoginPressed] = useState(false);
+    const [authError, setAuthError] = useState<Error | null>(null);
+
+    const auth = useContext(AuthContext);
+
+    useEffect(() => {
+        const phoneRegex = new RegExp("^[0-9]{10}$");
+        setIsPhoneValid(phoneRegex.test(phoneNumber));
+    }, [phoneNumber])
+
+    useEffect(() => {
+        const pinRegex = new RegExp("^[0-9]{4}$");
+        setIsPINValid(pinRegex.test(pin));
+    }, [pin])
+
+    return (
+        <View style={styles.container}>
             <Text style={styles.errText}>{isLoginPressed && authError && authError.message}</Text>
-      <LabelWrapper label="Mobile Number">
-        <AppTextInput
-          value={phoneNumber}
-          style={bigInputStyle}
-          changeAction={setPhoneNumber}
-          type="phoneNumber"
-          maxLength={10}
-          keyboardType="default"
+            <LabelWrapper label='Mobile Number'>
+                <AppTextInput
+                    value={phoneNumber}
+                    style={bigInputStyle}
+                    changeAction={setPhoneNumber}
+                    type="phoneNumber"
+                    maxLength={10}
+                    keyboardType="default"
                     isValid={!isLoginPressed || isPhoneValid}
                     errMsg="Valid mobile number required"
-        />
-      </LabelWrapper>
+                />
+            </LabelWrapper>
 
             <LabelWrapper label='4 Digit PIN'>
                 <AppTextInput
