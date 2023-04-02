@@ -6,14 +6,14 @@ import { SignupProps } from '../types/navigation';
 import { useContext, useState } from 'react';
 import { AuthContext } from '../context/AuthContext';
 
-export function SignupScreen({ navigation }: SignupProps) {
-  const [name, setName] = useState('');
+export function SignupScreen({navigation}: SignupProps) {
+  const [name, setName] = useState("");
   const [isNameValid, setIsNameValid] = useState(false);
 
-  const [phoneNumber, setPhoneNumber] = useState('');
-  const [location, setLocation] = useState('');
-  const [pin, setPin] = useState('');
-  const [confirmPin, setConfirmPin] = useState('');
+  const [phoneNumber, setPhoneNumber] = useState("");
+  const [location, setLocation] = useState("");
+  const [pin, setPin] = useState("");
+  const [confirmPin, setConfirmPin] = useState("");
 
   const auth = useContext(AuthContext);
 

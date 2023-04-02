@@ -3,13 +3,23 @@ import { NativeSyntheticEvent, StyleSheet, Text, TextInput, TextInputChangeEvent
 import { AppText, LabelWrapper, AppButton, AppTextInput } from '../components';
 import { COLORS } from '../../constants';
 import { LoginProps } from '../types/navigation';
+<<<<<<< Updated upstream
 import { AuthContext, AuthState } from '../context/AuthContext';
+=======
+import { AuthContext, AuthState } from '../auth/context';
+>>>>>>> Stashed changes
 import { useEffect } from 'react';
 
 
 export function LoginScreen({ navigation }: LoginProps) {
   const [phoneNumber, setPhoneNumber] = useState('');
   const [pin, setPIN] = useState('');
+
+    const [isPhoneValid, setIsPhoneValid] = useState(false);
+    const [isPINValid, setIsPINValid] = useState(false);
+
+    const [isLoginPressed, setIsLoginPressed] = useState(false);
+    const [authError, setAuthError] = useState<Error | null>(null);
 
     const [isPhoneValid, setIsPhoneValid] = useState(false);
     const [isPINValid, setIsPINValid] = useState(false);
