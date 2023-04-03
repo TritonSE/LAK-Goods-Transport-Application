@@ -6,20 +6,20 @@ import { SignupProps } from '../types/navigation';
 import { useContext, useEffect, useState } from 'react';
 import { AuthContext } from '../context/AuthContext';
 
-export function SignupScreen({navigation}: SignupProps) {
-  const [name, setName] = useState("");
+export function SignupScreen({ navigation }: SignupProps) {
+  const [name, setName] = useState('');
   const [isNameValid, setIsNameValid] = useState(false);
 
-  const [phoneNumber, setPhoneNumber] = useState("");
+  const [phoneNumber, setPhoneNumber] = useState('');
   const [isPhoneValid, setIsPhoneValid] = useState(false);
 
-  const [location, setLocation] = useState("");
+  const [location, setLocation] = useState('');
   const [isLocationValid, setIsLocationValid] = useState(false);
 
-  const [pin, setPin] = useState("");
+  const [pin, setPin] = useState('');
   const [isPINValid, setIsPINValid] = useState(false);
 
-  const [confirmPin, setConfirmPin] = useState("");
+  const [confirmPin, setConfirmPin] = useState('');
   const [isConfirmPINValid, setIsConfirmPINValid] = useState(false);
 
   const auth = useContext(AuthContext);
@@ -28,35 +28,33 @@ export function SignupScreen({navigation}: SignupProps) {
   const [isSignupPressed, setIsSignupPressed] = useState(false);
 
   useEffect(() => {
-    //only spaces and letters allowed in regex pattern
-    const nameRegex = new RegExp("^[A-Z][a-z]+\\s[A-Z][a-z]+$");
+    // only spaces and letters allowed in regex pattern
+    const nameRegex = new RegExp('^[A-Z][a-z]+ [A-Z][a-z]+$');
     setIsNameValid(nameRegex.test(name));
-  }, [name])
+  }, [name]);
 
   useEffect(() => {
-    //phone number must be 10-digit number
-    const phoneRegex = new RegExp("^[0-9]{10}$");
+    // phone number must be 10-digit number
+    const phoneRegex = new RegExp('^[0-9]{10}$');
     setIsPhoneValid(phoneRegex.test(phoneNumber));
-  }, [phoneNumber])
+  }, [phoneNumber]);
 
   useEffect(() => {
-    //only spaces and letters allowed in regex pattern, and must be non-empty
-    const locationRegex = new RegExp("^[A-Za-z][A-Za-z\\s]*$");
+    // only spaces and letters allowed in regex pattern, and must be non-empty
+    const locationRegex = new RegExp('^[A-Za-z][A-Za-z ]*$');
     setIsLocationValid(locationRegex.test(location));
-  }, [location])
+  }, [location]);
 
   useEffect(() => {
-    //must be 4-digit number
-    const pinRegex = new RegExp("^[0-9]{4}$");
+    // must be 4-digit number
+    const pinRegex = new RegExp('^[0-9]{4}$');
     setIsPINValid(pinRegex.test(pin));
-  }, [pin])
+  }, [pin]);
 
   useEffect(() => {
-    //pin confirmation must be the same as original pin
+    // pin confirmation must be the same as original pin
     setIsConfirmPINValid(pin === confirmPin);
-  }, [confirmPin, pin])
-
-
+  }, [confirmPin, pin]);
 
   const handleSubmit = async () => {
     const firstName = name.split(' ')[0];
@@ -78,15 +76,15 @@ export function SignupScreen({navigation}: SignupProps) {
 
   return (
     <View style={styles.container}>
-      <Text style={styles.errText}>{(isSignupPressed && authError) ? authError.message : ''}</Text>
-      <LabelWrapper label="Name (First, Last)">
+      <Text style={styles.errText}>{isSignupPressed && authError ? authError.message : ''}</Text>
+      <LabelWrapper label="Name (First Last)">
         <AppTextInput
           value={name}
           style={bigInputStyle}
           changeAction={setName}
           type="name"
-          isValid={ isNameValid}
-          errMsg="Valid first and last name required"
+          isValid={isNameValid}
+          errMsg="Valid first and last name required."
           maxLength={100}
           keyboardType="default"
         />
@@ -99,7 +97,7 @@ export function SignupScreen({navigation}: SignupProps) {
           changeAction={setPhoneNumber}
           type="phoneNumber"
           isValid={!isSignupPressed || isPhoneValid}
-          errMsg="Valid mobile number required"
+          errMsg="Valid mobile number required."
           maxLength={10}
           keyboardType="default"
         />
@@ -112,7 +110,7 @@ export function SignupScreen({navigation}: SignupProps) {
           changeAction={setLocation}
           type="location"
           isValid={!isSignupPressed || isLocationValid}
-          errMsg="Valid location required"
+          errMsg="Valid location required."
           maxLength={100}
           keyboardType="default"
         />
@@ -125,7 +123,7 @@ export function SignupScreen({navigation}: SignupProps) {
           changeAction={setPin}
           type="pin"
           isValid={!isSignupPressed || isPINValid}
-          errMsg="Valid PIN required"
+          errMsg="Valid PIN required."
           maxLength={4}
           keyboardType="numeric"
         />
@@ -138,7 +136,7 @@ export function SignupScreen({navigation}: SignupProps) {
           changeAction={setConfirmPin}
           type="confirmPin"
           isValid={!isSignupPressed || isConfirmPINValid}
-          errMsg="Valid PIN confirmation required"
+          errMsg="Valid PIN confirmation required."
           maxLength={4}
           keyboardType="numeric"
         />
@@ -206,8 +204,8 @@ const styles = StyleSheet.create({
   errText: {
     color: COLORS.red,
     fontSize: 12,
-    paddingBottom: 20  // this is adding margin below null errMsg as well
-  }
+    paddingBottom: 20, // this is adding margin below null errMsg as well
+  },
 });
 
 const bigInputStyle = StyleSheet.flatten([
@@ -222,6 +220,4 @@ const smallInputStyle = StyleSheet.flatten([
   {
     width: '45%',
   },
-
-  
 ]);

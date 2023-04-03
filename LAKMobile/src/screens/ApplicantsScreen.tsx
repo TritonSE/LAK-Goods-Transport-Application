@@ -76,7 +76,7 @@ export function ApplicantsScreen({
       setJobData((prevJobs) =>
         prevJobs.map((job) => (job._id === updatedJob._id ? updatedJob : job))
       );
-      navigation.navigate('ListJobs');
+      navigation.navigate('JobLandingScreen');
     });
 
     setConfirmationVisible(true);
@@ -93,7 +93,7 @@ export function ApplicantsScreen({
       setJobData((prevJobs) =>
         prevJobs.map((job) => (job._id === updatedJob._id ? updatedJob : job))
       );
-      navigation.navigate('ListJobs');
+      navigation.navigate('JobLandingScreen');
     });
   };
 

@@ -31,7 +31,7 @@ export function ApplicantThumbnail({
         {applicantData.phone}
       </AppText>
       <AppText style={ThumbailStyles.containerItem}>
-        {applicantData.vehicleData.vehicleType}
+        {applicantData?.vehicleData?.vehicleType}
       </AppText>
 
       <View
