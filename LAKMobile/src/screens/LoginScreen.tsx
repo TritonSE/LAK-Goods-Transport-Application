@@ -3,23 +3,13 @@ import { NativeSyntheticEvent, StyleSheet, Text, TextInput, TextInputChangeEvent
 import { AppText, LabelWrapper, AppButton, AppTextInput } from '../components';
 import { COLORS } from '../../constants';
 import { LoginProps } from '../types/navigation';
-<<<<<<< Updated upstream
-import { AuthContext, AuthState } from '../context/AuthContext';
-=======
 import { AuthContext, AuthState } from '../auth/context';
->>>>>>> Stashed changes
 import { useEffect } from 'react';
 
 
 export function LoginScreen({ navigation }: LoginProps) {
   const [phoneNumber, setPhoneNumber] = useState('');
   const [pin, setPIN] = useState('');
-
-    const [isPhoneValid, setIsPhoneValid] = useState(false);
-    const [isPINValid, setIsPINValid] = useState(false);
-
-    const [isLoginPressed, setIsLoginPressed] = useState(false);
-    const [authError, setAuthError] = useState<Error | null>(null);
 
     const [isPhoneValid, setIsPhoneValid] = useState(false);
     const [isPINValid, setIsPINValid] = useState(false);
@@ -41,7 +31,7 @@ export function LoginScreen({ navigation }: LoginProps) {
 
     return (
         <View style={styles.container}>
-            <Text style={styles.errText}>{isLoginPressed && authError && authError.message}</Text>
+            <Text style={styles.errText}>{(isLoginPressed && authError) ? authError.message : ''}</Text>
             <LabelWrapper label='Mobile Number'>
                 <AppTextInput
                     value={phoneNumber}
@@ -77,6 +67,7 @@ export function LoginScreen({ navigation }: LoginProps) {
             <AppButton
                 type='primary'
                 title='Log in'
+                
                 onPress={async () => {
                     setAuthError(null);
                     auth.clearError();
@@ -88,47 +79,12 @@ export function LoginScreen({ navigation }: LoginProps) {
                         navigation.navigate('JobLandingScreen');
                     } else {
                         //Sets the Firebase error, which then displays it
-                        setAuthError(auth.error)
+                        setAuthError(auth.error);
                     }
                 }}
                 style={styles.submitButton}
             />
-      <LabelWrapper label="4 Digit PIN">
-        <AppTextInput
-          value={pin}
-          style={smallInputStyle}
-          changeAction={setPIN}
-          type="pin"
-          isValid={true}
-          errMsg="Required field"
-          maxLength={4}
-          keyboardType="numeric"
-        />
-      </LabelWrapper>
-      <AppButton
-        type="link"
-        title="Forgot PIN?"
-        onPress={() => navigation.navigate('ForgotPassword')}
-        style={styles.forgotPIN}
-      />
-
-      <AppButton
-        type="primary"
-        title="Log in"
-        onPress={async () => {
-          auth.clearError();
-          await auth.login(phoneNumber, pin);
-          if (auth.user !== null) {
-            setPhoneNumber('');
-            setPIN('');
-            navigation.navigate('JobLandingScreen');
-          } else {
-            // Display the error now...
-          }
-        }}
-        style={styles.submitButton}
-      />
-
+      
       <View style={styles.signupPrompt}>
         <AppText>{"Don't have an account?"}</AppText>
         <AppButton
