@@ -15,7 +15,7 @@ interface NoJobProps {
   buttonName?: string;
   buttonVisible: boolean;
   onButtonClick: () => void;
-  iconType?: React.ReactElement;
+  buttonIcon?: React.ReactElement;
   errorImageType: React.ReactElement;
 }
 
@@ -25,20 +25,10 @@ export const NoJobs = ({
   buttonName,
   buttonVisible,
   onButtonClick,
-  iconType,
+  buttonIcon,
   errorImageType,
 }: NoJobProps) => {
-  // let displayIcon;
-  // switch (type) {
-  //     case 'noAvailableJobs':
-  //         displayIcon = <NoAvailableJobsIcon />;
 
-  //     case 'noJobs':
-  //         displayIcon = <NoJobsIcon />;
-  //         console.log("in the case sqitch");
-  //     default:
-  //         displayIcon = <NoMatchingJobsIcon />;
-  // }
   return (
     <View style={styles.container}>
       {/* icon stuff here */}
@@ -55,7 +45,7 @@ export const NoJobs = ({
             textStyle={styles.buttonText}
             type="primary"
             title={buttonName}
-            icon={iconType}
+            icon={buttonIcon}
             onPress={onButtonClick}
           />
         ) : null}
@@ -79,7 +69,6 @@ const styles = StyleSheet.create({
     width: 75,
     paddingBottom: 100,
 
-    // alignSelf: "start"
   },
 
   body: {

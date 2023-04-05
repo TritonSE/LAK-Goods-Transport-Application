@@ -2,13 +2,13 @@ import React, { useState, useEffect, useMemo, useContext } from 'react';
 import { View, FlatList, StyleSheet } from 'react-native';
 import { Picker } from '@react-native-picker/picker';
 import debounce from 'lodash.debounce';
-import { getJobs, JobData, JobOwnerView, PAGE_SIZE } from '../api';
-import { JobThumbnail, AppButton, AppTextInput, NoJobs } from '../components';
+import { getJobs, JobData, JobOwnerView, PAGE_SIZE } from "../api";
+import { JobThumbnail, AppButton, AppTextInput, NoJobs } from "../components";
 import { COLORS } from '../../constants';
 import { PickerStyles, FlatListStyles } from '../styles';
 import { useIsFocused } from '@react-navigation/native';
 import { AuthContext } from '../auth/context';
-import { NoJobsIcon, PlusSignIcon, SearchIcon } from '../icons';
+import { NoAvailableJobsIcon, NoJobsIcon, NoMatchingJobsIcon, PlusSignIcon, SearchIcon} from '../icons';
 
 type ListJobsModes = 'Add' | 'Find';
 type JobTypePickerOption = 'Current Jobs' | 'Completed Jobs' | 'Your Jobs' | 'Finished Jobs';
@@ -17,22 +17,24 @@ const ADD_PICKER_OPTIONS: JobTypePickerOption[] = ['Current Jobs', 'Completed Jo
 
 const FIND_PICKER_OPTIONS: JobTypePickerOption[] = ['Your Jobs', 'Finished Jobs'];
 
+const LIST_MODES: ListJobsModes[] = ['Add', 'Find'];
+
 interface ListJobsProps {
   navigation: any;
   mode: ListJobsModes;
+  
 }
 
 export function ListJobs({ navigation, mode }: ListJobsProps) {
-  const [jobListType, setJobListType] =
-    mode === 'Add'
-      ? useState<JobTypePickerOption>('Current Jobs')
-      : useState<JobTypePickerOption>('Your Jobs');
+  const [jobListType, setJobListType] = useState<JobTypePickerOption>(mode === 'Add' ? 'Current Jobs' : 'Your Jobs');
   const [searchString, setSearchString] = useState<string | null>(null);
   const [jobs, setJobs] = useState<JobData[] | JobOwnerView[]>([]);
+  const [noJobs, setNoJobs] = useState<boolean>(false);
 
   // NOTE: Page 0 is being used as a null page, but the first page is 1.
   // Added this so that we are able to trigger hooks dependent on `page` when type of screen changes but page number does not
   const [page, setPage] = useState(0);
+  const isFocused = useIsFocused();
 
   const [loading, setLoading] = useState(false);
   const [isRefreshing, setRefreshing] = useState(false);
@@ -103,59 +105,55 @@ export function ListJobs({ navigation, mode }: ListJobsProps) {
     setPage(0);
     setRefreshing(true);
   };
-
-  const searchResults = (text: string) => {
-    setSearchString(text);
-  };
-
+  
   const pickerOptions = mode === 'Add' ? ADD_PICKER_OPTIONS : FIND_PICKER_OPTIONS;
-
   let noJobsComponent = null;
+ 
 
-  if (jobs.length == 0 && jobListType === 'Your Jobs') {
-    //need to check whether we are on your jobs or finished jobs
-    noJobsComponent = (
-      <NoJobs
-        title={'Your job box is empty.'}
-        body={"You don't have any in progress jobs at the moment."}
-        buttonVisible={true}
-        buttonName={'Search to Find a Job'}
-        onButtonClick={() => console.log}
-        iconType={<SearchIcon />}
-        errorImageType={<NoJobsIcon />}
-      />
-    );
-  } else if (jobs.length == 0 && jobListType === 'Finished Jobs') {
-    noJobsComponent = (
-      <NoJobs
-        title={'No finished jobs.'}
-        body={"You don't have any finished jobs yet."}
-        buttonVisible={false}
-        onButtonClick={() => console.log}
-        errorImageType={<NoJobsIcon />}
-      />
-    );
-  } else if (jobs.length == 0 && jobListType === 'Current Jobs') {
-    noJobsComponent = (
-      <NoJobs
-        title={'No current jobs.'}
-        body={"You don't have any in progress jobs at the moment."}
-        buttonVisible={true}
-        buttonName="Add a Job Now"
-        iconType={<PlusSignIcon />}
-        onButtonClick={() => console.log}
-        errorImageType={<NoJobsIcon />}
-      />
-    );
-  } else {
+  if(jobs.length == 0 && jobListType === 'Your Jobs') {
+    noJobsComponent = <NoJobs
+                        title = {"Your job box is empty."}
+                        body = {"You don't have any in progress jobs at the moment."}
+                        buttonVisible = {true}
+                        buttonName = {"Search to Find a Job"}
+                        onButtonClick = {() => (console.log)}
+                        buttonIcon = {<SearchIcon/>}
+                        errorImageType = {<NoJobsIcon/>}
+                      />;
+    
+  } 
+  
+  else if(jobs.length == 0 && jobListType === 'Finished Jobs') {
+    noJobsComponent = <NoJobs
+                        title = {"No finished jobs."}
+                        body = {"You don't have any finished jobs yet."}
+                        buttonVisible = {false}
+                        onButtonClick = {() => (console.log)}
+                        errorImageType = {<NoJobsIcon/>}
+                      />;
+  }
+  
+  else if(jobs.length == 0 && jobListType === 'Current Jobs') {
+    noJobsComponent = <NoJobs
+                        title = {"No current jobs."}
+                        body = {"You don't have any in progress jobs at the moment."}
+                        buttonVisible = {true}
+                        buttonName = "Add a Job Now"
+                        buttonIcon={<PlusSignIcon/>}
+                        onButtonClick = {() => (console.log)}
+                        errorImageType = {<NoMatchingJobsIcon/>}
+                      />;
+  }
+
+  else {
     noJobsComponent = null;
-    console.log(jobListType);
-    console.log('the component is now changed yes jobs');
+    
   }
 
   return (
     <>
       <View style={{ alignItems: 'center' }}>
+        
         <View style={FlatListStyles.wrapper}>
           <FlatList
             onRefresh={() => onRefresh()}
@@ -217,9 +215,10 @@ export function ListJobs({ navigation, mode }: ListJobsProps) {
                       ))}
                     </Picker>
                   </View>
-
+                  
                   <View style={styles.spacer} />
                   {mode === 'Add' && (
+                    
                     <AppButton
                       textStyle={styles.addJobBtnText}
                       type="primary"
@@ -230,29 +229,35 @@ export function ListJobs({ navigation, mode }: ListJobsProps) {
                       title="Add Job"
                       style={styles.addJobBtn}
                     />
-
-                    // isn't letting me put this here {noJobsComponent}
-                  )}
+                    
+                  ) } 
                 </View>
-
-                {mode === 'Add' && <View>{noJobsComponent}</View>}
-
-                {mode === 'Find' && (
+                
+                {mode === 'Add' && (
+                    <View>
+                    {noJobsComponent}
+                    </View>
+                )}
+                    
+                 {mode === 'Find' && (
                   <View>
                     <AppTextInput
                       value={searchString ?? undefined}
-                      // onChangeText={(text) => setSearchString(text)}
-                      onChangeText={(text) => searchResults(text)}
+                      onChangeText={(text) => setSearchString(text)}
                       style={[styles.searchTextInput]}
                       placeholder="Search by title, location, and delivery date"
                       maxLength={100}
                       keyboardType="default"
                       icon="search"
-                    />
-
+                    /> 
+                    
                     {noJobsComponent}
+                    
                   </View>
-                )}
+                  
+                ) } 
+
+               
               </View>
             }
             onEndReached={() => {
