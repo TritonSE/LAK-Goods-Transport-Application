@@ -8,82 +8,95 @@ import { AuthContext } from '../context/AuthContext';
 
 export function SignupScreen({ navigation }: SignupProps) {
   const [name, setName] = useState('');
-  const [isNameValid, setIsNameValid] = useState(false);
+  const [nameValid, setNameValid] = useState(false);
 
   const [phoneNumber, setPhoneNumber] = useState('');
-  const [isPhoneValid, setIsPhoneValid] = useState(false);
+  const [phoneValid, setPhoneValid] = useState(false);
 
   const [location, setLocation] = useState('');
-  const [isLocationValid, setIsLocationValid] = useState(false);
+  const [locationValid, setLocationValid] = useState(false);
 
   const [pin, setPin] = useState('');
-  const [isPINValid, setIsPINValid] = useState(false);
+  const [PINValid, setPINValid] = useState(false);
 
   const [confirmPin, setConfirmPin] = useState('');
-  const [isConfirmPINValid, setIsConfirmPINValid] = useState(false);
+  const [confirmPINValid, setConfirmPINValid] = useState(false);
 
   const auth = useContext(AuthContext);
-  const [authError, setAuthError] = useState<Error | null>(null);
+  const [signupError, setSignupError] = useState<Error | null>(null);
 
-  const [isSignupPressed, setIsSignupPressed] = useState(false);
+  const [isSignupPressed, setSignupPressed] = useState(false);
 
   useEffect(() => {
+    setSignupPressed(false);
+  }, [name, phoneNumber, location, pin, confirmPin]);
+
+  const validateName = () => {
     // only spaces and letters allowed in regex pattern
     const nameRegex = new RegExp('^[A-Z][a-z]+ [A-Z][a-z]+$');
-    setIsNameValid(nameRegex.test(name));
-  }, [name]);
+    setNameValid(nameRegex.test(name));
+  }
 
-  useEffect(() => {
+  const validatePhone = () => {
     // phone number must be 10-digit number
     const phoneRegex = new RegExp('^[0-9]{10}$');
-    setIsPhoneValid(phoneRegex.test(phoneNumber));
-  }, [phoneNumber]);
-
-  useEffect(() => {
+    setPhoneValid(phoneRegex.test(phoneNumber));
+  }
+  
+  const validateLocation = () => {
     // only spaces and letters allowed in regex pattern, and must be non-empty
     const locationRegex = new RegExp('^[A-Za-z][A-Za-z ]*$');
-    setIsLocationValid(locationRegex.test(location));
-  }, [location]);
+    setLocationValid(locationRegex.test(location));
+  }
 
-  useEffect(() => {
+  const validatePin = () => {
     // must be 4-digit number
     const pinRegex = new RegExp('^[0-9]{4}$');
-    setIsPINValid(pinRegex.test(pin));
-  }, [pin]);
-
-  useEffect(() => {
+    setPINValid(pinRegex.test(pin));
+  }
+  
+  const validateConfirmPin = () => {
     // pin confirmation must be the same as original pin
-    setIsConfirmPINValid(pin === confirmPin);
-  }, [confirmPin, pin]);
+    setConfirmPINValid(pin === confirmPin);
+  }
 
   const handleSubmit = async () => {
     const firstName = name.split(' ')[0];
     const lastName = name.split(' ')[1];
 
-    setAuthError(null);
+    setSignupError(null);
     auth.clearError();
-    setIsSignupPressed(true);
-    await auth.signup(firstName, lastName, phoneNumber, location, pin);
-    if (auth.user !== null) {
-      console.log(auth.user.uid);
-      navigation.navigate('JobLandingScreen');
-    } else {
-      // Display errors (invalid password, email already in use, etc.)
-      setAuthError(auth.error);
-      console.error(auth.error);
+    setSignupPressed(true);
+
+    validateName();
+    validatePhone();
+    validateLocation();
+    validatePin();
+    validateConfirmPin();
+
+    if (nameValid && phoneValid && locationValid && PINValid && confirmPINValid){
+      await auth.signup(firstName, lastName, phoneNumber, location, pin);
+      if (auth.user !== null) {
+        console.log(auth.user.uid);
+        navigation.navigate('JobLandingScreen');
+      } else {
+        // Display errors (invalid password, email already in use, etc.)
+        setSignupError(auth.error);
+        console.error(auth.error);
+      }
     }
   };
 
   return (
     <View style={styles.container}>
-      <Text style={styles.errText}>{isSignupPressed && authError ? authError.message : ''}</Text>
+      <Text style={styles.errText}>{isSignupPressed && signupError ? signupError.message : ''}</Text>
       <LabelWrapper label="Name (First Last)">
         <AppTextInput
           value={name}
           style={bigInputStyle}
           changeAction={setName}
           type="name"
-          isValid={isNameValid}
+          isValid={!isSignupPressed || nameValid}
           errMsg="Valid first and last name required."
           maxLength={100}
           keyboardType="default"
@@ -96,7 +109,7 @@ export function SignupScreen({ navigation }: SignupProps) {
           style={bigInputStyle}
           changeAction={setPhoneNumber}
           type="phoneNumber"
-          isValid={!isSignupPressed || isPhoneValid}
+          isValid={!isSignupPressed || phoneValid}
           errMsg="Valid mobile number required."
           maxLength={10}
           keyboardType="default"
@@ -109,7 +122,7 @@ export function SignupScreen({ navigation }: SignupProps) {
           style={bigInputStyle}
           changeAction={setLocation}
           type="location"
-          isValid={!isSignupPressed || isLocationValid}
+          isValid={!isSignupPressed || locationValid}
           errMsg="Valid location required."
           maxLength={100}
           keyboardType="default"
@@ -122,7 +135,7 @@ export function SignupScreen({ navigation }: SignupProps) {
           style={smallInputStyle}
           changeAction={setPin}
           type="pin"
-          isValid={!isSignupPressed || isPINValid}
+          isValid={!isSignupPressed || PINValid}
           errMsg="Valid PIN required."
           maxLength={4}
           keyboardType="numeric"
@@ -135,7 +148,7 @@ export function SignupScreen({ navigation }: SignupProps) {
           style={smallInputStyle}
           changeAction={setConfirmPin}
           type="confirmPin"
-          isValid={!isSignupPressed || isConfirmPINValid}
+          isValid={!isSignupPressed || confirmPINValid}
           errMsg="Valid PIN confirmation required."
           maxLength={4}
           keyboardType="numeric"

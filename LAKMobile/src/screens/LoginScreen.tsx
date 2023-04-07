@@ -10,27 +10,52 @@ export function LoginScreen({ navigation }: LoginProps) {
   const [phoneNumber, setPhoneNumber] = useState('');
   const [pin, setPIN] = useState('');
 
-  const [isPhoneValid, setIsPhoneValid] = useState(false);
-  const [isPINValid, setIsPINValid] = useState(false);
+  const [phoneValid, setPhoneValid] = useState(false);
+  const [PINValid, setPINValid] = useState(false);
 
-  const [isLoginPressed, setIsLoginPressed] = useState(false);
-  const [authError, setAuthError] = useState<Error | null>(null);
+  const [loginPressed, setLoginPressed] = useState(false);
+  const [loginError, setLoginError] = useState<Error | null>(null);
 
   const auth = useContext(AuthContext);
 
   useEffect(() => {
-    const phoneRegex = new RegExp('^[0-9]{10}$');
-    setIsPhoneValid(phoneRegex.test(phoneNumber));
-  }, [phoneNumber]);
+    setLoginPressed(false);
+  }, [phoneNumber, pin]);
 
-  useEffect(() => {
+  const validatePhone = () => {
+    const phoneRegex = new RegExp('^[0-9]{10}$');
+    setPhoneValid(phoneRegex.test(phoneNumber));
+  }
+
+  const validatePin = () => {
     const pinRegex = new RegExp('^[0-9]{4}$');
-    setIsPINValid(pinRegex.test(pin));
-  }, [pin]);
+    setPINValid(pinRegex.test(pin));
+  }
+
+  const handleSubmit = async () => {
+    setLoginError(null);
+    auth.clearError();
+    setLoginPressed(true);
+
+    validatePhone();
+    validatePin();
+
+    if (phoneValid && PINValid){
+      await auth.login(phoneNumber, pin);
+      if (auth.user !== null) {
+        setPhoneNumber('');
+        setPIN('');
+        navigation.navigate('JobLandingScreen');
+      } else {
+        //Sets the Firebase error, which then displays it
+        setLoginError(auth.error);
+      }
+    }
+  }
 
   return (
     <View style={styles.container}>
-      <Text style={styles.errText}>{isLoginPressed && authError ? authError.message : ''}</Text>
+      <Text style={styles.errText}>{loginPressed && loginError ? loginError.message : ''}</Text>
       <LabelWrapper label="Mobile Number">
         <AppTextInput
           value={phoneNumber}
@@ -39,7 +64,7 @@ export function LoginScreen({ navigation }: LoginProps) {
           type="phoneNumber"
           maxLength={10}
           keyboardType="default"
-          isValid={!isLoginPressed || isPhoneValid}
+          isValid={!loginPressed || phoneValid}
           errMsg="Valid mobile number required."
         />
       </LabelWrapper>
@@ -50,7 +75,7 @@ export function LoginScreen({ navigation }: LoginProps) {
           style={smallInputStyle}
           changeAction={setPIN}
           type="pin"
-          isValid={!isLoginPressed || isPINValid}
+          isValid={!loginPressed || PINValid}
           maxLength={4}
           keyboardType="numeric"
           errMsg="Valid PIN required."
@@ -66,20 +91,7 @@ export function LoginScreen({ navigation }: LoginProps) {
       <AppButton
         type="primary"
         title="Log in"
-        onPress={async () => {
-          setAuthError(null);
-          auth.clearError();
-          setIsLoginPressed(true);
-          await auth.login(phoneNumber, pin);
-          if (auth.user !== null) {
-            setPhoneNumber('');
-            setPIN('');
-            navigation.navigate('JobLandingScreen');
-          } else {
-            //Sets the Firebase error, which then displays it
-            setAuthError(auth.error);
-          }
-        }}
+        onPress={handleSubmit}
         style={styles.submitButton}
       />
 
