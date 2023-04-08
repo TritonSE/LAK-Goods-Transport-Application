@@ -12,11 +12,7 @@ export default function Login() {
 
   return (
     <div className={styles.outer}>
-<<<<<<< HEAD
-      <Image src={LAKTAAlogo} alt="LAKTAAlogo" className={styles.LAKTAAlogo} />
-=======
       <Image src={LAKTAAlogo} alt="LAKTAAlogo" className={styles.logo} />
->>>>>>> main
 
       <div className={styles.formContainer}>
         <div className={styles.formAllContents}>
@@ -46,11 +42,7 @@ export default function Login() {
             </div>
 
             <div className={styles.rememberUserAndForgotPassword}>
-<<<<<<< HEAD
-              <div>
-=======
               <div className={styles.keepSignedIn}>
->>>>>>> main
                 <input className={styles.checkbox} type="checkbox" />
                 <span className={styles.keepSignedInText}>
                   Keep me signed in
@@ -69,8 +61,4 @@ export default function Login() {
       </div>
     </div>
   );
-<<<<<<< HEAD
 }
-=======
-}
->>>>>>> main
