@@ -1,45 +1,101 @@
 import React from 'react';
-import { StyleSheet, View } from 'react-native';
+import { StyleSheet, Text, View } from 'react-native';
 import { AppButton, LabelWrapper, AppText, AppTextInput } from '../components';
 import { COLORS } from '../../constants';
 import { SignupProps } from '../types/navigation';
-import { useContext, useState } from 'react';
+import { useContext, useEffect, useState } from 'react';
 import { AuthContext } from '../context/AuthContext';
 
 export function SignupScreen({ navigation }: SignupProps) {
   const [name, setName] = useState('');
+  const [nameValid, setNameValid] = useState(false);
+
   const [phoneNumber, setPhoneNumber] = useState('');
+  const [phoneValid, setPhoneValid] = useState(false);
+
   const [location, setLocation] = useState('');
+  const [locationValid, setLocationValid] = useState(false);
+
   const [pin, setPin] = useState('');
+  const [PINValid, setPINValid] = useState(false);
+
   const [confirmPin, setConfirmPin] = useState('');
+  const [confirmPINValid, setConfirmPINValid] = useState(false);
 
   const auth = useContext(AuthContext);
+  const [signupError, setSignupError] = useState<Error | null>(null);
+
+  const [isSignupPressed, setSignupPressed] = useState(false);
+
+  const validateName = () => {
+    // only spaces and letters allowed in regex pattern
+    const nameRegex = new RegExp('^[A-Z][a-z]+ [A-Z][a-z]+$');
+    setNameValid(nameRegex.test(name));
+  };
+
+  const validatePhone = () => {
+    // phone number must be 10-digit number
+    const phoneRegex = new RegExp('^[0-9]{10}$');
+    setPhoneValid(phoneRegex.test(phoneNumber));
+  };
+
+  const validateLocation = () => {
+    // only spaces and letters allowed in regex pattern, and must be non-empty
+    const locationRegex = new RegExp('^[A-Za-z][A-Za-z ]*$');
+    setLocationValid(locationRegex.test(location));
+  };
+
+  const validatePin = () => {
+    // must be 4-digit number
+    const pinRegex = new RegExp('^[0-9]{4}$');
+    setPINValid(pinRegex.test(pin));
+  };
+
+  const validateConfirmPin = () => {
+    // pin confirmation must be the same as original pin
+    setConfirmPINValid(pin === confirmPin);
+  };
 
   const handleSubmit = async () => {
     const firstName = name.split(' ')[0];
     const lastName = name.split(' ')[1];
 
+    setSignupError(null);
     auth.clearError();
-    await auth.signup(firstName, lastName, phoneNumber, location, pin);
-    if (auth.user !== null) {
-      console.log(auth.user.uid);
-      navigation.navigate('JobLandingScreen');
-    } else {
-      // Display errors now! (invalid password, email already in use, etc.)
-      console.error(auth.error);
+    setSignupPressed(true);
+
+    validateName();
+    validatePhone();
+    validateLocation();
+    validatePin();
+    validateConfirmPin();
+
+    if (nameValid && phoneValid && locationValid && PINValid && confirmPINValid) {
+      await auth.signup(firstName, lastName, phoneNumber, location, pin);
+      if (auth.user !== null) {
+        console.log(auth.user.uid);
+        navigation.navigate('JobLandingScreen');
+      } else {
+        // Display errors (invalid password, email already in use, etc.)
+        setSignupError(auth.error);
+        console.error(auth.error);
+      }
     }
   };
 
   return (
     <View style={styles.container}>
-      <LabelWrapper label="Name (First, Last)">
+      <Text style={styles.errText}>
+        {isSignupPressed && signupError ? signupError.message : ''}
+      </Text>
+      <LabelWrapper label="Name (First Last)">
         <AppTextInput
           value={name}
           style={bigInputStyle}
           changeAction={setName}
           type="name"
-          isValid={true}
-          errMsg="Required field"
+          isValid={!isSignupPressed || nameValid}
+          errMsg="Valid first and last name required."
           maxLength={100}
           keyboardType="default"
         />
@@ -51,8 +107,8 @@ export function SignupScreen({ navigation }: SignupProps) {
           style={bigInputStyle}
           changeAction={setPhoneNumber}
           type="phoneNumber"
-          isValid={true}
-          errMsg="Required field"
+          isValid={!isSignupPressed || phoneValid}
+          errMsg="Valid mobile number required."
           maxLength={10}
           keyboardType="default"
         />
@@ -64,8 +120,8 @@ export function SignupScreen({ navigation }: SignupProps) {
           style={bigInputStyle}
           changeAction={setLocation}
           type="location"
-          isValid={true}
-          errMsg="Required field"
+          isValid={!isSignupPressed || locationValid}
+          errMsg="Valid location required."
           maxLength={100}
           keyboardType="default"
         />
@@ -77,8 +133,8 @@ export function SignupScreen({ navigation }: SignupProps) {
           style={smallInputStyle}
           changeAction={setPin}
           type="pin"
-          isValid={true}
-          errMsg="Required field"
+          isValid={!isSignupPressed || PINValid}
+          errMsg="Valid PIN required."
           maxLength={4}
           keyboardType="numeric"
         />
@@ -90,8 +146,8 @@ export function SignupScreen({ navigation }: SignupProps) {
           style={smallInputStyle}
           changeAction={setConfirmPin}
           type="confirmPin"
-          isValid={true}
-          errMsg="Required field"
+          isValid={!isSignupPressed || confirmPINValid}
+          errMsg="Valid PIN confirmation required."
           maxLength={4}
           keyboardType="numeric"
         />
@@ -154,6 +210,12 @@ const styles = StyleSheet.create({
   },
   loginLink: {
     marginLeft: 5,
+  },
+
+  errText: {
+    color: COLORS.red,
+    fontSize: 12,
+    paddingBottom: 20, // this is adding margin below null errMsg as well
   },
 });
 
