@@ -18,19 +18,15 @@ export function LoginScreen({ navigation }: LoginProps) {
 
   const auth = useContext(AuthContext);
 
-  useEffect(() => {
-    setLoginPressed(false);
-  }, [phoneNumber, pin]);
-
   const validatePhone = () => {
     const phoneRegex = new RegExp('^[0-9]{10}$');
     setPhoneValid(phoneRegex.test(phoneNumber));
-  }
+  };
 
   const validatePin = () => {
     const pinRegex = new RegExp('^[0-9]{4}$');
     setPINValid(pinRegex.test(pin));
-  }
+  };
 
   const handleSubmit = async () => {
     setLoginError(null);
@@ -40,7 +36,7 @@ export function LoginScreen({ navigation }: LoginProps) {
     validatePhone();
     validatePin();
 
-    if (phoneValid && PINValid){
+    if (phoneValid && PINValid) {
       await auth.login(phoneNumber, pin);
       if (auth.user !== null) {
         setPhoneNumber('');
@@ -51,7 +47,7 @@ export function LoginScreen({ navigation }: LoginProps) {
         setLoginError(auth.error);
       }
     }
-  }
+  };
 
   return (
     <View style={styles.container}>
@@ -88,12 +84,7 @@ export function LoginScreen({ navigation }: LoginProps) {
         style={styles.forgotPIN}
       />
 
-      <AppButton
-        type="primary"
-        title="Log in"
-        onPress={handleSubmit}
-        style={styles.submitButton}
-      />
+      <AppButton type="primary" title="Log in" onPress={handleSubmit} style={styles.submitButton} />
 
       <View style={styles.signupPrompt}>
         <AppText>{"Don't have an account?"}</AppText>

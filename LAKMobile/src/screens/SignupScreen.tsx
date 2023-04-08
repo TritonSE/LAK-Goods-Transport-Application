@@ -27,38 +27,34 @@ export function SignupScreen({ navigation }: SignupProps) {
 
   const [isSignupPressed, setSignupPressed] = useState(false);
 
-  useEffect(() => {
-    setSignupPressed(false);
-  }, [name, phoneNumber, location, pin, confirmPin]);
-
   const validateName = () => {
     // only spaces and letters allowed in regex pattern
     const nameRegex = new RegExp('^[A-Z][a-z]+ [A-Z][a-z]+$');
     setNameValid(nameRegex.test(name));
-  }
+  };
 
   const validatePhone = () => {
     // phone number must be 10-digit number
     const phoneRegex = new RegExp('^[0-9]{10}$');
     setPhoneValid(phoneRegex.test(phoneNumber));
-  }
-  
+  };
+
   const validateLocation = () => {
     // only spaces and letters allowed in regex pattern, and must be non-empty
     const locationRegex = new RegExp('^[A-Za-z][A-Za-z ]*$');
     setLocationValid(locationRegex.test(location));
-  }
+  };
 
   const validatePin = () => {
     // must be 4-digit number
     const pinRegex = new RegExp('^[0-9]{4}$');
     setPINValid(pinRegex.test(pin));
-  }
-  
+  };
+
   const validateConfirmPin = () => {
     // pin confirmation must be the same as original pin
     setConfirmPINValid(pin === confirmPin);
-  }
+  };
 
   const handleSubmit = async () => {
     const firstName = name.split(' ')[0];
@@ -74,7 +70,7 @@ export function SignupScreen({ navigation }: SignupProps) {
     validatePin();
     validateConfirmPin();
 
-    if (nameValid && phoneValid && locationValid && PINValid && confirmPINValid){
+    if (nameValid && phoneValid && locationValid && PINValid && confirmPINValid) {
       await auth.signup(firstName, lastName, phoneNumber, location, pin);
       if (auth.user !== null) {
         console.log(auth.user.uid);
@@ -89,7 +85,9 @@ export function SignupScreen({ navigation }: SignupProps) {
 
   return (
     <View style={styles.container}>
-      <Text style={styles.errText}>{isSignupPressed && signupError ? signupError.message : ''}</Text>
+      <Text style={styles.errText}>
+        {isSignupPressed && signupError ? signupError.message : ''}
+      </Text>
       <LabelWrapper label="Name (First Last)">
         <AppTextInput
           value={name}
