@@ -9,12 +9,12 @@ import { NoAvailableJobsIcon, NoJobsIcon, NoMatchingJobsIcon, PlusSignIcon } fro
 import { ProfileButtonIcon } from '../icons/ProfileButtonIcon';
 
 interface NoJobProps {
-  // type?: 'noAvailableJobs' | 'noJobs' | 'noMatchingJobs';
+  
   title: string;
   body: string;
   buttonName?: string;
   buttonVisible: boolean;
-  onButtonClick: () => void;
+  onButtonClick?: () => void;
   buttonIcon?: React.ReactElement;
   errorImageType: React.ReactElement;
 }
@@ -31,7 +31,7 @@ export const NoJobs = ({
 
   return (
     <View style={styles.container}>
-      {/* icon stuff here */}
+      
       <View style={styles.icon}>{errorImageType}</View>
 
       <AppText style={styles.heading}>{title}</AppText>

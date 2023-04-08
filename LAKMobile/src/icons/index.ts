@@ -6,4 +6,3 @@ export * from './NoAvailableJobsIcon';
 export * from './NoJobsIcon';
 export * from './NoMatchingJobsIcon';
 export * from './PlusSignIcon';
-export * from './SearchIcon';

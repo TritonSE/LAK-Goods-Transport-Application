@@ -8,7 +8,7 @@ import { COLORS } from '../../constants';
 import { PickerStyles, FlatListStyles } from '../styles';
 import { useIsFocused } from '@react-navigation/native';
 import { AuthContext } from '../auth/context';
-import { NoAvailableJobsIcon, NoJobsIcon, NoMatchingJobsIcon, PlusSignIcon, SearchIcon} from '../icons';
+import { NoAvailableJobsIcon, NoJobsIcon, NoMatchingJobsIcon, PlusSignIcon} from '../icons';
 
 type ListJobsModes = 'Add' | 'Find';
 type JobTypePickerOption = 'Current Jobs' | 'Completed Jobs' | 'Your Jobs' | 'Finished Jobs';
@@ -113,11 +113,8 @@ export function ListJobs({ navigation, mode }: ListJobsProps) {
   if(jobs.length == 0 && jobListType === 'Your Jobs') {
     noJobsComponent = <NoJobs
                         title = {"Your job box is empty."}
-                        body = {"You don't have any in progress jobs at the moment."}
-                        buttonVisible = {true}
-                        buttonName = {"Search to Find a Job"}
-                        onButtonClick = {() => (console.log)}
-                        buttonIcon = {<SearchIcon/>}
+                        body = {"You don't have any in progress jobs at the moment. Search to find a job."}
+                        buttonVisible = {false}
                         errorImageType = {<NoJobsIcon/>}
                       />;
     
@@ -128,7 +125,6 @@ export function ListJobs({ navigation, mode }: ListJobsProps) {
                         title = {"No finished jobs."}
                         body = {"You don't have any finished jobs yet."}
                         buttonVisible = {false}
-                        onButtonClick = {() => (console.log)}
                         errorImageType = {<NoJobsIcon/>}
                       />;
   }
@@ -140,7 +136,9 @@ export function ListJobs({ navigation, mode }: ListJobsProps) {
                         buttonVisible = {true}
                         buttonName = "Add a Job Now"
                         buttonIcon={<PlusSignIcon/>}
-                        onButtonClick = {() => (console.log)}
+                        onButtonClick = {() =>
+                          navigation.navigate('AddJob', { formType: 'add', setJobData: setJobs })
+                        }
                         errorImageType = {<NoMatchingJobsIcon/>}
                       />;
   }
