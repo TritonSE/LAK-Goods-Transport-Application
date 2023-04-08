@@ -5,6 +5,7 @@ import express from 'express';
 import multer from 'multer';
 
 import { getUser, getUsers, registerUser, updateUser } from '../services/user';
+import { getUser, getUsers, registerUser, updateUser } from '../services/user';
 import { getSessionUserId } from '../constants';
 
 const routes = express.Router();
@@ -65,11 +66,9 @@ routes.post('/', upload, async (req, res, next) => {
   });
 });
 
-routes.put('/update-user/:userid', async (req, res, next) => {
-  console.info(`ROUTES: Updating user with userId = ${req.params.userid}`);
-
-  let updatedUser = null;
-
+routes.put('/:userid', upload, async (req, res, next) => {
+  console.info('ROUTES: Editing user', req.params.userid);
+  let user = null;
   try {
     const userId = req.params.userid;
 
@@ -109,14 +108,15 @@ routes.put('/update-user/:userid', async (req, res, next) => {
       return res.status(400).json({ error: 'Invalid verification status' });
     }
 
-    updatedUser = await updateUser(userId, user);
+    user = await updateUser(req.params.userid, req.body, req.files || []);
   } catch (e) {
     next(e);
+    return;
   }
 
-  return res.status(200).json({
-    message: `User record of ${req.params.userId} updated successfully`,
-    user: updatedUser,
+  res.status(200).json({
+    message: 'User edited successfully',
+    userId: user._id,
   });
 });
 

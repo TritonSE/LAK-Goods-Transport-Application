@@ -1,6 +1,6 @@
-import React, { useEffect, useRef, useState } from "react";
-import { Modal, StyleSheet, View } from "react-native";
-import { CheckmarkIcon } from "../icons";
+import React, { useEffect, useRef, useState } from 'react';
+import { Modal, StyleSheet, View } from 'react-native';
+import { CheckmarkIcon } from '../icons';
 
 const TIMEOUT = 2000;
 
@@ -17,14 +17,14 @@ export function ModalCheckmark({ visible, onTimeout }: ModalCheckmarkProps) {
   useEffect(() => {
     if (visible && !timerRunning) {
       componentMounted.current = true;
-      const timeout = setTimeout(() => {
+      setTimeout(() => {
         if (componentMounted.current) {
           setTimerRunning(false);
         }
         onTimeout();
       }, TIMEOUT);
       setTimerRunning(true);
-      return () => { 
+      return () => {
         componentMounted.current = false;
       };
     }
@@ -43,17 +43,17 @@ export function ModalCheckmark({ visible, onTimeout }: ModalCheckmarkProps) {
 
 const styles = StyleSheet.create({
   modalWrapper: {
-    width: "100%",
-    height: "100%",
-    justifyContent: "center",
-    alignItems: "center",
+    width: '100%',
+    height: '100%',
+    justifyContent: 'center',
+    alignItems: 'center',
   },
   modalBox: {
     width: 320,
     height: 320,
-    backgroundColor: "#f5f5f5",
-    justifyContent: "center",
-    alignItems: "center",
+    backgroundColor: '#f5f5f5',
+    justifyContent: 'center',
+    alignItems: 'center',
     elevation: 4,
   },
 });

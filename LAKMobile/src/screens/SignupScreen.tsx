@@ -1,36 +1,38 @@
+import React from 'react';
 import { StyleSheet, View } from 'react-native';
 import { AppButton, LabelWrapper, AppText, AppTextInput } from '../components';
 import { COLORS } from '../../constants';
-import {SignupProps} from '../types/navigation';
+import { SignupProps } from '../types/navigation';
 import { useContext, useState } from 'react';
-import { AuthContext } from '../auth/context';
+import { AuthContext } from '../context/AuthContext';
 
-export function SignupScreen({navigation}: SignupProps) {
-  const [name, setName] = useState("");
-  const [phoneNumber, setPhoneNumber] = useState("");
-  const [location, setLocation] = useState("");
-  const [pin, setPin] = useState("");
-  const [confirmPin, setConfirmPin] = useState("");
+export function SignupScreen({ navigation }: SignupProps) {
+  const [name, setName] = useState('');
+  const [phoneNumber, setPhoneNumber] = useState('');
+  const [location, setLocation] = useState('');
+  const [pin, setPin] = useState('');
+  const [confirmPin, setConfirmPin] = useState('');
 
   const auth = useContext(AuthContext);
 
   const handleSubmit = async () => {
-    const firstName = name.split(" ")[0];
-    const lastName = name.split(" ")[1];
+    const firstName = name.split(' ')[0];
+    const lastName = name.split(' ')[1];
 
     auth.clearError();
     await auth.signup(firstName, lastName, phoneNumber, location, pin);
     if (auth.user !== null) {
       console.log(auth.user.uid);
-      navigation.navigate('JobLandingScreen')
+      navigation.navigate('JobLandingScreen');
     } else {
       // Display errors now! (invalid password, email already in use, etc.)
+      console.error(auth.error);
     }
-  }
+  };
 
   return (
     <View style={styles.container}>
-      <LabelWrapper label='Name (First, Last)'>
+      <LabelWrapper label="Name (First, Last)">
         <AppTextInput
           value={name}
           style={bigInputStyle}
@@ -42,8 +44,8 @@ export function SignupScreen({navigation}: SignupProps) {
           keyboardType="default"
         />
       </LabelWrapper>
-      
-      <LabelWrapper label='Mobile Number'>
+
+      <LabelWrapper label="Mobile Number">
         <AppTextInput
           value={phoneNumber}
           style={bigInputStyle}
@@ -56,7 +58,7 @@ export function SignupScreen({navigation}: SignupProps) {
         />
       </LabelWrapper>
 
-      <LabelWrapper label='Location'>
+      <LabelWrapper label="Location">
         <AppTextInput
           value={location}
           style={bigInputStyle}
@@ -69,7 +71,7 @@ export function SignupScreen({navigation}: SignupProps) {
         />
       </LabelWrapper>
 
-      <LabelWrapper label='4 digit pin password'>
+      <LabelWrapper label="4 digit pin password">
         <AppTextInput
           value={pin}
           style={smallInputStyle}
@@ -82,8 +84,8 @@ export function SignupScreen({navigation}: SignupProps) {
         />
       </LabelWrapper>
 
-      <LabelWrapper label='Confirm password'>
-      <AppTextInput
+      <LabelWrapper label="Confirm password">
+        <AppTextInput
           value={confirmPin}
           style={smallInputStyle}
           changeAction={setConfirmPin}
@@ -96,20 +98,20 @@ export function SignupScreen({navigation}: SignupProps) {
       </LabelWrapper>
 
       <AppButton
-        type='primary'
-        title='Create Account'
+        type="primary"
+        title="Create Account"
         onPress={handleSubmit}
         style={styles.submitButton}
-        />
+      />
 
       <View style={styles.loginLinkContainer}>
         <AppText>Already have an account?</AppText>
-        <AppButton 
-          type='link' 
-          title='Log in here' 
+        <AppButton
+          type="link"
+          title="Log in here"
           onPress={() => navigation.navigate('Login')}
           style={styles.loginLink}
-          />
+        />
       </View>
     </View>
   );
@@ -125,7 +127,7 @@ const styles = StyleSheet.create({
     alignItems: 'flex-start',
     justifyContent: 'center',
   },
-  
+
   // Shared across all inputs
   input: {
     borderWidth: 1,
@@ -148,23 +150,23 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     alignItems: 'center',
     marginTop: 26,
-    justifyContent: 'space-evenly'
+    justifyContent: 'space-evenly',
   },
   loginLink: {
     marginLeft: 5,
-  }
+  },
 });
 
 const bigInputStyle = StyleSheet.flatten([
-  styles.input, 
+  styles.input,
   {
     width: '100%',
-  }
+  },
 ]);
 
 const smallInputStyle = StyleSheet.flatten([
-  styles.input, 
+  styles.input,
   {
-    width: '45%'
-  }
-])
+    width: '45%',
+  },
+]);

@@ -2,16 +2,31 @@ import type { NativeStackScreenProps } from '@react-navigation/native-stack';
 import { JobData, JobOwnerView } from '../api';
 
 export type RootStackParamList = {
-    Login: undefined;
-    Signup: undefined;
-    ResetPassword: undefined;
-    OTP: undefined;
-    ResetSuccess: undefined;
-    ForgotPassword: undefined;
-    JobApplicant: {jobData: JobOwnerView, setJobData: React.Dispatch<React.SetStateAction<JobData[] | JobOwnerView[]>>};
-    AddJob: {formType: "add" | "edit" | "delete" | "repost", jobData?: JobOwnerView, setJobData: React.Dispatch<React.SetStateAction<JobData[] | JobOwnerView[]>>}
-    JobLandingScreen: undefined;
-    ProfileScreen: { userId: string };
+  Login: undefined;
+  Signup: undefined;
+  ResetPassword: undefined;
+  OTP: undefined;
+  ResetSuccess: undefined;
+  ForgotPassword: undefined;
+  JobApplicant: {
+    jobData: JobOwnerView;
+    setJobData: React.Dispatch<React.SetStateAction<JobData[] | JobOwnerView[]>>;
+  };
+  AddJob: {
+    formType: 'add' | 'edit' | 'delete' | 'repost';
+    jobData?: JobOwnerView;
+    setJobData: React.Dispatch<React.SetStateAction<JobData[] | JobOwnerView[]>>;
+  };
+  JobLandingScreen: undefined;
+  ProfileScreen: { userId: string };
+  ApplicantsScreen: {
+    jobData: JobOwnerView;
+    setJobData: React.Dispatch<React.SetStateAction<JobData[] | JobOwnerView[]>>;
+    carousel: JSX.Element;
+  };
+
+  DriverRegistration: undefined;
+  EditProfileScreen: { userId: string };
 };
 
 export type LoginProps = NativeStackScreenProps<RootStackParamList, 'Login'>;
@@ -24,3 +39,12 @@ export type JobApplicantProps = NativeStackScreenProps<RootStackParamList, 'JobA
 export type AddJobProps = NativeStackScreenProps<RootStackParamList, 'AddJob'>;
 export type JobLandingScreenProps = NativeStackScreenProps<RootStackParamList, 'JobLandingScreen'>;
 export type ProfileScreenProps = NativeStackScreenProps<RootStackParamList, 'ProfileScreen'>;
+export type ApplicantsScreenProps = NativeStackScreenProps<RootStackParamList, 'ApplicantsScreen'>;
+export type DriverRegistrationProps = NativeStackScreenProps<
+  RootStackParamList,
+  'DriverRegistration'
+>;
+export type EditProfileScreenProps = NativeStackScreenProps<
+  RootStackParamList,
+  'EditProfileScreen'
+>;

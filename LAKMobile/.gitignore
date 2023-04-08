@@ -13,4 +13,4 @@ web-build/
 # macOS
 .DS_Store
 
-src/auth/firebase-config.json
+firebase-config.json
