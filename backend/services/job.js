@@ -358,10 +358,9 @@ export async function assignDriver(jobId, userId, driverId) {
     throw ServiceError.DRIVER_MUST_BE_APPLICANT;
   }
 
-  job.assignedDriverId = mongoose.Types.ObjectId(driverId);
+  job.assignedDriverId = driverId;
   job.status = JOB_STATUS_ASSIGNED;
   job.startDate = new Date();
-
   try {
     await job.save();
   } catch (e) {

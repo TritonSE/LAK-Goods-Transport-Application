@@ -176,17 +176,22 @@ export const deleteJob = async (
 };
 
 export const assignDriver = async (
+  userId: string,
   jobId: string,
   driverId: string
 ): Promise<{ message: string; driverId: string; jobId: string } | null> => {
   try {
-    const url = `${GET_JOBS}/${jobId}/assign-driver`;
+    const url =
+      `${GET_JOBS}/${jobId}/assign-driver?` +
+      new URLSearchParams({
+        user: userId,
+      });
     const response = await fetch(url, {
       method: 'PATCH',
       headers: {
         'Content-Type': 'application/json',
       },
-      body: JSON.stringify({ driverId: driverId }),
+      body: JSON.stringify({ jobId, driverId }),
     });
     const data = await response.json();
     return {
@@ -194,7 +199,8 @@ export const assignDriver = async (
       driverId: data.driverId,
       jobId: data.jobId,
     };
-  } catch {
+  } catch (e) {
+    console.error(e);
     return null;
   }
 };

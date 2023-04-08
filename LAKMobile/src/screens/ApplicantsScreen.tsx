@@ -1,12 +1,12 @@
-import React, { useEffect, useState } from 'react';
+import React, { useContext, useEffect, useState } from 'react';
 import { JobData, JobOwnerView } from '../api/data';
-import { ConfirmationBox } from '../components/ConfirmationBox';
 
 import { View, ScrollView } from 'react-native';
 import { ApplicantThumbnail } from '../components';
 
 import { UserData } from '../api/data';
 import { assignDriver, denyDriver, getUsersByIds } from '../api';
+import { AuthContext } from '../context/AuthContext';
 
 interface ApplicantScreenProps {
   jobData: JobOwnerView;
@@ -29,7 +29,15 @@ export function ApplicantsScreen({
 }: ApplicantScreenProps) {
   const userIds: Array<string> = jobData.applicants.map((applicant) => applicant.userId);
   const [applicants, setApplicants] = useState<Array<ApplicantData>>([]);
-  const [confirmationVisible, setConfirmationVisible] = useState(false);
+  const auth = useContext(AuthContext);
+
+  useEffect(() => {
+    if (auth.user === null) {
+      navigation.navigate('Login');
+    }
+  }, [auth, navigation]);
+
+  const currentUserId = auth.user ? auth.user.uid : '';
 
   useEffect(() => {
     if (userIds.length) {
@@ -67,7 +75,7 @@ export function ApplicantsScreen({
 
   const onAccept = (driverId?: string) => {
     if (!driverId) return;
-    assignDriver(jobData._id, driverId).then((response) => {
+    assignDriver(currentUserId, jobData._id, driverId).then((response) => {
       if (response === null) {
         return;
       }
@@ -78,8 +86,6 @@ export function ApplicantsScreen({
       );
       navigation.navigate('JobLandingScreen');
     });
-
-    setConfirmationVisible(true);
   };
 
   const onDeny = (driverId?: string) => {
@@ -112,19 +118,6 @@ export function ApplicantsScreen({
           />
         ))}
       </ScrollView>
-
-      {confirmationVisible ? (
-        <ConfirmationBox
-          rejectVisible={true}
-          checkMarkAppear={true}
-          title={'Apply to job?'}
-          body={'Be sure to contact client at phone number'}
-          acceptName={'Apply'}
-          rejectName={'Cancel'}
-          onAccept={() => navigation.navigate('DetailsScreen')}
-          onReject={() => setConfirmationVisible(false)}
-        />
-      ) : null}
     </View>
   );
 }
