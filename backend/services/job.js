@@ -293,8 +293,7 @@ export async function addJobApplicant(jobId, userId) {
             applyDate: new Date(), // Uses current date as application date
           },
         },
-      },
-      { new: true }
+      }
     );
   } catch (e) {
     throw InternalError.DOCUMENT_UPLOAD_ERROR.addContext(e.stack);
