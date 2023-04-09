@@ -281,13 +281,19 @@ export async function addJobApplicant(jobId, userId) {
     throw ServiceError.DUPLICATE_JOB_APPLICATION_ATTEMPTED;
   }
 
-  job.applicants.push({
-    userId: userId,
-    applyDate: new Date(), // Uses current date as application date
-  });
-
   try {
-    await job.save();
+    await JobModel.findOneAndUpdate(
+      { _id: jobId },
+      {
+        $push: {
+          applicants: {
+            userId: userId,
+            applyDate: new Date(), // Uses current date as application date
+          },
+        },
+      },
+      { new: true }
+    );
   } catch (e) {
     throw InternalError.DOCUMENT_UPLOAD_ERROR.addContext(e.stack);
   }
@@ -376,11 +382,6 @@ export async function completeJob(jobId, userId) {
   const job = await JobModel.findById(jobId);
   if (!job) throw ServiceError.JOB_NOT_FOUND;
 
-  // Validate client job ownership
-  if (job.client !== userId) {
-    throw ServiceError.JOB_EDIT_PERMISSION_DENIED;
-  }
-
   if (job.assignedDriverId == null) {
     // Soft null check
     throw ServiceError.DRIVER_NOT_ASSIGNED;
@@ -390,6 +391,7 @@ export async function completeJob(jobId, userId) {
   job.status = JOB_STATUS_COMPLETED;
   try {
     await job.save();
+    console.log('JOB DONE!');
   } catch (e) {
     throw InternalError.DOCUMENT_UPLOAD_ERROR.addContext(e.stack);
   }

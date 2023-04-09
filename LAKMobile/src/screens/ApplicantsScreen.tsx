@@ -90,7 +90,7 @@ export function ApplicantsScreen({
 
   const onDeny = (driverId?: string) => {
     if (!driverId) return;
-    denyDriver(jobData._id, driverId).then((response) => {
+    denyDriver(currentUserId, jobData._id, driverId).then((response) => {
       if (response === null) {
         return;
       }

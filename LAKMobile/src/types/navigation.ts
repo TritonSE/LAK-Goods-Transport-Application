@@ -27,6 +27,7 @@ export type RootStackParamList = {
 
   DriverRegistration: undefined;
   EditProfileScreen: { userId: string };
+  DriverApplyScreen: { jobData: JobOwnerView };
 };
 
 export type LoginProps = NativeStackScreenProps<RootStackParamList, 'Login'>;
@@ -47,4 +48,8 @@ export type DriverRegistrationProps = NativeStackScreenProps<
 export type EditProfileScreenProps = NativeStackScreenProps<
   RootStackParamList,
   'EditProfileScreen'
+>;
+export type DriverApplyScreenProps = NativeStackScreenProps<
+  RootStackParamList,
+  'DriverApplyScreen'
 >;
