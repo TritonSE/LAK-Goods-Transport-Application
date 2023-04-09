@@ -6,7 +6,6 @@ import { getJobApplicantStatus, getJobs, JobData, JobOwnerView, PAGE_SIZE } from
 import { JobThumbnail, AppButton, AppTextInput } from '../components';
 import { COLORS } from '../../constants';
 import { PickerStyles, FlatListStyles } from '../styles';
-import { useIsFocused } from '@react-navigation/native';
 import { AuthContext } from '../context/AuthContext';
 
 type ListJobsModes = 'Add' | 'Find';
@@ -32,7 +31,6 @@ export function ListJobs({ navigation, mode }: ListJobsProps) {
   // NOTE: Page 0 is being used as a null page, but the first page is 1.
   // Added this so that we are able to trigger hooks dependent on `page` when type of screen changes but page number does not
   const [page, setPage] = useState(0);
-  const isFocused = useIsFocused();
 
   const [loading, setLoading] = useState(false);
   const [isRefreshing, setRefreshing] = useState(false);

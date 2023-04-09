@@ -125,7 +125,9 @@ export async function createJob(userId, jobData, jobImages) {
  */
 export async function updateJob(userId, jobId, jobData, jobImages) {
   console.debug(
-    `SERVICE: updateJob service runnning: jobId - ${jobId}, userId - ${userId}, jobData - ${jobData}, jobImages - files`
+    `SERVICE: updateJob service runnning: jobId - ${jobId}, userId - ${userId}, jobData - ${JSON.stringify(
+      jobData
+    )}, jobImages - files`
   );
   // Retrieve original job
   const originalJob = await JobModel.findById(jobId);
@@ -391,7 +393,6 @@ export async function completeJob(jobId, userId) {
   job.status = JOB_STATUS_COMPLETED;
   try {
     await job.save();
-    console.log('JOB DONE!');
   } catch (e) {
     throw InternalError.DOCUMENT_UPLOAD_ERROR.addContext(e.stack);
   }

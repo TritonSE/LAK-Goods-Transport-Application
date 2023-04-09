@@ -3,7 +3,7 @@ import { StyleSheet, Text, View } from 'react-native';
 import { AppButton, LabelWrapper, AppText, AppTextInput } from '../components';
 import { COLORS } from '../../constants';
 import { SignupProps } from '../types/navigation';
-import { useContext, useEffect, useState } from 'react';
+import { useContext, useState } from 'react';
 import { AuthContext } from '../context/AuthContext';
 
 export function SignupScreen({ navigation }: SignupProps) {

@@ -1,8 +1,7 @@
 import React, { useState, useEffect, useContext } from 'react';
 import { Linking, ScrollView, StyleSheet, View } from 'react-native';
-import { AppButton, AppText, ImageCarousel, ModalAlert, ScreenHeader } from '../components';
+import { AppButton, AppText, ImageCarousel, ScreenHeader } from '../components';
 import { DriverApplyScreenProps } from '../types/navigation';
-import { DetailsScreen } from './DetailsScreen';
 import { ConfirmationBox } from '../components/ConfirmationBox';
 import { applyJob, completeJob, getJobApplicantStatus } from '../api';
 import { AuthContext } from '../context/AuthContext';
@@ -125,7 +124,7 @@ export function DriverApplyScreen({ navigation, route }: DriverApplyScreenProps)
           checkMarkAppear={true}
           title={'Mark as delivered?'}
           body={`This job will be considered as finished. You can find it in your “Finished Jobs.”`}
-          acceptName={'Mark as delivered'}
+          acceptName={'Confirm'}
           rejectName={'Back'}
           onAccept={async () => await completeJob(userId, jobData._id)}
           onReject={() => setCompleteConfirmationVisible(false)}

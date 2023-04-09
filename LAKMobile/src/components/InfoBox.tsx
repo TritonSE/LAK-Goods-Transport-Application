@@ -1,5 +1,5 @@
 import React from 'react';
-import { StyleSheet, Text, TextProps, View } from 'react-native';
+import { StyleSheet, View } from 'react-native';
 import { AppText } from './AppText';
 import { AppButton } from './AppButton';
 

@@ -4,7 +4,6 @@ import { AppText, LabelWrapper, AppButton, AppTextInput } from '../components';
 import { COLORS } from '../../constants';
 import { LoginProps } from '../types/navigation';
 import { AuthContext } from '../context/AuthContext';
-import { useEffect } from 'react';
 
 export function LoginScreen({ navigation }: LoginProps) {
   const [phoneNumber, setPhoneNumber] = useState('');
