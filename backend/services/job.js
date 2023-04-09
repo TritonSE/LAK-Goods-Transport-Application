@@ -388,6 +388,10 @@ export async function completeJob(jobId, userId) {
     throw ServiceError.DRIVER_NOT_ASSIGNED;
   }
 
+  if (job.assignedDriverId !== userId) {
+    throw ServiceError.JOB_EDIT_PERMISSION_DENIED;
+  }
+
   // Update job status
   job.status = JOB_STATUS_COMPLETED;
   try {
