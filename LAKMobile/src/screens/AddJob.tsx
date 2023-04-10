@@ -5,11 +5,12 @@ import * as ImagePicker from 'expo-image-picker';
 import { ConfirmationBox } from '../components/ConfirmationBox';
 import { AppText, LabelWrapper, AppButton, ScreenHeader, AppTextInput } from '../components';
 import { COLORS } from '../../constants';
-import { JobOwnerView, postJob, updateJob, deleteJob } from '../api';
+import { JobOwnerView, postJob, updateJob, deleteJob, getUser } from '../api';
 import { AddJobProps } from '../types/navigation';
 import { AuthContext } from '../context/AuthContext';
 import { ImageUploadContext } from '../context/ImageUploadContext';
 import { ImageUploadArea } from '../components/ImageUploadArea';
+
 
 const PICKER_DEFAULT = '-- Select a district --';
 const LOCATIONS = [
@@ -82,7 +83,7 @@ export function AddJob({ navigation, route }: AddJobProps) {
     [fieldNames.dropoffLocation]: true,
     [fieldNames.imageSelect]: true,
   });
-
+  const [profileData, setProfileData] = useState<UserData | null>(null);
   const [jobTitle, setJobTitle] = useState('');
   const [clientName, setClientName] = useState('');
   const [phoneNumber, setPhoneNumber] = useState('');
@@ -175,6 +176,19 @@ export function AddJob({ navigation, route }: AddJobProps) {
     setIsValid(currentValid);
     return isAllValid;
   };
+
+  useEffect(() => {
+    getUser(userId, userId).then((user) => {
+      setProfileData(user);
+    });
+  }, [userId]);
+
+  useEffect(() => {
+    setClientName(profileData?.firstName + ' ' + profileData?.lastName);
+    setPhoneNumber(profileData?.phone || '');
+    setPickupLocation(profileData?.location.split(';')[0] || '');
+    setPickupDistrict(profileData?.location.split(';')[1] || PICKER_DEFAULT);
+  }, [profileData]);
 
   useEffect(() => {
     dispatch({ type: 'CLEAR_IMAGES' });
@@ -355,7 +369,7 @@ export function AddJob({ navigation, route }: AddJobProps) {
             icon="phone-in-talk"
             keyboardType="numeric"
             type="phoneNumber"
-            errMsg="Please insert the sender's phone number"
+            errMsg="Please insert a valid phone number"
           />
         </LabelWrapper>
 
