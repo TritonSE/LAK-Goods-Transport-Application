@@ -11,7 +11,6 @@ import { AuthContext } from '../context/AuthContext';
 import { ImageUploadContext } from '../context/ImageUploadContext';
 import { ImageUploadArea } from '../components/ImageUploadArea';
 
-
 const PICKER_DEFAULT = '-- Select a district --';
 const LOCATIONS = [
   PICKER_DEFAULT,
