@@ -125,7 +125,9 @@ export async function createJob(userId, jobData, jobImages) {
  */
 export async function updateJob(userId, jobId, jobData, jobImages) {
   console.debug(
-    `SERVICE: updateJob service runnning: jobId - ${jobId}, userId - ${userId}, jobData - ${jobData}, jobImages - files`
+    `SERVICE: updateJob service runnning: jobId - ${jobId}, userId - ${userId}, jobData - ${JSON.stringify(
+      jobData
+    )}, jobImages - files`
   );
   // Retrieve original job
   const originalJob = await JobModel.findById(jobId);
@@ -281,13 +283,18 @@ export async function addJobApplicant(jobId, userId) {
     throw ServiceError.DUPLICATE_JOB_APPLICATION_ATTEMPTED;
   }
 
-  job.applicants.push({
-    userId: userId,
-    applyDate: new Date(), // Uses current date as application date
-  });
-
   try {
-    await job.save();
+    await JobModel.findOneAndUpdate(
+      { _id: jobId },
+      {
+        $push: {
+          applicants: {
+            userId: userId,
+            applyDate: new Date(), // Uses current date as application date
+          },
+        },
+      }
+    );
   } catch (e) {
     throw InternalError.DOCUMENT_UPLOAD_ERROR.addContext(e.stack);
   }
@@ -376,14 +383,13 @@ export async function completeJob(jobId, userId) {
   const job = await JobModel.findById(jobId);
   if (!job) throw ServiceError.JOB_NOT_FOUND;
 
-  // Validate client job ownership
-  if (job.client !== userId) {
-    throw ServiceError.JOB_EDIT_PERMISSION_DENIED;
-  }
-
   if (job.assignedDriverId == null) {
     // Soft null check
     throw ServiceError.DRIVER_NOT_ASSIGNED;
+  }
+
+  if (job.assignedDriverId !== userId) {
+    throw ServiceError.JOB_EDIT_PERMISSION_DENIED;
   }
 
   // Update job status

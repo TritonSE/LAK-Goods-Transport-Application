@@ -2,11 +2,10 @@ import React, { useState, useEffect, useMemo, useContext } from 'react';
 import { View, FlatList, StyleSheet } from 'react-native';
 import { Picker } from '@react-native-picker/picker';
 import debounce from 'lodash.debounce';
-import { getJobs, JobData, JobOwnerView, PAGE_SIZE } from '../api';
+import { getJobApplicantStatus, getJobs, JobData, JobOwnerView, PAGE_SIZE } from '../api';
 import { JobThumbnail, AppButton, AppTextInput } from '../components';
 import { COLORS } from '../../constants';
 import { PickerStyles, FlatListStyles } from '../styles';
-import { useIsFocused } from '@react-navigation/native';
 import { AuthContext } from '../context/AuthContext';
 
 type ListJobsModes = 'Add' | 'Find';
@@ -32,7 +31,6 @@ export function ListJobs({ navigation, mode }: ListJobsProps) {
   // NOTE: Page 0 is being used as a null page, but the first page is 1.
   // Added this so that we are able to trigger hooks dependent on `page` when type of screen changes but page number does not
   const [page, setPage] = useState(0);
-  const isFocused = useIsFocused();
 
   const [loading, setLoading] = useState(false);
   const [isRefreshing, setRefreshing] = useState(false);
@@ -148,10 +146,12 @@ export function ListJobs({ navigation, mode }: ListJobsProps) {
               ) : (
                 <JobThumbnail
                   key={index}
-                  onPress={() => null}
+                  onPress={() => {
+                    navigation.navigate('DriverApplyScreen', { jobData: item as JobOwnerView });
+                  }}
                   isJobOwner={false}
-                  job={item}
-                  applicantStatus={'Applied'}
+                  job={item as JobOwnerView}
+                  applicantStatus={getJobApplicantStatus(item as JobOwnerView, userId)}
                 />
               )
             }
