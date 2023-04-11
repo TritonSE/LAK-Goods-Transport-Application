@@ -12,7 +12,7 @@
   gap: 10.275rem;
 }
 
-.LAKTAAlogo {
+.logo {
   width: 445px;
   height: 445px;
   margin-top: -40px;
@@ -70,6 +70,11 @@
 .rememberUserAndForgotPassword {
   display: flex;
   margin-top: 18px;
+}
+
+.keepSignedIn {
+  display: flex;
+  align-items: center;
 }
 
 .checkbox {

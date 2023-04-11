@@ -1,34 +1,58 @@
 # LAK-Goods-Transport-Application
 
-## Frontend Setup
+## Setup
 
 Requires:
 
-- [Expo](https://docs.expo.dev/get-started/installation/)
+- [nvm](https://www.freecodecamp.org/news/node-version-manager-nvm-install-guide/), npm, and Node.js (version 16.13.2 is preferred)
+  - It's easier to first install nvm, then use it to install the correct npm and Node versions.
+- [Android Studio and Expo](https://docs.expo.dev/workflow/android-studio-emulator/)
 
-Using a terminal, cd to the LAKMobile directory, install packages, and start the frontend.
+Additionally, you'll need to add the following config files:
 
+- ./LAKMobile/.env (For development purposes, this will have the same contents as [./LAKMobile/.env.example](./LAKMobile/.env.example))
+- ./LAKMobile/firebase-config.json (the Google Firebase credentials required for user authentication)
+
+NOTE: When developing locally, you have to tell the Android emulator to map the backend localhost port to a port on the emulator. Otherwise it won't be able to find localhost:3000. This is already bundled into the `npm start` command in LAKMobile, so to ensure
+that this works, run `adb reverse tcp:3000 tcp:3000` to confirm that `adb` is recognized on your terminal.
+
+### Running the Development Environment
+
+- Backend (This should be running first before LAKMobile or AdminPortal)
+
+```bash
+cd backend
+npm install
+npm run dev
 ```
+
+- LAKMobile (This is the mobile application written using React Native)
+
+```bash
+# First, open the Android emulator through Android Studio.
+# The following commands should be run in a separate terminal window from the backend.
 cd LAKMobile
 npm install
 npm start
+# Finally, press the 'a' key to open the app on the emulator.
 ```
 
-The app will be live at http://localhost:19002.
+- AdminPortal (This is an administrative portal webpage written using Next.js)
 
-NOTE: When developing locally, you have to tell the Android emulator to map the backend localhost port to a port on the emulator. Otherwise it won't be able to find localhost:3000. Steps are as follows:
+```bash
+# Again, this should be run in a separate terminal window from the backend.
+cd AdminPortal
+npm install
+npm run dev
+```
 
-`npm run dev` in /backend
+## Linting
 
-`npm start` in /LAKMobile
+Linting can be run in the root directory or in any of the three specific directories (backend, LAKMobile, AdminPortal)
 
-Launch Android emulator
+To check the source code for linting errors, run `npm run lint-check`
 
-`adb reverse tcp:3000 tcp:3000`
-
-Now requests to localhost:3000 will go through to your machine
-
-You can update the start script in package.json to be "expo start && adb reverse tcp:3000 tcp:3000" so you don't have to always type that
+To check the code for errors and fix auto-fixable problems, run `npm run lint-fix`
 
 ## Backend
 

@@ -18,12 +18,6 @@ a {
   text-decoration: none;
 }
 
-@media (prefers-color-scheme: dark) {
-  html {
-    color-scheme: dark;
-  }
-}
-
 html {
   width: 100%;
   height: 100%;

@@ -1,21 +1,15 @@
-import React, { Reducer, useCallback, useContext, useEffect, useReducer, useState } from 'react';
+import React, { useContext, useEffect, useState } from 'react';
 import { ScrollView, StyleSheet, View } from 'react-native';
 import { Picker } from '@react-native-picker/picker';
 import * as ImagePicker from 'expo-image-picker';
 import { ConfirmationBox } from '../components/ConfirmationBox';
-import {
-  AppText,
-  LabelWrapper,
-  AppButton,
-  ScreenHeader,
-  AppTextInput,
-  ImagePickerButton,
-  ModalAlert,
-} from '../components';
+import { AppText, LabelWrapper, AppButton, ScreenHeader, AppTextInput } from '../components';
 import { COLORS } from '../../constants';
 import { JobOwnerView, postJob, updateJob, deleteJob } from '../api';
 import { AddJobProps } from '../types/navigation';
-import { AuthContext } from '../auth/context';
+import { AuthContext } from '../context/AuthContext';
+import { ImageUploadContext } from '../context/ImageUploadContext';
+import { ImageUploadArea } from '../components/ImageUploadArea';
 
 const PICKER_DEFAULT = '-- Select a district --';
 const LOCATIONS = [
@@ -43,7 +37,6 @@ const LOCATIONS = [
 ];
 
 type Validator = (text: string) => boolean;
-type ImagesReducerState = string[];
 type ValidatedField = {
   fieldName: string;
   fieldValue: string;
@@ -60,6 +53,17 @@ const fieldNames = {
 };
 
 export function AddJob({ navigation, route }: AddJobProps) {
+  const { dispatch, imageURIs, imageInfo, validateImageUpload } = useContext(ImageUploadContext);
+  const auth = useContext(AuthContext);
+
+  useEffect(() => {
+    if (auth.user === null) {
+      navigation.navigate('Login');
+    }
+  }, [auth, navigation]);
+
+  const userId = auth.user ? auth.user.uid : '';
+
   const formType = route.params.formType;
   let screenHeader;
   if (formType === 'add') {
@@ -78,54 +82,7 @@ export function AddJob({ navigation, route }: AddJobProps) {
     [fieldNames.dropoffLocation]: true,
     [fieldNames.imageSelect]: true,
   });
-  interface ImagesReducerSetAction {
-    type: 'SET_IMAGES';
-    payload: string[];
-  }
 
-  type ImagesReducerAction =
-    | ImagesReducerAddAction
-    | ImagesReducerRemoveAction
-    | ImagesReducerSetAction;
-
-  type ImagesReducer = Reducer<ImagesReducerState, ImagesReducerAction>;
-
-  const [imageInfo, setImageInfo] = useState<Array<ImagePicker.ImagePickerAsset | null>>([
-    null,
-    null,
-    null,
-  ]);
-
-  const reducer: ImagesReducer = (state, action): ImagesReducerState => {
-    let newState = state.slice();
-    switch (action.type) {
-      case 'ADD_IMAGE':
-        const index = newState.findIndex((value) => value === '');
-        newState[index] = action.payload.uri;
-        if (imageInfo) {
-          const newImageInfo = imageInfo.map((im, i) => {
-            return i === index ? action.payload : im;
-          });
-          setImageInfo(newImageInfo);
-        }
-        setIsValid({ ...isValid, ['imageSelect']: true });
-        break;
-      case 'REMOVE_IMAGE':
-        newState[action.payload] = '';
-        newState = newState.filter((value) => value !== '');
-        while (newState.length < 3) {
-          newState.push('');
-        }
-        const valid = newState.some((v) => v !== '');
-        setIsValid({ ...isValid, ['imageSelect']: valid });
-        break;
-    }
-    return newState;
-  };
-
-  const [imageURIs, dispatch] = useReducer(reducer, ['', '', '']);
-  const [permissionAlertVisible, setPermissionAlertVisible] = useState(false);
-  const [imagePickPromptVisible, setImagePickPromptVisible] = useState(false);
   const [jobTitle, setJobTitle] = useState('');
   const [clientName, setClientName] = useState('');
   const [phoneNumber, setPhoneNumber] = useState('');
@@ -140,25 +97,6 @@ export function AddJob({ navigation, route }: AddJobProps) {
   const [dropoffLocation, setDropoffLocation] = useState('');
   const [dropoffDistrict, setDropoffDistrict] = useState('');
   const [confirmationVisible, setConfirmationVisible] = useState(false);
-
-  const auth = useContext(AuthContext);
-
-  useEffect(() => {
-    if (auth.user === null) {
-      navigation.navigate('Login');
-    }
-  }, [auth, navigation]);
-
-  const userId = auth.user ? auth.user.uid : '';
-  interface ImagesReducerAddAction {
-    type: 'ADD_IMAGE';
-    payload: ImagePicker.ImagePickerAsset;
-  }
-
-  interface ImagesReducerRemoveAction {
-    type: 'REMOVE_IMAGE';
-    payload: number;
-  }
 
   //TODO: Abstract text validation to make more DRY
   const validatePresence: Validator = (text: string) => {
@@ -180,10 +118,6 @@ export function AddJob({ navigation, route }: AddJobProps) {
   const validatePickerSelect: Validator = (value: string) => {
     const valid = value !== PICKER_DEFAULT;
     return valid;
-  };
-
-  const validateImageUpload: Validator = () => {
-    return imageURIs.findIndex((value) => value !== '') !== -1;
   };
 
   const validators = {
@@ -243,6 +177,7 @@ export function AddJob({ navigation, route }: AddJobProps) {
   };
 
   useEffect(() => {
+    dispatch({ type: 'CLEAR_IMAGES' });
     if (formType !== 'add' && route.params.jobData) {
       const job: JobOwnerView = route.params.jobData;
       setJobTitle(job.title);
@@ -261,45 +196,6 @@ export function AddJob({ navigation, route }: AddJobProps) {
       dispatch({ type: 'SET_IMAGES', payload: job.imageIds });
     }
   }, [formType, route.params.jobData]);
-
-  const openImageLibrary = useCallback(async () => {
-    const permissionResult = await ImagePicker.requestMediaLibraryPermissionsAsync();
-    if (!permissionResult.granted) {
-      setPermissionAlertVisible(true);
-      return;
-    }
-    const pickerResult = await ImagePicker.launchImageLibraryAsync({
-      mediaTypes: ImagePicker.MediaTypeOptions.Images,
-    });
-    if (!pickerResult.canceled) {
-      dispatch({ type: 'ADD_IMAGE', payload: pickerResult.assets[0] });
-    }
-    setImagePickPromptVisible(false);
-  }, []);
-
-  const openCamera = useCallback(async () => {
-    const permissionResult = await ImagePicker.requestCameraPermissionsAsync();
-    if (!permissionResult.granted) {
-      setPermissionAlertVisible(true);
-      return;
-    }
-    const cameraResult = await ImagePicker.launchCameraAsync();
-    if (!cameraResult.canceled) {
-      dispatch({ type: 'ADD_IMAGE', payload: cameraResult.assets[0] });
-    }
-    setImagePickPromptVisible(false);
-  }, []);
-
-  const handleTapImage = useCallback(
-    (index: any) => {
-      if (imageURIs[index] === '') {
-        setImagePickPromptVisible(true);
-      } else {
-        dispatch({ type: 'REMOVE_IMAGE', payload: index });
-      }
-    },
-    [imageURIs]
-  );
 
   const createUpdateFromId = (jobId: string, newJob: object): JobOwnerView => {
     return {
@@ -361,6 +257,7 @@ export function AddJob({ navigation, route }: AddJobProps) {
       imageIds: imageURIs.filter((value) => value !== ''),
     };
     const formedJob: FormData = createFormData(imageInfo, newJob);
+    dispatch({ type: 'CLEAR_IMAGES' });
     if (formType === 'add' || formType == 'repost') {
       postJob(userId, formedJob).then((response) => {
         console.log(response);
@@ -589,11 +486,7 @@ export function AddJob({ navigation, route }: AddJobProps) {
           </View>
         </LabelWrapper>
 
-        <View style={styles.photos}>
-          {imageURIs.map((uri, index) => (
-            <ImagePickerButton key={index} sourceURI={uri} onSelect={() => handleTapImage(index)} />
-          ))}
-        </View>
+        <ImageUploadArea />
         {isValid[fieldNames.imageSelect] ? (
           <></>
         ) : (
@@ -624,35 +517,6 @@ export function AddJob({ navigation, route }: AddJobProps) {
           />
         )}
       </ScrollView>
-      <ModalAlert
-        title="Permission Needed"
-        message="Please allow access to photos in Settings!"
-        buttons={[
-          {
-            type: 'primary',
-            label: 'Close',
-            onPress: () => setPermissionAlertVisible(false),
-          },
-        ]}
-        visible={permissionAlertVisible}
-      />
-      <ModalAlert
-        title="Add Photo"
-        buttons={[
-          {
-            type: 'primary',
-            label: 'Upload from library',
-            onPress: openImageLibrary,
-          },
-          { type: 'primary', label: 'Take with camera', onPress: openCamera },
-          {
-            type: 'secondary',
-            label: 'Cancel',
-            onPress: () => setImagePickPromptVisible(false),
-          },
-        ]}
-        visible={imagePickPromptVisible}
-      />
       {confirmationVisible ? (
         <ConfirmationBox
           checkMarkAppear={false}
@@ -661,7 +525,7 @@ export function AddJob({ navigation, route }: AddJobProps) {
           body={'This will be removed from the job board permanently.'}
           acceptName={'Delete'}
           rejectName={'Cancel'}
-          onAccept={() => handleDeleteJob()}
+          onAccept={handleDeleteJob}
           onReject={() => setConfirmationVisible(false)}
         />
       ) : null}

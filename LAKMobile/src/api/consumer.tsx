@@ -14,6 +14,7 @@ export const getJobById = async (jobId: string): Promise<JobData | null> => {
     const url = `${GET_JOBS}/${jobId}?`;
     const response = await fetch(url);
     let data = await response.json();
+
     data = data.job as JobData;
     return data;
   } catch {
@@ -176,17 +177,22 @@ export const deleteJob = async (
 };
 
 export const assignDriver = async (
+  userId: string,
   jobId: string,
   driverId: string
 ): Promise<{ message: string; driverId: string; jobId: string } | null> => {
   try {
-    const url = `${GET_JOBS}/${jobId}/assign-driver`;
+    const url =
+      `${GET_JOBS}/${jobId}/assign-driver?` +
+      new URLSearchParams({
+        user: userId,
+      });
     const response = await fetch(url, {
       method: 'PATCH',
       headers: {
         'Content-Type': 'application/json',
       },
-      body: JSON.stringify({ driverId: driverId }),
+      body: JSON.stringify({ jobId, driverId }),
     });
     const data = await response.json();
     return {
@@ -194,17 +200,23 @@ export const assignDriver = async (
       driverId: data.driverId,
       jobId: data.jobId,
     };
-  } catch {
+  } catch (e) {
+    console.error(e);
     return null;
   }
 };
 
 export const denyDriver = async (
+  userId: string,
   jobId: string,
   driverId: string
 ): Promise<{ message: string; driverId: string; jobId: string } | null> => {
   try {
-    const url = `${GET_JOBS}/${jobId}/deny-driver`;
+    const url =
+      `${GET_JOBS}/${jobId}/deny-driver?` +
+      new URLSearchParams({
+        user: userId,
+      });
     const response = await fetch(url, {
       method: 'PATCH',
       headers: {
@@ -248,6 +260,25 @@ export const getUser = async (
   }
 };
 
+export const updateUser = async (
+  userId: string,
+  updatedUser: FormData
+): Promise<{ userId: string } | null> => {
+  try {
+    const url = `${USERS_URL}/${userId}`;
+    const response = await fetch(url, {
+      method: 'PUT',
+      headers: {
+        'Content-Type': 'multipart/form-data',
+      },
+      body: updatedUser,
+    });
+    const data = await response.json();
+    return { userId: data.userId };
+  } catch {
+    return null;
+  }
+};
 /**
  * @param formData Information from the Create New Account form
  * @returns The newly created user's UUID, or null if there was an error
@@ -265,6 +296,62 @@ export const createNewUser = async (formData: CreateUserForm): Promise<string | 
     const data = await response.json();
     console.log(data);
     return data.userId;
+  } catch {
+    return null;
+  }
+};
+
+/**
+ *
+ * @param userId ID of user applying to job
+ * @param jobId ID of job that user is applying to
+ * @returns
+ */
+export const applyJob = async (
+  userId: string,
+  jobId: string
+): Promise<{ userId: string; jobId: string } | null> => {
+  try {
+    const url = `${GET_JOBS}/${jobId}/apply?` + new URLSearchParams({ user: userId });
+    const response = await fetch(url, {
+      method: 'PATCH',
+    });
+    const data = await response.json();
+    return { userId: data.userId, jobId: data.jobId };
+  } catch {
+    return null;
+  }
+};
+
+// Not Started | Applied | Accepted | Denied | Finished
+export const getJobApplicantStatus = (
+  job: JobOwnerView,
+  userId: string
+): 'Not Started' | 'Applied' | 'Accepted' | 'Denied' | 'Finished' => {
+  const applicants = job.applicants || [];
+  if (applicants.find((applicant) => applicant.userId === userId)) {
+    const isAssignedDriver = job.assignedDriverId === userId;
+    switch (job.status) {
+      case 'CREATED':
+        return 'Applied';
+      case 'ASSIGNED':
+        return isAssignedDriver ? 'Accepted' : 'Denied';
+      case 'COMPLETED':
+        return isAssignedDriver ? 'Finished' : 'Denied';
+    }
+  } else {
+    return job.status === 'CREATED' ? 'Not Started' : 'Finished';
+  }
+};
+
+export const completeJob = async (userId: string, jobId: string): Promise<string | null> => {
+  try {
+    const url = `${GET_JOBS}/${jobId}/complete?` + new URLSearchParams({ user: userId });
+    const response = await fetch(url, {
+      method: 'PATCH',
+    });
+    const data = await response.json();
+    return data.jobId;
   } catch {
     return null;
   }

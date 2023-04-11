@@ -7,7 +7,7 @@ import { IconButtonWrapper } from '../components';
 import { COLORS } from '../../constants';
 import { ProfileButtonIcon } from '../icons/ProfileButtonIcon';
 import { useContext, useEffect } from 'react';
-import { AuthContext } from '../auth/context';
+import { AuthContext } from '../context/AuthContext';
 
 const Tab = createMaterialTopTabNavigator();
 
