@@ -31,7 +31,6 @@ export async function getImage(imageId) {
 
 export async function deleteImage(imageId) {
   console.debug('SERVICE: deleteImage service running: imageId -', imageId);
-  // TODO To be tested
 
   try {
     const res = await ImageModel.findByIdAndDelete(imageId);

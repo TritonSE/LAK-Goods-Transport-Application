@@ -29,8 +29,8 @@ export const FIELDS_OWNER_PERMITTED_TO_UPDATE = [
   'price',
 ];
 export const OWNER_LIMITED_FIELDS = [
-  'applicants',
-  'assignedDriverId',
+  // 'applicants',
+  // 'assignedDriverId',
   'startDate',
 ];
 

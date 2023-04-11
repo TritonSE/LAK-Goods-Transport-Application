@@ -38,7 +38,7 @@ export interface UserData {
   lastName: string;
   location: string;
   driverLicenseId?: string; // Hidden when anyone else other than the user viewing
-  vehicleData: VehicleData;
+  vehicleData?: VehicleData;
 }
 
 export interface CreateUserForm {

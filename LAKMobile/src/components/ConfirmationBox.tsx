@@ -107,6 +107,7 @@ const styles = StyleSheet.create({
   body: {
     fontSize: 16,
     textAlign: 'center',
+    maxWidth: '85%',
   },
 
   buttonContainer: {
