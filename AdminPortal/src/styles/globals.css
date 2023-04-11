@@ -18,21 +18,8 @@ a {
   text-decoration: none;
 }
 
-<<<<<<< HEAD
-@media (prefers-color-scheme: dark) {
-  html {
-    color-scheme: dark;
-  }
-}
-
-html {
-  width: 100%;
-  height: 100%;
-  background-color: white
-=======
 html {
   width: 100%;
   height: 100%;
   background-color: white;
->>>>>>> main
 }
