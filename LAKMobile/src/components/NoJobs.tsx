@@ -9,7 +9,6 @@ import { NoAvailableJobsIcon, NoJobsIcon, NoMatchingJobsIcon, PlusSignIcon } fro
 import { ProfileButtonIcon } from '../icons/ProfileButtonIcon';
 
 interface NoJobProps {
-  
   title: string;
   body: string;
   buttonName?: string;
@@ -28,10 +27,8 @@ export const NoJobs = ({
   buttonIcon,
   errorImageType,
 }: NoJobProps) => {
-
   return (
     <View style={styles.container}>
-      
       <View style={styles.icon}>{errorImageType}</View>
 
       <AppText style={styles.heading}>{title}</AppText>
@@ -68,7 +65,6 @@ const styles = StyleSheet.create({
     height: 72,
     width: 75,
     paddingBottom: 100,
-
   },
 
   body: {

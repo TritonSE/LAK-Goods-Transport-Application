@@ -2,13 +2,13 @@ import React, { useState, useEffect, useMemo, useContext } from 'react';
 import { View, FlatList, StyleSheet } from 'react-native';
 import { Picker } from '@react-native-picker/picker';
 import debounce from 'lodash.debounce';
-import { getJobs, JobData, JobOwnerView, PAGE_SIZE } from "../api";
-import { JobThumbnail, AppButton, AppTextInput, NoJobs } from "../components";
+import { getJobs, JobData, JobOwnerView, PAGE_SIZE } from '../api';
+import { JobThumbnail, AppButton, AppTextInput, NoJobs } from '../components';
 import { COLORS } from '../../constants';
 import { PickerStyles, FlatListStyles } from '../styles';
 import { useIsFocused } from '@react-navigation/native';
 import { AuthContext } from '../auth/context';
-import { NoAvailableJobsIcon, NoJobsIcon, NoMatchingJobsIcon, PlusSignIcon} from '../icons';
+import { NoAvailableJobsIcon, NoJobsIcon, NoMatchingJobsIcon, PlusSignIcon } from '../icons';
 
 type ListJobsModes = 'Add' | 'Find';
 type JobTypePickerOption = 'Current Jobs' | 'Completed Jobs' | 'Your Jobs' | 'Finished Jobs';
@@ -22,11 +22,12 @@ const LIST_MODES: ListJobsModes[] = ['Add', 'Find'];
 interface ListJobsProps {
   navigation: any;
   mode: ListJobsModes;
-  
 }
 
 export function ListJobs({ navigation, mode }: ListJobsProps) {
-  const [jobListType, setJobListType] = useState<JobTypePickerOption>(mode === 'Add' ? 'Current Jobs' : 'Your Jobs');
+  const [jobListType, setJobListType] = useState<JobTypePickerOption>(
+    mode === 'Add' ? 'Current Jobs' : 'Your Jobs'
+  );
   const [searchString, setSearchString] = useState<string | null>(null);
   const [jobs, setJobs] = useState<JobData[] | JobOwnerView[]>([]);
   const [noJobs, setNoJobs] = useState<boolean>(false);
@@ -105,53 +106,49 @@ export function ListJobs({ navigation, mode }: ListJobsProps) {
     setPage(0);
     setRefreshing(true);
   };
-  
+
   const pickerOptions = mode === 'Add' ? ADD_PICKER_OPTIONS : FIND_PICKER_OPTIONS;
   let noJobsComponent = null;
- 
 
-  if(jobs.length == 0 && jobListType === 'Your Jobs') {
-    noJobsComponent = <NoJobs
-                        title = {"Your job box is empty."}
-                        body = {"You don't have any in progress jobs at the moment. Search to find a job."}
-                        buttonVisible = {false}
-                        errorImageType = {<NoJobsIcon/>}
-                      />;
-    
-  } 
-  
-  else if(jobs.length == 0 && jobListType === 'Finished Jobs') {
-    noJobsComponent = <NoJobs
-                        title = {"No finished jobs."}
-                        body = {"You don't have any finished jobs yet."}
-                        buttonVisible = {false}
-                        errorImageType = {<NoJobsIcon/>}
-                      />;
-  }
-  
-  else if(jobs.length == 0 && jobListType === 'Current Jobs') {
-    noJobsComponent = <NoJobs
-                        title = {"No current jobs."}
-                        body = {"You don't have any in progress jobs at the moment."}
-                        buttonVisible = {true}
-                        buttonName = "Add a Job Now"
-                        buttonIcon={<PlusSignIcon/>}
-                        onButtonClick = {() =>
-                          navigation.navigate('AddJob', { formType: 'add', setJobData: setJobs })
-                        }
-                        errorImageType = {<NoMatchingJobsIcon/>}
-                      />;
-  }
-
-  else {
+  if (jobs.length == 0 && jobListType === 'Your Jobs') {
+    noJobsComponent = (
+      <NoJobs
+        title={'Your job box is empty.'}
+        body={"You don't have any in progress jobs at the moment. Search to find a job."}
+        buttonVisible={false}
+        errorImageType={<NoJobsIcon />}
+      />
+    );
+  } else if (jobs.length == 0 && jobListType === 'Finished Jobs') {
+    noJobsComponent = (
+      <NoJobs
+        title={'No finished jobs.'}
+        body={"You don't have any finished jobs yet."}
+        buttonVisible={false}
+        errorImageType={<NoJobsIcon />}
+      />
+    );
+  } else if (jobs.length == 0 && jobListType === 'Current Jobs') {
+    noJobsComponent = (
+      <NoJobs
+        title={'No current jobs.'}
+        body={"You don't have any in progress jobs at the moment."}
+        buttonVisible={true}
+        buttonName="Add a Job Now"
+        buttonIcon={<PlusSignIcon />}
+        onButtonClick={() =>
+          navigation.navigate('AddJob', { formType: 'add', setJobData: setJobs })
+        }
+        errorImageType={<NoMatchingJobsIcon />}
+      />
+    );
+  } else {
     noJobsComponent = null;
-    
   }
 
   return (
     <>
       <View style={{ alignItems: 'center' }}>
-        
         <View style={FlatListStyles.wrapper}>
           <FlatList
             onRefresh={() => onRefresh()}
@@ -213,10 +210,9 @@ export function ListJobs({ navigation, mode }: ListJobsProps) {
                       ))}
                     </Picker>
                   </View>
-                  
+
                   <View style={styles.spacer} />
                   {mode === 'Add' && (
-                    
                     <AppButton
                       textStyle={styles.addJobBtnText}
                       type="primary"
@@ -227,17 +223,12 @@ export function ListJobs({ navigation, mode }: ListJobsProps) {
                       title="Add Job"
                       style={styles.addJobBtn}
                     />
-                    
-                  ) } 
+                  )}
                 </View>
-                
-                {mode === 'Add' && (
-                    <View>
-                    {noJobsComponent}
-                    </View>
-                )}
-                    
-                 {mode === 'Find' && (
+
+                {mode === 'Add' && <View>{noJobsComponent}</View>}
+
+                {mode === 'Find' && (
                   <View>
                     <AppTextInput
                       value={searchString ?? undefined}
@@ -247,15 +238,11 @@ export function ListJobs({ navigation, mode }: ListJobsProps) {
                       maxLength={100}
                       keyboardType="default"
                       icon="search"
-                    /> 
-                    
-                    {noJobsComponent}
-                    
-                  </View>
-                  
-                ) } 
+                    />
 
-               
+                    {noJobsComponent}
+                  </View>
+                )}
               </View>
             }
             onEndReached={() => {
