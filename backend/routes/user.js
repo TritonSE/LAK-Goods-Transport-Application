@@ -5,7 +5,6 @@ import express from 'express';
 import multer from 'multer';
 
 import { getUser, getUsers, registerUser, updateUser } from '../services/user';
-import { getUser, getUsers, registerUser, updateUser } from '../services/user';
 import { getSessionUserId } from '../constants';
 
 const routes = express.Router();
@@ -72,7 +71,7 @@ routes.put('/:userid', upload, async (req, res, next) => {
   try {
     const userId = req.params.userid;
 
-    const user = req.body;
+    user = req.body;
 
     // Validate user object properties
     const {
@@ -108,13 +107,13 @@ routes.put('/:userid', upload, async (req, res, next) => {
       return res.status(400).json({ error: 'Invalid verification status' });
     }
 
-    user = await updateUser(req.params.userid, req.body, req.files || []);
+    user = await updateUser(userId, user, req.files || []);
   } catch (e) {
     next(e);
-    return;
+    return res.status(500).json({ error: 'Could not put User' });
   }
 
-  res.status(200).json({
+  return res.status(200).json({
     message: 'User edited successfully',
     userId: user._id,
   });
