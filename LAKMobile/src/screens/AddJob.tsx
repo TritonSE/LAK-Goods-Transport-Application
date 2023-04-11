@@ -82,7 +82,6 @@ export function AddJob({ navigation, route }: AddJobProps) {
     [fieldNames.dropoffLocation]: true,
     [fieldNames.imageSelect]: true,
   });
-  const [profileData, setProfileData] = useState<UserData | null>(null);
   const [jobTitle, setJobTitle] = useState('');
   const [clientName, setClientName] = useState('');
   const [phoneNumber, setPhoneNumber] = useState('');
@@ -178,16 +177,12 @@ export function AddJob({ navigation, route }: AddJobProps) {
 
   useEffect(() => {
     getUser(userId, userId).then((user) => {
-      setProfileData(user);
+      setClientName(user.firstName + ' ' + user.lastName);
+      setPhoneNumber(user.phone || '');
+      setPickupLocation(user.location.split(';')[0] || '');
+      setPickupDistrict(user.location.split(';')[1] || PICKER_DEFAULT);
     });
   }, [userId]);
-
-  useEffect(() => {
-    setClientName(profileData?.firstName + ' ' + profileData?.lastName);
-    setPhoneNumber(profileData?.phone || '');
-    setPickupLocation(profileData?.location.split(';')[0] || '');
-    setPickupDistrict(profileData?.location.split(';')[1] || PICKER_DEFAULT);
-  }, [profileData]);
 
   useEffect(() => {
     dispatch({ type: 'CLEAR_IMAGES' });
