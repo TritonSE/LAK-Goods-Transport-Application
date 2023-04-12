@@ -1,5 +1,5 @@
 import React, { useContext, useState } from 'react';
-import { StyleSheet, View } from 'react-native';
+import { StyleSheet, Text, View } from 'react-native';
 import { AppText, LabelWrapper, AppButton, AppTextInput } from '../components';
 import { COLORS } from '../../constants';
 import { LoginProps } from '../types/navigation';
@@ -9,10 +9,48 @@ export function LoginScreen({ navigation }: LoginProps) {
   const [phoneNumber, setPhoneNumber] = useState('');
   const [pin, setPIN] = useState('');
 
+  const [phoneValid, setPhoneValid] = useState(false);
+  const [PINValid, setPINValid] = useState(false);
+
+  const [loginPressed, setLoginPressed] = useState(false);
+  const [loginError, setLoginError] = useState<Error | null>(null);
+
   const auth = useContext(AuthContext);
+
+  const validatePhone = () => {
+    const phoneRegex = new RegExp('^[0-9]{10}$');
+    setPhoneValid(phoneRegex.test(phoneNumber));
+  };
+
+  const validatePin = () => {
+    const pinRegex = new RegExp('^[0-9]{4}$');
+    setPINValid(pinRegex.test(pin));
+  };
+
+  const handleSubmit = async () => {
+    setLoginError(null);
+    auth.clearError();
+    setLoginPressed(true);
+
+    validatePhone();
+    validatePin();
+
+    if (phoneValid && PINValid) {
+      await auth.login(phoneNumber, pin);
+      if (auth.user !== null) {
+        setPhoneNumber('');
+        setPIN('');
+        navigation.navigate('JobLandingScreen');
+      } else {
+        //Sets the Firebase error, which then displays it
+        setLoginError(auth.error);
+      }
+    }
+  };
 
   return (
     <View style={styles.container}>
+      <Text style={styles.errText}>{loginPressed && loginError ? loginError.message : ''}</Text>
       <LabelWrapper label="Mobile Number">
         <AppTextInput
           value={phoneNumber}
@@ -21,6 +59,8 @@ export function LoginScreen({ navigation }: LoginProps) {
           type="phoneNumber"
           maxLength={10}
           keyboardType="default"
+          isValid={!loginPressed || phoneValid}
+          errMsg="Valid mobile number required."
         />
       </LabelWrapper>
 
@@ -30,10 +70,10 @@ export function LoginScreen({ navigation }: LoginProps) {
           style={smallInputStyle}
           changeAction={setPIN}
           type="pin"
-          isValid={true}
-          errMsg="Required field"
+          isValid={!loginPressed || PINValid}
           maxLength={4}
           keyboardType="numeric"
+          errMsg="Valid PIN required."
         />
       </LabelWrapper>
       <AppButton
@@ -43,22 +83,7 @@ export function LoginScreen({ navigation }: LoginProps) {
         style={styles.forgotPIN}
       />
 
-      <AppButton
-        type="primary"
-        title="Log in"
-        onPress={async () => {
-          auth.clearError();
-          await auth.login(phoneNumber, pin);
-          if (auth.user !== null) {
-            setPhoneNumber('');
-            setPIN('');
-            navigation.navigate('JobLandingScreen');
-          } else {
-            // Display the error now...
-          }
-        }}
-        style={styles.submitButton}
-      />
+      <AppButton type="primary" title="Log in" onPress={handleSubmit} style={styles.submitButton} />
 
       <View style={styles.signupPrompt}>
         <AppText>{"Don't have an account?"}</AppText>
@@ -111,6 +136,12 @@ const styles = StyleSheet.create({
 
   signupLink: {
     marginLeft: 5,
+  },
+
+  errText: {
+    color: COLORS.red,
+    fontSize: 12,
+    paddingBottom: 20, // this is adding margin below null errMsg as well
   },
 });
 

@@ -1,10 +1,11 @@
-import React from 'react';
+import React, { useState } from 'react';
 import { StyleProp, StyleSheet, View, ViewStyle } from 'react-native';
 
 import { UserData } from '../api/data';
 import { AppText } from './AppText';
 import { AppButton } from './AppButton';
 import { COLORS } from '../../constants';
+import { ConfirmationBox } from './ConfirmationBox';
 
 // states 'Accepted' will not be used because page changes to tracking once an applicant is accepted
 interface ApplicantThumbnailProps {
@@ -22,6 +23,7 @@ export function ApplicantThumbnail({
   onAccept,
   onDeny,
 }: ApplicantThumbnailProps) {
+  const [confirmationVisible, setConfirmationVisible] = useState(false);
   return (
     <View style={[ThumbailStyles.container, style]}>
       <AppText style={[ThumbailStyles.nameFont, ThumbailStyles.containerItem]}>
@@ -31,7 +33,7 @@ export function ApplicantThumbnail({
         {applicantData.phone}
       </AppText>
       <AppText style={ThumbailStyles.containerItem}>
-        {applicantData.vehicleData.vehicleType}
+        {applicantData?.vehicleData?.vehicleType}
       </AppText>
 
       <View
@@ -45,7 +47,7 @@ export function ApplicantThumbnail({
             type="tertiary"
             size="small"
             title="Deny"
-            onPress={() => onDeny()}
+            onPress={onDeny}
             style={ThumbailStyles.flexItem}
           />
         )}
@@ -54,7 +56,7 @@ export function ApplicantThumbnail({
             type="tertiary"
             size="small"
             title="Accept"
-            onPress={() => onAccept()}
+            onPress={() => setConfirmationVisible(true)}
             style={ThumbailStyles.flexItem}
             textStyle={{ color: COLORS.turquoise }}
           />
@@ -67,6 +69,19 @@ export function ApplicantThumbnail({
         )}
         {status == 'Denied' && <AppText style={{ color: COLORS.red }}>Denied</AppText>}
       </View>
+
+      {confirmationVisible ? (
+        <ConfirmationBox
+          rejectVisible={true}
+          checkMarkAppear={true}
+          title={'Assign driver?'}
+          body={`Do you want to assign driver ${applicantData.firstName} ${applicantData.lastName} to the job? If you want to change the driver later, you will have to cancel and repost this job.`}
+          acceptName={'Yes, Assign'}
+          rejectName={'Cancel'}
+          onAccept={onAccept}
+          onReject={() => setConfirmationVisible(false)}
+        />
+      ) : null}
     </View>
   );
 }

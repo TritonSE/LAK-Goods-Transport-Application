@@ -57,6 +57,7 @@ routes.patch('/:jobid', upload, async (req, res, next) => {
     const userId = getSessionUserId(req);
     await updateJob(userId, jobId, payload, req.files || []);
   } catch (e) {
+    console.error(e);
     next(e);
     return;
   }
