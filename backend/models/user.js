@@ -15,12 +15,19 @@ export const PUBLICLY_VISIBLE_FIELDS = [
   'vehicleData',
 ];
 export const OWNER_LIMITED_FIELDS = ['driverLicenseId'];
-
 export const FIELDS_USER_PERMITTED_TO_UPDATE = [
   'firstName',
   'lastName',
   'location',
   'vehicleData',
+];
+export const VERIFICATION_STATUS_FIELDS = [
+  'Not Applied',
+  'Applied',
+  'In Review',
+  'Verified',
+  'Disapproved',
+  'Suspended',
 ];
 
 const VehicleInformationSchema = new Schema({
@@ -79,6 +86,18 @@ const UserSchema = new Schema(
       required: function () {
         return this.driverLicenseId !== undefined;
       },
+    },
+    verificationStatus: {
+      type: String,
+      enum: [
+        'Not Applied',
+        'Applied',
+        'In Review',
+        'Verified',
+        'Disapproved',
+        'Suspended',
+      ],
+      default: 'Not Applied',
     },
   },
   {
