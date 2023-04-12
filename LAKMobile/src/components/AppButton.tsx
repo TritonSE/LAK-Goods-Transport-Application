@@ -123,9 +123,10 @@ type AppButtonProps = {
   title: string;
   style?: StyleProp<ViewStyle>;
   textStyle?: StyleProp<TextStyle>;
+  icon?: React.ReactElement;
 };
 
-export function AppButton({ title, size, style, onPress, type, textStyle }: AppButtonProps) {
+export function AppButton({ title, size, style, onPress, type, textStyle, icon }: AppButtonProps) {
   if (!type || !(type in TYPE_STYLE_MAP)) type = 'secondary';
   if (type != 'link' && (!size || !(size in SIZE_STYLE_MAP))) size = 'large';
 
@@ -141,7 +142,7 @@ export function AppButton({ title, size, style, onPress, type, textStyle }: AppB
       ]}
     >
       <AppText style={[TYPE_STYLE_MAP[type].text, size && SIZE_STYLE_MAP[size].text, textStyle]}>
-        {title}
+        {icon} {title}
       </AppText>
     </TouchableOpacity>
   );
