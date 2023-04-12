@@ -6,6 +6,7 @@ import multer from 'multer';
 
 import { getUser, getUsers, registerUser, updateUser } from '../services/user';
 import { getSessionUserId } from '../constants';
+import { VERIFICATION_STATUS_FIELDS } from '../models/user';
 
 const routes = express.Router();
 const upload = multer({ storage: multer.memoryStorage() }).array('images');
@@ -22,6 +23,7 @@ routes.get('/:userid', async (req, res, next) => {
     user = await getUser(userId, requestingUserId);
   } catch (e) {
     next(e);
+    return;
   }
 
   res.status(200).json({
@@ -43,6 +45,7 @@ routes.post('/get-by-ids', async (req, res, next) => {
     users = await getUsers(userIds, requestingUserId);
   } catch (e) {
     next(e);
+    return;
   }
   return res
     .status(200)
@@ -57,6 +60,7 @@ routes.post('/', upload, async (req, res, next) => {
     user = await registerUser(req.body, req.files || []);
   } catch (e) {
     next(e);
+    return;
   }
 
   return res.status(200).json({
@@ -95,14 +99,7 @@ routes.put('/:userid', upload, async (req, res, next) => {
     }
     if (
       verificationStatus &&
-      ![
-        'Not Applied',
-        'Applied',
-        'In Review',
-        'Verified',
-        'Disapproved',
-        'Suspended',
-      ].includes(verificationStatus)
+      !VERIFICATION_STATUS_FIELDS.includes(verificationStatus)
     ) {
       return res.status(400).json({ error: 'Invalid verification status' });
     }

@@ -16,10 +16,18 @@ export const PUBLICLY_VISIBLE_FIELDS = [
 ];
 export const OWNER_LIMITED_FIELDS = ['driverLicenseId'];
 export const FIELDS_USER_PERMITTED_TO_UPDATE = [
-  'firstname',
-  'lastname',
-  'phone',
-  'vehicleDays',
+  'firstName',
+  'lastName',
+  'location',
+  'vehicleData',
+];
+export const VERIFICATION_STATUS_FIELDS = [
+  'Not Applied',
+  'Applied',
+  'In Review',
+  'Verified',
+  'Disapproved',
+  'Suspended',
 ];
 
 const VehicleInformationSchema = new Schema({
