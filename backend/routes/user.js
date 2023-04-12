@@ -47,7 +47,7 @@ routes.post('/get-by-ids', async (req, res, next) => {
     next(e);
     return;
   }
-  return res
+  res
     .status(200)
     .json({ message: `User documents sent as ${users}`, users: users });
 });
@@ -63,7 +63,7 @@ routes.post('/', upload, async (req, res, next) => {
     return;
   }
 
-  return res.status(200).json({
+  res.status(200).json({
     message: 'User created successfully',
     userId: user._id,
   });
