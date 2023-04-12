@@ -7,7 +7,7 @@ import {
   User,
 } from 'firebase/auth';
 //import firebaseConfig from '../../firebase-config.json';
-import firebaseConfig from '../auth/firebase-config.json';
+import firebaseConfig from '../../firebase-config.json';
 import React, { createContext, useMemo, useState } from 'react';
 import * as crypto from 'expo-crypto';
 import { FirebaseError } from '@firebase/util';
