@@ -17,6 +17,8 @@ export function LoginScreen({ navigation }: LoginProps) {
 
   const auth = useContext(AuthContext);
 
+  const [loading, isLoading] = useState(false);
+
   const validatePhone = () => {
     const phoneRegex = new RegExp('^[0-9]{10}$');
     setPhoneValid(phoneRegex.test(phoneNumber));
@@ -83,7 +85,8 @@ export function LoginScreen({ navigation }: LoginProps) {
         style={styles.forgotPIN}
       />
 
-      <AppButton type="primary" title="Log in" onPress={handleSubmit} style={styles.submitButton} />
+      {/* ternary to check if loading, set type to disabled */}
+      <AppButton type={loading ? "disabled": "primary"} title="Log in" onPress={handleSubmit} style={styles.submitButton}/>
 
       <View style={styles.signupPrompt}>
         <AppText>{"Don't have an account?"}</AppText>
