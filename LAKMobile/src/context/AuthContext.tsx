@@ -6,7 +6,6 @@ import {
   signOut,
   User,
 } from 'firebase/auth';
-//import firebaseConfig from '../../firebase-config.json';
 import firebaseConfig from '../../firebase-config.json';
 import React, { createContext, useMemo, useState } from 'react';
 import * as crypto from 'expo-crypto';

@@ -32,7 +32,9 @@
     "react-native-svg": "13.4.0",
     "react-native-tab-view": "^3.3.0",
     "react-native-vector-icons": "^9.1.0",
-    "react-native-web": "~0.18.7"
+    "react-native-web": "~0.18.7",
+    "expo-firebase-recaptcha": "~2.3.1",
+    "react-native-webview": "11.23.1"
   },
   "devDependencies": {
     "@babel/core": "^7.19.3",
