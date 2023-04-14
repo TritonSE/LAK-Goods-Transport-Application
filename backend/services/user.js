@@ -1,9 +1,13 @@
 /**
  * UserService that manages the User documents in the DB
  */
-import UserModel, { OWNER_LIMITED_FIELDS } from '../models/user';
+import UserModel, {
+  OWNER_LIMITED_FIELDS,
+  FIELDS_USER_PERMITTED_TO_UPDATE,
+} from '../models/user';
 import { ServiceError } from '../errors';
-import { saveImage } from './image';
+import { saveImage, deleteImage } from './image';
+import { filterObject } from '../helpers';
 
 export async function getUser(requestedUserId, requestingUserId) {
   console.debug(
@@ -81,6 +85,7 @@ export async function registerUser(userData, imageFiles) {
       location,
       driverLicenseId,
       ...(driverLicenseId === undefined ? {} : { vehicleData: vehicleData }),
+      verificationStatus: 'Not Applied',
     });
   } catch (e) {
     throw ServiceError.INVALID_USER_RECEIVED.addContext(e.stack);
@@ -88,6 +93,51 @@ export async function registerUser(userData, imageFiles) {
   try {
     const response = await user.save();
     return response;
+  } catch (e) {
+    throw ServiceError.INVALID_USER_RECEIVED.addContext(e.stack);
+  }
+}
+
+export async function updateUser(userId, userData, userImages) {
+  console.debug(`SERVICE: updateUser service runnning: userId - ${userId}`);
+  console.log(userData, userImages);
+  // Retrieve original user
+  const originalUser = await UserModel.findById(userId);
+  if (!originalUser) {
+    throw ServiceError.USER_NOT_FOUND;
+  }
+
+  // Ensure updated fields are only getting updated
+  userData = filterObject(userData, FIELDS_USER_PERMITTED_TO_UPDATE);
+  if (userData.vehicleData) {
+    const vehicleData = JSON.parse(userData.vehicleData);
+    userData.vehicleData = vehicleData;
+    console.log(userData);
+    if (userImages) {
+      // Delete existing images
+      const existingImageIds = originalUser.imageIds;
+      if (existingImageIds) {
+        await Promise.all(
+          existingImageIds.map(async (imageId) => {
+            await deleteImage(imageId);
+          })
+        );
+      }
+
+      // Add new images
+      const newImageIds = [];
+      await Promise.all(
+        userImages.map(async (image) => {
+          const imageId = await saveImage(image);
+          newImageIds.push(imageId);
+        })
+      );
+
+      userData.vehicleData.imageIds = newImageIds;
+    }
+  }
+  try {
+    return await UserModel.findOneAndUpdate({ _id: userId }, userData);
   } catch (e) {
     throw ServiceError.INVALID_USER_RECEIVED.addContext(e.stack);
   }

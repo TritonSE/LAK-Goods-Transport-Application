@@ -1,79 +1,80 @@
 .main {
-    display: flex;
-    flex-direction: column;
-    text-align: left;
-    min-height: 100vh;
-    padding-left: 312px;
-    min-width: 700px;
-    background: #F9F9F9;
+  display: flex;
+  flex-direction: column;
+  text-align: left;
+  min-height: 100vh;
+  padding-left: 312px;
+  min-width: 700px;
+  background: #f9f9f9;
 }
 
 .rightalign {
-    width: 100%;
-    text-align: right;
-    padding-right: 77px;
+  width: 100%;
+  text-align: right;
+  padding-right: 77px;
 }
 
 .header {
-    font-size: 48px;
-    padding-top: 60px;
+  font-size: 48px;
+  padding-top: 60px;
 }
 
 .button {
-    margin-right: 32px;
-    width: 232px;
-    height: 50px;
-    font-size: 24px;
-    font-family: 'Lato';
-    font-style: normal;
-    font-weight: 700;
-    color: #94100C;
-    background-color: white;
-    border-radius: 4px;
-    border: none;
-    box-shadow: 0px 0px 2px 2px lightgray;
+  margin-right: 32px;
+  width: 232px;
+  height: 50px;
+  font-size: 24px;
+  font-style: normal;
+  font-weight: 700;
+  color: #94100c;
+  background-color: white;
+  border-radius: 4px;
+  border: none;
+  box-shadow: 0 0 2px 2px lightgray;
 }
 
 .table {
-    width: 94%;
-    margin-right: 78px; 
-    margin-top: 34px;
-    border-collapse: collapse;
+  width: 94%;
+  margin-right: 78px;
+  margin-top: 34px;
+  border-collapse: collapse;
 }
 
 .tableheader {
-    background-color: #94100C;
-    height: 74px;
+  background-color: #94100c;
+  height: 74px;
 }
 
 .tableheader th {
-    color: white;
-    padding-left: 20px;
-    padding-right: 20px;
-    font-family: 'Lato';
-    font-style: normal;
-    font-weight: 400;
-    font-size: 24px;
+  color: white;
+  padding-left: 20px;
+  padding-right: 20px;
+  font-style: normal;
+  font-weight: 400;
+  font-size: 24px;
 }
+
 .tableheader th:nth-child(1) {
-    width: 23%
+  width: 23%;
 }
+
 .tableheader th:nth-child(2) {
-    width: 23%
+  width: 23%;
 }
+
 .tableheader th:nth-child(3) {
-    width: 54%
+  width: 54%;
 }
 
 .tablebody td {
-    padding-top: 40px;
-    padding-bottom: 5px;
-    padding-left: 20px;
-    font-family: 'Lato';
-    font-style: normal;
-    font-weight: 400;
-    font-size: 20px;
+  padding-top: 40px;
+  padding-bottom: 5px;
+  padding-left: 20px;
+  font-style: normal;
+  font-weight: 400;
+  font-size: 20px;
 }
-.tablebody td:nth-child(n+2) {
-    border-left: 1px solid #c4c4c4;  
+
+.tablebody td:nth-child(n + 2) {
+  border-left: 1px solid #c4c4c4;
 }

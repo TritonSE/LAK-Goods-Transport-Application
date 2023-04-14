@@ -1,134 +1,125 @@
-import React, { useEffect, useState } from 'react';
+import React, { useContext, useEffect, useState } from 'react';
 import { JobData, JobOwnerView } from '../api/data';
-import { ConfirmationBox } from '../components/ConfirmationBox';
 
-import {
-    StyleSheet,
-    View,
-    ScrollView
-} from 'react-native';
-import {
-    ApplicantThumbnail,
-} from '../components';
+import { View, ScrollView } from 'react-native';
+import { ApplicantThumbnail } from '../components';
 
 import { UserData } from '../api/data';
 import { assignDriver, denyDriver, getUsersByIds } from '../api';
-
+import { AuthContext } from '../context/AuthContext';
 
 interface ApplicantScreenProps {
-    jobData: JobOwnerView
-    setJobData: React.Dispatch<React.SetStateAction<JobData[] | JobOwnerView[]>>
-    carousel: JSX.Element
-    navigation: any
+  jobData: JobOwnerView;
+  setJobData: React.Dispatch<React.SetStateAction<JobData[] | JobOwnerView[]>>;
+  carousel: JSX.Element;
+  navigation: any;
 }
 
 // Define the interface here
-interface ApplicantData{
-    userData: UserData
-    driverID: string
+interface ApplicantData {
+  userData: UserData;
+  driverID: string;
 }
 
+export function ApplicantsScreen({
+  jobData,
+  setJobData,
+  carousel,
+  navigation,
+}: ApplicantScreenProps) {
+  const userIds: Array<string> = jobData.applicants.map((applicant) => applicant.userId);
+  const [applicants, setApplicants] = useState<Array<ApplicantData>>([]);
+  const auth = useContext(AuthContext);
 
+  useEffect(() => {
+    if (auth.user === null) {
+      navigation.navigate('Login');
+    }
+  }, [auth, navigation]);
 
-export function ApplicantsScreen({ jobData, setJobData, carousel, navigation }: ApplicantScreenProps) {
-    const userIds: Array<string> = jobData.applicants.map(applicant => applicant.userId)
-    const [applicants, setApplicants] = useState<Array<ApplicantData>>([])
-    const [confirmationVisible, setConfirmationVisible] = useState(false);
+  const currentUserId = auth.user ? auth.user.uid : '';
 
-    useEffect(() => {
-        if (userIds.length) {
-            getUsersByIds(userIds).then(async (response) => {
-                if (response == null) {
-                    return null;
-                }
-                const applicantUsers: Array<UserData> = response;
-                setApplicants(applicantUsers.map((applicant, i) => ({
-                    userData: applicant,
-                    driverID: userIds[i],
-                }))
-                )
-            })
+  useEffect(() => {
+    if (userIds.length) {
+      getUsersByIds(userIds).then(async (response) => {
+        if (response == null) {
+          return null;
         }
-    }, [jobData])
-
-    const updateWithAssigned = (driverId: string): JobOwnerView => {
-        return ({
-            ...jobData,
-            status: 'ASSIGNED',
-            assignedDriverId: driverId,
-            startDate: (new Date()).toString()
-        }) as JobOwnerView
-
+        const applicantUsers: Array<UserData> = response;
+        setApplicants(
+          applicantUsers.map((applicant, i) => ({
+            userData: applicant,
+            driverID: userIds[i],
+          }))
+        );
+      });
     }
+  }, [jobData]);
 
-    const updateWithDenial = (driverId: string): JobOwnerView => {
-        const newApplicants = jobData.applicants.filter(applicant => applicant.userId !== driverId)
-        return ({
-            ...jobData,
-            applicants: newApplicants,
-        })
-    }
+  const updateWithAssigned = (driverId: string): JobOwnerView => {
+    return {
+      ...jobData,
+      status: 'ASSIGNED',
+      assignedDriverId: driverId,
+      startDate: new Date().toString(),
+    } as JobOwnerView;
+  };
 
-    const onAccept = (driverId?: string) => {
+  const updateWithDenial = (driverId: string): JobOwnerView => {
+    const newApplicants = jobData.applicants.filter((applicant) => applicant.userId !== driverId);
+    return {
+      ...jobData,
+      applicants: newApplicants,
+    };
+  };
 
-        if (!driverId) return;
-        assignDriver(jobData._id, driverId).then(response => {
-            if (response === null) {
-                return
-            }
-            const resDriverId = response.driverId
-            const updatedJob: JobOwnerView = updateWithAssigned(resDriverId)
-            setJobData(prevJobs => prevJobs.map(job => (job._id === updatedJob._id ? updatedJob : job)))
-            navigation.navigate("ListJobs")
-        })
+  const onAccept = (driverId?: string) => {
+    if (!driverId) return;
+    assignDriver(currentUserId, jobData._id, driverId).then((response) => {
+      if (response === null) {
+        return;
+      }
+      const resDriverId = response.driverId;
+      const updatedJob: JobOwnerView = updateWithAssigned(resDriverId);
+      setJobData((prevJobs) =>
+        prevJobs.map((job) => (job._id === updatedJob._id ? updatedJob : job))
+      );
+      navigation.navigate('JobLandingScreen');
+    });
+  };
 
-        setConfirmationVisible(true)
-    }
+  const onDeny = (driverId?: string) => {
+    if (!driverId) return;
+    denyDriver(currentUserId, jobData._id, driverId).then((response) => {
+      if (response === null) {
+        return;
+      }
+      const resDriverId = response.driverId;
+      const updatedJob: JobOwnerView = updateWithDenial(resDriverId);
+      setJobData((prevJobs) =>
+        prevJobs.map((job) => (job._id === updatedJob._id ? updatedJob : job))
+      );
+      navigation.navigate('JobLandingScreen');
+    });
+  };
 
-    const onDeny = (driverId?: string) => {
-        if (!driverId) return;
-        denyDriver(jobData._id, driverId).then(response => {
-            if (response === null) {
-                return
-            }
-            const resDriverId = response.driverId
-            const updatedJob: JobOwnerView = updateWithDenial(resDriverId)
-            setJobData(prevJobs => prevJobs.map(job => (job._id === updatedJob._id ? updatedJob : job)))
-            navigation.navigate("ListJobs")
-        })
-    }
+  return (
+    <View>
+      {carousel}
 
-
-    return (
-        <View>
-            {carousel}
-
-            <ScrollView>
-                {
-                    applicants.map((applicant, index) => (<ApplicantThumbnail key={index} onAccept={() => onAccept(applicant.driverID)} onDeny={() => onDeny(applicant.driverID)} applicantData={applicant.userData} status='Unassigned' />))
-                }
-
-            </ScrollView>
-
-            { confirmationVisible ? (<ConfirmationBox
-                rejectVisible = {true}
-                checkMarkAppear = {true}
-                title={"Apply to job?"}
-                body={"Be sure to contact client at phone number"}
-                acceptName={"Apply"}
-                rejectName={"Cancel"}
-                onAccept={() => navigation.navigate('DetailsScreen')}
-                onReject={() => setConfirmationVisible(false)} />) : null }
-        
-        </View>
-
-        
-    );
-
+      <ScrollView>
+        {applicants.map((applicant, index) => (
+          <ApplicantThumbnail
+            key={index}
+            onAccept={() => onAccept(applicant.driverID)}
+            onDeny={() => onDeny(applicant.driverID)}
+            applicantData={applicant.userData}
+            status="Unassigned"
+          />
+        ))}
+      </ScrollView>
+    </View>
+  );
 }
 
-
-
-const styles = StyleSheet.create({
-
-})
+//const styles = StyleSheet.create({});

@@ -4,12 +4,14 @@
 import express from 'express';
 import multer from 'multer';
 
-import { getUser, getUsers, registerUser } from '../services/user';
+import { getUser, getUsers, registerUser, updateUser } from '../services/user';
 import { getSessionUserId } from '../constants';
+import { VERIFICATION_STATUS_FIELDS } from '../models/user';
 
 const routes = express.Router();
 const upload = multer({ storage: multer.memoryStorage() }).array('images');
 
+// getting one of the users by their id
 routes.get('/:userid', async (req, res, next) => {
   console.info(`ROUTES: Getting user by ID ${req.params.userid}`);
 
@@ -66,4 +68,52 @@ routes.post('/', upload, async (req, res, next) => {
     userId: user._id,
   });
 });
+
+routes.put('/:userid', upload, async (req, res, next) => {
+  console.info('ROUTES: Editing user', req.params.userid);
+  let user = null;
+  try {
+    const userId = req.params.userid;
+
+    user = req.body;
+
+    // Validate user object properties
+    const {
+      firstName,
+      lastName,
+      phone,
+      location,
+      driverLicenseId,
+      vehicleData,
+      verificationStatus,
+    } = user;
+    if (!firstName || !lastName || !phone || !location) {
+      return res
+        .status(400)
+        .json({ error: 'Missing required user properties' });
+    }
+    if (driverLicenseId && !vehicleData) {
+      return res
+        .status(400)
+        .json({ error: 'Missing required vehicleData for driver' });
+    }
+    if (
+      verificationStatus &&
+      !VERIFICATION_STATUS_FIELDS.includes(verificationStatus)
+    ) {
+      return res.status(400).json({ error: 'Invalid verification status' });
+    }
+
+    user = await updateUser(userId, user, req.files || []);
+  } catch (e) {
+    next(e);
+    return res.status(500).json({ error: 'Could not put User' });
+  }
+
+  return res.status(200).json({
+    message: 'User edited successfully',
+    userId: user._id,
+  });
+});
+
 export default routes;

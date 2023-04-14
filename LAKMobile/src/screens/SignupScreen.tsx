@@ -1,115 +1,173 @@
-import { StyleSheet, View } from 'react-native';
+import React from 'react';
+import { StyleSheet, Text, View } from 'react-native';
 import { AppButton, LabelWrapper, AppText, AppTextInput } from '../components';
 import { COLORS } from '../../constants';
-import {SignupProps} from '../types/navigation';
+import { SignupProps } from '../types/navigation';
 import { useContext, useState } from 'react';
-import { AuthContext } from '../auth/context';
+import { AuthContext } from '../context/AuthContext';
 
-export function SignupScreen({navigation}: SignupProps) {
-  const [name, setName] = useState("");
-  const [phoneNumber, setPhoneNumber] = useState("");
-  const [location, setLocation] = useState("");
-  const [pin, setPin] = useState("");
-  const [confirmPin, setConfirmPin] = useState("");
+export function SignupScreen({ navigation }: SignupProps) {
+  const [name, setName] = useState('');
+  const [nameValid, setNameValid] = useState(false);
+
+  const [phoneNumber, setPhoneNumber] = useState('');
+  const [phoneValid, setPhoneValid] = useState(false);
+
+  const [location, setLocation] = useState('');
+  const [locationValid, setLocationValid] = useState(false);
+
+  const [pin, setPin] = useState('');
+  const [PINValid, setPINValid] = useState(false);
+
+  const [confirmPin, setConfirmPin] = useState('');
+  const [confirmPINValid, setConfirmPINValid] = useState(false);
 
   const auth = useContext(AuthContext);
+  const [signupError, setSignupError] = useState<Error | null>(null);
+
+  const [isSignupPressed, setSignupPressed] = useState(false);
+
+  const validateName = () => {
+    // only spaces and letters allowed in regex pattern
+    const nameRegex = new RegExp('^[A-Z][a-z]+ [A-Z][a-z]+$');
+    setNameValid(nameRegex.test(name));
+  };
+
+  const validatePhone = () => {
+    // phone number must be 10-digit number
+    const phoneRegex = new RegExp('^[0-9]{10}$');
+    setPhoneValid(phoneRegex.test(phoneNumber));
+  };
+
+  const validateLocation = () => {
+    // only spaces and letters allowed in regex pattern, and must be non-empty
+    const locationRegex = new RegExp('^[A-Za-z][A-Za-z ]*$');
+    setLocationValid(locationRegex.test(location));
+  };
+
+  const validatePin = () => {
+    // must be 4-digit number
+    const pinRegex = new RegExp('^[0-9]{4}$');
+    setPINValid(pinRegex.test(pin));
+  };
+
+  const validateConfirmPin = () => {
+    // pin confirmation must be the same as original pin
+    setConfirmPINValid(pin === confirmPin);
+  };
 
   const handleSubmit = async () => {
-    const firstName = name.split(" ")[0];
-    const lastName = name.split(" ")[1];
+    const firstName = name.split(' ')[0];
+    const lastName = name.split(' ')[1];
 
+    setSignupError(null);
     auth.clearError();
-    await auth.signup(firstName, lastName, phoneNumber, location, pin);
-    if (auth.user !== null) {
-      console.log(auth.user.uid);
-      navigation.navigate('JobLandingScreen')
-    } else {
-      // Display errors now! (invalid password, email already in use, etc.)
+    setSignupPressed(true);
+
+    validateName();
+    validatePhone();
+    validateLocation();
+    validatePin();
+    validateConfirmPin();
+
+    if (nameValid && phoneValid && locationValid && PINValid && confirmPINValid) {
+      await auth.signup(firstName, lastName, phoneNumber, location, pin);
+      if (auth.user !== null) {
+        console.log(auth.user.uid);
+        navigation.navigate('JobLandingScreen');
+      } else {
+        // Display errors (invalid password, email already in use, etc.)
+        setSignupError(auth.error);
+        console.error(auth.error);
+      }
     }
-  }
+  };
 
   return (
     <View style={styles.container}>
-      <LabelWrapper label='Name (First, Last)'>
+      <Text style={styles.errText}>
+        {isSignupPressed && signupError ? signupError.message : ''}
+      </Text>
+      <LabelWrapper label="Name (First Last)">
         <AppTextInput
           value={name}
           style={bigInputStyle}
           changeAction={setName}
           type="name"
-          isValid={true}
-          errMsg="Required field"
+          isValid={!isSignupPressed || nameValid}
+          errMsg="Valid first and last name required."
           maxLength={100}
           keyboardType="default"
         />
       </LabelWrapper>
-      
-      <LabelWrapper label='Mobile Number'>
+
+      <LabelWrapper label="Mobile Number">
         <AppTextInput
           value={phoneNumber}
           style={bigInputStyle}
           changeAction={setPhoneNumber}
           type="phoneNumber"
-          isValid={true}
-          errMsg="Required field"
+          isValid={!isSignupPressed || phoneValid}
+          errMsg="Valid mobile number required."
           maxLength={10}
           keyboardType="default"
         />
       </LabelWrapper>
 
-      <LabelWrapper label='Location'>
+      <LabelWrapper label="Location">
         <AppTextInput
           value={location}
           style={bigInputStyle}
           changeAction={setLocation}
           type="location"
-          isValid={true}
-          errMsg="Required field"
+          isValid={!isSignupPressed || locationValid}
+          errMsg="Valid location required."
           maxLength={100}
           keyboardType="default"
         />
       </LabelWrapper>
 
-      <LabelWrapper label='4 digit pin password'>
+      <LabelWrapper label="4 digit pin password">
         <AppTextInput
           value={pin}
           style={smallInputStyle}
           changeAction={setPin}
           type="pin"
-          isValid={true}
-          errMsg="Required field"
+          isValid={!isSignupPressed || PINValid}
+          errMsg="Valid PIN required."
           maxLength={4}
           keyboardType="numeric"
         />
       </LabelWrapper>
 
-      <LabelWrapper label='Confirm password'>
-      <AppTextInput
+      <LabelWrapper label="Confirm password">
+        <AppTextInput
           value={confirmPin}
           style={smallInputStyle}
           changeAction={setConfirmPin}
           type="confirmPin"
-          isValid={true}
-          errMsg="Required field"
+          isValid={!isSignupPressed || confirmPINValid}
+          errMsg="Valid PIN confirmation required."
           maxLength={4}
           keyboardType="numeric"
         />
       </LabelWrapper>
 
       <AppButton
-        type='primary'
-        title='Create Account'
+        type="primary"
+        title="Create Account"
         onPress={handleSubmit}
         style={styles.submitButton}
-        />
+      />
 
       <View style={styles.loginLinkContainer}>
         <AppText>Already have an account?</AppText>
-        <AppButton 
-          type='link' 
-          title='Log in here' 
+        <AppButton
+          type="link"
+          title="Log in here"
           onPress={() => navigation.navigate('Login')}
           style={styles.loginLink}
-          />
+        />
       </View>
     </View>
   );
@@ -125,7 +183,7 @@ const styles = StyleSheet.create({
     alignItems: 'flex-start',
     justifyContent: 'center',
   },
-  
+
   // Shared across all inputs
   input: {
     borderWidth: 1,
@@ -148,23 +206,29 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     alignItems: 'center',
     marginTop: 26,
-    justifyContent: 'space-evenly'
+    justifyContent: 'space-evenly',
   },
   loginLink: {
     marginLeft: 5,
-  }
+  },
+
+  errText: {
+    color: COLORS.red,
+    fontSize: 12,
+    paddingBottom: 20, // this is adding margin below null errMsg as well
+  },
 });
 
 const bigInputStyle = StyleSheet.flatten([
-  styles.input, 
+  styles.input,
   {
     width: '100%',
-  }
+  },
 ]);
 
 const smallInputStyle = StyleSheet.flatten([
-  styles.input, 
+  styles.input,
   {
-    width: '45%'
-  }
-])
+    width: '45%',
+  },
+]);

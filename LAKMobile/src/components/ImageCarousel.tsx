@@ -1,11 +1,5 @@
-import React, { useState } from "react";
-import {
-  FlatList,
-  Image,
-  Pressable,
-  StyleSheet,
-  View,
-} from "react-native";
+import React, { useState } from 'react';
+import { FlatList, Image, Pressable, StyleSheet, View } from 'react-native';
 import { imageIdToSource } from '../api/consumer';
 
 interface ImageCarouselProps {
@@ -30,10 +24,7 @@ export function ImageCarousel({ imageIds }: ImageCarouselProps) {
       <FlatList
         data={imageIds}
         renderItem={({ item, index }) => (
-          <Pressable
-            onPress={() => setSelectedIndex(index)}
-            style={styles.thumbnailPressable}
-          >
+          <Pressable onPress={() => setSelectedIndex(index)} style={styles.thumbnailPressable}>
             <Image
               resizeMode="cover"
               source={imageIdToSource(item)}
@@ -59,15 +50,15 @@ export function ImageCarousel({ imageIds }: ImageCarouselProps) {
 const styles = StyleSheet.create({
   wrapper: {
     flex: 0,
-    backgroundColor: "#000",
+    backgroundColor: '#000',
   },
   bigImage: {
-    width: "100%",
+    width: '100%',
     height: IMAGE_HEIGHT,
   },
   thumbnailsList: {
-    width: "100%",
-    height: "auto",
+    width: '100%',
+    height: 'auto',
   },
   thumbnailPressable: {
     flex: 1,
