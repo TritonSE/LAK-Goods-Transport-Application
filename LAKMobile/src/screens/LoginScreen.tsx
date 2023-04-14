@@ -79,7 +79,7 @@ export function LoginScreen({ navigation }: LoginProps) {
       <AppButton
         type="link"
         title="Forgot PIN?"
-        onPress={() => navigation.navigate('ForgotPassword')}
+        onPress={() => navigation.navigate('OTP')}
         style={styles.forgotPIN}
       />
 

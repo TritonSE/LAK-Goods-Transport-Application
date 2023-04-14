@@ -21,27 +21,34 @@ export function OTP({ navigation }: OTPProps) {
   const [verificationId, setVerificationID] = useState('');
   const [verificationCode, setVerificationCode] = useState('');
 
+  const [error, setError] = useState('');
 
+
+  // initialize phone provider and get verification id from recaptcha
   const sendCode = async () => {
-    try{
-        const phoneProvider = new PhoneAuthProvider(auth); // initialize the phone provider.
-        const verificationId = await phoneProvider.verifyPhoneNumber(phoneNumber, recaptchaVerifier.current); // get the verification id
-        setVerificationID(verificationId); // set the verification id
-        console.log('Success : Verification code has been sent to your phone'); // If Ok, show message.
-    }catch(error){
-        console.log('error in handle send verification', error);
+    try {
+        const phoneProvider = new PhoneAuthProvider(auth); 
+        const verificationId = await phoneProvider.verifyPhoneNumber(phoneNumber, recaptchaVerifier.current);
+        setVerificationID(verificationId);
+        setError('');
+        console.log('Success : Verification code has been sent to your phone');
+    } catch (e){
+        console.log('error in handle send verification', e);
+        setError('There was an error with your entered mobile number.');
     }
 };
 
-const verifyCode = async () => {
-  try{
-      const credential = PhoneAuthProvider.credential(verificationId, verificationCode); // get the credential
-      await signInWithCredential(auth, credential); // verify the credential
-      navigation.navigate('Signup'); // navigate to the reset password screen
-  }catch(error){
-    console.log('error in handle verify', error);
+  // get the otp and verify it
+  const verifyCode = async () => {
+    try {
+        const credential = PhoneAuthProvider.credential(verificationId, verificationCode);
+        await signInWithCredential(auth, credential);
+        navigation.navigate('ResetPassword');
+    } catch(e){
+      console.log('error in handle verify', e);
+      setError('There was an error in validating your OTP.')
+    }
   }
-}
 
 
   return (
@@ -57,25 +64,32 @@ const verifyCode = async () => {
 
 { // show the phone number input field when verification id is not set.
   !verificationId && (
-    <View>
-      <AppText style={headerText}>Enter the phone number</AppText>
+    <View style={styles.container}>
 
-      <LabelWrapper label="OTP">
+      <ScreenHeader showArrow={true}>Forgot Pin?</ScreenHeader>
+      <AppText style={styles.headerText}>
+        Please enter the mobile number associated with your account. Format is [+][countrycode][phone number].
+      </AppText>
+
+      <LabelWrapper label="Mobile Number">
         <TextInput 
-          style={smallInputStyle} 
+          style={[styles.input, styles.bigInputStyle]} 
           autoFocus 
           keyboardType='phone-pad' 
           textContentType='telephoneNumber'
           /* phone number must be in format [+][country code][phone number] i.e. E164 format*/
           onChangeText={(phone) => setPhoneNumber(phone)}
         />
+        <AppText style={styles.errorText}>
+          {error}
+        </AppText>
      </LabelWrapper>
 
       <AppButton 
         type="primary"
         onPress={() => sendCode()}
         disabled={!phoneNumber}
-        title= "Send Verification Code"
+        title= "Send OTP"
         style={styles.submitButton}
       />
     </View>
@@ -85,21 +99,28 @@ const verifyCode = async () => {
 
 { // if verification id exists show the confirm code input field.
   verificationId && (
-      <View>
-      <AppText style={headerText}>Enter the verification code</AppText>
+    <View style={styles.container}>
+      <ScreenHeader showArrow={true}>OTP Verification</ScreenHeader>
+      <AppText style={styles.headerText}>Please enter the OTP sent to your phone.</AppText>
 
-          <TextInput
-              editable={!!verificationId}
-              placeholder= "123456"
-              onChangeText={setVerificationCode}
-          />
+        <TextInput
+            style={[styles.input, styles.bigInputStyle]} 
+            autoFocus 
+            keyboardType='phone-pad' 
+            textContentType='oneTimeCode'
+            editable={!!verificationId}
+            onChangeText={setVerificationCode}
+        />
+        <AppText style={styles.errorText}>
+          {error}
+        </AppText>
 
-          <AppButton
-              title= "Confirm Verification Code"
-              disabled={!verificationCode}
-              onPress = {() => verifyCode()}
-          />
-      </View>
+        <AppButton
+            title= "Confirm Verification Code"
+            disabled={!verificationCode}
+            onPress = {() => verifyCode()}
+        />
+    </View>
   )
 }
 
@@ -141,19 +162,21 @@ const styles = StyleSheet.create({
   signupLink: {
     marginLeft: 5,
   },
-});
 
-const smallInputStyle = StyleSheet.flatten([
-  styles.input,
-  {
-    width: '45%',
-  },
-]);
-
-const headerText = StyleSheet.flatten([
-  {
+  headerText: {
     width: '100%',
     marginTop: '30%',
     marginBottom: '8%',
   },
-]);
+  
+  errorText: {
+    width: '100%',
+    color: 'red',
+    marginTop: '8%',
+    marginBottom: '8%',
+  },
+
+  bigInputStyle: {
+    width: 200,
+  }
+});
