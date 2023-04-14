@@ -2,10 +2,56 @@ import React, { useState, useEffect } from 'react';
 import styles from '@/styles/Dashboard.module.css';
 import Dropdown from 'react-bootstrap/Dropdown';
 import 'bootstrap/dist/css/bootstrap.min.css';
-import data from '../data/data.json';
-import { Lato } from '@next/font/google';
 import { Sidebar } from '@/components/sidebar';
 import Select, { InputActionMeta } from 'react-select';
+
+const data = [
+  {
+    "id": 1,
+    "dateApplied": "2022-01-01",
+    "name": "John Doe",
+    "mobileNumber": "+1 123 456 7890",
+    "licenseID": "A1234567",
+    "licensePlate": "ABC-123",
+    "isChecked": false
+  },
+  {
+    "id": 2,
+    "dateApplied": "2022-02-01",
+    "name": "Jane Doe",
+    "mobileNumber": "+1 987 654 3210",
+    "licenseID": "B2345678",
+    "licensePlate": "DEF-456",
+    "isChecked": false
+  },
+  {
+    "id": 3,
+    "dateApplied": "2022-03-01",
+    "name": "Jim Smith",
+    "mobileNumber": "+1 111 222 3333",
+    "licenseID": "C3456789",
+    "licensePlate": "GHI-789",
+    "isChecked": false
+  },
+  {
+    "id": 4,
+    "dateApplied": "2022-01-01",
+    "name": "John Doe",
+    "mobileNumber": "+1 123 456 7890",
+    "licenseID": "A1234567",
+    "licensePlate": "ABC-123",
+    "isChecked": false
+  },
+  {
+    "id": 5,
+    "dateApplied": "2022-02-01",
+    "name": "Jane Doe",
+    "mobileNumber": "+1 987 654 3210",
+    "licenseID": "B2345678",
+    "licensePlate": "DEF-456",
+    "isChecked": false
+  }
+]
 
 interface DataItem {
   id: number;
@@ -28,7 +74,14 @@ interface ControlStyles {
 }
 
 export default function App() {
-  const numTabs = 4;
+  
+  const options = [
+    { value: 'Needs Review', label: 'Needs Review' },
+    { value: 'In Review', label: 'In Review' },
+    { value: 'Verified', label: 'Verified' },
+    { value: 'Disapproved', label: 'Disapproved' },
+  ];
+  const numTabs = options.length;
 
   const [activeTab, setActiveTab] = useState<string>('Needs Review');
 
@@ -98,13 +151,6 @@ export default function App() {
       category: 'Disapproved',
     },
   ]);
-
-  const options = [
-    { value: 'Needs Review', label: 'Needs Review' },
-    { value: 'In Review', label: 'In Review' },
-    { value: 'Verified', label: 'Verified' },
-    { value: 'Disapproved', label: 'Disapproved' },
-  ];
 
   const customStyle = {
     control: (styles: ControlStyles) => ({
@@ -258,7 +304,7 @@ export default function App() {
           </thead>
           <tbody className={styles.tableBody}>
             {items
-              .filter((item) => item.category == activeTab)
+              .filter((item) => item.category === activeTab)
               .map((item) => (
                 <tr key={item.id}>
                   <td className={styles.tableData}>
