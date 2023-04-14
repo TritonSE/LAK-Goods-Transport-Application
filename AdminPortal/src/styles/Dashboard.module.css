@@ -1,165 +1,140 @@
-.page{
-    background-color: #E5E5E5;
-    min-height: 100vh;
-}
-.checkbox{
-    height: 16px;
-    width: 16px;
+.page {
+  background-color: #e5e5e5;
+  min-height: 100vh;
 }
 
-.outer{
-    margin-left: 286px;
-    display: flex;
-    flex-direction: column;
-    margin-right: 101px;
-    height: 100%;
-
+.checkbox {
+  height: 16px;
+  width: 16px;
 }
 
-.title{
-    
-    position: relative;
-    margin-top: 100px;
-
-    font-family: 'Lato', sans-serif;
-    font-style: normal;
-    font-weight: 700;
-    font-size: 48px;
-    line-height: 58px;
-
-    color: #000000;
+.outer {
+  margin-left: 286px;
+  display: flex;
+  flex-direction: column;
+  margin-right: 101px;
+  height: 100%;
 }
 
-
-.tabs{
-    display: flex;
-    position: relative;
-    margin-top: 2px;
-
-    gap: 54px;
-
-    height: 72px;
-    width: 834;
-
-    margin-bottom: 21px;
+.title {
+  position: relative;
+  margin-top: 100px;
+  font-family: Lato, sans-serif;
+  font-style: normal;
+  font-weight: 700;
+  font-size: 48px;
+  line-height: 58px;
+  color: #000;
 }
 
-.tabsButton{
-    font-family: 'Lato', sans-serif;
-    font-style: normal;
-    font-weight: 400;
-    font-size: 24px;
-    line-height: 29px;
-
-    color: #000000;
-
-    border: none;
-
-    background-color: transparent;
-    cursor: pointer;
+.tabs {
+  display: flex;
+  position: relative;
+  margin-top: 2px;
+  gap: 54px;
+  height: 72px;
+  width: 834;
+  margin-bottom: 21px;
 }
 
-.tabsButtonSelected{
-    font-family: 'Lato', sans-serif;
-    font-style: normal;
-    font-weight: 700;
-    font-size: 24px;
-    line-height: 29px;
-
-    border: none;
-
-    background-color: transparent;
-    cursor: pointer;
-    color: black;
-
-    border-bottom:7px solid #FFD84D;
-    
-    border-radius: 4px;
+.tabsButton {
+  font-family: Lato, sans-serif;
+  font-style: normal;
+  font-weight: 400;
+  font-size: 24px;
+  line-height: 29px;
+  color: #000;
+  border: none;
+  background-color: transparent;
+  cursor: pointer;
 }
 
-.horizontalLine{
-    border: 1px solid #C4C4C4;
-    margin-bottom: 22px;
+.tabsButtonSelected {
+  font-family: Lato, sans-serif;
+  font-style: normal;
+  font-weight: 700;
+  font-size: 24px;
+  line-height: 29px;
+  border: none;
+  background-color: transparent;
+  cursor: pointer;
+  color: black;
+  border-bottom: 7px solid #ffd84d;
+  border-radius: 4px;
 }
 
-.dropdownAndExportBar{
-    height: 50px;
-    margin-bottom: 50px;
-    display: flex;
-    justify-content: space-between;
+.horizontalLine {
+  border: 1px solid #c4c4c4;
+  margin-bottom: 22px;
 }
 
-.dropdown{
-    background-color: transparent;
-    color: black;
-    border: 1.78571px solid #C4C4C4;
-    height: 100%;
-
-    font-family: 'Lato', sans-serif;
-    font-style: normal;
-    font-weight: 400;
-    font-size: 24px;
-    line-height: 29px;
-
+.dropdownAndExportBar {
+  height: 50px;
+  margin-bottom: 50px;
+  display: flex;
+  justify-content: space-between;
 }
 
-.dropdown:hover{
-    background-color: #C4C4C4;
-    border: 1.78571px solid #C4C4C4;
+.dropdown {
+  background-color: transparent;
+  color: black;
+  border: 1.7857px solid #c4c4c4;
+  height: 100%;
+  font-family: Lato, sans-serif;
+  font-style: normal;
+  font-weight: 400;
+  font-size: 24px;
+  line-height: 29px;
 }
 
-
-.exportButton{
-
-    right: auto;
-    width: 232px;
-
-    background: #94100C;
-    color: white;
-    border-radius: 4px;
-
-    font-family: 'Lato', sans-serif;
-    font-style: normal;
-    font-weight: 700;
-    font-size: 24px;
-    line-height: 29px;
+.dropdown:hover {
+  background-color: #c4c4c4;
+  border: 1.7857px solid #c4c4c4;
 }
 
-.tableHead{
-
-    background-color: #94100C;
-    height: 74px;
+.exportButton {
+  right: auto;
+  width: 232px;
+  background: #94100c;
+  color: white;
+  border-radius: 4px;
+  font-family: Lato, sans-serif;
+  font-style: normal;
+  font-weight: 700;
+  font-size: 24px;
+  line-height: 29px;
 }
 
-.tableHeadItem{
-    color: white;
-    font-family: 'Lato', sans-serif;
-    font-style: normal;
-    font-weight: 400;
-    font-size: 24px;
-    line-height: 29px;
-    
-    text-align: left;
-    padding-left: 20px;
+.tableHead {
+  background-color: #94100c;
+  height: 74px;
 }
 
-.tableBody{
-    margin-top: 10px;
+.tableHeadItem {
+  color: white;
+  font-family: Lato, sans-serif;
+  font-style: normal;
+  font-weight: 400;
+  font-size: 24px;
+  line-height: 29px;
+  text-align: left;
+  padding-left: 20px;
 }
 
-.tableData{
-    padding: 20px;   
-    font-family: 'Lato', sans-serif;
-    font-style: normal;
-    font-weight: 400;
-    font-size: 20px;
-    line-height: 24px;
+.tableBody {
+  margin-top: 10px;
+}
 
-    text-align: left;
-
-    
+.tableData {
+  padding: 20px;
+  font-family: Lato, sans-serif;
+  font-style: normal;
+  font-weight: 400;
+  font-size: 20px;
+  line-height: 24px;
+  text-align: left;
 }
 
 .tableData:not(:last-child) {
-    border-right: 1px solid black;
+  border-right: 1px solid black;
 }
