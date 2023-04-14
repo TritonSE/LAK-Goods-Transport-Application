@@ -1,3 +1,4 @@
+// Routes are available through {API_URL}/api/jobs/
 import express from 'express';
 import multer from 'multer';
 

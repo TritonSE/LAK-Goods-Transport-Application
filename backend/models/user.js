@@ -2,7 +2,6 @@
  * Schema for User document
  */
 
-// const bcrypt = require("bcrypt"); Import when needed
 import mongoose from 'mongoose';
 
 const { Schema, model } = mongoose;
@@ -14,13 +13,16 @@ export const PUBLICLY_VISIBLE_FIELDS = [
   'location',
   'vehicleData',
 ];
+
 export const OWNER_LIMITED_FIELDS = ['driverLicenseId'];
+
 export const FIELDS_USER_PERMITTED_TO_UPDATE = [
   'firstName',
   'lastName',
   'location',
   'vehicleData',
 ];
+
 export const VERIFICATION_STATUS_FIELDS = [
   'Not Applied',
   'Applied',
@@ -29,6 +31,8 @@ export const VERIFICATION_STATUS_FIELDS = [
   'Disapproved',
   'Suspended',
 ];
+
+export const VERIFICATION_STATUS_NOT_APPLIED = 'Not Applied';
 
 const VehicleInformationSchema = new Schema({
   vehicleType: {
@@ -89,15 +93,8 @@ const UserSchema = new Schema(
     },
     verificationStatus: {
       type: String,
-      enum: [
-        'Not Applied',
-        'Applied',
-        'In Review',
-        'Verified',
-        'Disapproved',
-        'Suspended',
-      ],
-      default: 'Not Applied',
+      enum: VERIFICATION_STATUS_FIELDS,
+      default: VERIFICATION_STATUS_NOT_APPLIED,
     },
   },
   {

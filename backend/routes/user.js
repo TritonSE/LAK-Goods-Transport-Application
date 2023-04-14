@@ -1,6 +1,4 @@
-/**
- * TODO ONLY FOR TESTING PURPOSES. WILL BE REMOVED WHEN USER AUTH IS SETUP
- */
+// Routes are available through {API_URL}/api/users/
 import express from 'express';
 import multer from 'multer';
 
