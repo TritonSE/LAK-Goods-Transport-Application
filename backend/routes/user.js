@@ -5,7 +5,7 @@ import express from 'express';
 import multer from 'multer';
 
 import { getUser, getUsers, registerUser, updateUser } from '../services/user';
-import { getSessionUserId } from '../constants';
+import { getSessionUserId } from '../helpers';
 import { VERIFICATION_STATUS_FIELDS } from '../models/user';
 
 const routes = express.Router();

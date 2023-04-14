@@ -114,27 +114,3 @@ const UserSchema = new Schema(
 const UserModel = model('User', UserSchema);
 
 export default UserModel;
-/**
- * Sniped from Octavian, may use later for auth
- *
- Following code can be used when implementing user authentication
-UserSchema.pre("save", function preSave(next) {
-    const user = this;
-    if (user.isModified("password")) {
-        user.password = bcrypt.hashSync(user.password, 10);
-    }
-    return next();
-});
-
-UserSchema.methods.verifyPassword = function verifyPassword(password) {
-    return bcrypt.compareSync(password, this.password);
-};
-
-UserSchema.set("toJSON", {
-    transform(doc, obj) {
-        const ret = { ...obj };
-        delete ret.password;
-        delete ret.refreshToken;
-        return ret;
-    },
-}); */
