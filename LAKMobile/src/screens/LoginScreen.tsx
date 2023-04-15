@@ -14,10 +14,9 @@ export function LoginScreen({ navigation }: LoginProps) {
 
   const [loginPressed, setLoginPressed] = useState(false);
   const [loginError, setLoginError] = useState<Error | null>(null);
+  const [loading, setLoading] = useState(false);
 
   const auth = useContext(AuthContext);
-
-  const [loading, isLoading] = useState(false);
 
   const validatePhone = () => {
     const phoneRegex = new RegExp('^[0-9]{10}$');
@@ -30,7 +29,9 @@ export function LoginScreen({ navigation }: LoginProps) {
   };
 
   const handleSubmit = async () => {
+    console.log("food i'm hongry")
     setLoginError(null);
+    setLoading(false);
     auth.clearError();
     setLoginPressed(true);
 
@@ -39,9 +40,12 @@ export function LoginScreen({ navigation }: LoginProps) {
 
     if (phoneValid && PINValid) {
       await auth.login(phoneNumber, pin);
+      // setLoading((current) => !current);
       if (auth.user !== null) {
+        console.log("auth user not null");
         setPhoneNumber('');
         setPIN('');
+        console.log("about to navigate");
         navigation.navigate('JobLandingScreen');
       } else {
         //Sets the Firebase error, which then displays it
@@ -87,6 +91,7 @@ export function LoginScreen({ navigation }: LoginProps) {
 
       {/* ternary to check if loading, set type to disabled */}
       <AppButton type={loading ? "disabled": "primary"} title="Log in" onPress={handleSubmit} style={styles.submitButton}/>
+      {/* <AppButton type="primary" title="Log in" onPress={handleSubmit} style={styles.submitButton}/> */}
 
       <View style={styles.signupPrompt}>
         <AppText>{"Don't have an account?"}</AppText>
