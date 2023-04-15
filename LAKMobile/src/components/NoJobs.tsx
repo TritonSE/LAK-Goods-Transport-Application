@@ -4,15 +4,11 @@ import { View } from 'react-native';
 import { AppButton } from './AppButton';
 import { AppText } from './AppText';
 import { COLORS } from '../../constants';
-import { IconButtonWrapper } from '../components';
-import { NoAvailableJobsIcon, NoJobsIcon, NoMatchingJobsIcon, PlusSignIcon } from '../icons';
-import { ProfileButtonIcon } from '../icons/ProfileButtonIcon';
 
 interface NoJobProps {
   title: string;
   body: string;
   buttonName?: string;
-  buttonVisible: boolean;
   onButtonClick?: () => void;
   buttonIcon?: React.ReactElement;
   errorImageType: React.ReactElement;
@@ -22,7 +18,6 @@ export const NoJobs = ({
   title,
   body,
   buttonName,
-  buttonVisible,
   onButtonClick,
   buttonIcon,
   errorImageType,
@@ -36,7 +31,7 @@ export const NoJobs = ({
       <AppText style={[styles.body]}>{body}</AppText>
 
       <View style={styles.buttonContainer}>
-        {buttonVisible && buttonName ? (
+        {buttonName ? (
           <AppButton
             style={styles.button}
             textStyle={styles.buttonText}

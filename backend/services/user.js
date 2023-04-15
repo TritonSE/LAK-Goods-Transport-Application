@@ -142,3 +142,16 @@ export async function updateUser(userId, userData, userImages) {
     throw ServiceError.INVALID_USER_RECEIVED.addContext(e.stack);
   }
 }
+
+export async function updateDriverRegistrationStatus(
+  userId,
+  verificationStatus
+) {
+  console.debug(
+    `SERVICE: updateDriverRegistrationStatus service running: userId = ${userId}, status = ${verificationStatus}`
+  );
+
+  const user = await getUser(userId, userId);
+  user.verificationStatus = verificationStatus;
+  await updateUser(userId, user);
+}

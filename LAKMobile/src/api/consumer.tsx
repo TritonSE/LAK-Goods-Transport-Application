@@ -4,7 +4,7 @@
 
 import { ImageSourcePropType } from 'react-native';
 import { API_URL } from '@env';
-import { JobData, JobOwnerView, UserData, CreateUserForm } from './data';
+import { JobData, JobOwnerView, UserData, CreateUserForm, VerificationStatus } from './data';
 
 export const GET_JOBS = `${API_URL}/api/jobs`;
 export const USERS_URL = `${API_URL}/api/users`;
@@ -342,6 +342,10 @@ export const getJobApplicantStatus = (
   } else {
     return job.status === 'CREATED' ? 'Not Started' : 'Finished';
   }
+};
+
+export const getDriverVerificationStatus = (user: UserData): VerificationStatus => {
+  return user.verificationStatus || 'Not Applied';
 };
 
 export const completeJob = async (userId: string, jobId: string): Promise<string | null> => {
