@@ -84,7 +84,10 @@ export default function App() {
 
   const [activeTab, setActiveTab] = useState<string>('Needs Review');
 
-  const [selectAllClicked, setSelectAllClicked] : [boolean, React.Dispatch<React.SetStateAction<boolean>>] = useState(false);
+  const [selectAllClicked, setSelectAllClicked]: [
+    boolean,
+    React.Dispatch<React.SetStateAction<boolean>>
+  ] = useState(false);
 
   // for the dropdown
   const [selected, setSelected] = useState<Option | null>(null);
@@ -159,17 +162,16 @@ export default function App() {
   };
 
   const handleTabClick = (tab: string) => {
-    console.log("Select all clicked is", selectAllClicked);
+    console.log('Select all clicked is', selectAllClicked);
     setSelectAllClicked(false);
-    setActiveTab(prev => {
-      const newItems = items.map(item =>
+    setActiveTab((prev) => {
+      const newItems = items.map((item) =>
         item.category === prev ? { ...item, isChecked: false } : item
       );
       setItems(newItems);
       return tab;
-    }); 
+    });
   };
-  
 
   const handleDropdownClick = (selectedOption: Option) => {
     setSelected(selectedOption);
