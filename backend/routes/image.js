@@ -1,3 +1,4 @@
+// Routes are available through {API_URL}/api/images/
 import express from 'express';
 import mongoose from 'mongoose';
 

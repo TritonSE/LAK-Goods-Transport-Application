@@ -1,11 +1,9 @@
-/**
- * TODO ONLY FOR TESTING PURPOSES. WILL BE REMOVED WHEN USER AUTH IS SETUP
- */
+// Routes are available through {API_URL}/api/users/
 import express from 'express';
 import multer from 'multer';
 
 import { getUser, getUsers, registerUser, updateUser } from '../services/user';
-import { getSessionUserId } from '../constants';
+import { getSessionUserId } from '../helpers';
 import { VERIFICATION_STATUS_FIELDS } from '../models/user';
 
 const routes = express.Router();

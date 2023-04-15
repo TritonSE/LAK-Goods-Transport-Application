@@ -1,3 +1,4 @@
+// Routes are available through {API_URL}/api/jobs/
 import express from 'express';
 import multer from 'multer';
 
@@ -14,8 +15,11 @@ import {
   denyDriver,
 } from '../services/job';
 import { ValidationError } from '../errors';
-import { getSessionUserId } from '../constants';
-import { stringToBooleanAllowNull, validateId } from '../helpers';
+import {
+  stringToBooleanAllowNull,
+  validateId,
+  getSessionUserId,
+} from '../helpers';
 
 const routes = express.Router();
 
@@ -162,10 +166,14 @@ routes.get('/', async (req, res, next) => {
     let { offset } = req.query;
     let { limit } = req.query;
 
-    if (!Number.isNaN(offset) && !Number.isNaN(limit)) {
-      offset = parseInt(offset, 10);
-      limit = parseInt(limit, 10);
-    } else if (offset !== undefined || limit !== undefined) {
+    if (offset !== undefined || limit !== undefined) {
+      throw ValidationError.INVALID_PAGINATION_INPUT;
+    }
+
+    offset = parseInt(offset, 10);
+    limit = parseInt(limit, 10);
+
+    if (Number.isNaN(offset) || Number.isNaN(limit)) {
       throw ValidationError.INVALID_PAGINATION_INPUT;
     }
 
