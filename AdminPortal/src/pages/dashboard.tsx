@@ -84,9 +84,7 @@ export default function App() {
 
   const [activeTab, setActiveTab] = useState<string>('Needs Review');
 
-  const [selectAllClicked, setSelectAllClicked] = useState(
-    new Array(numTabs).fill(false)
-  );
+  const [selectAllClicked, setSelectAllClicked] : [boolean, React.Dispatch<React.SetStateAction<boolean>>] = useState(false);
 
   // for the dropdown
   const [selected, setSelected] = useState<Option | null>(null);
@@ -161,8 +159,17 @@ export default function App() {
   };
 
   const handleTabClick = (tab: string) => {
-    setActiveTab(tab);
+    console.log("Select all clicked is", selectAllClicked);
+    setSelectAllClicked(false);
+    setActiveTab(prev => {
+      const newItems = items.map(item =>
+        item.category === prev ? { ...item, isChecked: false } : item
+      );
+      setItems(newItems);
+      return tab;
+    }); 
   };
+  
 
   const handleDropdownClick = (selectedOption: Option) => {
     setSelected(selectedOption);
@@ -175,27 +182,12 @@ export default function App() {
       )
     );
 
-    setSelectAllClicked(new Array(numTabs).fill(false));
+    setSelectAllClicked(false);
   };
 
   const handleSelectAll = (): void => {
-    setSelectAllClicked((prevState: Array<boolean>) => {
-      let indexToFlip = tabMapping.get(activeTab);
-
-      // convering to 0 based indexing
-      indexToFlip = indexToFlip - 1;
-
-      let newState: boolean[] = [];
-
-      for (let i = 0; i < numTabs; i++) {
-        if (i === indexToFlip) {
-          newState.push(!prevState[i]);
-        } else {
-          newState.push(prevState[i]);
-        }
-      }
-
-      return newState;
+    setSelectAllClicked((prevState: boolean) => {
+      return !prevState;
     });
   };
 
@@ -205,12 +197,12 @@ export default function App() {
         item.category === activeTab
           ? {
               ...item,
-              isChecked: selectAllClicked[tabMapping.get(activeTab) - 1],
+              isChecked: selectAllClicked,
             }
           : item
       )
     );
-  }, [selectAllClicked]);
+  }, [selectAllClicked, activeTab]);
 
   const handleItemCheckbox = (id: number): void => {
     setItems(
@@ -290,7 +282,7 @@ export default function App() {
                 <input
                   type="checkbox"
                   className={styles.checkbox}
-                  checked={selectAllClicked[tabMapping.get(activeTab) - 1]}
+                  checked={selectAllClicked}
                   onChange={handleSelectAll}
                 ></input>
               </th>
