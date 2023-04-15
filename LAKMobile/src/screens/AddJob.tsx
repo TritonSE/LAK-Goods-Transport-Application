@@ -96,6 +96,7 @@ export function AddJob({ navigation, route }: AddJobProps) {
   const [dropoffLocation, setDropoffLocation] = useState('');
   const [dropoffDistrict, setDropoffDistrict] = useState('');
   const [confirmationVisible, setConfirmationVisible] = useState(false);
+  const [loading, setLoading] = useState(false);
 
   //TODO: Abstract text validation to make more DRY
   const validatePresence: Validator = (text: string) => {
@@ -267,7 +268,9 @@ export function AddJob({ navigation, route }: AddJobProps) {
     const formedJob: FormData = createFormData(imageInfo, newJob);
     dispatch({ type: 'CLEAR_IMAGES' });
     if (formType === 'add' || formType == 'repost') {
+      setLoading(true);
       postJob(userId, formedJob).then((response) => {
+        setLoading(false);
         console.log(response);
         if (response == null) {
           return;
@@ -277,6 +280,7 @@ export function AddJob({ navigation, route }: AddJobProps) {
         route.params.setJobData((prevJobs) => [...prevJobs, updatedJob]);
         navigation.navigate('JobLandingScreen');
       });
+      
     } else if (formType === 'edit') {
       // const body = {
       //   //TODO pickup and dropoff district
@@ -513,7 +517,7 @@ export function AddJob({ navigation, route }: AddJobProps) {
         <AppButton
           onPress={submitJob}
           style={[styles.center, { width: '100%' }]}
-          type="primary"
+          type={loading ? "disabled": "primary"}
           title={formType === 'add' ? 'Post Job' : formType === 'edit' ? 'Update' : 'Repost'}
         />
         {formType === 'edit' && (

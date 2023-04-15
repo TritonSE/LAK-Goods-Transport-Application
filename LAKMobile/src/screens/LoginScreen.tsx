@@ -18,34 +18,39 @@ export function LoginScreen({ navigation }: LoginProps) {
 
   const auth = useContext(AuthContext);
 
-  const validatePhone = () => {
+  const validatePhone = (): boolean => {
     const phoneRegex = new RegExp('^[0-9]{10}$');
-    setPhoneValid(phoneRegex.test(phoneNumber));
+    const valid = phoneRegex.test(phoneNumber)
+    setPhoneValid(valid);
+    return valid;
   };
 
-  const validatePin = () => {
+  const validatePin = (): boolean => {
     const pinRegex = new RegExp('^[0-9]{4}$');
-    setPINValid(pinRegex.test(pin));
+    const valid = pinRegex.test(pin);
+    setPINValid(valid);
+    return valid;
   };
 
   const handleSubmit = async () => {
-    console.log("food i'm hongry")
+    
     setLoginError(null);
-    setLoading(false);
     auth.clearError();
     setLoginPressed(true);
 
-    validatePhone();
-    validatePin();
+    
+    if (validatePhone() && validatePin()) {
+      
+      setLoading(true);
+      const user = await auth.login(phoneNumber, pin);
+      setLoading(false);
 
-    if (phoneValid && PINValid) {
-      await auth.login(phoneNumber, pin);
-      // setLoading((current) => !current);
-      if (auth.user !== null) {
-        console.log("auth user not null");
+      
+      if (user !== null) {
+        
         setPhoneNumber('');
         setPIN('');
-        console.log("about to navigate");
+        
         navigation.navigate('JobLandingScreen');
       } else {
         //Sets the Firebase error, which then displays it
@@ -91,8 +96,7 @@ export function LoginScreen({ navigation }: LoginProps) {
 
       {/* ternary to check if loading, set type to disabled */}
       <AppButton type={loading ? "disabled": "primary"} title="Log in" onPress={handleSubmit} style={styles.submitButton}/>
-      {/* <AppButton type="primary" title="Log in" onPress={handleSubmit} style={styles.submitButton}/> */}
-
+      
       <View style={styles.signupPrompt}>
         <AppText>{"Don't have an account?"}</AppText>
         <AppButton
