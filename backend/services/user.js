@@ -151,5 +151,7 @@ export async function updateDriverRegistrationStatus(
     `SERVICE: updateDriverRegistrationStatus service running: userId = ${userId}, status = ${verificationStatus}`
   );
 
-  await updateUser(userId, { verificationStatus });
+  const user = await getUser(userId, userId);
+  user.verificationStatus = verificationStatus;
+  await updateUser(userId, user);
 }
