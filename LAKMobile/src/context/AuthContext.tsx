@@ -98,7 +98,7 @@ export const AuthProvider: React.FC<Props> = ({ children }) => {
     try {
       const email = phoneNumberToEmail(phone);
       const password = await pinToPass(pin);
-      const auth = getAuth(app);  
+      const auth = getAuth(app);
       const userCredential = await signInWithEmailAndPassword(auth, email, password);
       setUser(userCredential.user);
       return userCredential.user;

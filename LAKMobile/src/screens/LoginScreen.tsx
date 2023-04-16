@@ -20,7 +20,7 @@ export function LoginScreen({ navigation }: LoginProps) {
 
   const validatePhone = (): boolean => {
     const phoneRegex = new RegExp('^[0-9]{10}$');
-    const valid = phoneRegex.test(phoneNumber)
+    const valid = phoneRegex.test(phoneNumber);
     setPhoneValid(valid);
     return valid;
   };
@@ -33,24 +33,18 @@ export function LoginScreen({ navigation }: LoginProps) {
   };
 
   const handleSubmit = async () => {
-    
     setLoginError(null);
     auth.clearError();
     setLoginPressed(true);
 
-    
     if (validatePhone() && validatePin()) {
-      
       setLoading(true);
       const user = await auth.login(phoneNumber, pin);
       setLoading(false);
 
-      
       if (user !== null) {
-        
         setPhoneNumber('');
         setPIN('');
-        
         navigation.navigate('JobLandingScreen');
       } else {
         //Sets the Firebase error, which then displays it
@@ -95,8 +89,13 @@ export function LoginScreen({ navigation }: LoginProps) {
       />
 
       {/* ternary to check if loading, set type to disabled */}
-      <AppButton type={loading ? "disabled": "primary"} title="Log in" onPress={handleSubmit} style={styles.submitButton}/>
-      
+      <AppButton
+        type={loading ? 'disabled' : 'primary'}
+        title="Log in"
+        onPress={handleSubmit}
+        style={styles.submitButton}
+      />
+
       <View style={styles.signupPrompt}>
         <AppText>{"Don't have an account?"}</AppText>
         <AppButton

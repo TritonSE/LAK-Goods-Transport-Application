@@ -56,7 +56,7 @@ export function SignupScreen({ navigation }: SignupProps) {
   const validatePin = (): boolean => {
     // must be 4-digit number
     const pinRegex = new RegExp('^[0-9]{4}$');
-    const valid = pinRegex.test(pin)
+    const valid = pinRegex.test(pin);
     setPINValid(valid);
     return valid;
   };
@@ -76,7 +76,13 @@ export function SignupScreen({ navigation }: SignupProps) {
     auth.clearError();
     setSignupPressed(true);
 
-    if (validateName() && validatePhone() && validateLocation() && validatePin() && validateConfirmPin()) {
+    if (
+      validateName() &&
+      validatePhone() &&
+      validateLocation() &&
+      validatePin() &&
+      validateConfirmPin()
+    ) {
       setLoading(true);
       const user = await auth.signup(firstName, lastName, phoneNumber, location, pin);
       setLoading(false);
@@ -162,7 +168,7 @@ export function SignupScreen({ navigation }: SignupProps) {
       </LabelWrapper>
 
       <AppButton
-        type={loading ? "disabled": "primary"}
+        type={loading ? 'disabled' : 'primary'}
         title="Create Account"
         onPress={handleSubmit}
         style={styles.submitButton}

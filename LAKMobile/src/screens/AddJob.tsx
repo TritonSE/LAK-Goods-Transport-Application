@@ -280,7 +280,6 @@ export function AddJob({ navigation, route }: AddJobProps) {
         route.params.setJobData((prevJobs) => [...prevJobs, updatedJob]);
         navigation.navigate('JobLandingScreen');
       });
-      
     } else if (formType === 'edit') {
       // const body = {
       //   //TODO pickup and dropoff district
@@ -517,7 +516,7 @@ export function AddJob({ navigation, route }: AddJobProps) {
         <AppButton
           onPress={submitJob}
           style={[styles.center, { width: '100%' }]}
-          type={loading ? "disabled": "primary"}
+          type={loading ? 'disabled' : 'primary'}
           title={formType === 'add' ? 'Post Job' : formType === 'edit' ? 'Update' : 'Repost'}
         />
         {formType === 'edit' && (

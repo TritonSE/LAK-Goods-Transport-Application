@@ -6,9 +6,8 @@ import { getJobApplicantStatus, getJobs, JobData, JobOwnerView, PAGE_SIZE } from
 import { JobThumbnail, AppButton, AppTextInput, NoJobs } from '../components';
 import { COLORS } from '../../constants';
 import { PickerStyles, FlatListStyles } from '../styles';
-import { useIsFocused } from '@react-navigation/native';
 import { AuthContext } from '../context/AuthContext';
-import { NoAvailableJobsIcon, NoJobsIcon, NoMatchingJobsIcon, PlusSignIcon } from '../icons';
+import { NoJobsIcon, NoMatchingJobsIcon, PlusSignIcon } from '../icons';
 
 type ListJobsModes = 'Add' | 'Find';
 type JobTypePickerOption = 'Current Jobs' | 'Completed Jobs' | 'Your Jobs' | 'Finished Jobs';

@@ -4,9 +4,6 @@ import { View } from 'react-native';
 import { AppButton } from './AppButton';
 import { AppText } from './AppText';
 import { COLORS } from '../../constants';
-import { IconButtonWrapper } from '../components';
-import { NoAvailableJobsIcon, NoJobsIcon, NoMatchingJobsIcon, PlusSignIcon } from '../icons';
-import { ProfileButtonIcon } from '../icons/ProfileButtonIcon';
 
 interface NoJobProps {
   title: string;
