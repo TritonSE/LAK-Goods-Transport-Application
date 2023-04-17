@@ -9,7 +9,6 @@ interface NoJobProps {
   title: string;
   body: string;
   buttonName?: string;
-  buttonVisible: boolean;
   onButtonClick?: () => void;
   buttonIcon?: React.ReactElement;
   errorImageType: React.ReactElement;
@@ -19,7 +18,6 @@ export const NoJobs = ({
   title,
   body,
   buttonName,
-  buttonVisible,
   onButtonClick,
   buttonIcon,
   errorImageType,
@@ -33,7 +31,7 @@ export const NoJobs = ({
       <AppText style={[styles.body]}>{body}</AppText>
 
       <View style={styles.buttonContainer}>
-        {buttonVisible && buttonName ? (
+        {buttonName ? (
           <AppButton
             style={styles.button}
             textStyle={styles.buttonText}

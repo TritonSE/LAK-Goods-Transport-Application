@@ -1,7 +1,6 @@
 /**
  * JobService that interacts with the job documents in the database
  */
-import mongoose from 'mongoose';
 import { ServiceError, InternalError } from '../errors';
 import { filterObject } from '../helpers';
 import JobModel, {

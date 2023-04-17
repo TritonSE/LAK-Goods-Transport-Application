@@ -3,7 +3,13 @@ import { Linking, ScrollView, StyleSheet, View } from 'react-native';
 import { AppButton, AppText, ImageCarousel, ScreenHeader } from '../components';
 import { DriverApplyScreenProps } from '../types/navigation';
 import { ConfirmationBox } from '../components/ConfirmationBox';
-import { applyJob, completeJob, getJobApplicantStatus } from '../api';
+import {
+  applyJob,
+  completeJob,
+  getDriverVerificationStatus,
+  getJobApplicantStatus,
+  getUser,
+} from '../api';
 import { AuthContext } from '../context/AuthContext';
 import { InfoBox } from '../components/InfoBox';
 
@@ -12,6 +18,7 @@ export function DriverApplyScreen({ navigation, route }: DriverApplyScreenProps)
   const carousel = <ImageCarousel imageIds={route.params.jobData.imageIds} />;
   const [applyConfirmationVisible, setApplyConfirmationVisible] = useState(false);
   const [completeConfirmationVisible, setCompleteConfirmationVisible] = useState(false);
+  const [applyEnabled, setApplyEnabled] = useState(false);
   const auth = useContext(AuthContext);
 
   useEffect(() => {
@@ -21,6 +28,17 @@ export function DriverApplyScreen({ navigation, route }: DriverApplyScreenProps)
   }, [auth, navigation]);
 
   const userId = auth.user ? auth.user.uid : '';
+
+  useEffect(() => {
+    getUser(userId, userId).then((user) => {
+      if (user) {
+        const driverVerificationStatus = getDriverVerificationStatus(user);
+        if (driverVerificationStatus === 'Verified' && applicantStatus === 'Not Started') {
+          setApplyEnabled(true);
+        }
+      }
+    });
+  }, [navigation, userId]);
 
   const applicantStatus = getJobApplicantStatus(jobData, userId);
 
@@ -98,7 +116,7 @@ export function DriverApplyScreen({ navigation, route }: DriverApplyScreenProps)
       </ScrollView>
       <View style={styles.footer}>
         <AppButton
-          type={applicantStatus === 'Not Started' ? 'primary' : 'disabled'}
+          type={applyEnabled ? 'primary' : 'disabled'}
           title="Apply to Job"
           onPress={() => setApplyConfirmationVisible(true)}
           style={styles.footerButton}

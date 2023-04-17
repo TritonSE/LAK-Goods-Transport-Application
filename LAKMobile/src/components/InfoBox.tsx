@@ -37,6 +37,9 @@ const styles = StyleSheet.create({
   },
   text: {
     fontSize: 14,
+    textAlign: 'center',
+    lineHeight: 18,
+    fontWeight: '700',
   },
   button: {
     marginTop: 10,

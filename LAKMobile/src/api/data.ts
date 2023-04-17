@@ -1,4 +1,13 @@
 export type JobStatus = 'CREATED' | 'ASSIGNED' | 'COMPLETED';
+
+export type VerificationStatus =
+  | 'Not Applied'
+  | 'Applied'
+  | 'In Review'
+  | 'Verified'
+  | 'Disapproved'
+  | 'Suspended';
+
 export interface JobData {
   _id: string;
   title: string;
@@ -39,6 +48,7 @@ export interface UserData {
   location: string;
   driverLicenseId?: string; // Hidden when anyone else other than the user viewing
   vehicleData?: VehicleData;
+  verificationStatus?: VerificationStatus;
 }
 
 export interface CreateUserForm {

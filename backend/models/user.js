@@ -2,7 +2,6 @@
  * Schema for User document
  */
 
-// const bcrypt = require("bcrypt"); Import when needed
 import mongoose from 'mongoose';
 
 const { Schema, model } = mongoose;
@@ -14,6 +13,7 @@ export const PUBLICLY_VISIBLE_FIELDS = [
   'location',
   'vehicleData',
 ];
+
 export const OWNER_LIMITED_FIELDS = ['driverLicenseId'];
 
 export const FIELDS_USER_PERMITTED_TO_UPDATE = [
@@ -22,6 +22,17 @@ export const FIELDS_USER_PERMITTED_TO_UPDATE = [
   'location',
   'vehicleData',
 ];
+
+export const VERIFICATION_STATUS_FIELDS = [
+  'Not Applied',
+  'Applied',
+  'In Review',
+  'Verified',
+  'Disapproved',
+  'Suspended',
+];
+
+export const VERIFICATION_STATUS_NOT_APPLIED = 'Not Applied';
 
 const VehicleInformationSchema = new Schema({
   vehicleType: {
@@ -80,6 +91,11 @@ const UserSchema = new Schema(
         return this.driverLicenseId !== undefined;
       },
     },
+    verificationStatus: {
+      type: String,
+      enum: VERIFICATION_STATUS_FIELDS,
+      default: VERIFICATION_STATUS_NOT_APPLIED,
+    },
   },
   {
     toObject: {
@@ -95,27 +111,3 @@ const UserSchema = new Schema(
 const UserModel = model('User', UserSchema);
 
 export default UserModel;
-/**
- * Sniped from Octavian, may use later for auth
- *
- Following code can be used when implementing user authentication
-UserSchema.pre("save", function preSave(next) {
-    const user = this;
-    if (user.isModified("password")) {
-        user.password = bcrypt.hashSync(user.password, 10);
-    }
-    return next();
-});
-
-UserSchema.methods.verifyPassword = function verifyPassword(password) {
-    return bcrypt.compareSync(password, this.password);
-};
-
-UserSchema.set("toJSON", {
-    transform(doc, obj) {
-        const ret = { ...obj };
-        delete ret.password;
-        delete ret.refreshToken;
-        return ret;
-    },
-}); */
