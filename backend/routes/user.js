@@ -4,7 +4,10 @@ import multer from 'multer';
 
 import { getUser, getUsers, registerUser, updateUser } from '../services/user';
 import { getSessionUserId } from '../helpers';
-import { VERIFICATION_STATUS_FIELDS } from '../models/user';
+import {
+  VERIFICATION_STATUS_FIELDS,
+  VERIFICATION_STATUS_NOT_APPLIED,
+} from '../models/user';
 
 const routes = express.Router();
 const upload = multer({ storage: multer.memoryStorage() }).array('images');
@@ -100,6 +103,10 @@ routes.put('/:userid', upload, async (req, res, next) => {
       !VERIFICATION_STATUS_FIELDS.includes(verificationStatus)
     ) {
       return res.status(400).json({ error: 'Invalid verification status' });
+    }
+
+    if (vehicleData && verificationStatus === VERIFICATION_STATUS_NOT_APPLIED) {
+      user.verificationStatus = 'Applied';
     }
 
     user = await updateUser(userId, user, req.files || []);

@@ -166,7 +166,7 @@ routes.get('/', async (req, res, next) => {
     let { offset } = req.query;
     let { limit } = req.query;
 
-    if (offset !== undefined || limit !== undefined) {
+    if (offset === undefined || limit === undefined) {
       throw ValidationError.INVALID_PAGINATION_INPUT;
     }
 
@@ -189,6 +189,7 @@ routes.get('/', async (req, res, next) => {
     );
     jobs = await getJobs(jobIds, userId);
   } catch (e) {
+    console.error(e);
     next(e);
     return;
   }
