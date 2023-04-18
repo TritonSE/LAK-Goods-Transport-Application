@@ -17,6 +17,7 @@ import { PickerStyles, FlatListStyles } from '../styles';
 import { AuthContext } from '../context/AuthContext';
 import { NoJobsIcon, NoMatchingJobsIcon, PlusSignIcon } from '../icons';
 import { InfoBox } from '../components/InfoBox';
+import { useIsFocused } from '@react-navigation/native';
 
 type ListJobsModes = 'Add' | 'Find';
 type JobTypePickerOption = 'Current Jobs' | 'Completed Jobs' | 'Your Jobs' | 'Finished Jobs';
@@ -38,6 +39,8 @@ export function ListJobs({ navigation, mode }: ListJobsProps) {
   );
   const [searchString, setSearchString] = useState<string | null>(null);
   const [jobs, setJobs] = useState<JobData[] | JobOwnerView[]>([]);
+
+  const isFocused = useIsFocused();
 
   // NOTE: Page 0 is being used as a null page, but the first page is 1.
   // Added this so that we are able to trigger hooks dependent on `page` when type of screen changes but page number does not
@@ -213,7 +216,7 @@ export function ListJobs({ navigation, mode }: ListJobsProps) {
       setLoading(false);
       setRefreshing(false);
     });
-  }, [page]);
+  }, [page, isFocused]);
 
   const onRefresh = () => {
     setJobs([]);
