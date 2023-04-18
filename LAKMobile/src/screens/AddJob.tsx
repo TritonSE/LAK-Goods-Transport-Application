@@ -403,7 +403,6 @@ export function AddJob({ navigation, route }: AddJobProps) {
             type="deliveryDate"
             keyboardType="default"
             errMsg="Please put in a valid date"
-            instructionText="put N/A if not applicable"
           />
         </LabelWrapper>
 

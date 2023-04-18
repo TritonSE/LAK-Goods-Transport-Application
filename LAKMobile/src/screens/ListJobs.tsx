@@ -45,7 +45,6 @@ export function ListJobs({ navigation, mode }: ListJobsProps) {
   // NOTE: Page 0 is being used as a null page, but the first page is 1.
   // Added this so that we are able to trigger hooks dependent on `page` when type of screen changes but page number does not
   const [page, setPage] = useState(0);
-
   const [loading, setLoading] = useState(false);
   const [isRefreshing, setRefreshing] = useState(false);
   const [allLoaded, setAllLoaded] = useState(false);
@@ -92,7 +91,7 @@ export function ListJobs({ navigation, mode }: ListJobsProps) {
         }
       }
     });
-  }, [navigation, userId]);
+  }, [navigation, userId, isFocused]);
 
   const resetJobsOnPage = () => {
     setJobs([]);
