@@ -201,6 +201,7 @@ export function EditProfileScreen({ navigation, route }: EditProfileScreenProps)
             <LabelWrapper label="Type">
               <View style={[styles.pickerWrapper, styles.spacer, { width: '45%' }]}>
                 <Picker
+                  enabled={false}
                   mode="dropdown" // Android only
                   onValueChange={(itemValue: string) => setVehicleType(itemValue)}
                   selectedValue={vehicleType}
@@ -213,6 +214,7 @@ export function EditProfileScreen({ navigation, route }: EditProfileScreenProps)
             </LabelWrapper>
             <LabelWrapper label="Model">
               <TextInput
+                editable={false}
                 style={smallInputStyle}
                 keyboardType="default"
                 defaultValue={profileData?.vehicleData?.vehicleModel}
@@ -223,6 +225,7 @@ export function EditProfileScreen({ navigation, route }: EditProfileScreenProps)
 
             <LabelWrapper label="Make">
               <TextInput
+                editable={false}
                 style={smallInputStyle}
                 keyboardType="default"
                 defaultValue={profileData?.vehicleData?.vehicleMake}
@@ -233,6 +236,7 @@ export function EditProfileScreen({ navigation, route }: EditProfileScreenProps)
 
             <LabelWrapper label="Color">
               <TextInput
+                editable={false}
                 style={smallInputStyle}
                 keyboardType="default"
                 defaultValue={profileData?.vehicleData?.vehicleColor}
