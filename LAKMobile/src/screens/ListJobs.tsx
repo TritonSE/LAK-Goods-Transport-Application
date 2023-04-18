@@ -18,7 +18,6 @@ import { AuthContext } from '../context/AuthContext';
 import { NoJobsIcon, NoMatchingJobsIcon, PlusSignIcon } from '../icons';
 import { InfoBox } from '../components/InfoBox';
 
-
 type ListJobsModes = 'Add' | 'Find';
 type JobTypePickerOption = 'Current Jobs' | 'Completed Jobs' | 'Your Jobs' | 'Finished Jobs';
 
