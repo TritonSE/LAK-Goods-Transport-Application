@@ -5,8 +5,8 @@ import {
   signInWithEmailAndPassword,
   signOut,
   User,
-  AuthCredential,
   signInWithCredential,
+  PhoneAuthCredential
 } from 'firebase/auth';
 import firebaseConfig from '../../firebase-config.json';
 import React, { createContext, useMemo, useState } from 'react';
@@ -48,7 +48,7 @@ export type AuthState = {
     location: string,
     pin: string
   ) => Promise<void>;
-  signInUserOTP: (credential: AuthCredential) => Promise<void>;
+  signInUserOTP: (credential: PhoneAuthCredential) => Promise<void>;
 };
 
 const init: AuthState = {
@@ -163,7 +163,7 @@ export const AuthProvider: React.FC<Props> = ({ children }) => {
   };
 
 
-  const signInUserOTP = async (credential: AuthCredential): Promise<void> => {
+  const signInUserOTP = async (credential: PhoneAuthCredential): Promise<void> => {
     try {
       const auth = getAuth(app);
       const userCredential = await signInWithCredential(auth, credential); 
