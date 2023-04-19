@@ -84,6 +84,10 @@ export function DriverRegistration({ navigation }: DriverRegistrationProps) {
     return data;
   };
 
+  const convertURIsToIds = (uris) => {
+    return uris.filter((value) => value !== '').map((uri) => uri.split("/").slice(-1)[0])
+  }
+
   const submitChanges = async () => {
     if (
       vehicleType == PICKER_TYPE_DEFAULT ||
@@ -99,7 +103,7 @@ export function DriverRegistration({ navigation }: DriverRegistrationProps) {
         vehicleModel: vehicleModel.trim(),
         vehicleMake: vehicleMake.trim(),
         vehicleColor: vehicleColor.trim(),
-        imageIds: imageURIs.filter((value) => value !== ''),
+        imageIds: convertURIsToIds(imageURIs),
       };
 
       const updatedUser: UserData = {
