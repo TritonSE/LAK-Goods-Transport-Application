@@ -137,6 +137,7 @@ export async function updateJob(userId, jobId, jobData, jobImages) {
     throw ServiceError.JOB_EDIT_PERMISSION_DENIED;
   }
 
+  const incomingImageIds = jobData.imageIds;
   // Ensure updated fields are only getting updated
   jobData = filterObject(jobData, FIELDS_OWNER_PERMITTED_TO_UPDATE);
 
@@ -146,11 +147,17 @@ export async function updateJob(userId, jobId, jobData, jobImages) {
   const existingImageIds = originalJob.imageIds;
   await Promise.all(
     existingImageIds.map(async (imageId) => {
-      await deleteImage(imageId);
+      if (!incomingImageIds.includes(imageId)) {
+        console.log("Delete Image")
+        await deleteImage(imageId);
+      } else {
+        console.log("Existing Image")
+      }
+      
     })
   );
   // Add new images
-  const newImageIds = [];
+  const newImageIds = jobData.imageIds;
   await Promise.all(
     jobImages.map(async (image) => {
       const imageId = await saveImage(image);

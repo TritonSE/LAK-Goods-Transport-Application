@@ -243,6 +243,10 @@ export function AddJob({ navigation, route }: AddJobProps) {
     return data;
   };
 
+  const convertURIsToIds = (uris) => {
+    return uris.filter((value) => value !== '').map((uri) => uri.split("/").slice(-1)[0])
+  }
+
   const submitJob = async () => {
     // TODO: when submitting, remember to filter out empty strings from imageURIs
     if (!validateFields()) {
@@ -262,7 +266,7 @@ export function AddJob({ navigation, route }: AddJobProps) {
       pickupDistrict: pickupDistrict.trim(),
       dropoffLocation: dropoffLocation.trim(),
       dropoffDistrict: dropoffDistrict.trim(),
-      imageIds: imageURIs.filter((value) => value !== ''),
+      imageIds: convertURIsToIds(imageURIs),
     };
     const formedJob: FormData = createFormData(imageInfo, newJob);
     dispatch({ type: 'CLEAR_IMAGES' });
