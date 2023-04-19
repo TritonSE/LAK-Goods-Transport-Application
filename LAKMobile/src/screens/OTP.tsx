@@ -4,7 +4,7 @@ import { AppText, LabelWrapper, AppButton, ScreenHeader } from '../components';
 import {FirebaseRecaptchaVerifierModal,FirebaseRecaptchaBanner} from 'expo-firebase-recaptcha';
 import {getApp,initializeApp} from 'firebase/app';
 import {getAuth,PhoneAuthProvider,signInWithCredential} from 'firebase/auth';
-import firebaseConfig from '../../firebase-config.json';
+import firebaseConfig from '../auth/firebase-config.json';
 import { COLORS } from '../../constants';
 import { OTPProps } from '../types/navigation';
 import { AuthContext } from '../context/AuthContext';
@@ -42,8 +42,11 @@ export function OTP({ navigation }: OTPProps) {
   const verifyCode = async () => {
     try {
         const credential = PhoneAuthProvider.credential(verificationId, verificationCode);
-        await signInWithCredential(auth, credential);
-        navigation.navigate('ResetPassword');
+        var uid = ''
+        const userCredential = await signInWithCredential(auth, credential);
+        console.log(userCredential.user.uid)
+        const user  = userCredential.user
+        navigation.navigate('ResetPassword', {user});
     } catch(e){
       console.log('error in handle verify', e);
       setError('There was an error in validating your OTP.')
@@ -57,7 +60,7 @@ export function OTP({ navigation }: OTPProps) {
       <FirebaseRecaptchaVerifierModal 
             ref={recaptchaVerifier}
             firebaseConfig={firebaseConfig}
-            androidHardwareAccelerationDisabled
+            // androidHardwareAccelerationDisabled
             attemptInvisibleVerification={false} /*android emulator crashes if set to true*/
         />
 

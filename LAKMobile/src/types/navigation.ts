@@ -1,10 +1,12 @@
 import type { NativeStackScreenProps } from '@react-navigation/native-stack';
+import { User as FirebaseUser } from "firebase/auth";
 import { JobData, JobOwnerView } from '../api';
+
 
 export type RootStackParamList = {
   Login: undefined;
   Signup: undefined;
-  ResetPassword: undefined;
+  ResetPassword: {user: FirebaseUser};
   OTP: undefined;
   ResetSuccess: undefined;
   ForgotPassword: undefined;

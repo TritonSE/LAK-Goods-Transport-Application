@@ -6,7 +6,7 @@ import {
   signOut,
   User,
 } from 'firebase/auth';
-import firebaseConfig from '../../firebase-config.json';
+import firebaseConfig from '../auth/firebase-config.json';
 import React, { createContext, useMemo, useState } from 'react';
 import * as crypto from 'expo-crypto';
 import { FirebaseError } from '@firebase/util';
@@ -28,7 +28,7 @@ async function encrypt(text: string) {
 /**
  * Converts our PIN to a valid firebase password.
  */
-async function pinToPass(pin: string) {
+export async function pinToPass(pin: string) {
   pin = 'abc' + pin;
   return await encrypt(pin);
 }
