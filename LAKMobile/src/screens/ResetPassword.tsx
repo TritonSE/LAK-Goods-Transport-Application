@@ -5,7 +5,7 @@ import { LabelWrapper, AppButton, ScreenHeader } from '../components';
 import { COLORS } from '../../constants';
 import {initializeApp} from 'firebase/app';
 import { ResetPasswordProps } from '../types/navigation';
-import firebaseConfig from '../auth/firebase-config.json';
+import firebaseConfig from '../../firebase-config.json';
 import { pinToPass } from '../context/AuthContext';
 // import firebase from 'firebase';
 

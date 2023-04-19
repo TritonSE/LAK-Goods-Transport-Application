@@ -5,8 +5,10 @@ import {
   signInWithEmailAndPassword,
   signOut,
   User,
+  AuthCredential,
+  signInWithCredential,
 } from 'firebase/auth';
-import firebaseConfig from '../auth/firebase-config.json';
+import firebaseConfig from '../../firebase-config.json';
 import React, { createContext, useMemo, useState } from 'react';
 import * as crypto from 'expo-crypto';
 import { FirebaseError } from '@firebase/util';
@@ -46,6 +48,7 @@ export type AuthState = {
     location: string,
     pin: string
   ) => Promise<void>;
+  signInUserOTP: (credential: AuthCredential) => Promise<void>;
 };
 
 const init: AuthState = {
@@ -61,6 +64,9 @@ const init: AuthState = {
   signup: () => {
     return new Promise<void>(() => undefined);
   },
+  signInUserOTP: () => {
+    return new Promise<void>(()=> undefined);
+  }
 };
 
 export const AuthContext = createContext<AuthState>(init);
@@ -156,66 +162,28 @@ export const AuthProvider: React.FC<Props> = ({ children }) => {
     }
   };
 
-  // /**
-  //  * Verifies user through Recaptcha, feeds into sendOTP
-  //  * @param phone Phone number to send one time password to
-  //  * @param buttonID HTML/JS ID of the button for Recaptcha
-  //  */
-  // function verifyRecaptchaForOTP(phone, buttonID) {
-  //     const auth = getAuth();
-  //     return window.recaptchaVerifier = new RecaptchaVerifier(buttonID, {
-  //         'size': 'invisible',
-  //         'callback': () => {
-  //             // reCAPTCHA solved, allow signInWithPhoneNumber.
-  //             return sendOTP(phone);
-  //         }
-  //     }, auth);
-  // }
 
-  // /**
-  //  * Sends a one-time-password to the given phone number to sign in with.
-  //  * @param phone Phone number to send the one-time-password to
-  //  * @returns If the SMS process finishes with no errors.
-  //  */
-  // export async function sendOTP(phone) {
-  //     const auth = getAuth();
-  //     const adminAuth = initAdmin().auth();
-  //     // Allows for recaptcha bypassing
-  //     auth.settings.appVerificationDisabledForTesting = true;
-  //     return await signInWithPhoneNumber(adminAuth, phone)
-  //         .then((confirmationResult) => {
-  //             // SMS sent. Prompt user to type the code from the message, then sign the
-  //             // user in with confirmationResult.confirm(code).
-  //             window.confirmationResult = confirmationResult;
-  //             return true;
-  //             // ...
-  //         }).catch((error) => {
-  //             // Error; SMS not sent
-  //             // ...
-  //             console.log(error);
-  //             return false;
-  //         });
-  // }
+  const signInUserOTP = async (credential: AuthCredential): Promise<void> => {
+    try {
+      const auth = getAuth(app);
+      const userCredential = await signInWithCredential(auth, credential); 
+      const user = userCredential.user;
+      setUser(user);
+      console.log('WITHIN AUTHCONTEXT: user', user);
+    } catch (e) {
+      console.log('ERROR');
+      if (e instanceof FirebaseError) {
+        setFirebaseError(e);
+      } else {
+        setError(e as Error);
+      }
+      setUser(null);
+    }
+  };
 
-  // /**
-  //  * Attempts to sign in the user with the inputted one-time-password.
-  //  * @param code The one-time-password given to the user
-  //  * @returns If the user signed in successfully.
-  //  */
-  // export async function confirmOTP(code) {
-  //     return await confirmationResult.confirm(code).then((result) => {
-  //         // User signed in successfully.
-  //         // ...
-  //         return true;
-  //     }).catch((error) => {
-  //         // User couldn't sign in (bad verification code?)
-  //         // ...
-  //         return false;
-  //     });
-  // }
 
   return (
-    <AuthContext.Provider value={{ user, error, clearError, login, logout, signup }}>
+    <AuthContext.Provider value={{ user, error, clearError, login, logout, signup, signInUserOTP }}>
       {children}
     </AuthContext.Provider>
   );

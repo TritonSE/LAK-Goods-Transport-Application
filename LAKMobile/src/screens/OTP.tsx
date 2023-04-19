@@ -4,7 +4,7 @@ import { AppText, LabelWrapper, AppButton, ScreenHeader } from '../components';
 import {FirebaseRecaptchaVerifierModal,FirebaseRecaptchaBanner} from 'expo-firebase-recaptcha';
 import {getApp,initializeApp} from 'firebase/app';
 import {getAuth,PhoneAuthProvider,signInWithCredential} from 'firebase/auth';
-import firebaseConfig from '../auth/firebase-config.json';
+import firebaseConfig from '../../firebase-config.json';
 import { COLORS } from '../../constants';
 import { OTPProps } from '../types/navigation';
 import { AuthContext } from '../context/AuthContext';
@@ -13,6 +13,8 @@ export function OTP({ navigation }: OTPProps) {
 
   const app = initializeApp(firebaseConfig);
   const auth = getAuth(app);
+
+  const authContext = useContext(AuthContext);
 
 
   const recaptchaVerifier = useRef<any>(null);
@@ -42,11 +44,11 @@ export function OTP({ navigation }: OTPProps) {
   const verifyCode = async () => {
     try {
         const credential = PhoneAuthProvider.credential(verificationId, verificationCode);
-        var uid = ''
-        const userCredential = await signInWithCredential(auth, credential);
-        console.log(userCredential.user.uid)
-        const user  = userCredential.user
-        navigation.navigate('ResetPassword', {user});
+        await signInWithCredential(auth, credential);
+        console.log('successfully signed in with credential');
+        await authContext.signInUserOTP(credential);
+        console.log('successfully set auth context');
+        navigation.navigate('JobLandingScreen');
     } catch(e){
       console.log('error in handle verify', e);
       setError('There was an error in validating your OTP.')
