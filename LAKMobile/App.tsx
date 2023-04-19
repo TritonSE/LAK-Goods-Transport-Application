@@ -19,6 +19,7 @@ import { createNativeStackNavigator } from '@react-navigation/native-stack';
 import { AuthProvider } from './src/context/AuthContext';
 import { ApplicantsScreen } from './src/screens/ApplicantsScreen';
 import { ImageUploadProvider } from './src/context/ImageUploadContext';
+import { DriverApplyScreen } from './src/screens/DriverApplyScreen';
 
 const Stack = createNativeStackNavigator();
 
@@ -47,6 +48,7 @@ export default function App() {
               <Stack.Screen name="ApplicantsScreen" component={ApplicantsScreen} />
               <Stack.Screen name="DriverRegistration" component={DriverRegistration} />
               <Stack.Screen name="EditProfileScreen" component={EditProfileScreen} />
+              <Stack.Screen name="DriverApplyScreen" component={DriverApplyScreen} />
             </Stack.Navigator>
           </NavigationContainer>
         </View>

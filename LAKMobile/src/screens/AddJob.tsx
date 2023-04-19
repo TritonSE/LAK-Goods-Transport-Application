@@ -5,7 +5,7 @@ import * as ImagePicker from 'expo-image-picker';
 import { ConfirmationBox } from '../components/ConfirmationBox';
 import { AppText, LabelWrapper, AppButton, ScreenHeader, AppTextInput } from '../components';
 import { COLORS } from '../../constants';
-import { JobOwnerView, postJob, updateJob, deleteJob } from '../api';
+import { JobOwnerView, postJob, updateJob, deleteJob, getUser } from '../api';
 import { AddJobProps } from '../types/navigation';
 import { AuthContext } from '../context/AuthContext';
 import { ImageUploadContext } from '../context/ImageUploadContext';
@@ -82,7 +82,6 @@ export function AddJob({ navigation, route }: AddJobProps) {
     [fieldNames.dropoffLocation]: true,
     [fieldNames.imageSelect]: true,
   });
-
   const [jobTitle, setJobTitle] = useState('');
   const [clientName, setClientName] = useState('');
   const [phoneNumber, setPhoneNumber] = useState('');
@@ -175,6 +174,15 @@ export function AddJob({ navigation, route }: AddJobProps) {
     setIsValid(currentValid);
     return isAllValid;
   };
+
+  useEffect(() => {
+    getUser(userId, userId).then((user) => {
+      setClientName(user.firstName + ' ' + user.lastName);
+      setPhoneNumber(user.phone || '');
+      setPickupLocation(user.location.split(';')[0] || '');
+      setPickupDistrict(user.location.split(';')[1] || PICKER_DEFAULT);
+    });
+  }, [userId]);
 
   useEffect(() => {
     dispatch({ type: 'CLEAR_IMAGES' });
@@ -355,7 +363,7 @@ export function AddJob({ navigation, route }: AddJobProps) {
             icon="phone-in-talk"
             keyboardType="numeric"
             type="phoneNumber"
-            errMsg="Please insert the sender's phone number"
+            errMsg="Please insert a valid phone number"
           />
         </LabelWrapper>
 

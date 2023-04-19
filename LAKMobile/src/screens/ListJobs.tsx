@@ -2,12 +2,21 @@ import React, { useState, useEffect, useMemo, useContext } from 'react';
 import { View, FlatList, StyleSheet } from 'react-native';
 import { Picker } from '@react-native-picker/picker';
 import debounce from 'lodash.debounce';
-import { getJobs, JobData, JobOwnerView, PAGE_SIZE } from '../api';
-import { JobThumbnail, AppButton, AppTextInput } from '../components';
+import {
+  getDriverVerificationStatus,
+  getJobApplicantStatus,
+  getJobs,
+  getUser,
+  JobData,
+  JobOwnerView,
+  PAGE_SIZE,
+} from '../api';
+import { JobThumbnail, AppButton, AppTextInput, NoJobs } from '../components';
 import { COLORS } from '../../constants';
 import { PickerStyles, FlatListStyles } from '../styles';
-import { useIsFocused } from '@react-navigation/native';
 import { AuthContext } from '../context/AuthContext';
+import { NoJobsIcon, NoMatchingJobsIcon, PlusSignIcon } from '../icons';
+import { InfoBox } from '../components/InfoBox';
 
 type ListJobsModes = 'Add' | 'Find';
 type JobTypePickerOption = 'Current Jobs' | 'Completed Jobs' | 'Your Jobs' | 'Finished Jobs';
@@ -24,20 +33,25 @@ interface ListJobsProps {
 }
 
 export function ListJobs({ navigation, mode }: ListJobsProps) {
-  const [jobListType, setJobListType] = useState<JobTypePickerOption>('Current Jobs');
+  const [jobListType, setJobListType] = useState<JobTypePickerOption>(
+    mode === 'Add' ? 'Current Jobs' : 'Your Jobs'
+  );
   const [searchString, setSearchString] = useState<string | null>(null);
-
   const [jobs, setJobs] = useState<JobData[] | JobOwnerView[]>([]);
 
   // NOTE: Page 0 is being used as a null page, but the first page is 1.
   // Added this so that we are able to trigger hooks dependent on `page` when type of screen changes but page number does not
   const [page, setPage] = useState(0);
-  const isFocused = useIsFocused();
 
   const [loading, setLoading] = useState(false);
   const [isRefreshing, setRefreshing] = useState(false);
   const [allLoaded, setAllLoaded] = useState(false);
 
+  const [driverRegistrationWarning, setDriverRegistrationWarning] = useState<JSX.Element | null>(
+    null
+  );
+
+  const [noJobsComponent, setNoJobsComponent] = useState<JSX.Element | null>(null);
   const auth = useContext(AuthContext);
 
   useEffect(() => {
@@ -47,6 +61,35 @@ export function ListJobs({ navigation, mode }: ListJobsProps) {
   }, [auth, navigation]);
 
   const userId = auth.user ? auth.user.uid : '';
+
+  // Note: This should refresh every time we have a onFocus...
+  useEffect(() => {
+    getUser(userId, userId).then((user) => {
+      if (user) {
+        const driverVerificationStatus = getDriverVerificationStatus(user);
+        if (driverVerificationStatus === 'Not Applied') {
+          setDriverRegistrationWarning(
+            <InfoBox
+              text={'Register as a driver to apply to jobs.'}
+              buttonText={'Register'}
+              onPress={() => navigation.navigate('DriverRegistration')}
+            />
+          );
+        } else if (
+          driverVerificationStatus === 'Applied' ||
+          driverVerificationStatus === 'In Review'
+        ) {
+          setDriverRegistrationWarning(
+            <InfoBox
+              text={
+                'Your driver registration is under review.\nYou can apply to jobs once approved.'
+              }
+            />
+          );
+        }
+      }
+    });
+  }, [navigation, userId]);
 
   const resetJobsOnPage = () => {
     setJobs([]);
@@ -63,6 +106,79 @@ export function ListJobs({ navigation, mode }: ListJobsProps) {
   useEffect(() => {
     debouncedResetJobs();
   }, [searchString]);
+
+  const handleNoJobsIcon = (
+    jobs: JobData[],
+    mode: ListJobsModes,
+    jobListType: JobTypePickerOption,
+    searchString: string | null
+  ): void => {
+    if (jobs.length === 0) {
+      if (mode === 'Find' && searchString) {
+        setNoJobsComponent(
+          <NoJobs
+            title={'No matching jobs.'}
+            body={'Please try another keyword.'}
+            errorImageType={<NoMatchingJobsIcon />}
+          />
+        );
+        return;
+      }
+      switch (jobListType) {
+        case 'Your Jobs': {
+          setNoJobsComponent(
+            <NoJobs
+              title={'No available jobs.'}
+              body={'There are no job posts at the moment. Please check back later.'}
+              errorImageType={<NoJobsIcon />}
+            />
+          );
+          return;
+        }
+        case 'Finished Jobs': {
+          setNoJobsComponent(
+            <NoJobs
+              title={'No finished jobs.'}
+              body={"You don't have any finished jobs yet."}
+              errorImageType={<NoJobsIcon />}
+            />
+          );
+          return;
+        }
+        case 'Current Jobs': {
+          setNoJobsComponent(
+            <NoJobs
+              title={'No current jobs.'}
+              body={"You don't have any in progress jobs at the moment."}
+              buttonName="Add a Job Now"
+              buttonIcon={<PlusSignIcon />}
+              onButtonClick={() =>
+                navigation.navigate('AddJob', { formType: 'add', setJobData: setJobs })
+              }
+              errorImageType={<NoMatchingJobsIcon />}
+            />
+          );
+          return;
+        }
+        case 'Completed Jobs': {
+          setNoJobsComponent(
+            <NoJobs
+              title={'No completed jobs.'}
+              body={"You don't have any completed jobs at the moment."}
+              errorImageType={<NoJobsIcon />}
+            />
+          );
+          return;
+        }
+        default: {
+          setNoJobsComponent(null);
+          return;
+        }
+      }
+    } else {
+      setNoJobsComponent(null);
+    }
+  };
 
   useEffect(() => {
     // Fetches the job data for last reached page `page`. Enables lazy load on scrolling.
@@ -91,7 +207,9 @@ export function ListJobs({ navigation, mode }: ListJobsProps) {
       const filteredNewJobs = newJobs.filter(
         (newjob) => !jobs.some((job) => job._id === newjob._id)
       );
-      setJobs([...jobs, ...filteredNewJobs]);
+      const jobsToDisplay = [...jobs, ...filteredNewJobs];
+      setJobs(jobsToDisplay);
+      handleNoJobsIcon(jobsToDisplay, mode, jobListType, searchString);
       setLoading(false);
       setRefreshing(false);
     });
@@ -148,10 +266,12 @@ export function ListJobs({ navigation, mode }: ListJobsProps) {
               ) : (
                 <JobThumbnail
                   key={index}
-                  onPress={() => null}
+                  onPress={() => {
+                    navigation.navigate('DriverApplyScreen', { jobData: item as JobOwnerView });
+                  }}
                   isJobOwner={false}
-                  job={item}
-                  applicantStatus={'Applied'}
+                  job={item as JobOwnerView}
+                  applicantStatus={getJobApplicantStatus(item as JobOwnerView, userId)}
                 />
               )
             }
@@ -170,6 +290,7 @@ export function ListJobs({ navigation, mode }: ListJobsProps) {
                       ))}
                     </Picker>
                   </View>
+
                   <View style={styles.spacer} />
                   {mode === 'Add' && (
                     <AppButton
@@ -184,16 +305,24 @@ export function ListJobs({ navigation, mode }: ListJobsProps) {
                     />
                   )}
                 </View>
+
+                {mode === 'Add' && <View>{noJobsComponent}</View>}
+
                 {mode === 'Find' && (
-                  <AppTextInput
-                    value={searchString ?? undefined}
-                    onChangeText={(text) => setSearchString(text)}
-                    style={[styles.searchTextInput]}
-                    placeholder="Search by title, location, and delivery date"
-                    maxLength={100}
-                    keyboardType="default"
-                    icon="search"
-                  />
+                  <View>
+                    <AppTextInput
+                      value={searchString ?? undefined}
+                      onChangeText={(text) => setSearchString(text)}
+                      style={[styles.searchTextInput]}
+                      placeholder="Search by title, location, and delivery date"
+                      maxLength={100}
+                      keyboardType="default"
+                      icon="search"
+                    />
+
+                    {driverRegistrationWarning}
+                    {noJobsComponent}
+                  </View>
                 )}
               </View>
             }

@@ -1,7 +1,6 @@
 /**
  * JobService that interacts with the job documents in the database
  */
-import mongoose from 'mongoose';
 import { ServiceError, InternalError } from '../errors';
 import { filterObject } from '../helpers';
 import JobModel, {
@@ -281,13 +280,18 @@ export async function addJobApplicant(jobId, userId) {
     throw ServiceError.DUPLICATE_JOB_APPLICATION_ATTEMPTED;
   }
 
-  job.applicants.push({
-    userId: userId,
-    applyDate: new Date(), // Uses current date as application date
-  });
-
   try {
-    await job.save();
+    await JobModel.findOneAndUpdate(
+      { _id: jobId },
+      {
+        $push: {
+          applicants: {
+            userId: userId,
+            applyDate: new Date(), // Uses current date as application date
+          },
+        },
+      }
+    );
   } catch (e) {
     throw InternalError.DOCUMENT_UPLOAD_ERROR.addContext(e.stack);
   }
@@ -358,10 +362,9 @@ export async function assignDriver(jobId, userId, driverId) {
     throw ServiceError.DRIVER_MUST_BE_APPLICANT;
   }
 
-  job.assignedDriverId = mongoose.Types.ObjectId(driverId);
+  job.assignedDriverId = driverId;
   job.status = JOB_STATUS_ASSIGNED;
   job.startDate = new Date();
-
   try {
     await job.save();
   } catch (e) {
@@ -377,14 +380,13 @@ export async function completeJob(jobId, userId) {
   const job = await JobModel.findById(jobId);
   if (!job) throw ServiceError.JOB_NOT_FOUND;
 
-  // Validate client job ownership
-  if (job.client !== userId) {
-    throw ServiceError.JOB_EDIT_PERMISSION_DENIED;
-  }
-
   if (job.assignedDriverId == null) {
     // Soft null check
     throw ServiceError.DRIVER_NOT_ASSIGNED;
+  }
+
+  if (job.assignedDriverId !== userId) {
+    throw ServiceError.JOB_EDIT_PERMISSION_DENIED;
   }
 
   // Update job status

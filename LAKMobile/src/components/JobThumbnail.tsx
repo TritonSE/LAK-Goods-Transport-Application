@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useContext } from 'react';
 import {
   GestureResponderEvent,
   StyleSheet,
@@ -15,6 +15,7 @@ import { imageIdToSource } from '../api';
 import { AppText } from './AppText';
 import { AppButton } from './AppButton';
 import { IconButtonWrapper } from './IconButtonWrapper';
+import { AuthContext } from '../context/AuthContext';
 /**
  * Status Indicator
  */
@@ -74,8 +75,8 @@ interface JobThumbnailOwnerViewProps {
 interface JobThumbnailApplicantViewProps {
   onPress: ((event: GestureResponderEvent) => void) | undefined;
   isJobOwner: false;
-  job: JobData;
-  applicantStatus: 'Applied' | 'Accepted' | 'Denied';
+  job: JobOwnerView;
+  applicantStatus: 'Not Started' | 'Applied' | 'Accepted' | 'Denied' | 'Finished';
 }
 
 type JobThumbnailProps = JobThumbnailOwnerViewProps | JobThumbnailApplicantViewProps;
@@ -108,16 +109,26 @@ const JOB_DISPLAY_STATUS_MAP: Record<JobStatus, DisplayStatus> = {
 }; // Mapping between job status from backend to frontend
 
 export function JobThumbnail({ isJobOwner, job, ...props }: JobThumbnailProps) {
-  let displayStatus: DisplayStatus, daysAgo, numApplicants;
+  let displayStatus: DisplayStatus, daysAgo;
+  const numApplicants = job.applicants ? job.applicants.length : 0;
+
+  const auth = useContext(AuthContext);
+
+  const userId = auth.user ? auth.user.uid : '';
 
   if (isJobOwner) {
     props = props as JobThumbnailOwnerViewProps;
     displayStatus = JOB_DISPLAY_STATUS_MAP[job.status];
     daysAgo = diffDatesInDays(new Date(job.startDate), new Date());
-    numApplicants = job.applicants.length;
   } else {
     props = props as JobThumbnailApplicantViewProps;
     displayStatus = props.applicantStatus;
+    if (displayStatus === 'Applied') {
+      const application = job.applicants.find((applicant) => userId === applicant.userId);
+      if (application) {
+        daysAgo = diffDatesInDays(new Date(application.applyDate), new Date());
+      }
+    }
   }
 
   const statusDisplayColor = displayStatus && STATUS_DISPLAY_COLOR[displayStatus];
@@ -149,7 +160,11 @@ export function JobThumbnail({ isJobOwner, job, ...props }: JobThumbnailProps) {
             </AppText>
           )}
           {displayStatus === 'Applied' && daysAgo != null && (
-            <AppText style={JobThumbnailStyles.daysText}>Applied</AppText>
+            <AppText style={JobThumbnailStyles.appliedDaysText}>
+              {daysAgo === 0
+                ? 'Applied today'
+                : `Applied ${daysAgo} ${daysAgo == 1 ? 'day' : 'days'} ago`}
+            </AppText>
           )}
           {displayStatus === 'Not Started' && isJobOwner && (
             <AppText style={JobThumbnailStyles.ownerApplicantsText}>
@@ -261,6 +276,11 @@ const JobThumbnailStyles = StyleSheet.create({
     fontSize: 12,
     fontWeight: 'bold',
     color: '#DA5C5C',
+  },
+  appliedDaysText: {
+    fontSize: 12,
+    fontWeight: 'bold',
+    color: '#3A9A89',
   },
   editButton: {
     position: 'absolute',
