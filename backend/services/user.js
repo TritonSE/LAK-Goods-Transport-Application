@@ -114,17 +114,22 @@ export async function updateUser(userId, userData, userImages) {
     console.log(userData);
     if (userImages) {
       // Delete existing images
-      const existingImageIds = originalUser.imageIds;
+      const existingImageIds = originalUser.vehicleData.imageIds;
       if (existingImageIds) {
         await Promise.all(
           existingImageIds.map(async (imageId) => {
-            await deleteImage(imageId);
+            if (!vehicleData.imageIds.includes(imageId)) {
+              console.log("Deleting Image")
+              await deleteImage(imageId);
+            } else {
+              console.log("Existing Image")
+            }
           })
         );
       }
 
       // Add new images
-      const newImageIds = [];
+      const newImageIds = vehicleData.imageIds;
       await Promise.all(
         userImages.map(async (image) => {
           const imageId = await saveImage(image);

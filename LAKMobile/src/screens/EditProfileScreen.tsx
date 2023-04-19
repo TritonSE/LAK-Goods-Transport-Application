@@ -110,13 +110,17 @@ export function EditProfileScreen({ navigation, route }: EditProfileScreenProps)
     return data;
   };
 
+  const convertURIsToIds = (uris) => {
+    return uris.filter((value) => value !== '').map((uri) => uri.split("/").slice(-1)[0])
+  }
+
   const submitChanges = async () => {
     const updatedVehicleData: VehicleData = {
       vehicleType: vehicleType.trim(),
       vehicleModel: vehicleModel.trim(),
       vehicleMake: vehicleMake.trim(),
       vehicleColor: vehicleColor.trim(),
-      imageIds: imageURIs.filter((value) => value !== ''),
+      imageIds: convertURIsToIds(imageURIs),
     };
     let formattedLocation = location;
     if (district !== PICKER_LOCATION_DEFAULT) {
