@@ -246,7 +246,7 @@ export function EditProfileScreen({ navigation, route }: EditProfileScreenProps)
             </LabelWrapper>
 
             <LabelWrapper label="Vehicle Photo">
-              <ImageUploadArea />
+              <ImageUploadArea isDisabled = {true}/>
             </LabelWrapper>
           </View>
         )}
