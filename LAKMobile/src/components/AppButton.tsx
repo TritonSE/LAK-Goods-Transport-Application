@@ -127,7 +127,16 @@ type AppButtonProps = {
   icon?: React.ReactElement;
 };
 
-export function AppButton({ title, size, style, onPress, type, textStyle, icon, disabled=false }: AppButtonProps) {
+export function AppButton({
+  title,
+  size,
+  style,
+  onPress,
+  type,
+  textStyle,
+  icon,
+  disabled = false,
+}: AppButtonProps) {
   if (!type || !(type in TYPE_STYLE_MAP)) type = 'secondary';
   if (type != 'link' && (!size || !(size in SIZE_STYLE_MAP))) size = 'large';
 

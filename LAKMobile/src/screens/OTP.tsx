@@ -1,138 +1,98 @@
-import React, {useRef, useContext, useState} from 'react';
+import React, { useContext, useState } from 'react';
 import { StyleSheet, TextInput, View } from 'react-native';
 import { AppText, LabelWrapper, AppButton, ScreenHeader } from '../components';
-import {FirebaseRecaptchaVerifierModal,FirebaseRecaptchaBanner} from 'expo-firebase-recaptcha';
-import {getApp,initializeApp} from 'firebase/app';
-import {getAuth,PhoneAuthProvider,signInWithCredential} from 'firebase/auth';
+import { FirebaseRecaptchaVerifierModal, FirebaseRecaptchaBanner } from 'expo-firebase-recaptcha';
 import firebaseConfig from '../../firebase-config.json';
 import { COLORS } from '../../constants';
 import { OTPProps } from '../types/navigation';
 import { AuthContext } from '../context/AuthContext';
 
 export function OTP({ navigation }: OTPProps) {
-
-
-  const authContext = useContext(AuthContext);
-
-
-  const recaptchaVerifier = useRef<any>(null);
+  const auth = useContext(AuthContext);
 
   const [phoneNumber, setPhoneNumber] = useState('');
-  const [verificationId, setVerificationID] = useState('');
   const [verificationCode, setVerificationCode] = useState('');
-
-  const [error, setError] = useState('');
-
-
-  // initialize phone provider and get verification id from recaptcha
-  const sendCode = async () => {
-    try {
-      if (authContext.auth !== null) {
-        const phoneProvider = new PhoneAuthProvider(authContext.auth); 
-        const verificationId = await phoneProvider.verifyPhoneNumber(phoneNumber, recaptchaVerifier.current);
-        setVerificationID(verificationId);
-        setError('');
-        console.log('Success : Verification code has been sent to your phone');
-      }
-    } catch (e){
-        console.log('error in handle send verification', e);
-        setError('There was an error with your entered mobile number.');
-    }
-};
-
-  // get the otp and verify it
-  const verifyCode = async () => {
-    try {
-      if (authContext.auth !== null) {
-        const credential = PhoneAuthProvider.credential(verificationId, verificationCode);
-        // await signInWithCredential(authContext.auth, credential);
-        await authContext.signInUserOTP(credential);
-        console.log('successfully signed in with credential');
-        console.log('successfully set auth context');
-        navigation.navigate('JobLandingScreen');
-      }
-    } catch(e){
-      console.log('error in handle verify', e);
-      setError('There was an error in validating your OTP.')
-    }
-  }
 
 
   return (
     <View style={styles.container}>
-
-      <FirebaseRecaptchaVerifierModal 
-            ref={recaptchaVerifier}
-            firebaseConfig={firebaseConfig}
-            // androidHardwareAccelerationDisabled
-            attemptInvisibleVerification={false} /*android emulator crashes if set to true*/
-        />
-
-
-{ // show the phone number input field when verification id is not set.
-  !verificationId && (
-    <View style={styles.container}>
-
-      <ScreenHeader showArrow={true}>Forgot Pin?</ScreenHeader>
-      <AppText style={styles.headerText}>
-        Please enter the mobile number associated with your account. Format is [+][countrycode][phone number].
-      </AppText>
-
-      <LabelWrapper label="Mobile Number">
-        <TextInput 
-          style={[styles.input, styles.bigInputStyle]} 
-          autoFocus 
-          keyboardType='phone-pad' 
-          textContentType='telephoneNumber'
-          /* phone number must be in format [+][country code][phone number] i.e. E164 format*/
-          onChangeText={(phone) => setPhoneNumber(phone)}
-        />
-        <AppText style={styles.errorText}>
-          {error}
-        </AppText>
-     </LabelWrapper>
-
-      <AppButton 
-        type="primary"
-        onPress={() => sendCode()}
-        disabled={!phoneNumber}
-        title= "Send OTP"
-        style={styles.submitButton}
+      <FirebaseRecaptchaVerifierModal
+        ref={auth.recaptchaVerifier}
+        firebaseConfig={firebaseConfig}
+        // androidHardwareAccelerationDisabled
+        attemptInvisibleVerification={false} /*android emulator crashes if set to true*/
       />
-    </View>
-  )
-  
-}
 
-{ // if verification id exists show the confirm code input field.
-  verificationId && (
-    <View style={styles.container}>
-      <ScreenHeader showArrow={true}>OTP Verification</ScreenHeader>
-      <AppText style={styles.headerText}>Please enter the OTP sent to your phone.</AppText>
+      {
+        // show the phone number input field when verification id is not set.
+        !auth.verificationId && (
+          <View style={styles.container}>
+            <ScreenHeader showArrow={true}>Forgot Pin?</ScreenHeader>
+            <AppText style={styles.headerText}>
+              Please enter the mobile number associated with your account. Format is
+              [+][countrycode][phone number].
+            </AppText>
 
-        <TextInput
-            style={[styles.input, styles.bigInputStyle]} 
-            autoFocus 
-            keyboardType='phone-pad' 
-            textContentType='oneTimeCode'
-            editable={!!verificationId}
-            onChangeText={setVerificationCode}
-        />
-        <AppText style={styles.errorText}>
-          {error}
-        </AppText>
+            <LabelWrapper label="Mobile Number">
+              <TextInput
+                style={[styles.input, styles.bigInputStyle]}
+                autoFocus
+                keyboardType="phone-pad"
+                textContentType="telephoneNumber"
+                /* phone number must be in format [+][country code][phone number] i.e. E164 format*/
+                onChangeText={(phone) => setPhoneNumber(phone)}
+              />
+              <AppText style={styles.errorText}>{auth.otpError}</AppText>
+            </LabelWrapper>
 
-        <AppButton
-            title= "Confirm Verification Code"
-            disabled={!verificationCode}
-            onPress = {() => verifyCode()}
-        />
-    </View>
-  )
-}
+            <AppButton
+              type="primary"
+              onPress={() => auth.sendCode(phoneNumber)}
+              disabled={!phoneNumber}
+              title="Send OTP"
+              style={styles.submitButton}
+            />
+          </View>
+        )
+      }
 
+      {
+        // if verification id exists show the confirm code input field.
+        auth.verificationId && (
+          <View style={styles.container}>
+            <ScreenHeader showArrow={true}>OTP Verification</ScreenHeader>
+            <AppText style={styles.headerText}>Please enter the OTP sent to your phone.</AppText>
 
+            <TextInput
+              style={[styles.input, styles.bigInputStyle]}
+              autoFocus
+              keyboardType="phone-pad"
+              textContentType="oneTimeCode"
+              editable={!!auth.verificationId}
+              onChangeText={setVerificationCode}
+            />
+            <AppText style={styles.errorText}>{auth.otpError}</AppText>
 
+            <AppButton
+              title="Confirm Verification Code"
+              disabled={!verificationCode}
+              onPress={() => auth.verifyCode(verificationCode)}
+            />
+          </View>
+        )
+      }
+
+      {auth.user !== null && (
+        <View style={styles.container}>
+          <AppButton
+            type="primary"
+            onPress={() => navigation.navigate('JobLandingScreen')}
+            // disabled={!auth.allowLogin}
+            title="Go to job landing page"
+            style={styles.submitButton}
+          />
+        </View>
+      )}
     </View>
   );
 }
@@ -175,7 +135,7 @@ const styles = StyleSheet.create({
     marginTop: '30%',
     marginBottom: '8%',
   },
-  
+
   errorText: {
     width: '100%',
     color: 'red',
@@ -185,5 +145,5 @@ const styles = StyleSheet.create({
 
   bigInputStyle: {
     width: 200,
-  }
+  },
 });

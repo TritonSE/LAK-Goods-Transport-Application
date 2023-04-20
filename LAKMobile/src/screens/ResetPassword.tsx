@@ -1,40 +1,37 @@
-import React, {useState} from 'react';
+import React, { useState } from 'react';
 import { StyleSheet, TextInput, View } from 'react-native';
-import {confirmPasswordReset, getAuth, updatePassword } from 'firebase/auth';
+import { confirmPasswordReset, getAuth, updatePassword } from 'firebase/auth';
 import { LabelWrapper, AppButton, ScreenHeader } from '../components';
 import { COLORS } from '../../constants';
-import {initializeApp} from 'firebase/app';
+import { initializeApp } from 'firebase/app';
 import { ResetPasswordProps } from '../types/navigation';
 import firebaseConfig from '../../firebase-config.json';
 import { pinToPass } from '../context/AuthContext';
 // import firebase from 'firebase';
 
+export function ResetPassword({ navigation, route }: ResetPasswordProps) {
+  const [pin, setPin] = useState('');
 
-export function ResetPassword({ navigation, route}: ResetPasswordProps) {
-
-  const [pin, setPin] = useState('')
-
-  const saveNewPin = async () =>{
-    console.log("RESET PASSWORD AUTH")
+  const saveNewPin = async () => {
+    console.log('RESET PASSWORD AUTH');
     const app = initializeApp(firebaseConfig);
     const auth = getAuth(app);
 
     // console.log(route.params.verificationCode)
-    console.log(pin)
-    try{
+    console.log(pin);
+    try {
       // await confirmPasswordReset(auth, route.params.verificationCode, pin);
       const user = auth.currentUser;
-      const newPassword = await pinToPass(pin)
-      await updatePassword(route.params.user, newPassword)
-      console.log(user)
-      console.log('Password Updated Successfully!')
-      navigation.navigate('ResetSuccess')
-    }catch(e){
-      console.log(e)
+      const newPassword = await pinToPass(pin);
+      await updatePassword(route.params.user, newPassword);
+      console.log(user);
+      console.log('Password Updated Successfully!');
+      navigation.navigate('ResetSuccess');
+    } catch (e) {
+      console.log(e);
     }
-    
-  
-  //  firebase.auth().currentUser.updatePassword(pin)
+
+    //  firebase.auth().currentUser.updatePassword(pin)
 
     // admin.auth().updateUser(route.params.uid, {
     //   password: pin
@@ -51,9 +48,7 @@ export function ResetPassword({ navigation, route}: ResetPasswordProps) {
     // }catch(e){
     //   console.log(e)
     // }
-    
-    
-  }
+  };
 
   return (
     <View style={styles.container}>
@@ -64,8 +59,10 @@ export function ResetPassword({ navigation, route}: ResetPasswordProps) {
       </LabelWrapper>
 
       <LabelWrapper label="Confirm 4 digit pin">
-        <TextInput style={smallInputStyle} keyboardType="numeric" 
-        onChangeText={(pin) => setPin(pin)}
+        <TextInput
+          style={smallInputStyle}
+          keyboardType="numeric"
+          onChangeText={(pin) => setPin(pin)}
         />
       </LabelWrapper>
 

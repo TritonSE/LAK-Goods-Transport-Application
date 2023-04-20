@@ -6,11 +6,10 @@ import {
   signOut,
   User,
   signInWithCredential,
-  PhoneAuthCredential,
-  Auth,
+  PhoneAuthProvider,
 } from 'firebase/auth';
 import firebaseConfig from '../../firebase-config.json';
-import React, { createContext, useMemo, useState } from 'react';
+import React, { createContext, useMemo, useState, useRef } from 'react';
 import * as crypto from 'expo-crypto';
 import { FirebaseError } from '@firebase/util';
 import { createNewUser } from '../api';
@@ -39,7 +38,6 @@ export async function pinToPass(pin: string) {
 export type AuthState = {
   user: User | null;
   error: Error | null;
-  auth: Auth | null;
   clearError: () => void;
   login: (phone: string, pin: string) => Promise<void>;
   logout: () => Promise<void>;
@@ -50,12 +48,15 @@ export type AuthState = {
     location: string,
     pin: string
   ) => Promise<void>;
-  signInUserOTP: (credential: PhoneAuthCredential) => Promise<void>;
+  sendCode: (phoneNumber: string) => Promise<void>;
+  verifyCode: (verificationCode: string) => Promise<void>;
+  recaptchaVerifier: any;
+  verificationId: string | null;
+  otpError: string | null;
 };
 
 const init: AuthState = {
   user: null,
-  auth: null,
   error: null,
   clearError: () => undefined,
   login: () => {
@@ -67,9 +68,15 @@ const init: AuthState = {
   signup: () => {
     return new Promise<void>(() => undefined);
   },
-  signInUserOTP: () => {
-    return new Promise<void>(()=> undefined);
-  }
+  sendCode: () => {
+    return new Promise<void>(() => undefined);
+  },
+  verifyCode: () => {
+    return new Promise<void>(() => undefined);
+  },
+  recaptchaVerifier: null,
+  verificationId: null,
+  otpError: null,
 };
 
 export const AuthContext = createContext<AuthState>(init);
@@ -101,10 +108,6 @@ export const AuthProvider: React.FC<Props> = ({ children }) => {
   const app = useMemo(() => {
     return initializeApp(firebaseConfig);
   }, []);
-
-  const auth = useMemo(() => {
-    return getAuth(app);
-  }, [])
 
   const login = async (phone: string, pin: string): Promise<void> => {
     try {
@@ -169,28 +172,81 @@ export const AuthProvider: React.FC<Props> = ({ children }) => {
     }
   };
 
+  // const [phoneNumber, setPhoneNumber] = useState('');
+  const [verificationId, setVerificationID] = useState('');
 
-  const signInUserOTP = async (credential: PhoneAuthCredential): Promise<void> => {
+  const recaptchaVerifier = useRef<any>(null);
+
+  const [otpError, setOtpError] = useState('');
+
+  // const signInUserOTP = async (credential: PhoneAuthCredential): Promise<void> => {
+  //   try {
+  //     const auth = getAuth(app);
+  //     const userCredential = await signInWithCredential(auth, credential);
+  //     const user = userCredential.user;
+  //     setUser(user);
+  //     console.log('WITHIN AUTHCONTEXT: user', user);
+  //   } catch (e) {
+  //     console.log('ERROR', e);
+  //     if (e instanceof FirebaseError) {
+  //       setFirebaseError(e);
+  //     } else {
+  //       setError(e as Error);
+  //     }
+  //     setUser(null);
+  //   }
+  // };
+
+  // initialize phone provider and get verification id from recaptcha
+  const sendCode = async (phoneNumber: string) => {
     try {
       const auth = getAuth(app);
-      const userCredential = await signInWithCredential(auth, credential); 
-      const user = userCredential.user;
-      setUser(user);
-      console.log('WITHIN AUTHCONTEXT: user', user);
+      const phoneProvider = new PhoneAuthProvider(auth);
+      const verificationId = await phoneProvider.verifyPhoneNumber(
+        phoneNumber,
+        recaptchaVerifier.current
+      );
+      setVerificationID(verificationId);
+      setOtpError('');
+      console.log('Success : Verification code has been sent to your phone');
     } catch (e) {
-      console.log('ERROR', e);
-      if (e instanceof FirebaseError) {
-        setFirebaseError(e);
-      } else {
-        setError(e as Error);
-      }
-      setUser(null);
+      console.log('error in handle send verification', e);
+      setOtpError('There was an error with your entered mobile number.');
     }
   };
 
+  // get the otp and verify it
+  const verifyCode = async (verificationCode: string) => {
+    try {
+      const auth = getAuth(app);
+      const credential = PhoneAuthProvider.credential(verificationId, verificationCode);
+      const userCredential = await signInWithCredential(auth, credential);
+      setUser(userCredential.user);
+      console.log('successfully signed in with credential');
+      console.log('User', userCredential.user);
+      setVerificationID('');
+    } catch (e) {
+      console.log('error in handle verify', e);
+      setOtpError('There was an error in validating your OTP.');
+    }
+  };
 
   return (
-    <AuthContext.Provider value={{ auth, user, error, clearError, login, logout, signup, signInUserOTP }}>
+    <AuthContext.Provider
+      value={{
+        user,
+        error,
+        clearError,
+        login,
+        logout,
+        signup,
+        verifyCode,
+        sendCode,
+        recaptchaVerifier,
+        verificationId,
+        otpError,
+      }}
+    >
       {children}
     </AuthContext.Provider>
   );
