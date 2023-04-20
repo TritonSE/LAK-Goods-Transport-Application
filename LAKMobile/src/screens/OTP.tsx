@@ -11,8 +11,6 @@ import { AuthContext } from '../context/AuthContext';
 
 export function OTP({ navigation }: OTPProps) {
 
-  const app = initializeApp(firebaseConfig);
-  const auth = getAuth(app);
 
   const authContext = useContext(AuthContext);
 
@@ -29,11 +27,13 @@ export function OTP({ navigation }: OTPProps) {
   // initialize phone provider and get verification id from recaptcha
   const sendCode = async () => {
     try {
-        const phoneProvider = new PhoneAuthProvider(auth); 
+      if (authContext.auth !== null) {
+        const phoneProvider = new PhoneAuthProvider(authContext.auth); 
         const verificationId = await phoneProvider.verifyPhoneNumber(phoneNumber, recaptchaVerifier.current);
         setVerificationID(verificationId);
         setError('');
         console.log('Success : Verification code has been sent to your phone');
+      }
     } catch (e){
         console.log('error in handle send verification', e);
         setError('There was an error with your entered mobile number.');
@@ -43,12 +43,14 @@ export function OTP({ navigation }: OTPProps) {
   // get the otp and verify it
   const verifyCode = async () => {
     try {
+      if (authContext.auth !== null) {
         const credential = PhoneAuthProvider.credential(verificationId, verificationCode);
-        await signInWithCredential(auth, credential);
-        console.log('successfully signed in with credential');
+        // await signInWithCredential(authContext.auth, credential);
         await authContext.signInUserOTP(credential);
+        console.log('successfully signed in with credential');
         console.log('successfully set auth context');
         navigation.navigate('JobLandingScreen');
+      }
     } catch(e){
       console.log('error in handle verify', e);
       setError('There was an error in validating your OTP.')

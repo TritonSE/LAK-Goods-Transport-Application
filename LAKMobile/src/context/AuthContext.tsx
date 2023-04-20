@@ -6,7 +6,8 @@ import {
   signOut,
   User,
   signInWithCredential,
-  PhoneAuthCredential
+  PhoneAuthCredential,
+  Auth,
 } from 'firebase/auth';
 import firebaseConfig from '../../firebase-config.json';
 import React, { createContext, useMemo, useState } from 'react';
@@ -38,6 +39,7 @@ export async function pinToPass(pin: string) {
 export type AuthState = {
   user: User | null;
   error: Error | null;
+  auth: Auth | null;
   clearError: () => void;
   login: (phone: string, pin: string) => Promise<void>;
   logout: () => Promise<void>;
@@ -53,6 +55,7 @@ export type AuthState = {
 
 const init: AuthState = {
   user: null,
+  auth: null,
   error: null,
   clearError: () => undefined,
   login: () => {
@@ -98,6 +101,10 @@ export const AuthProvider: React.FC<Props> = ({ children }) => {
   const app = useMemo(() => {
     return initializeApp(firebaseConfig);
   }, []);
+
+  const auth = useMemo(() => {
+    return getAuth(app);
+  }, [])
 
   const login = async (phone: string, pin: string): Promise<void> => {
     try {
@@ -171,7 +178,7 @@ export const AuthProvider: React.FC<Props> = ({ children }) => {
       setUser(user);
       console.log('WITHIN AUTHCONTEXT: user', user);
     } catch (e) {
-      console.log('ERROR');
+      console.log('ERROR', e);
       if (e instanceof FirebaseError) {
         setFirebaseError(e);
       } else {
@@ -183,7 +190,7 @@ export const AuthProvider: React.FC<Props> = ({ children }) => {
 
 
   return (
-    <AuthContext.Provider value={{ user, error, clearError, login, logout, signup, signInUserOTP }}>
+    <AuthContext.Provider value={{ auth, user, error, clearError, login, logout, signup, signInUserOTP }}>
       {children}
     </AuthContext.Provider>
   );
