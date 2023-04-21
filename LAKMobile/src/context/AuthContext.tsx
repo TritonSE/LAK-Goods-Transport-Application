@@ -6,7 +6,7 @@ import {
   signOut,
   User,
 } from 'firebase/auth';
-//import firebaseConfig from '../../firebase-config.json';
+
 import firebaseConfig from '../../firebase-config.json';
 import React, { createContext, useMemo, useState } from 'react';
 import * as crypto from 'expo-crypto';
@@ -38,7 +38,7 @@ export type AuthState = {
   user: User | null;
   error: Error | null;
   clearError: () => void;
-  login: (phone: string, pin: string) => Promise<void>;
+  login: (phone: string, pin: string) => Promise<User | null>;
   logout: () => Promise<void>;
   signup: (
     firstName: string,
@@ -46,7 +46,7 @@ export type AuthState = {
     phone: string,
     location: string,
     pin: string
-  ) => Promise<void>;
+  ) => Promise<User | null>;
 };
 
 const init: AuthState = {
@@ -54,13 +54,13 @@ const init: AuthState = {
   error: null,
   clearError: () => undefined,
   login: () => {
-    return new Promise<void>(() => undefined);
+    return new Promise<User | null>(() => null);
   },
   logout: () => {
     return new Promise<void>(() => undefined);
   },
   signup: () => {
-    return new Promise<void>(() => undefined);
+    return new Promise<User | null>(() => undefined);
   },
 };
 
@@ -94,13 +94,14 @@ export const AuthProvider: React.FC<Props> = ({ children }) => {
     return initializeApp(firebaseConfig);
   }, []);
 
-  const login = async (phone: string, pin: string): Promise<void> => {
+  const login = async (phone: string, pin: string): Promise<User | null> => {
     try {
       const email = phoneNumberToEmail(phone);
       const password = await pinToPass(pin);
       const auth = getAuth(app);
       const userCredential = await signInWithEmailAndPassword(auth, email, password);
       setUser(userCredential.user);
+      return userCredential.user;
     } catch (e) {
       if (e instanceof FirebaseError) {
         setFirebaseError(e);
@@ -108,6 +109,7 @@ export const AuthProvider: React.FC<Props> = ({ children }) => {
         setError(e as Error);
       }
       setUser(null);
+      return null;
     }
   };
 
@@ -129,7 +131,7 @@ export const AuthProvider: React.FC<Props> = ({ children }) => {
     phone: string,
     location: string,
     pin: string
-  ): Promise<void> => {
+  ): Promise<User | null> => {
     try {
       // First, let's try to save the user credentials in Firebase.
       const email = phoneNumberToEmail(phone);
@@ -147,6 +149,7 @@ export const AuthProvider: React.FC<Props> = ({ children }) => {
         location,
       });
       setUser(user);
+      return userCredential.user;
     } catch (e) {
       if (e instanceof FirebaseError) {
         setFirebaseError(e);
@@ -154,6 +157,7 @@ export const AuthProvider: React.FC<Props> = ({ children }) => {
         setError(e as Error);
       }
       setUser(null);
+      return null;
     }
   };
 
