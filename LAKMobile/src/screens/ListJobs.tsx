@@ -57,6 +57,10 @@ export function ListJobs({ navigation, mode }: ListJobsProps) {
   const auth = useContext(AuthContext);
 
   useEffect(() => {
+    console.log('FOCUSING...');
+  }, [isFocused]);
+
+  useEffect(() => {
     if (auth.user === null) {
       navigation.navigate('Login');
     }
@@ -66,31 +70,33 @@ export function ListJobs({ navigation, mode }: ListJobsProps) {
 
   // Note: This should refresh every time we have a onFocus...
   useEffect(() => {
-    getUser(userId, userId).then((user) => {
-      if (user) {
-        const driverVerificationStatus = getDriverVerificationStatus(user);
-        if (driverVerificationStatus === 'Not Applied') {
-          setDriverRegistrationWarning(
-            <InfoBox
-              text={'Register as a driver to apply to jobs.'}
-              buttonText={'Register'}
-              onPress={() => navigation.navigate('DriverRegistration')}
-            />
-          );
-        } else if (
-          driverVerificationStatus === 'Applied' ||
-          driverVerificationStatus === 'In Review'
-        ) {
-          setDriverRegistrationWarning(
-            <InfoBox
-              text={
-                'Your driver registration is under review.\nYou can apply to jobs once approved.'
-              }
-            />
-          );
+    if (isFocused) {
+      getUser(userId, userId).then((user) => {
+        if (user) {
+          const driverVerificationStatus = getDriverVerificationStatus(user);
+          if (driverVerificationStatus === 'Not Applied') {
+            setDriverRegistrationWarning(
+              <InfoBox
+                text={'Register as a driver to apply to jobs.'}
+                buttonText={'Register'}
+                onPress={() => navigation.navigate('DriverRegistration')}
+              />
+            );
+          } else if (
+            driverVerificationStatus === 'Applied' ||
+            driverVerificationStatus === 'In Review'
+          ) {
+            setDriverRegistrationWarning(
+              <InfoBox
+                text={
+                  'Your driver registration is under review.\nYou can apply to jobs once approved.'
+                }
+              />
+            );
+          }
         }
-      }
-    });
+      });
+    }
   }, [navigation, userId, isFocused]);
 
   const resetJobsOnPage = () => {
@@ -215,7 +221,7 @@ export function ListJobs({ navigation, mode }: ListJobsProps) {
       setLoading(false);
       setRefreshing(false);
     });
-  }, [page, isFocused]);
+  }, [page]);
 
   const onRefresh = () => {
     setJobs([]);

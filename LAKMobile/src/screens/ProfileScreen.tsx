@@ -22,9 +22,11 @@ export function ProfileScreen({ navigation, route }: ProfileScreenProps) {
   const isFocused = useIsFocused();
 
   useEffect(() => {
-    getUser(currentUser, route.params.userId).then((user) => {
-      setProfileData(user);
-    });
+    if (isFocused) {
+      getUser(currentUser, route.params.userId).then((user) => {
+        setProfileData(user);
+      });
+    }
   }, [route.params.userId, navigation, isFocused]);
 
   const isUserTheViewer = auth.user && auth.user.uid === route.params.userId;
