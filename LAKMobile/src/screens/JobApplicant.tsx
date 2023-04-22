@@ -51,18 +51,8 @@ export function JobApplicant({ navigation, route }: JobApplicantProps) {
         </Tab.Screen>
         {
           // Track has preventDefault as placeholder
-          route.params.jobData.status === 'ASSIGNED' ? (
-            <Tab.Screen
-              name="Track"
-              listeners={{
-                tabPress: (e) => {
-                  e.preventDefault();
-                },
-              }}
-            >
-              {() => null}
-            </Tab.Screen>
-          ) : (
+          route.params.jobData.status === 'ASSIGNED' ||
+          route.params.jobData.status === 'COMPLETED' ? null : (
             <Tab.Screen
               name="Applicants"
               options={{
