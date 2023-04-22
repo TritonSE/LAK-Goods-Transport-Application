@@ -7,6 +7,7 @@ import { AuthContext } from '../context/AuthContext';
 import { AppButton, AppText, ScreenHeader, IconButtonWrapper } from '../components';
 import { PublicProfilePicDefault, EditIcon } from '../icons';
 import { ProfileScreenProps } from '../types/navigation';
+import { useIsFocused } from '@react-navigation/native';
 
 export function ProfileScreen({ navigation, route }: ProfileScreenProps) {
   const [profileData, setProfileData] = useState<UserData | null>(null);
@@ -18,12 +19,15 @@ export function ProfileScreen({ navigation, route }: ProfileScreenProps) {
 
   // currentUser is the user currently viewing the profile screen.
   const currentUser = auth.user ? auth.user.uid : '';
+  const isFocused = useIsFocused();
 
   useEffect(() => {
-    getUser(currentUser, route.params.userId).then((user) => {
-      setProfileData(user);
-    });
-  }, [route.params.userId, navigation]);
+    if (isFocused) {
+      getUser(currentUser, route.params.userId).then((user) => {
+        setProfileData(user);
+      });
+    }
+  }, [route.params.userId, navigation, isFocused]);
 
   const isUserTheViewer = auth.user && auth.user.uid === route.params.userId;
 
