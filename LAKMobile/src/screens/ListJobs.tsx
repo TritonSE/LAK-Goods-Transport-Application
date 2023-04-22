@@ -57,10 +57,6 @@ export function ListJobs({ navigation, mode }: ListJobsProps) {
   const auth = useContext(AuthContext);
 
   useEffect(() => {
-    console.log('FOCUSING...');
-  }, [isFocused]);
-
-  useEffect(() => {
     if (auth.user === null) {
       navigation.navigate('Login');
     }
