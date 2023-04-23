@@ -83,17 +83,16 @@ export function SignupScreen({ navigation }: SignupProps) {
       validatePin() &&
       validateConfirmPin()
     ) {
-      setLoading(true);
-      const user = await auth.signup(firstName, lastName, phoneNumber, location, pin);
-      setLoading(false);
-      if (user !== null) {
-        console.log(user.uid);
-        navigation.navigate('JobLandingScreen');
-      } else {
-        // Display errors (invalid password, email already in use, etc.)
-        setSignupError(auth.error);
-        console.error(auth.error);
+      const userTaken = await auth.doesUserExist(phoneNumber);
+      if (userTaken) {
+        setSignupError(new Error('This phone number is already registered. Please log in.'));
+        return;
       }
+      navigation.navigate('PhoneVerificationScreen', {
+        phone: phoneNumber,
+        mode: 'signup',
+        userData: { firstName, lastName, phoneNumber, location, pin },
+      });
     }
   };
 

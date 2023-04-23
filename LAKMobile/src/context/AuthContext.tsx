@@ -1,10 +1,15 @@
 import { initializeApp } from '@firebase/app';
 import {
   getAuth,
-  createUserWithEmailAndPassword,
   signInWithEmailAndPassword,
   signOut,
   User,
+  PhoneAuthProvider,
+  ApplicationVerifier,
+  signInWithCredential,
+  linkWithCredential,
+  fetchSignInMethodsForEmail,
+  EmailAuthProvider,
 } from 'firebase/auth';
 
 import firebaseConfig from '../../firebase-config.json';
@@ -40,28 +45,28 @@ export type AuthState = {
   clearError: () => void;
   login: (phone: string, pin: string) => Promise<User | null>;
   logout: () => Promise<void>;
-  signup: (
+  doesUserExist: (phone: string) => Promise<boolean>;
+  registerUser: (
     firstName: string,
     lastName: string,
     phone: string,
     location: string,
     pin: string
   ) => Promise<User | null>;
+  sendSMSCode: (phone: string, recaptcha: ApplicationVerifier) => Promise<string>;
+  verifyPhone: (verificationId: string, verificationCode: string) => Promise<boolean>;
 };
 
 const init: AuthState = {
   user: null,
   error: null,
   clearError: () => undefined,
-  login: () => {
-    return new Promise<User | null>(() => null);
-  },
-  logout: () => {
-    return new Promise<void>(() => undefined);
-  },
-  signup: () => {
-    return new Promise<User | null>(() => undefined);
-  },
+  login: () => new Promise<User | null>(() => null),
+  logout: () => new Promise<void>(() => undefined),
+  doesUserExist: () => new Promise<boolean>(() => false),
+  registerUser: () => new Promise<User | null>(() => undefined),
+  sendSMSCode: () => new Promise<string>(() => ''),
+  verifyPhone: () => new Promise<boolean>(() => false),
 };
 
 export const AuthContext = createContext<AuthState>(init);
@@ -78,16 +83,23 @@ export const AuthProvider: React.FC<Props> = ({ children }) => {
     setError(null);
   };
 
-  const setFirebaseError = (e: FirebaseError): void => {
-    // We map firebase errors to more useful errors for us to display to the user.
-    if (e.code === 'auth/wrong-password') setError(new Error('Password is incorrect'));
-    else if (e.code === 'auth/user-not-found') setError(new Error('User does not exist'));
-    else if (e.code === 'auth/invalid-email') setError(new Error('Invalid email provided'));
-    else if (e.code === 'auth/invalid-password')
-      setError(new Error('Password must be more than 6 characters in length'));
-    else if (e.code === 'auth/email-already-in-use')
-      setError(new Error('This user already has an account. Please log in'));
-    else setError(new Error(e.message));
+  const setFirebaseError = (e: FirebaseError | Error): void => {
+    if (e instanceof FirebaseError) {
+      // We map firebase errors to more useful errors for us to display to the user.
+      if (e.code === 'auth/wrong-password') setError(new Error('Password is incorrect'));
+      else if (e.code === 'auth/user-not-found') setError(new Error('User does not exist'));
+      else if (e.code === 'auth/invalid-email') setError(new Error('Invalid email provided'));
+      else if (e.code === 'auth/invalid-password')
+        setError(new Error('Password must be more than 6 characters in length'));
+      else if (e.code === 'auth/email-already-in-use')
+        setError(new Error('This user already has an account. Please log in'));
+      else if (e.code === 'auth/invalid-verification-id')
+        setError(new Error('Invalid verification code.'));
+      else setError(new Error(e.message));
+    } else {
+      setError(e);
+      return;
+    }
   };
 
   const app = useMemo(() => {
@@ -103,11 +115,7 @@ export const AuthProvider: React.FC<Props> = ({ children }) => {
       setUser(userCredential.user);
       return userCredential.user;
     } catch (e) {
-      if (e instanceof FirebaseError) {
-        setFirebaseError(e);
-      } else {
-        setError(e as Error);
-      }
+      setFirebaseError(e as FirebaseError | Error);
       setUser(null);
       return null;
     }
@@ -120,25 +128,96 @@ export const AuthProvider: React.FC<Props> = ({ children }) => {
       setUser(null);
       setError(null);
     } catch (e) {
-      setError(e as Error);
+      setFirebaseError(e as FirebaseError | Error);
       setUser(null);
     }
   };
 
-  const signup = async (
+  /**
+   * @returns If the phone number already exists as an account.
+   */
+  const doesUserExist = async (phone: string): Promise<boolean> => {
+    try {
+      const auth = getAuth(app);
+      const signInMethods = await fetchSignInMethodsForEmail(auth, phoneNumberToEmail(phone));
+      return signInMethods.length !== 0;
+    } catch (e) {
+      setFirebaseError(e as FirebaseError | Error);
+      return false;
+    }
+  };
+
+  /**
+   * Sends an SMS code for to verify the correct phone number.
+   * @param phone The phone number (in +.... format)
+   * @param recaptcha The recaptchaVerifier set up on the screen.
+   * @returns A verificationId to be used with verifyPhone.
+   */
+  const sendSMSCode = async (phone: string, recaptcha: ApplicationVerifier): Promise<string> => {
+    try {
+      const auth = getAuth(app);
+      const signInMethods = await fetchSignInMethodsForEmail(auth, phone);
+      if (signInMethods.length === 0) {
+        // Email does not exist.
+        setError(new Error('Phone number is not registered!'));
+        return '';
+      }
+      const phoneProvider = new PhoneAuthProvider(auth);
+      const verificationId = await phoneProvider.verifyPhoneNumber(phone, recaptcha);
+      return verificationId;
+    } catch (e) {
+      console.error(e);
+      setFirebaseError(e as FirebaseError | Error);
+      return '';
+    }
+  };
+
+  /**
+   * Verifies an SMS code sent to a phone. On success, signs in the user.
+   * @param verificationId Returned from sendSMSCode()
+   * @param verificationCode Code inputted by the user.
+   * @returns If the phone verification succeeded.
+   */
+  const verifyPhone = async (
+    verificationId: string,
+    verificationCode: string
+  ): Promise<boolean> => {
+    try {
+      const auth = getAuth(app);
+      const credential = PhoneAuthProvider.credential(verificationId, verificationCode);
+      const userCredential = await signInWithCredential(auth, credential);
+      setUser(userCredential.user);
+      return true;
+    } catch (e) {
+      console.error(e);
+      setFirebaseError(e as FirebaseError | Error);
+      return false;
+    }
+  };
+
+  /**
+   * After the phone number is verified via verifyPhone, we create a PIN sign in for the user
+   * from their sign-up form data. This is called an EmailAuthProvider since PhoneAuth doesn't allow
+   * for password sign ins.
+   * @returns The user after the accounts are successfully linked, or null.
+   */
+  const registerUser = async (
     firstName: string,
     lastName: string,
     phone: string,
     location: string,
     pin: string
   ): Promise<User | null> => {
+    if (!user) {
+      // Return false if the user isn't currently signed in (verified via phone).
+      return null;
+    }
     try {
-      // First, let's try to save the user credentials in Firebase.
+      // First, let's try to link the PIN sign in to the phone account in Firebase.
       const email = phoneNumberToEmail(phone);
       const password = await pinToPass(pin);
-      const auth = getAuth(app);
-      const userCredential = await createUserWithEmailAndPassword(auth, email, password);
-      const user = userCredential.user;
+      const credential = await EmailAuthProvider.credential(email, password);
+      await linkWithCredential(user, credential);
 
       // Next, we make a call to save this user in our backend.
       await createNewUser({
@@ -149,78 +228,28 @@ export const AuthProvider: React.FC<Props> = ({ children }) => {
         location,
       });
       setUser(user);
-      return userCredential.user;
+      return user;
     } catch (e) {
-      if (e instanceof FirebaseError) {
-        setFirebaseError(e);
-      } else {
-        setError(e as Error);
-      }
+      setFirebaseError(e as FirebaseError | Error);
       setUser(null);
       return null;
     }
   };
 
-  // /**
-  //  * Verifies user through Recaptcha, feeds into sendOTP
-  //  * @param phone Phone number to send one time password to
-  //  * @param buttonID HTML/JS ID of the button for Recaptcha
-  //  */
-  // function verifyRecaptchaForOTP(phone, buttonID) {
-  //     const auth = getAuth();
-  //     return window.recaptchaVerifier = new RecaptchaVerifier(buttonID, {
-  //         'size': 'invisible',
-  //         'callback': () => {
-  //             // reCAPTCHA solved, allow signInWithPhoneNumber.
-  //             return sendOTP(phone);
-  //         }
-  //     }, auth);
-  // }
-
-  // /**
-  //  * Sends a one-time-password to the given phone number to sign in with.
-  //  * @param phone Phone number to send the one-time-password to
-  //  * @returns If the SMS process finishes with no errors.
-  //  */
-  // export async function sendOTP(phone) {
-  //     const auth = getAuth();
-  //     const adminAuth = initAdmin().auth();
-  //     // Allows for recaptcha bypassing
-  //     auth.settings.appVerificationDisabledForTesting = true;
-  //     return await signInWithPhoneNumber(adminAuth, phone)
-  //         .then((confirmationResult) => {
-  //             // SMS sent. Prompt user to type the code from the message, then sign the
-  //             // user in with confirmationResult.confirm(code).
-  //             window.confirmationResult = confirmationResult;
-  //             return true;
-  //             // ...
-  //         }).catch((error) => {
-  //             // Error; SMS not sent
-  //             // ...
-  //             console.log(error);
-  //             return false;
-  //         });
-  // }
-
-  // /**
-  //  * Attempts to sign in the user with the inputted one-time-password.
-  //  * @param code The one-time-password given to the user
-  //  * @returns If the user signed in successfully.
-  //  */
-  // export async function confirmOTP(code) {
-  //     return await confirmationResult.confirm(code).then((result) => {
-  //         // User signed in successfully.
-  //         // ...
-  //         return true;
-  //     }).catch((error) => {
-  //         // User couldn't sign in (bad verification code?)
-  //         // ...
-  //         return false;
-  //     });
-  // }
-
   return (
-    <AuthContext.Provider value={{ user, error, clearError, login, logout, signup }}>
+    <AuthContext.Provider
+      value={{
+        user,
+        error,
+        clearError,
+        login,
+        logout,
+        doesUserExist,
+        registerUser,
+        sendSMSCode,
+        verifyPhone,
+      }}
+    >
       {children}
     </AuthContext.Provider>
   );

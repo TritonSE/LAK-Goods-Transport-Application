@@ -5,7 +5,7 @@ import {
   SignupScreen,
   LoginScreen,
   ForgotPassword,
-  OTP,
+  PhoneVerificationScreen,
   AddJob,
   ProfileScreen,
   JobLandingScreen,
@@ -20,6 +20,7 @@ import { AuthProvider } from './src/context/AuthContext';
 import { ApplicantsScreen } from './src/screens/ApplicantsScreen';
 import { ImageUploadProvider } from './src/context/ImageUploadContext';
 import { DriverApplyScreen } from './src/screens/DriverApplyScreen';
+import { ConfirmPhoneScreen } from './src/screens/ConfirmPhoneScreen';
 
 const Stack = createNativeStackNavigator();
 
@@ -40,7 +41,8 @@ export default function App() {
               <Stack.Screen name="ResetPassword" component={ResetPassword} />
               <Stack.Screen name="ForgotPassword" component={ForgotPassword} />
               <Stack.Screen name="ResetSuccess" component={ResetSuccess} />
-              <Stack.Screen name="OTP" component={OTP} />
+              <Stack.Screen name="ConfirmPhoneScreen" component={ConfirmPhoneScreen} />
+              <Stack.Screen name="PhoneVerificationScreen" component={PhoneVerificationScreen} />
               <Stack.Screen name="JobLandingScreen" component={JobLandingScreen} />
               <Stack.Screen name="JobApplicant" component={JobApplicant} />
               <Stack.Screen name="AddJob" component={AddJob} />
