@@ -497,7 +497,7 @@ export function AddJob({ navigation, route }: AddJobProps) {
           </View>
         </LabelWrapper>
 
-        <ImageUploadArea isDisabled = {false}/>
+        <ImageUploadArea isDisabled={false} />
         {isValid[fieldNames.imageSelect] ? (
           <></>
         ) : (
