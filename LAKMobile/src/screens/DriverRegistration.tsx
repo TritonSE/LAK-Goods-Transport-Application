@@ -216,7 +216,7 @@ export function DriverRegistration({ navigation }: DriverRegistrationProps) {
         </LabelWrapper>
 
         <LabelWrapper label="Photo of Vehicle">
-          <ImageUploadArea isDisabled={false} />
+          <ImageUploadArea />
         </LabelWrapper>
 
         <View style={styles.center}>
