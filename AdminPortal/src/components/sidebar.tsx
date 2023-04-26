@@ -26,9 +26,9 @@ export function Sidebar({ currentPage }: SidebarProps) {
           <div className={styles.menu}>
             <button type="button" className={styles.sidebarButton}>
               <a
-                href="./settings"
+                href="./dashboard"
                 className={
-                  currentPage === '/settings'
+                  currentPage === '/dashboard'
                     ? styles.active
                     : styles.buttonText
                 }
