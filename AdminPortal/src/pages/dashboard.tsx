@@ -4,6 +4,7 @@ import Dropdown from 'react-bootstrap/Dropdown';
 import 'bootstrap/dist/css/bootstrap.min.css';
 import { Sidebar } from '@/components/sidebar';
 import Select, { InputActionMeta } from 'react-select';
+import { getAllUsers } from '../../../LakMobile/src/api/consumer'
 
 const data = [
   {
@@ -205,6 +206,10 @@ export default function App() {
       )
     );
   }, [selectAllClicked, activeTab]);
+
+  useEffect(() => {
+    console.log(getAllUsers());
+  })
 
   const handleItemCheckbox = (id: number): void => {
     setItems(

@@ -2,7 +2,7 @@
 import express from 'express';
 import multer from 'multer';
 
-import { getUser, getUsers, registerUser, updateUser } from '../services/user';
+import { getAllUsers, getUser, getUsers, registerUser, updateUser } from '../services/user';
 import { getSessionUserId } from '../helpers';
 import {
   VERIFICATION_STATUS_FIELDS,
@@ -31,6 +31,16 @@ routes.get('/:userid', async (req, res, next) => {
     message: `User document sent as ${user}`,
     user: user,
   });
+});
+
+// Get all Method
+routes.get("/getAll", async (req, res, next) => {
+  try {
+    const data = await getAllUsers();
+    res.json(data);
+  } catch (error) {
+    next(error);
+  }
 });
 
 // Note that this should ideally be a GET request because this does not

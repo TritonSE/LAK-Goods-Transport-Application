@@ -31,6 +31,15 @@ export async function getUser(requestedUserId, requestingUserId) {
   return user;
 }
 
+export async function getAllUsers() {
+  try {
+    const users = await UserModel.find();
+    return users;
+  } catch (error) {
+    throw ServiceError.USER_NOT_FOUND;
+  }
+}
+
 export async function getUsers(userIds, requestingUserId) {
   console.debug(
     `SERVICE: getUsers service running: userIds - ${userIds} requested by ${requestingUserId}`

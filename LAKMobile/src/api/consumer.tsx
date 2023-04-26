@@ -42,6 +42,26 @@ export const getUsersByIds = async (userIds: Array<string>): Promise<UserData[]>
   }
 };
 
+export const getAllUsers = async (): Promise<UserData[]> => {
+  try {
+    const url = `${USERS_URL}/getAll?`;
+    const response = await fetch(url, {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify({
+        userIds: [],
+      }),
+    });
+    let data = await response.json();
+    data = data.users;
+    return data;
+  } catch {
+    return [];
+  }
+};
+
 /** Might consider removing */
 export const getJobsByIds = async (user: string, jobIds: string[]): Promise<JobData[]> => {
   try {
