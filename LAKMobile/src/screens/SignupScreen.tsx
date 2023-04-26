@@ -39,7 +39,7 @@ export function SignupScreen({ navigation }: SignupProps) {
 
   const validatePhone = (): boolean => {
     // phone number must be 10-digit number
-    const phoneRegex = new RegExp('^[0-9]{10}$');
+    const phoneRegex = new RegExp('[0-9+]');
     const valid = phoneRegex.test(phoneNumber);
     setPhoneValid(valid);
     return valid;
@@ -122,7 +122,7 @@ export function SignupScreen({ navigation }: SignupProps) {
           type="phoneNumber"
           isValid={!isSignupPressed || phoneValid}
           errMsg="Valid mobile number required."
-          maxLength={10}
+          maxLength={16}
           keyboardType="default"
         />
       </LabelWrapper>

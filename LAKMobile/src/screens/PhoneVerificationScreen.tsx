@@ -27,13 +27,15 @@ export function PhoneVerificationScreen({ navigation, route }: PhoneVerification
     return valid;
   };
 
-  const sendSMSCode = () =>
+  const sendSMSCode = (mode: string) => {
     auth
-      .sendSMSCode(phone, recaptchaVerifier.current)
+      .sendSMSCode(phone, recaptchaVerifier.current, mode)
       .then((verificationID) => setVerificationID(verificationID));
 
+  }
+  
   useEffect(() => {
-    sendSMSCode();
+    sendSMSCode(mode);
   }, []);
 
   const onSubmit = async () => {
@@ -47,9 +49,12 @@ export function PhoneVerificationScreen({ navigation, route }: PhoneVerification
       // sign up with their phone.
       const { firstName, lastName, phoneNumber, location, pin } = route.params.userData;
       setLoading(true);
+      console.log('about to verify user');
       const success = await auth.verifyPhone(verificationID, verificationCode);
       if (success) {
-        const user = await auth.registerUser(firstName, lastName, phoneNumber, location, pin);
+        console.log('success, about to register user');
+        const user = await auth.registerUser(firstName, lastName, phoneNumber, location, pin, mode);
+        console.log('after registering, user=', user);
         setLoading(false);
         if (user !== null) {
           navigation.navigate('JobLandingScreen');
@@ -108,7 +113,7 @@ export function PhoneVerificationScreen({ navigation, route }: PhoneVerification
           <AppButton
             type="link"
             title="Resend Code"
-            onPress={sendSMSCode}
+            onPress={() => sendSMSCode('reset')}
             style={styles.resendCodeLink}
             textStyle={styles.resendCodeLinkText}
           />

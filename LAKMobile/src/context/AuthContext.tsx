@@ -51,9 +51,10 @@ export type AuthState = {
     lastName: string,
     phone: string,
     location: string,
-    pin: string
+    pin: string,
+    mode: string
   ) => Promise<User | null>;
-  sendSMSCode: (phone: string, recaptcha: ApplicationVerifier) => Promise<string>;
+  sendSMSCode: (phone: string, recaptcha: ApplicationVerifier, mode: string) => Promise<string>;
   verifyPhone: (verificationId: string, verificationCode: string) => Promise<boolean>;
 };
 
@@ -153,15 +154,16 @@ export const AuthProvider: React.FC<Props> = ({ children }) => {
    * @param recaptcha The recaptchaVerifier set up on the screen.
    * @returns A verificationId to be used with verifyPhone.
    */
-  const sendSMSCode = async (phone: string, recaptcha: ApplicationVerifier): Promise<string> => {
+  const sendSMSCode = async (phone: string, recaptcha: ApplicationVerifier, mode: string): Promise<string> => {
     try {
       const auth = getAuth(app);
-      const signInMethods = await fetchSignInMethodsForEmail(auth, phone);
-      if (signInMethods.length === 0) {
+      const signInMethods = await fetchSignInMethodsForEmail(auth, phoneNumberToEmail(phone));
+      if (mode === 'reset' && signInMethods.length === 0) {
         // Email does not exist.
         setError(new Error('Phone number is not registered!'));
         return '';
       }
+      console.log(phone);
       const phoneProvider = new PhoneAuthProvider(auth);
       const verificationId = await phoneProvider.verifyPhoneNumber(phone, recaptcha);
       return verificationId;
@@ -206,18 +208,33 @@ export const AuthProvider: React.FC<Props> = ({ children }) => {
     lastName: string,
     phone: string,
     location: string,
-    pin: string
+    pin: string,
+    mode: string
   ): Promise<User | null> => {
     if (!user) {
+      console.log('the user is null');
       // Return false if the user isn't currently signed in (verified via phone).
       return null;
     }
     try {
+      console.log('inside register user', firstName, lastName, phone);
+
+      // may need 2 separate cases depending on if mode = reset or signup
+      // if signup, signInWithEmailAndPassword, then linkWithCredential
+
       // First, let's try to link the PIN sign in to the phone account in Firebase.
       const email = phoneNumberToEmail(phone);
       const password = await pinToPass(pin);
+      console.log('got email and pwd', email, password);
+      console.log('attemptimg to credential with email');
       const credential = await EmailAuthProvider.credential(email, password);
-      await linkWithCredential(user, credential);
+      console.log(credential);
+      // if (mode === 'signup') {
+
+      // }
+      const userCredential = await linkWithCredential(user, credential);
+      console.log('linked', userCredential);
+      console.log('creating user');
 
       // Next, we make a call to save this user in our backend.
       await createNewUser({
@@ -228,8 +245,10 @@ export const AuthProvider: React.FC<Props> = ({ children }) => {
         location,
       });
       setUser(user);
+      console.log('created and set user', user);
       return user;
     } catch (e) {
+      console.log('ERROR', e);
       setFirebaseError(e as FirebaseError | Error);
       setUser(null);
       return null;
