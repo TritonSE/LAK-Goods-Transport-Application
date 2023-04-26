@@ -105,7 +105,7 @@ export function AddJob({ navigation, route }: AddJobProps) {
   };
 
   const validatePhoneNumber: Validator = (text: string) => {
-    const valid = (text.startsWith('1') || text.startsWith('7')) && text.length == 8;
+    const valid = text.length == 10;
     return valid;
   };
 
@@ -178,10 +178,12 @@ export function AddJob({ navigation, route }: AddJobProps) {
 
   useEffect(() => {
     getUser(userId, userId).then((user) => {
-      setClientName(user.firstName + ' ' + user.lastName);
-      setPhoneNumber(user.phone || '');
-      setPickupLocation(user.location.split(';')[0] || '');
-      setPickupDistrict(user.location.split(';')[1] || PICKER_DEFAULT);
+      if (user) {
+        setClientName(user.firstName + ' ' + user.lastName);
+        setPhoneNumber(user.phone || '');
+        setPickupLocation(user.location.split(';')[0] || '');
+        setPickupDistrict(user.location.split(';')[1] || PICKER_DEFAULT);
+      }
     });
   }, [userId]);
 
@@ -403,8 +405,7 @@ export function AddJob({ navigation, route }: AddJobProps) {
             maxLength={10}
             type="deliveryDate"
             keyboardType="default"
-            errMsg="Please put in a date or N/A if not applicable"
-            instructionText="put N/A if not applicable"
+            errMsg="Please put in a valid date"
           />
         </LabelWrapper>
 

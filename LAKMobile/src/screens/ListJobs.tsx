@@ -17,6 +17,7 @@ import { PickerStyles, FlatListStyles } from '../styles';
 import { AuthContext } from '../context/AuthContext';
 import { NoJobsIcon, NoMatchingJobsIcon, PlusSignIcon } from '../icons';
 import { InfoBox } from '../components/InfoBox';
+import { useIsFocused } from '@react-navigation/native';
 
 type ListJobsModes = 'Add' | 'Find';
 type JobTypePickerOption = 'Current Jobs' | 'Completed Jobs' | 'Your Jobs' | 'Finished Jobs';
@@ -39,10 +40,11 @@ export function ListJobs({ navigation, mode }: ListJobsProps) {
   const [searchString, setSearchString] = useState<string | null>(null);
   const [jobs, setJobs] = useState<JobData[] | JobOwnerView[]>([]);
 
+  const isFocused = useIsFocused();
+
   // NOTE: Page 0 is being used as a null page, but the first page is 1.
   // Added this so that we are able to trigger hooks dependent on `page` when type of screen changes but page number does not
   const [page, setPage] = useState(0);
-
   const [loading, setLoading] = useState(false);
   const [isRefreshing, setRefreshing] = useState(false);
   const [allLoaded, setAllLoaded] = useState(false);
@@ -64,32 +66,34 @@ export function ListJobs({ navigation, mode }: ListJobsProps) {
 
   // Note: This should refresh every time we have a onFocus...
   useEffect(() => {
-    getUser(userId, userId).then((user) => {
-      if (user) {
-        const driverVerificationStatus = getDriverVerificationStatus(user);
-        if (driverVerificationStatus === 'Not Applied') {
-          setDriverRegistrationWarning(
-            <InfoBox
-              text={'Register as a driver to apply to jobs.'}
-              buttonText={'Register'}
-              onPress={() => navigation.navigate('DriverRegistration')}
-            />
-          );
-        } else if (
-          driverVerificationStatus === 'Applied' ||
-          driverVerificationStatus === 'In Review'
-        ) {
-          setDriverRegistrationWarning(
-            <InfoBox
-              text={
-                'Your driver registration is under review.\nYou can apply to jobs once approved.'
-              }
-            />
-          );
+    if (isFocused) {
+      getUser(userId, userId).then((user) => {
+        if (user) {
+          const driverVerificationStatus = getDriverVerificationStatus(user);
+          if (driverVerificationStatus === 'Not Applied') {
+            setDriverRegistrationWarning(
+              <InfoBox
+                text={'Register as a driver to apply to jobs.'}
+                buttonText={'Register'}
+                onPress={() => navigation.navigate('DriverRegistration')}
+              />
+            );
+          } else if (
+            driverVerificationStatus === 'Applied' ||
+            driverVerificationStatus === 'In Review'
+          ) {
+            setDriverRegistrationWarning(
+              <InfoBox
+                text={
+                  'Your driver registration is under review.\nYou can apply to jobs once approved.'
+                }
+              />
+            );
+          }
         }
-      }
-    });
-  }, [navigation, userId]);
+      });
+    }
+  }, [navigation, userId, isFocused]);
 
   const resetJobsOnPage = () => {
     setJobs([]);
