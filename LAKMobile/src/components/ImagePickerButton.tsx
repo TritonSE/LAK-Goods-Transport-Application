@@ -7,22 +7,22 @@ import { COLORS } from '../../constants';
 interface ImagePickerButtonProps {
   sourceURI?: string;
   onSelect: () => void;
-  isDisabled: boolean;
+  disabled?: boolean;
 }
 
-export function ImagePickerButton({ sourceURI, onSelect, isDisabled }: ImagePickerButtonProps) {
+export function ImagePickerButton({ sourceURI, onSelect, disabled }: ImagePickerButtonProps) {
   return (
     <Pressable
       onPress={onSelect}
-      disabled={isDisabled}
-      style={isDisabled ? styles.disabledButton : styles.button}
+      disabled={disabled}
+      style={disabled ? styles.disabledButton : styles.button}
     >
       {sourceURI ? (
         <Image resizeMode="cover" source={{ uri: sourceURI }} style={styles.image} />
       ) : (
         <>
-          <Icon name="camera-plus" size={30} color={isDisabled ? COLORS.gray : 'black'} />
-          <AppText style={isDisabled ? styles.disabledLabel : styles.label}>
+          <Icon name="camera-plus" size={30} color={disabled ? COLORS.gray : 'black'} />
+          <AppText style={disabled ? styles.disabledLabel : styles.label}>
             Upload or take a photo.
           </AppText>
         </>

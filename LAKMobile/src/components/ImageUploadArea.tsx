@@ -6,14 +6,14 @@ import { ModalAlert } from './ModalAlert';
 import { ImageUploadContext } from '../context/ImageUploadContext';
 
 interface ImageUploadAreaProps {
-  isDisabled: boolean;
+  disabled?: boolean;
 }
 
 /**
  * This component handles the image uploading interface for forms like AddJob, EditProfileScreen,
  * and DriverRegistration. The forms can then access the uploaded images through ImageUploadContext.
  */
-export function ImageUploadArea({ isDisabled }: ImageUploadAreaProps) {
+export function ImageUploadArea({ disabled }: ImageUploadAreaProps) {
   const { dispatch, imageURIs } = useContext(ImageUploadContext);
   const [permissionAlertVisible, setPermissionAlertVisible] = useState(false);
   const [imagePickPromptVisible, setImagePickPromptVisible] = useState(false);
@@ -62,7 +62,7 @@ export function ImageUploadArea({ isDisabled }: ImageUploadAreaProps) {
       <View style={styles.photos}>
         {imageURIs.map((uri, index) => (
           <ImagePickerButton
-            isDisabled={isDisabled}
+            disabled={disabled}
             key={index}
             sourceURI={uri}
             onSelect={() => handleTapImage(index)}
