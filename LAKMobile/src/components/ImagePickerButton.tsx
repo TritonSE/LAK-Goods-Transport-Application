@@ -11,15 +11,20 @@ interface ImagePickerButtonProps {
 }
 
 export function ImagePickerButton({ sourceURI, onSelect, isDisabled }: ImagePickerButtonProps) {
-  
   return (
-    <Pressable onPress={onSelect} disabled={isDisabled} style={isDisabled ? styles.disabledButton: styles.button}>
+    <Pressable
+      onPress={onSelect}
+      disabled={isDisabled}
+      style={isDisabled ? styles.disabledButton : styles.button}
+    >
       {sourceURI ? (
         <Image resizeMode="cover" source={{ uri: sourceURI }} style={styles.image} />
       ) : (
         <>
           <Icon name="camera-plus" size={30} color={isDisabled ? COLORS.gray : 'black'} />
-          <AppText style={isDisabled ? styles.disabledLabel : styles.label}>Upload or take a photo.</AppText>
+          <AppText style={isDisabled ? styles.disabledLabel : styles.label}>
+            Upload or take a photo.
+          </AppText>
         </>
       )}
     </Pressable>
@@ -36,7 +41,7 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
     alignItems: 'center',
   },
-  
+
   disabledButton: {
     margin: 15,
     width: 90,
@@ -51,14 +56,14 @@ const styles = StyleSheet.create({
   disabledLabel: {
     fontSize: 10,
     textAlign: 'center',
-    color: COLORS.gray
+    color: COLORS.gray,
   },
-  
+
   label: {
     fontSize: 10,
     textAlign: 'center',
   },
-  
+
   image: {
     width: '100%',
     height: '100%',
