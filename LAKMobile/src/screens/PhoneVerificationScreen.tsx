@@ -10,7 +10,7 @@ import firebaseConfig from '../../firebase-config.json';
 export function PhoneVerificationScreen({ navigation, route }: PhoneVerificationScreenProps) {
   const auth = useContext(AuthContext);
 
-  const phone = route.params.phone;
+  const phone = route.params.phoneNumber;
   const mode = route.params.mode;
   const [verificationID, setVerificationID] = useState<string>('');
   const [verificationCode, setVerificationCode] = useState<string>('');
@@ -49,12 +49,10 @@ export function PhoneVerificationScreen({ navigation, route }: PhoneVerification
       // sign up with their phone.
       const { firstName, lastName, phoneNumber, location, pin } = route.params.userData;
       setLoading(true);
-      console.log('about to verify user');
       const success = await auth.verifyPhone(verificationID, verificationCode);
       if (success) {
-        console.log('success, about to register user');
+        // also register the user in the backend and link their email/phone in firebase
         const user = await auth.registerUser(firstName, lastName, phoneNumber, location, pin, mode);
-        console.log('after registering, user=', user);
         setLoading(false);
         if (user !== null) {
           navigation.navigate('JobLandingScreen');

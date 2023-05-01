@@ -4,7 +4,6 @@ import { StyleSheet, View } from 'react-native';
 import {
   SignupScreen,
   LoginScreen,
-  ForgotPassword,
   PhoneVerificationScreen,
   AddJob,
   ProfileScreen,
@@ -39,7 +38,6 @@ export default function App() {
               <Stack.Screen name="Login" component={LoginScreen} />
               <Stack.Screen name="Signup" component={SignupScreen} />
               <Stack.Screen name="ResetPassword" component={ResetPassword} />
-              <Stack.Screen name="ForgotPassword" component={ForgotPassword} />
               <Stack.Screen name="ResetSuccess" component={ResetSuccess} />
               <Stack.Screen name="ConfirmPhoneScreen" component={ConfirmPhoneScreen} />
               <Stack.Screen name="PhoneVerificationScreen" component={PhoneVerificationScreen} />

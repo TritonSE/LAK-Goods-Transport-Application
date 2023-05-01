@@ -10,6 +10,7 @@ import {
   linkWithCredential,
   fetchSignInMethodsForEmail,
   EmailAuthProvider,
+  reauthenticateWithCredential,
 } from 'firebase/auth';
 
 import firebaseConfig from '../../firebase-config.json';
@@ -157,13 +158,16 @@ export const AuthProvider: React.FC<Props> = ({ children }) => {
   const sendSMSCode = async (phone: string, recaptcha: ApplicationVerifier, mode: string): Promise<string> => {
     try {
       const auth = getAuth(app);
+
       const signInMethods = await fetchSignInMethodsForEmail(auth, phoneNumberToEmail(phone));
+      
+      // if the user is trying to reset their password but no identifier (email) exists in firebase, throw error
       if (mode === 'reset' && signInMethods.length === 0) {
-        // Email does not exist.
         setError(new Error('Phone number is not registered!'));
         return '';
       }
-      console.log(phone);
+      console.log('sending SMS Code function. MODE = ', mode);
+      // given the phone number, verify recaptcha was successful (stored in verificationId)
       const phoneProvider = new PhoneAuthProvider(auth);
       const verificationId = await phoneProvider.verifyPhoneNumber(phone, recaptcha);
       return verificationId;
@@ -173,6 +177,8 @@ export const AuthProvider: React.FC<Props> = ({ children }) => {
       return '';
     }
   };
+
+
 
   /**
    * Verifies an SMS code sent to a phone. On success, signs in the user.
@@ -186,8 +192,14 @@ export const AuthProvider: React.FC<Props> = ({ children }) => {
   ): Promise<boolean> => {
     try {
       const auth = getAuth(app);
+
+      // create a new credential given the OTP code and recaptcha verificationId
       const credential = PhoneAuthProvider.credential(verificationId, verificationCode);
+
+      // create a new identifier in firebase with the phone number
       const userCredential = await signInWithCredential(auth, credential);
+
+      // set the user to the newly signed in user credential
       setUser(userCredential.user);
       return true;
     } catch (e) {
@@ -211,41 +223,43 @@ export const AuthProvider: React.FC<Props> = ({ children }) => {
     pin: string,
     mode: string
   ): Promise<User | null> => {
+
+    // if the user is signed in and verified via their phone, their identifier should be created
+    // in firebase and be attached to auth.currentUser
+    const auth = getAuth(app);
+    const user = auth.currentUser;
+
     if (!user) {
-      console.log('the user is null');
       // Return false if the user isn't currently signed in (verified via phone).
       return null;
     }
     try {
-      console.log('inside register user', firstName, lastName, phone);
 
-      // may need 2 separate cases depending on if mode = reset or signup
-      // if signup, signInWithEmailAndPassword, then linkWithCredential
-
-      // First, let's try to link the PIN sign in to the phone account in Firebase.
+      // Create a new email credential given the user's email and password
       const email = phoneNumberToEmail(phone);
       const password = await pinToPass(pin);
       console.log('got email and pwd', email, password);
       console.log('attemptimg to credential with email');
       const credential = await EmailAuthProvider.credential(email, password);
-      console.log(credential);
-      // if (mode === 'signup') {
 
-      // }
-      const userCredential = await linkWithCredential(user, credential);
-      console.log('linked', userCredential);
-      console.log('creating user');
+      // reload to refresh the user token
+      // then link the newly created email identifier with the existing phone number identifier within Firebase
+      user.reload().then(async () => {
+        const combinedCredential = await linkWithCredential(user, credential);
 
-      // Next, we make a call to save this user in our backend.
-      await createNewUser({
-        userId: user.uid,
-        firstName,
-        lastName,
-        phone,
-        location,
+        const updatedUser = combinedCredential.user;
+  
+        // Next, we make a call to save this user in our backend.
+        await createNewUser({
+          userId: updatedUser.uid,
+          firstName,
+          lastName,
+          phone,
+          location,
+        });
+        setUser(updatedUser);
       });
-      setUser(user);
-      console.log('created and set user', user);
+
       return user;
     } catch (e) {
       console.log('ERROR', e);

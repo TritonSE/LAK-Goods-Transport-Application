@@ -89,7 +89,7 @@ export function SignupScreen({ navigation }: SignupProps) {
         return;
       }
       navigation.navigate('PhoneVerificationScreen', {
-        phone: phoneNumber,
+        phoneNumber: phoneNumber,
         mode: 'signup',
         userData: { firstName, lastName, phoneNumber, location, pin },
       });

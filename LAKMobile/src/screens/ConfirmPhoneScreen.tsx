@@ -1,11 +1,24 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import { StyleSheet, View } from 'react-native';
 import { AppText, LabelWrapper, AppButton, ScreenHeader, AppTextInput } from '../components';
 import { COLORS } from '../../constants';
 import { ConfirmPhoneScreenProps } from '../types/navigation';
 
 export function ConfirmPhoneScreen({ navigation }: ConfirmPhoneScreenProps) {
-  const [phone, setPhone] = useState<string>('');
+  const [phoneNumber, setPhoneNumber] = useState<string>('');
+
+  const [phoneValid, setPhoneValid] = useState(false);
+
+  const validatePhone = (): boolean => {
+    const phoneRegex = new RegExp('[0-9+]');
+    const valid = phoneRegex.test(phoneNumber);
+    setPhoneValid(valid);
+    return valid;
+  };
+
+  useEffect(() => {
+    validatePhone();
+  }, [phoneNumber])
 
   return (
     <>
@@ -17,11 +30,11 @@ export function ConfirmPhoneScreen({ navigation }: ConfirmPhoneScreenProps) {
 
         <LabelWrapper label="Mobile Number">
           <AppTextInput
-            value={phone}
+            value={phoneNumber}
             style={smallInputStyle}
-            changeAction={setPhone}
+            changeAction={setPhoneNumber}
             keyboardType="numeric"
-            //isValid={validCode}
+            isValid={phoneValid}
             errMsg="Please enter a valid phone number."
           />
         </LabelWrapper>
@@ -29,7 +42,7 @@ export function ConfirmPhoneScreen({ navigation }: ConfirmPhoneScreenProps) {
         <AppButton
           type={'primary'}
           title="Submit"
-          onPress={() => navigation.navigate('PhoneVerificationScreen', { phone, mode: 'reset' })}
+          onPress={() => navigation.navigate('PhoneVerificationScreen', { phoneNumber, mode: 'reset' })}
           style={styles.submitButton}
         />
       </View>

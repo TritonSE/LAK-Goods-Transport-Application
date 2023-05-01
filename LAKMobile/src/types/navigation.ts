@@ -7,7 +7,7 @@ export type RootStackParamList = {
   ResetPassword: undefined;
   ConfirmPhoneScreen: undefined;
   PhoneVerificationScreen: {
-    phone: string;
+    phoneNumber: string;
     mode: 'signup' | 'reset';
     userData?: {
       firstName: string;
@@ -18,7 +18,6 @@ export type RootStackParamList = {
     };
   };
   ResetSuccess: undefined;
-  ForgotPassword: undefined;
   JobApplicant: {
     jobData: JobOwnerView;
     setJobData: React.Dispatch<React.SetStateAction<JobData[] | JobOwnerView[]>>;
@@ -53,7 +52,6 @@ export type PhoneVerificationScreenProps = NativeStackScreenProps<
   'PhoneVerificationScreen'
 >;
 export type ResetSuccessProps = NativeStackScreenProps<RootStackParamList, 'ResetSuccess'>;
-export type ForgotPasswordProps = NativeStackScreenProps<RootStackParamList, 'ForgotPassword'>;
 export type JobApplicantProps = NativeStackScreenProps<RootStackParamList, 'JobApplicant'>;
 export type AddJobProps = NativeStackScreenProps<RootStackParamList, 'AddJob'>;
 export type JobLandingScreenProps = NativeStackScreenProps<RootStackParamList, 'JobLandingScreen'>;

@@ -19,7 +19,7 @@ export function LoginScreen({ navigation }: LoginProps) {
   const auth = useContext(AuthContext);
 
   const validatePhone = (): boolean => {
-    const phoneRegex = new RegExp('^[0-9]{10}$');
+    const phoneRegex = new RegExp('[0-9+]');
     const valid = phoneRegex.test(phoneNumber);
     setPhoneValid(valid);
     return valid;

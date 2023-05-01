@@ -1,7 +1,6 @@
 export * from './SignupScreen';
 export * from './LoginScreen';
 export * from './AddJob';
-export * from './ForgotPassword';
 export * from './PhoneVerificationScreen';
 export * from './ListJobs';
 export * from './JobLandingScreen';
