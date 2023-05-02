@@ -18,7 +18,7 @@ export function ConfirmPhoneScreen({ navigation }: ConfirmPhoneScreenProps) {
 
   useEffect(() => {
     validatePhone();
-  }, [phoneNumber])
+  }, [phoneNumber]);
 
   return (
     <>
@@ -42,7 +42,9 @@ export function ConfirmPhoneScreen({ navigation }: ConfirmPhoneScreenProps) {
         <AppButton
           type={'primary'}
           title="Submit"
-          onPress={() => navigation.navigate('PhoneVerificationScreen', { phoneNumber, mode: 'reset' })}
+          onPress={() =>
+            navigation.navigate('PhoneVerificationScreen', { phoneNumber, mode: 'reset' })
+          }
           style={styles.submitButton}
         />
       </View>

@@ -31,9 +31,8 @@ export function PhoneVerificationScreen({ navigation, route }: PhoneVerification
     auth
       .sendSMSCode(phone, recaptchaVerifier.current, mode)
       .then((verificationID) => setVerificationID(verificationID));
+  };
 
-  }
-  
   useEffect(() => {
     sendSMSCode(mode);
   }, []);
@@ -52,7 +51,7 @@ export function PhoneVerificationScreen({ navigation, route }: PhoneVerification
       const success = await auth.verifyPhone(verificationID, verificationCode);
       if (success) {
         // also register the user in the backend and link their email/phone in firebase
-        const user = await auth.registerUser(firstName, lastName, phoneNumber, location, pin, mode);
+        const user = await auth.registerUser(firstName, lastName, phoneNumber, location, pin);
         setLoading(false);
         if (user !== null) {
           navigation.navigate('JobLandingScreen');

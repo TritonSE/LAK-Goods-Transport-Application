@@ -10,7 +10,6 @@ import {
   linkWithCredential,
   fetchSignInMethodsForEmail,
   EmailAuthProvider,
-  reauthenticateWithCredential,
 } from 'firebase/auth';
 
 import firebaseConfig from '../../firebase-config.json';
@@ -52,8 +51,7 @@ export type AuthState = {
     lastName: string,
     phone: string,
     location: string,
-    pin: string,
-    mode: string
+    pin: string
   ) => Promise<User | null>;
   sendSMSCode: (phone: string, recaptcha: ApplicationVerifier, mode: string) => Promise<string>;
   verifyPhone: (verificationId: string, verificationCode: string) => Promise<boolean>;
@@ -155,12 +153,16 @@ export const AuthProvider: React.FC<Props> = ({ children }) => {
    * @param recaptcha The recaptchaVerifier set up on the screen.
    * @returns A verificationId to be used with verifyPhone.
    */
-  const sendSMSCode = async (phone: string, recaptcha: ApplicationVerifier, mode: string): Promise<string> => {
+  const sendSMSCode = async (
+    phone: string,
+    recaptcha: ApplicationVerifier,
+    mode: string
+  ): Promise<string> => {
     try {
       const auth = getAuth(app);
 
       const signInMethods = await fetchSignInMethodsForEmail(auth, phoneNumberToEmail(phone));
-      
+
       // if the user is trying to reset their password but no identifier (email) exists in firebase, throw error
       if (mode === 'reset' && signInMethods.length === 0) {
         setError(new Error('Phone number is not registered!'));
@@ -177,8 +179,6 @@ export const AuthProvider: React.FC<Props> = ({ children }) => {
       return '';
     }
   };
-
-
 
   /**
    * Verifies an SMS code sent to a phone. On success, signs in the user.
@@ -220,10 +220,8 @@ export const AuthProvider: React.FC<Props> = ({ children }) => {
     lastName: string,
     phone: string,
     location: string,
-    pin: string,
-    mode: string
+    pin: string
   ): Promise<User | null> => {
-
     // if the user is signed in and verified via their phone, their identifier should be created
     // in firebase and be attached to auth.currentUser
     const auth = getAuth(app);
@@ -234,7 +232,6 @@ export const AuthProvider: React.FC<Props> = ({ children }) => {
       return null;
     }
     try {
-
       // Create a new email credential given the user's email and password
       const email = phoneNumberToEmail(phone);
       const password = await pinToPass(pin);
@@ -248,7 +245,7 @@ export const AuthProvider: React.FC<Props> = ({ children }) => {
         const combinedCredential = await linkWithCredential(user, credential);
 
         const updatedUser = combinedCredential.user;
-  
+
         // Next, we make a call to save this user in our backend.
         await createNewUser({
           userId: updatedUser.uid,
