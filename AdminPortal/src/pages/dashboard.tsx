@@ -4,6 +4,7 @@ import Dropdown from 'react-bootstrap/Dropdown';
 import 'bootstrap/dist/css/bootstrap.min.css';
 import { Sidebar } from '@/components/sidebar';
 import Select, { InputActionMeta } from 'react-select';
+// import { API_URL } from '@env';
 
 const data = [
   {
@@ -98,6 +99,35 @@ export default function App() {
   tabMapping.set('In Review', 2);
   tabMapping.set('Verified', 3);
   tabMapping.set('Disapproved', 4);
+
+  const USERS_URL = `http://localhost:3000/api/users`;
+  const getAllDrivers = async () => {
+    try {
+      const url = `${USERS_URL}/get-all-users?`;
+      const response = await fetch(url, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: '',
+      });
+      let data = await response.json();
+      data = data.users;
+      return data;
+    } catch {
+      return [];
+    }
+  };
+
+  useEffect(() => {
+    let users = getAllDrivers();
+    users.then((value) => {
+      console.log(value);
+    });
+    console.log("ABCCCC")
+    
+  });
+
 
   const [items, setItems] = useState<DataItem[]>([
     {
