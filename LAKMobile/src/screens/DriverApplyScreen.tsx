@@ -141,7 +141,7 @@ export function DriverApplyScreen({ navigation, route }: DriverApplyScreenProps)
           rejectVisible={true}
           checkMarkAppear={true}
           title={'Mark as delivered?'}
-          body={`This job will be considered as finished. You can find it in your “Finished Jobs.”`}
+          body={`This job will be considered as finished. You can find it in your "Finished Jobs."`}
           acceptName={'Confirm'}
           rejectName={'Back'}
           onAccept={async () => await completeJob(userId, jobData._id)}
