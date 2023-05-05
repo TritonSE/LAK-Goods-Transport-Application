@@ -2,7 +2,7 @@
 import express from 'express';
 import multer from 'multer';
 
-import { getUser, getUsers, registerUser, updateUser } from '../services/user';
+import { getAllUsers, getUser, getUsers, registerUser, updateUser } from '../services/user';
 import { getSessionUserId } from '../helpers';
 import {
   VERIFICATION_STATUS_FIELDS,
@@ -45,6 +45,23 @@ routes.post('/get-by-ids', async (req, res, next) => {
     const requestingUserId = getSessionUserId(req);
     users = await getUsers(userIds, requestingUserId);
   } catch (e) {
+    console.log(e)
+    next(e);
+    return;
+  }
+  res
+    .status(200)
+    .json({ message: `User documents sent as ${users}`, users: users });
+});
+
+routes.post('/get-all-users', async (req, res, next) => {
+  console.info(`ROUTES: Getting all users`);
+  let users = null;
+  try {
+    const requestingUserId = getSessionUserId(req);
+    users = await getAllUsers(requestingUserId);
+  } catch (e) {
+    console.log(e)
     next(e);
     return;
   }

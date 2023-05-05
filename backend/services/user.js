@@ -15,7 +15,7 @@ export async function getUser(requestedUserId, requestingUserId) {
   );
 
   let user = await UserModel.findOne({ _id: requestedUserId });
-
+  console.log(user)
   if (!user)
     throw ServiceError.USER_NOT_FOUND.addContext(
       'requestedUserId - ',
@@ -29,6 +29,29 @@ export async function getUser(requestedUserId, requestingUserId) {
   }
 
   return user;
+}
+
+export async function getAllUsers(requestingUserId) {
+  console.debug(
+    `SERVICE: getAllUsers service running`
+  );
+  console.log('AHHHHHHHHHHHHH')
+  let users = await UserModel.find();
+
+  if (!users)
+    throw ServiceError.USER_NOT_FOUND.addContext(
+      'getAllUsers failed'
+    );
+
+  console.log('AHHHHHHHHHHHHH')
+  console.log(users)
+  users = users.toObject();
+
+  if (requestedUserId !== requestingUserId) {
+    OWNER_LIMITED_FIELDS.forEach((field) => delete user[field]);
+  }
+  console.log(users)
+  return users;
 }
 
 export async function getUsers(userIds, requestingUserId) {
