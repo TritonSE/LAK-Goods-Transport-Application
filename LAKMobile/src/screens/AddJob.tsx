@@ -121,11 +121,11 @@ export function AddJob({ navigation, route }: AddJobProps) {
 
   const validators = {
     presence: validatePresence,
-    phoneNumber: validatePhoneNumber,
-    recieverPhoneNumber: validatePhoneNumber,
+    phoneNumber: () => true,
+    recieverPhoneNumber: () => true,
     date: validateDate,
     picker: validatePickerSelect,
-    image: validateImageUpload,
+    image: () => true,
   };
 
   const validatedFields: Array<ValidatedField> = [
@@ -177,10 +177,12 @@ export function AddJob({ navigation, route }: AddJobProps) {
 
   useEffect(() => {
     getUser(userId, userId).then((user) => {
-      setClientName(user.firstName + ' ' + user.lastName);
-      setPhoneNumber(user.phone || '');
-      setPickupLocation(user.location.split(';')[0] || '');
-      setPickupDistrict(user.location.split(';')[1] || PICKER_DEFAULT);
+      if (user) {
+        setClientName(user.firstName + ' ' + user.lastName);
+        setPhoneNumber(user.phone || '');
+        setPickupLocation(user.location.split(';')[0] || '');
+        setPickupDistrict(user.location.split(';')[1] || PICKER_DEFAULT);
+      }
     });
   }, [userId]);
 
@@ -221,9 +223,10 @@ export function AddJob({ navigation, route }: AddJobProps) {
     body: { [key: string]: any }
   ) => {
     const data = new FormData();
-    if (images !== null && images[0] !== null) {
-      images.map((image) => {
+    if (images !== null) {
+      images.filter((value) => value !== null).map((image) => {
         if (image !== null) {
+          console.log("here")
           const uriArray = image.uri.split('.');
           const fileExtension = uriArray[uriArray.length - 1]; // e.g.: "jpg"
           const fileTypeExtended = `${image.type}/${fileExtension}`; // e.g.: "image/jpg"
@@ -239,12 +242,15 @@ export function AddJob({ navigation, route }: AddJobProps) {
     Object.keys(body).forEach((key) => {
       data.append(key, body[key]);
     });
-
     return data;
   };
 
   const convertURIsToIds = (uris) => {
-    return uris.filter((value) => value !== '').map((uri) => uri.split("/").slice(-1)[0])
+    uris = uris.filter((value) => value !== '').map((uri) => uri.split("/").slice(-1)[0])
+    console.log(uris[0].split(".").length)
+    uris = uris.filter((value) => value.split(".").length < 2).map(uri => uri)
+    console.log(uris)
+    return uris
   }
 
   const submitJob = async () => {
@@ -268,7 +274,11 @@ export function AddJob({ navigation, route }: AddJobProps) {
       dropoffDistrict: dropoffDistrict.trim(),
       imageIds: convertURIsToIds(imageURIs),
     };
+    console.log("imageInfo")
+    console.log(imageInfo)
     const formedJob: FormData = createFormData(imageInfo, newJob);
+    console.log(newJob.imageIds)
+    console.log(formedJob._parts)
     dispatch({ type: 'CLEAR_IMAGES' });
     if (formType === 'add' || formType == 'repost') {
       postJob(userId, formedJob).then((response) => {
@@ -290,7 +300,7 @@ export function AddJob({ navigation, route }: AddJobProps) {
       if (!route.params.jobData) {
         return;
       }
-
+      console.log("here")
       updateJob(userId, route.params.jobData._id, formedJob).then((response) => {
         if (response === null) {
           return;

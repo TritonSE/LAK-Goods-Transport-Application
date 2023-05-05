@@ -135,6 +135,7 @@ export const updateJob = async (
       new URLSearchParams({
         user: userId,
       });
+    console.log("here 2")
     const response = await fetch(url, {
       method: 'PATCH',
       mode: 'cors',

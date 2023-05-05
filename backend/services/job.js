@@ -157,7 +157,12 @@ export async function updateJob(userId, jobId, jobData, jobImages) {
     })
   );
   // Add new images
-  const newImageIds = jobData.imageIds;
+  
+  const newImageIds = incomingImageIds || [];
+  console.log("imageId")
+  console.log(newImageIds)
+  console.log("images")
+  console.log(jobImages)
   await Promise.all(
     jobImages.map(async (image) => {
       const imageId = await saveImage(image);
