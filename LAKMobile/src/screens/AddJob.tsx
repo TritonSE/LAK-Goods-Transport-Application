@@ -85,7 +85,6 @@ export function AddJob({ navigation, route }: AddJobProps) {
   });
   const [jobTitle, setJobTitle] = useState('');
   const [clientName, setClientName] = useState('');
-  const [rawPhoneNumber, setRawPhoneNumber] = useState('');
   const [phoneNumber, setPhoneNumber] = useState('');
   const [receiverName, setReceiverName] = useState('');
   const [receiverPhoneNumber, setReceiverPhoneNumber] = useState('');
@@ -366,7 +365,7 @@ export function AddJob({ navigation, route }: AddJobProps) {
           <PhoneInput
             defaultCode="US"
             layout="first"
-            onChangeText={(text) => {
+            onChangeFormattedText={(text) => {
               setPhoneNumber(text);
             }}
             autoFocus
@@ -388,7 +387,7 @@ export function AddJob({ navigation, route }: AddJobProps) {
           <PhoneInput
             defaultCode="US"
             layout="first"
-            onChangeText={(text) => {
+            onChangeFormattedText={(text) => {
               setReceiverPhoneNumber(text);
             }}
             autoFocus
