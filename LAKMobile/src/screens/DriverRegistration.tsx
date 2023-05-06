@@ -7,7 +7,7 @@ import { COLORS } from '../../constants';
 import { AppButton, AppText, ScreenHeader, LabelWrapper, ModalAlert } from '../components';
 import { getUser, updateUser, UserData, VehicleData } from '../api';
 import { AuthContext } from '../context/AuthContext';
-import { ImageUploadContext } from '../context/ImageUploadContext';
+import { ImageUploadContext, convertURIsToIds } from '../context/ImageUploadContext';
 import { ImageUploadArea } from '../components/ImageUploadArea';
 
 export function DriverRegistration({ navigation }: DriverRegistrationProps) {
@@ -83,10 +83,6 @@ export function DriverRegistration({ navigation }: DriverRegistrationProps) {
 
     return data;
   };
-
-  const convertURIsToIds = (uris) => {
-    return uris.filter((value) => value !== '').map((uri) => uri.split("/").slice(-1)[0])
-  }
 
   const submitChanges = async () => {
     if (

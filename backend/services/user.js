@@ -106,16 +106,16 @@ export async function updateUser(userId, userData, userImages) {
   if (!originalUser) {
     throw ServiceError.USER_NOT_FOUND;
   }
-
+  
   // Ensure updated fields are only getting updated
   userData = filterObject(userData, FIELDS_USER_PERMITTED_TO_UPDATE);
+  const incomingImageIds = JSON.parse(userData.vehicleData).imageIds;
   if (userData.vehicleData) {
     const vehicleData = JSON.parse(userData.vehicleData);
     userData.vehicleData = vehicleData;
-    console.log(userData);
     if (userImages) {
       // Delete existing images
-      const existingImageIds = originalUser.vehicleData.imageIds;
+      const existingImageIds = originalUser.vehicleData.imageIds.length > 0 ? originalUser.vehicleData.imageIds[0].split(",") : []; 
       if (existingImageIds) {
         await Promise.all(
           existingImageIds.map(async (imageId) => {
@@ -130,7 +130,7 @@ export async function updateUser(userId, userData, userImages) {
       }
 
       // Add new images
-      const newImageIds = vehicleData.imageIds;
+      const newImageIds = incomingImageIds ? incomingImageIds : [];
       await Promise.all(
         userImages.map(async (image) => {
           const imageId = await saveImage(image);

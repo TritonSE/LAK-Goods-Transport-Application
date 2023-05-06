@@ -8,7 +8,7 @@ import { COLORS } from '../../constants';
 import { JobOwnerView, postJob, updateJob, deleteJob, getUser } from '../api';
 import { AddJobProps } from '../types/navigation';
 import { AuthContext } from '../context/AuthContext';
-import { ImageUploadContext } from '../context/ImageUploadContext';
+import { ImageUploadContext, convertURIsToIds } from '../context/ImageUploadContext';
 import { ImageUploadArea } from '../components/ImageUploadArea';
 
 const PICKER_DEFAULT = '-- Select a district --';
@@ -224,10 +224,9 @@ export function AddJob({ navigation, route }: AddJobProps) {
     body: { [key: string]: any }
   ) => {
     const data = new FormData();
-    if (images !== null) {
-      images.filter((value) => value !== null).map((image) => {
+    if (images !== null && images[0] !== null) {
+      images.map((image) => {
         if (image !== null) {
-          console.log("here")
           const uriArray = image.uri.split('.');
           const fileExtension = uriArray[uriArray.length - 1]; // e.g.: "jpg"
           const fileTypeExtended = `${image.type}/${fileExtension}`; // e.g.: "image/jpg"
@@ -245,14 +244,8 @@ export function AddJob({ navigation, route }: AddJobProps) {
     });
     return data;
   };
-
-  const convertURIsToIds = (uris) => {
-    uris = uris.filter((value) => value !== '').map((uri) => uri.split("/").slice(-1)[0])
-    console.log(uris[0].split(".").length)
-    uris = uris.filter((value) => value.split(".").length < 2).map(uri => uri)
-    console.log(uris)
-    return uris
-  }
+  
+  
 
   const submitJob = async () => {
     // TODO: when submitting, remember to filter out empty strings from imageURIs
@@ -275,11 +268,7 @@ export function AddJob({ navigation, route }: AddJobProps) {
       dropoffDistrict: dropoffDistrict.trim(),
       imageIds: convertURIsToIds(imageURIs),
     };
-    console.log("imageInfo")
-    console.log(imageInfo)
     const formedJob: FormData = createFormData(imageInfo, newJob);
-    console.log(newJob.imageIds)
-    console.log(formedJob._parts)
     dispatch({ type: 'CLEAR_IMAGES' });
     if (formType === 'add' || formType == 'repost') {
       setLoading(true);
@@ -303,7 +292,6 @@ export function AddJob({ navigation, route }: AddJobProps) {
       if (!route.params.jobData) {
         return;
       }
-      console.log("here")
       updateJob(userId, route.params.jobData._id, formedJob).then((response) => {
         if (response === null) {
           return;

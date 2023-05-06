@@ -58,6 +58,12 @@ interface Props {
   children: React.ReactNode;
 }
 
+export const convertURIsToIds = (uris) => {
+  uris = uris.filter((value) => value !== '').map((uri) => uri.split("/").slice(-1)[0])
+  uris = uris.filter((value) => value.split(".").length < 2).map(uri => uri)
+  return uris
+}
+
 export const ImageUploadProvider: React.FC<Props> = ({ children }) => {
   const reducer: ImagesReducer = (state, action): ImagesReducerState => {
     let newState = state.slice();
