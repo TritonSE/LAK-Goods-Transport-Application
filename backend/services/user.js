@@ -38,19 +38,14 @@ export async function getAllUsers(requestingUserId) {
   console.log('AHHHHHHHHHHHHH')
   let users = await UserModel.find();
 
-  if (!users)
+  if (!users){
     throw ServiceError.USER_NOT_FOUND.addContext(
       'getAllUsers failed'
     );
-
-  console.log('AHHHHHHHHHHHHH')
-  console.log(users)
-  users = users.toObject();
-
-  if (requestedUserId !== requestingUserId) {
-    OWNER_LIMITED_FIELDS.forEach((field) => delete user[field]);
   }
-  console.log(users)
+  // if (requestedUserId !== requestingUserId) {
+  //   OWNER_LIMITED_FIELDS.forEach((field) => delete user[field]);
+  // }
   return users;
 }
 

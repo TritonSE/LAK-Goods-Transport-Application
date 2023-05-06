@@ -41,7 +41,6 @@ routes.post('/get-by-ids', async (req, res, next) => {
   let users = null;
   try {
     const { userIds } = req.body;
-
     const requestingUserId = getSessionUserId(req);
     users = await getUsers(userIds, requestingUserId);
   } catch (e) {

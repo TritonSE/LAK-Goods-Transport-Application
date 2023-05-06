@@ -21,6 +21,7 @@ export const FIELDS_USER_PERMITTED_TO_UPDATE = [
   'lastName',
   'location',
   'vehicleData',
+  'verificationStatus'
 ];
 
 export const VERIFICATION_STATUS_FIELDS = [
