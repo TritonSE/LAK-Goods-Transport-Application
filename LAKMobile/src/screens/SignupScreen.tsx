@@ -122,7 +122,7 @@ export function SignupScreen({ navigation }: SignupProps) {
           type="phoneNumber"
           isValid={!isSignupPressed || phoneValid}
           errMsg="Valid mobile number required."
-          maxLength={16}
+          maxLength={16} /* longest phone number in E.164 format ([+][country code][number]) is 16 characters*/
           keyboardType="default"
         />
       </LabelWrapper>

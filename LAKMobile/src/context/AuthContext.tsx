@@ -161,14 +161,13 @@ export const AuthProvider: React.FC<Props> = ({ children }) => {
     try {
       const auth = getAuth(app);
 
-      const signInMethods = await fetchSignInMethodsForEmail(auth, phoneNumberToEmail(phone));
+      const userTaken = await doesUserExist(phoneNumberToEmail(phone));
 
       // if the user is trying to reset their password but no identifier (email) exists in firebase, throw error
-      if (mode === 'reset' && signInMethods.length === 0) {
+      if (mode === 'reset' && !userTaken) {
         setError(new Error('Phone number is not registered!'));
         return '';
       }
-      console.log('sending SMS Code function. MODE = ', mode);
       // given the phone number, verify recaptcha was successful (stored in verificationId)
       const phoneProvider = new PhoneAuthProvider(auth);
       const verificationId = await phoneProvider.verifyPhoneNumber(phone, recaptcha);
@@ -235,8 +234,6 @@ export const AuthProvider: React.FC<Props> = ({ children }) => {
       // Create a new email credential given the user's email and password
       const email = phoneNumberToEmail(phone);
       const password = await pinToPass(pin);
-      console.log('got email and pwd', email, password);
-      console.log('attemptimg to credential with email');
       const credential = await EmailAuthProvider.credential(email, password);
 
       // reload to refresh the user token
@@ -259,7 +256,6 @@ export const AuthProvider: React.FC<Props> = ({ children }) => {
 
       return user;
     } catch (e) {
-      console.log('ERROR', e);
       setFirebaseError(e as FirebaseError | Error);
       setUser(null);
       return null;
