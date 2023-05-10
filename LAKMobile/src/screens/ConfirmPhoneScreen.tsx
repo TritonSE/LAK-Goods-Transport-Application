@@ -10,7 +10,7 @@ export function ConfirmPhoneScreen({ navigation }: ConfirmPhoneScreenProps) {
   const [phoneValid, setPhoneValid] = useState(false);
 
   const validatePhone = (): boolean => {
-    const phoneRegex = new RegExp('[0-9+]');
+    const phoneRegex = new RegExp(/^(?:\+\d{1,15}|\d{1,16})$/);
     const valid = phoneRegex.test(phoneNumber);
     setPhoneValid(valid);
     return valid;
