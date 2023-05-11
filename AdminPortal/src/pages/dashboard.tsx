@@ -6,63 +6,16 @@ import { Sidebar } from '@/components/sidebar';
 import Select, { InputActionMeta } from 'react-select';
 // import { API_URL } from '@env';
 
-const data = [
-  {
-    id: 1,
-    dateApplied: '2022-01-01',
-    name: 'John Doe',
-    mobileNumber: '+1 123 456 7890',
-    licenseID: 'A1234567',
-    licensePlate: 'ABC-123',
-    isChecked: false,
-  },
-  {
-    id: 2,
-    dateApplied: '2022-02-01',
-    name: 'Jane Doe',
-    mobileNumber: '+1 987 654 3210',
-    licenseID: 'B2345678',
-    licensePlate: 'DEF-456',
-    isChecked: false,
-  },
-  {
-    id: 3,
-    dateApplied: '2022-03-01',
-    name: 'Jim Smith',
-    mobileNumber: '+1 111 222 3333',
-    licenseID: 'C3456789',
-    licensePlate: 'GHI-789',
-    isChecked: false,
-  },
-  {
-    id: 4,
-    dateApplied: '2022-01-01',
-    name: 'John Doe',
-    mobileNumber: '+1 123 456 7890',
-    licenseID: 'A1234567',
-    licensePlate: 'ABC-123',
-    isChecked: false,
-  },
-  {
-    id: 5,
-    dateApplied: '2022-02-01',
-    name: 'Jane Doe',
-    mobileNumber: '+1 987 654 3210',
-    licenseID: 'B2345678',
-    licensePlate: 'DEF-456',
-    isChecked: false,
-  },
-];
-
 interface DataItem {
-  id: number;
+  _id: string;
   dateApplied: string;
-  name: string;
-  mobileNumber: string;
-  licenseID: string;
+  firstName: string;
+  lastName: string;
+  phone: string;
+  driverLicenseId: string;
   licensePlate: string;
   isChecked: boolean;
-  category: String;
+  verificationStatus: String;
 }
 
 interface Option {
@@ -73,6 +26,17 @@ interface Option {
 interface ControlStyles {
   [key: string]: unknown;
 }
+
+const createFormData = (
+  body: { [key: string]: string }
+) => {
+  const data = new FormData();
+  Object.keys(body).forEach((key) => {
+    data.append(key, body[key]);
+  });
+
+  return data;
+};
 
 export default function App() {
   const options = [
@@ -119,69 +83,51 @@ export default function App() {
     }
   };
 
+  const getUser = async (id: String) => {
+    try {
+      const url = `${USERS_URL}/${id}?`;
+      const response = await fetch(url);
+      let user= await response.json();
+      user = user.toObject();
+      return user;
+    } catch {
+      return [];
+    }
+  };
+
+  const updateUser = async (
+    userId: string,
+    updatedUser: FormData
+  ) => {
+    try {
+      const url = `${USERS_URL}/${userId}`;
+      const response = await fetch(url, {
+        method: 'PUT',
+        body: updatedUser,
+      });
+      const data = await response.json();
+      //this is currently not printing
+      data.then((val) => {
+        console.log("HELLO")
+        console.log(val)
+      })
+      return { userId: data.userId };
+    } catch {
+      return null;
+    }
+  };
+
   useEffect(() => {
     let users = getAllDrivers();
     users.then((value) => {
       console.log(value);
+      setItems(value);
     });
-    console.log("ABCCCC")
     
-  });
+  }, []);
 
-
-  const [items, setItems] = useState<DataItem[]>([
-    {
-      id: 1,
-      dateApplied: '2022-01-01',
-      name: 'Hello 1',
-      mobileNumber: '+1 123 456 7890',
-      licenseID: 'A1234567',
-      licensePlate: 'ABC-123',
-      isChecked: false,
-      category: 'Needs Review',
-    },
-    {
-      id: 2,
-      dateApplied: '2022-02-01',
-      name: 'Hello 2',
-      mobileNumber: '+1 987 654 3210',
-      licenseID: 'B2345678',
-      licensePlate: 'DEF-456',
-      isChecked: false,
-      category: 'In Review',
-    },
-    {
-      id: 3,
-      dateApplied: '2022-03-01',
-      name: 'Hello 3',
-      mobileNumber: '+1 111 222 3333',
-      licenseID: 'C3456789',
-      licensePlate: 'GHI-789',
-      isChecked: false,
-      category: 'Verified',
-    },
-    {
-      id: 4,
-      dateApplied: '2022-01-01',
-      name: 'Hello 4',
-      mobileNumber: '+1 123 456 7890',
-      licenseID: 'A1234567',
-      licensePlate: 'ABC-123',
-      isChecked: false,
-      category: 'Needs Review',
-    },
-    {
-      id: 5,
-      dateApplied: '2022-02-01',
-      name: 'Hello 5',
-      mobileNumber: '+1 987 654 3210',
-      licenseID: 'B2345678',
-      licensePlate: 'DEF-456',
-      isChecked: false,
-      category: 'Disapproved',
-    },
-  ]);
-
+  const [items, setItems] = useState<DataItem[]>([]);
+  
   const customStyle = {
     control: (styles: ControlStyles) => ({
       ...styles,
@@ -191,12 +137,13 @@ export default function App() {
     }),
   };
 
+  //Switch to a different tab
   const handleTabClick = (tab: string) => {
     console.log('Select all clicked is', selectAllClicked);
     setSelectAllClicked(false);
     setActiveTab((prev) => {
       const newItems = items.map((item) =>
-        item.category === prev ? { ...item, isChecked: false } : item
+        item.verificationStatus === prev ? { ...item, isChecked: false } : item
       );
       setItems(newItems);
       return tab;
@@ -205,11 +152,32 @@ export default function App() {
 
   const handleDropdownClick = (selectedOption: Option) => {
     setSelected(selectedOption);
+    items.map((item) => {
+      if(item.isChecked){
+        //Get the UserData 
+        let userData = getUser(item._id);
+
+        //Modify userData
+        userData.then((user) => {
+          user.verificationStatus = selectedOption;
+          let formUser = createFormData(user);
+          updateUser(item._id, formUser);
+        });
+
+        // userData.then((user) => {
+        //   //Send update to MongoDB
+        //   let formUser = createFormData(user);
+        //   updateUser(item._id, formUser);
+        // });
+        
+      }
+    }
+    )
 
     setItems(
-      items.map((item) =>
+      items.map((item) => 
         item.isChecked === true
-          ? { ...item, isChecked: false, category: selectedOption.label }
+          ? { ...item, isChecked: false, verificationStatus: selectedOption.label }
           : item
       )
     );
@@ -226,7 +194,7 @@ export default function App() {
   useEffect(() => {
     setItems(
       items.map((item) =>
-        item.category === activeTab
+        item.verificationStatus === activeTab
           ? {
               ...item,
               isChecked: selectAllClicked,
@@ -236,10 +204,10 @@ export default function App() {
     );
   }, [selectAllClicked, activeTab]);
 
-  const handleItemCheckbox = (id: number): void => {
+  const handleItemCheckbox = (id: string): void => {
     setItems(
       items.map((item) =>
-        item.id === id ? { ...item, isChecked: !item.isChecked } : item
+        item._id === id ? { ...item, isChecked: !item.isChecked } : item
       )
     );
   };
@@ -327,22 +295,22 @@ export default function App() {
           </thead>
           <tbody className={styles.tableBody}>
             {items
-              .filter((item) => item.category === activeTab)
+              .filter((item) => item.verificationStatus=== activeTab)
               .map((item) => (
-                <tr key={item.id}>
+                <tr key={item._id}>
                   <td className={styles.tableData}>
                     <input
                       type="checkbox"
                       className={styles.checkbox}
                       checked={item.isChecked}
-                      onChange={() => handleItemCheckbox(item.id)}
+                      onChange={() => handleItemCheckbox(item._id)}
                     ></input>
                   </td>
-                  <td className={styles.tableData}>{item.dateApplied}</td>
-                  <td className={styles.tableData}>{item.name}</td>
-                  <td className={styles.tableData}>{item.mobileNumber}</td>
-                  <td className={styles.tableData}>{item.licenseID}</td>
-                  <td className={styles.tableData}>{item.licensePlate}</td>
+                  <td className={styles.tableData}>{item.dateApplied ? item.dateApplied : " "}</td>
+                  <td className={styles.tableData}>{item.firstName + " " + item.lastName}</td>
+                  <td className={styles.tableData}>{item.phone}</td>
+                  <td className={styles.tableData}>{item.driverLicenseId ? item.driverLicenseId : " "}</td>
+                  <td className={styles.tableData}>{item.licensePlate ? item.licensePlate : " "}</td>
                 </tr>
               ))}
           </tbody>

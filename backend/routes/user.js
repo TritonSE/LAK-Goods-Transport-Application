@@ -93,6 +93,7 @@ routes.put('/:userid', upload, async (req, res, next) => {
     const userId = req.params.userid;
 
     user = req.body;
+    console.info("inside 1")
 
     // Validate user object properties
     const {
@@ -124,8 +125,9 @@ routes.put('/:userid', upload, async (req, res, next) => {
     if (vehicleData && verificationStatus === VERIFICATION_STATUS_NOT_APPLIED) {
       user.verificationStatus = 'Applied';
     }
-
+    console.info("inside 2")
     user = await updateUser(userId, user, req.files || []);
+    console.info("inside 3")
   } catch (e) {
     next(e);
     return res.status(500).json({ error: 'Could not put User' });
