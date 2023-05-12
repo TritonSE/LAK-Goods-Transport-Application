@@ -15,11 +15,12 @@
     "@types/react": "18.0.27",
     "@types/react-dom": "18.0.10",
     "bootstrap": "^5.2.3",
+    "crypto-js": "^4.1.1",
     "eslint": "8.32.0",
     "eslint-config-next": "13.1.4",
     "expo-crypto": "^12.2.2",
     "firebase": "^9.21.0",
-    "next": "^13.1.4",
+    "next": "^13.4.1",
     "react": "18.2.0",
     "react-bootstrap": "^2.7.1",
     "react-dom": "18.2.0",
@@ -27,6 +28,7 @@
     "typescript": "4.9.4"
   },
   "devDependencies": {
+    "@types/crypto-js": "^4.1.1",
     "eslint-config-prettier": "^8.6.0",
     "eslint-plugin-prettier": "^4.2.1",
     "stylelint": "^15.2.0",

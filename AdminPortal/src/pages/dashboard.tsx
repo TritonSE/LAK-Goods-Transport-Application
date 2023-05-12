@@ -5,6 +5,11 @@ import 'bootstrap/dist/css/bootstrap.min.css';
 import { Sidebar } from '@/components/sidebar';
 import Select, { InputActionMeta } from 'react-select';
 
+const dummyOption = {
+  label: 'label',
+  value: 'value'
+}
+
 const data = [
   {
     id: 1,
@@ -268,7 +273,7 @@ export default function App() {
         <div className={styles.dropdownAndExportBar}>
           <Select
             options={options}
-            onChange={handleDropdownClick}
+            onChange={() => handleDropdownClick(dummyOption)}
             styles={customStyle}
             placeholder="Change Status To"
             blurInputOnSelect={true}

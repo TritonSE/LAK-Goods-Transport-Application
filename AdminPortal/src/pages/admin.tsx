@@ -5,7 +5,8 @@
 import styles from '@/styles/Admin.module.css';
 import { Sidebar } from '../components/sidebar';
 import Image from 'next/image';
-import React from 'react';
+import React, { useContext } from 'react';
+import { AuthContext } from '../context/AuthContext';
 
 interface AdminUser {
   id: number;
@@ -15,6 +16,8 @@ interface AdminUser {
 }
 
 export default function Admin() {
+  const auth = useContext(AuthContext);
+
   let data = [
     {
       id: 1,
