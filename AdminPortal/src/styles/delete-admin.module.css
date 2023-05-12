@@ -1,18 +1,76 @@
-/* All of this is mock css, just look at the figma to add stuff*/
-.container {
-    max-width: 960px;
-    margin: 0 auto;
-    padding: 32px;
-  }
+.outer{
+    margin-left: 300px;
+    height: 100vh;
+}
+
+.back_button {
+    position: absolute;
+    left: 312px;
+    top: 80px;
   
-  .title {
+    border: none;
+    outline: none;
+  
+    font-family: 'Lato';
+    font-style: normal;
+    font-weight: 700;
     font-size: 24px;
-    margin-bottom: 16px;
+    line-height: 29px;
+  
+    color: black;
+    background-color: transparent;
   }
   
-  .description {
-    font-size: 18px;
-    line-height: 1.5;
-    margin-bottom: 32px;
+  .back_button:hover {
+    cursor: pointer;
+  }
+  
+  .delete_button{
+    width: 341px;
+    height: 48px;
+
+    background: #FFFFFF;
+    box-shadow: 0px 1.14815px 11.4815px rgba(0, 0, 0, 0.12);
+    border: none;
+
+    font-style: normal;
+    font-weight: 700;
+    font-size: 20.6667px;
+    line-height: 24px;
+
+    /* Maroon */
+    color: #94100C;
+
+  }
+
+  .delete_button:hover {
+    cursor: pointer;
+  }
+
+  .record {
+    display: flex;
+    align-items: center;
+    gap: 50px;
+    position: absolute;
+    top: 200px;
+    left: 312px;
+  }
+  
+  
+  .logo {
+    position: relative;
+  }
+  
+  .PROFILE_LOGO_BG {
+    position: relative;
+    z-index: 1;
+  }
+  
+  .PROFILE_LOGO_PERSON {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    z-index: 2;
   }
   

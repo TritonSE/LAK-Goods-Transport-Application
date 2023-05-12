@@ -1,7 +1,12 @@
 import { NextPage } from 'next';
 import { useRouter } from 'next/router';
 import { useEffect, useState } from 'react';
+import { Sidebar } from '../components/sidebar';
+import styles from '@/styles/delete-admin.module.css'
+import Image from 'next/image';
 
+import PROFILE_LOGO_BG from '../../public/profile-logo-bg.svg'
+import PROFILE_LOGO_PERSON from '../../public/profile-logo-person.svg'
 
 type AdminUser = {
   id: string;
@@ -30,15 +35,35 @@ const DeleteAdminPage: NextPage = () => {
   };
 
   return (
-    <div>
+    
+   <div>
+        <Sidebar currentPage={'/admin'} />
+        <div className={styles.outer}>
+        <button onClick={handleGoBack} className={styles.back_button}>Go Back</button>
+        <div className={styles.record}>
+            <div className ={styles.logo}>
+                <Image src={PROFILE_LOGO_BG} alt="PROFILE_LOGO_BG"  className={styles.PROFILE_LOGO_BG}/>
+                <Image src={PROFILE_LOGO_PERSON} alt="PROFILE_LOGO_PERSON" className={styles.PROFILE_LOGO_PERSON}/>
+            </div>
+            
+            <div className={styles.info_container}>
+                {adminUser !== undefined && (
+                <>
+                    <p className={styles.role}>{adminUser.role}</p>
+                    <p className={styles.name}>{adminUser.name}</p>
+                    <p className={styles.phone}>{adminUser.phone}</p>
+                </>
+                )}        
+            </div>
 
-      {adminUser && (
-        <div>
-          <button onClick={handleGoBack}>Go Back</button>
-          <button>Delete Admin User</button>
+            <div className={styles.button_container}>
+                <button className={styles.delete_button}>Delete Admin User</button>
+            </div>
         </div>
-      )}
+            
+        </div>
     </div>
+
   );
 };
 
