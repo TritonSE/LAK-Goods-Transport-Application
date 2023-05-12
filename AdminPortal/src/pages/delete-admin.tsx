@@ -1,13 +1,45 @@
-import React from 'react';
-import styles from '@/styles/delete-admin.module.css';
+import { NextPage } from 'next';
+import { useRouter } from 'next/router';
+import { useEffect, useState } from 'react';
 
-function DeleteAdminPage() {
+
+type AdminUser = {
+  id: string;
+  name: string;
+  phone: string;
+  role: string;
+};
+
+const DeleteAdminPage: NextPage = () => {
+  const router = useRouter();
+  const [adminUser, setAdminUser] = useState<AdminUser>();
+
+  useEffect(() => {
+    const { id, name, phone, role } = router.query;
+
+    setAdminUser({
+      id: id as string,
+      name: name as string,
+      phone: phone as string,
+      role: role as string,
+    });
+  }, [router.query]);
+
+  const handleGoBack = () => {
+    window.history.back();
+  };
+
   return (
-    <div className={styles.container}>
-      <h1 className={styles.title}>Delete Admin</h1>
-      <p className={styles.description}>This is the page to delete an admin.</p>
+    <div>
+
+      {adminUser && (
+        <div>
+          <button onClick={handleGoBack}>Go Back</button>
+          <button>Delete Admin User</button>
+        </div>
+      )}
     </div>
   );
-}
+};
 
 export default DeleteAdminPage;
