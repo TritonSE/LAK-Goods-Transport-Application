@@ -5,6 +5,7 @@ import { COLORS } from '../../constants';
 import { SignupProps } from '../types/navigation';
 import { useContext, useState } from 'react';
 import { AuthContext } from '../context/AuthContext';
+import { InternationalPhoneInput } from '../components/InternationalPhoneInput';
 
 export function SignupScreen({ navigation }: SignupProps) {
   const [name, setName] = useState('');
@@ -116,16 +117,7 @@ export function SignupScreen({ navigation }: SignupProps) {
       </LabelWrapper>
 
       <LabelWrapper label="Mobile Number">
-        <AppTextInput
-          value={phoneNumber}
-          style={bigInputStyle}
-          changeAction={setPhoneNumber}
-          type="phoneNumber"
-          isValid={!isSignupPressed || phoneValid}
-          errMsg="Valid mobile number required."
-          maxLength={10}
-          keyboardType="default"
-        />
+        <InternationalPhoneInput setPhoneNumber={setPhoneNumber} />
       </LabelWrapper>
 
       <LabelWrapper label="Location">

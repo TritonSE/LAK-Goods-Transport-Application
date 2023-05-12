@@ -4,6 +4,7 @@ import { AppText, LabelWrapper, AppButton, AppTextInput } from '../components';
 import { COLORS } from '../../constants';
 import { LoginProps } from '../types/navigation';
 import { AuthContext } from '../context/AuthContext';
+import { InternationalPhoneInput } from '../components/InternationalPhoneInput';
 
 export function LoginScreen({ navigation }: LoginProps) {
   const [phoneNumber, setPhoneNumber] = useState('');
@@ -57,16 +58,7 @@ export function LoginScreen({ navigation }: LoginProps) {
     <View style={styles.container}>
       <Text style={styles.errText}>{loginPressed && loginError ? loginError.message : ''}</Text>
       <LabelWrapper label="Mobile Number">
-        <AppTextInput
-          value={phoneNumber}
-          style={bigInputStyle}
-          changeAction={setPhoneNumber}
-          type="phoneNumber"
-          maxLength={10}
-          keyboardType="default"
-          isValid={!loginPressed || phoneValid}
-          errMsg="Valid mobile number required."
-        />
+        <InternationalPhoneInput setPhoneNumber={setPhoneNumber} />
       </LabelWrapper>
 
       <LabelWrapper label="4 Digit PIN">

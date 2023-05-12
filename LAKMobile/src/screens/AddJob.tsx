@@ -10,7 +10,7 @@ import { AddJobProps } from '../types/navigation';
 import { AuthContext } from '../context/AuthContext';
 import { ImageUploadContext } from '../context/ImageUploadContext';
 import { ImageUploadArea } from '../components/ImageUploadArea';
-import PhoneInput from 'react-native-phone-number-input';
+import { InternationalPhoneInput } from '../components/InternationalPhoneInput';
 
 const PICKER_DEFAULT = '-- Select a district --';
 const LOCATIONS = [
@@ -362,14 +362,7 @@ export function AddJob({ navigation, route }: AddJobProps) {
         </LabelWrapper>
 
         <LabelWrapper label="Your Phone Number">
-          <PhoneInput
-            defaultCode="US"
-            layout="first"
-            onChangeFormattedText={(text) => {
-              setPhoneNumber(text);
-            }}
-            autoFocus
-          />
+          <InternationalPhoneInput setPhoneNumber={setPhoneNumber} />
         </LabelWrapper>
 
         <LabelWrapper label="Receiver name">
@@ -384,14 +377,7 @@ export function AddJob({ navigation, route }: AddJobProps) {
         </LabelWrapper>
 
         <LabelWrapper label="Receiver phone number">
-          <PhoneInput
-            defaultCode="US"
-            layout="first"
-            onChangeFormattedText={(text) => {
-              setReceiverPhoneNumber(text);
-            }}
-            autoFocus
-          />
+          <InternationalPhoneInput setPhoneNumber={setReceiverPhoneNumber} />
         </LabelWrapper>
 
         <LabelWrapper label="Date to be delivered">
