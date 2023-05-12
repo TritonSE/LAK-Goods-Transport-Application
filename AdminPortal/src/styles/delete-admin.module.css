@@ -1,6 +1,7 @@
 .outer{
     margin-left: 300px;
     height: 100vh;
+    margin-right: 75px;
 }
 
 .back_button {
@@ -41,6 +42,10 @@
     /* Maroon */
     color: #94100C;
 
+  }
+
+  .button_container{
+    margin-left: 250px;
   }
 
   .delete_button:hover {
