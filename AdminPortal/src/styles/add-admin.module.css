@@ -29,7 +29,6 @@
   .button {
     margin-top: 67px;
     text-align: left;
-    /* margin-right: 32px; */
     width: 232px;
     height: 50px;
     font-size: 22px;
@@ -65,9 +64,7 @@
     box-sizing: border-box;
     height: 45px;
     width: 400px;
-    /* border: 1px solid #E6E6E6; */
     border: 1px solid black;
-    /* border: black; */
     border-radius: 6px;
     background-color: #f9f9f9;
   }
