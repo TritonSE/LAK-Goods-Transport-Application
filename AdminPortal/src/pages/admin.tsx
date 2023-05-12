@@ -6,6 +6,7 @@ import styles from '@/styles/Admin.module.css';
 import { Sidebar } from '../components/sidebar';
 import Image from 'next/image';
 import React from 'react';
+import Link from 'next/link';
 
 interface AdminUser {
   id: number;
@@ -47,7 +48,9 @@ export default function Admin() {
         <Sidebar currentPage={'/admin'} />
         <div className={styles.header}>{'Manage Admin'}</div>
         <div className={styles.rightalign}>
-          <button className={styles.button}>{'Add Admin'}</button>
+          <Link href="/add-admin">
+            <button className={styles.button}>{'Add Admin'}</button>
+          </Link>
           <Image src={'/sort.svg'} alt="Sort" width={39} height={30} priority />
         </div>
         <div>

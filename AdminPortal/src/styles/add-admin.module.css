@@ -1,0 +1,18 @@
+/* All of this is mock css, just look at the figma to add stuff*/
+.container {
+    max-width: 960px;
+    margin: 0 auto;
+    padding: 32px;
+  }
+  
+  .title {
+    font-size: 24px;
+    margin-bottom: 16px;
+  }
+  
+  .description {
+    font-size: 18px;
+    line-height: 1.5;
+    margin-bottom: 32px;
+  }
+  
