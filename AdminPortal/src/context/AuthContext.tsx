@@ -12,7 +12,7 @@ import React, { createContext, useMemo, useState } from 'react';
 import sha256 from 'crypto-js/sha256';
 // import * as crypto from 'expo-crypto';
 import { FirebaseError } from '@firebase/util';
-// import { createNewUser } from '../api';
+import { createNewUser } from '../api';
 
 /**
  * Converts a phone number to an email to be used as a username for Firebase.
@@ -41,13 +41,13 @@ export type AuthState = {
   clearError: () => void;
   login: (phone: string, pin: string) => Promise<User | null>;
   logout: () => Promise<void>;
-  // signup: (
-  //   firstName: string,
-  //   lastName: string,
-  //   phone: string,
-  //   location: string,
-  //   pin: string
-  // ) => Promise<User | null>;
+  signup: (
+    firstName: string,
+    lastName: string,
+    phone: string,
+    // location: string,
+    pin: string
+  ) => Promise<User | null>;
 };
 
 const init: AuthState = {
@@ -60,9 +60,9 @@ const init: AuthState = {
   logout: () => {
     return new Promise<void>(() => undefined);
   },
-  // signup: () => {
-  //   return new Promise<User | null>(() => undefined);
-  // },
+  signup: () => {
+    return new Promise<User | null>(() => undefined);
+  },
 };
 
 export const AuthContext = createContext<AuthState>(init);
@@ -126,44 +126,44 @@ export const AuthProvider: React.FC<Props> = ({ children }) => {
     }
   };
 
-  // const signup = async (
-  //   firstName: string,
-  //   lastName: string,
-  //   phone: string,
-  //   location: string,
-  //   pin: string
-  // ): Promise<User | null> => {
-  //   try {
-  //     // First, let's try to save the user credentials in Firebase.
-  //     const email = phoneNumberToEmail(phone);
-  //     const password = await pinToPass(pin);
-  //     const auth = getAuth(app);
-  //     const userCredential = await createUserWithEmailAndPassword(auth, email, password);
-  //     const user = userCredential.user;
+  const signup = async (
+    firstName: string,
+    lastName: string,
+    phone: string,
+    // location: string,
+    pin: string
+  ): Promise<User | null> => {
+    try {
+      // First, let's try to save the user credentials in Firebase.
+      const email = phoneNumberToEmail(phone);
+      const password = await pinToPass(pin);
+      const auth = getAuth(app);
+      const userCredential = await createUserWithEmailAndPassword(auth, email, password);
+      const user = userCredential.user;
 
-  //     // Next, we make a call to save this user in our backend.
-  //     await createNewUser({
-  //       userId: user.uid,
-  //       firstName,
-  //       lastName,
-  //       phone,
-  //       location,
-  //     });
-  //     setUser(user);
-  //     return userCredential.user;
-  //   } catch (e) {
-  //     if (e instanceof FirebaseError) {
-  //       setFirebaseError(e);
-  //     } else {
-  //       setError(e as Error);
-  //     }
-  //     setUser(null);
-  //     return null;
-  //   }
-  // };
+      // Next, we make a call to save this user in our backend.
+      await createNewUser({
+        userId: user.uid,
+        firstName,
+        lastName,
+        phone,
+        // location,
+      });
+      setUser(user);
+      return userCredential.user;
+    } catch (e) {
+      if (e instanceof FirebaseError) {
+        setFirebaseError(e);
+      } else {
+        setError(e as Error);
+      }
+      setUser(null);
+      return null;
+    }
+  };
 
   return (
-    <AuthContext.Provider value={{ user, error, clearError, login, logout }}>
+    <AuthContext.Provider value={{ user, error, clearError, login, logout, signup }}>
       {children}
     </AuthContext.Provider>
   );
