@@ -17,36 +17,36 @@ import { createNewUser } from '../api';
 /**
  * Converts a phone number to an email to be used as a username for Firebase.
  */
-function phoneNumberToEmail(phone: string) {
-  phone = phone + '';
-  return 'a' + phone.replace(/\D/g, '') + '@gmail.com';
-}
+// function phoneNumberToEmail(phone: string) {
+//   phone = phone + '';
+//   return 'a' + phone.replace(/\D/g, '') + '@gmail.com';
+// }
 
-function encrypt(text: string) {
-  const key = sha256(text);
-  return key.toString(CryptoJS.enc.Base64);
-}
+// function encrypt(text: string) {
+//   const key = sha256(text);
+//   return key.toString(CryptoJS.enc.Base64);
+// }
 
 /**
  * Converts our PIN to a valid firebase password.
  */
-async function pinToPass(pin: string) {
-  pin = 'abc' + pin;
-  return encrypt(pin);
-}
+// async function pinToPass(pin: string) {
+//   pin = 'abc' + pin;
+//   return encrypt(pin);
+// }
 
 export type AuthState = {
   user: User | null;
   error: Error | null;
   clearError: () => void;
-  login: (phone: string, pin: string) => Promise<User | null>;
+  login: (email: string, password: string) => Promise<User | null>;
   logout: () => Promise<void>;
   signup: (
     firstName: string,
     lastName: string,
-    phone: string,
+    email: string,
     // location: string,
-    pin: string
+    password: string
   ) => Promise<User | null>;
 };
 
@@ -95,10 +95,10 @@ export const AuthProvider: React.FC<Props> = ({ children }) => {
     return initializeApp(firebaseConfig);
   }, []);
 
-  const login = async (phone: string, pin: string): Promise<User | null> => {
+  const login = async (userEmail: string, userPassword: string): Promise<User | null> => {
     try {
-      const email = phoneNumberToEmail(phone);
-      const password = await pinToPass(pin);
+      const email = userEmail;
+      const password = userPassword;
       const auth = getAuth(app);
       const userCredential = await signInWithEmailAndPassword(auth, email, password);
       setUser(userCredential.user);
@@ -129,14 +129,14 @@ export const AuthProvider: React.FC<Props> = ({ children }) => {
   const signup = async (
     firstName: string,
     lastName: string,
-    phone: string,
+    userEmail: string,
     // location: string,
-    pin: string
+    userPassword: string
   ): Promise<User | null> => {
     try {
       // First, let's try to save the user credentials in Firebase.
-      const email = phoneNumberToEmail(phone);
-      const password = await pinToPass(pin);
+      const email = userEmail;
+      const password = userPassword;
       const auth = getAuth(app);
       const userCredential = await createUserWithEmailAndPassword(auth, email, password);
       const user = userCredential.user;
@@ -146,7 +146,7 @@ export const AuthProvider: React.FC<Props> = ({ children }) => {
         userId: user.uid,
         firstName,
         lastName,
-        phone,
+        email,
         // location,
       });
       setUser(user);
