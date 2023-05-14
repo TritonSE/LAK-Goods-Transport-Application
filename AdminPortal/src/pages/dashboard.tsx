@@ -1,10 +1,8 @@
 import React, { useState, useEffect } from 'react';
 import styles from '@/styles/Dashboard.module.css';
-import Dropdown from 'react-bootstrap/Dropdown';
 import 'bootstrap/dist/css/bootstrap.min.css';
 import { Sidebar } from '@/components/sidebar';
-import Select, { InputActionMeta } from 'react-select';
-// import { API_URL } from '@env';
+import Select from 'react-select';
 
 interface DataItem {
   _id: string;
@@ -27,17 +25,6 @@ interface ControlStyles {
   [key: string]: unknown;
 }
 
-const createFormData = (
-  body: { [key: string]: string }
-) => {
-  const data = new FormData();
-  Object.keys(body).forEach((key) => {
-    data.append(key, body[key]);
-  });
-
-  return data;
-};
-
 export default function App() {
   const options = [
     { value: 'Needs Review', label: 'Needs Review' },
@@ -45,7 +32,6 @@ export default function App() {
     { value: 'Verified', label: 'Verified' },
     { value: 'Disapproved', label: 'Disapproved' },
   ];
-  const numTabs = options.length;
 
   const [activeTab, setActiveTab] = useState<string>('Needs Review');
 
@@ -64,7 +50,7 @@ export default function App() {
   tabMapping.set('Verified', 3);
   tabMapping.set('Disapproved', 4);
 
-  const USERS_URL = `http://localhost:3000/api/users`;
+  const USERS_URL = `${process.env.REACT_APP_API_URL}/api/users`;
   const getAllDrivers = async () => {
     try {
       const url = `${USERS_URL}/get-all-users?`;
@@ -83,34 +69,21 @@ export default function App() {
     }
   };
 
-  const getUser = async (id: String) => {
+  const updateUser = async (userId: string, verificationStatus: Option) => {
     try {
-      const url = `${USERS_URL}/${id}?`;
-      const response = await fetch(url);
-      let user= await response.json();
-      user = user.toObject();
-      return user;
-    } catch {
-      return [];
-    }
-  };
+      const url = `${USERS_URL}/update-driver-verification-status?`;
 
-  const updateUser = async (
-    userId: string,
-    updatedUser: FormData
-  ) => {
-    try {
-      const url = `${USERS_URL}/${userId}`;
       const response = await fetch(url, {
         method: 'PUT',
-        body: updatedUser,
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({
+          id: userId,
+          verificationStatus: verificationStatus.value,
+        }),
       });
       const data = await response.json();
-      //this is currently not printing
-      data.then((val) => {
-        console.log("HELLO")
-        console.log(val)
-      })
       return { userId: data.userId };
     } catch {
       return null;
@@ -120,14 +93,12 @@ export default function App() {
   useEffect(() => {
     let users = getAllDrivers();
     users.then((value) => {
-      console.log(value);
       setItems(value);
     });
-    
   }, []);
 
   const [items, setItems] = useState<DataItem[]>([]);
-  
+
   const customStyle = {
     control: (styles: ControlStyles) => ({
       ...styles,
@@ -153,31 +124,20 @@ export default function App() {
   const handleDropdownClick = (selectedOption: Option) => {
     setSelected(selectedOption);
     items.map((item) => {
-      if(item.isChecked){
-        //Get the UserData 
-        let userData = getUser(item._id);
-
-        //Modify userData
-        userData.then((user) => {
-          user.verificationStatus = selectedOption;
-          let formUser = createFormData(user);
-          updateUser(item._id, formUser);
-        });
-
-        // userData.then((user) => {
-        //   //Send update to MongoDB
-        //   let formUser = createFormData(user);
-        //   updateUser(item._id, formUser);
-        // });
-        
+      if (item.isChecked) {
+        //Modify driver verification status
+        updateUser(item._id, selectedOption);
       }
-    }
-    )
+    });
 
     setItems(
-      items.map((item) => 
+      items.map((item) =>
         item.isChecked === true
-          ? { ...item, isChecked: false, verificationStatus: selectedOption.label }
+          ? {
+              ...item,
+              isChecked: false,
+              verificationStatus: selectedOption.label,
+            }
           : item
       )
     );
@@ -295,7 +255,7 @@ export default function App() {
           </thead>
           <tbody className={styles.tableBody}>
             {items
-              .filter((item) => item.verificationStatus=== activeTab)
+              .filter((item) => item.verificationStatus === activeTab)
               .map((item) => (
                 <tr key={item._id}>
                   <td className={styles.tableData}>
@@ -306,11 +266,19 @@ export default function App() {
                       onChange={() => handleItemCheckbox(item._id)}
                     ></input>
                   </td>
-                  <td className={styles.tableData}>{item.dateApplied ? item.dateApplied : " "}</td>
-                  <td className={styles.tableData}>{item.firstName + " " + item.lastName}</td>
+                  <td className={styles.tableData}>
+                    {item.dateApplied ? item.dateApplied : ' '}
+                  </td>
+                  <td className={styles.tableData}>
+                    {item.firstName + ' ' + item.lastName}
+                  </td>
                   <td className={styles.tableData}>{item.phone}</td>
-                  <td className={styles.tableData}>{item.driverLicenseId ? item.driverLicenseId : " "}</td>
-                  <td className={styles.tableData}>{item.licensePlate ? item.licensePlate : " "}</td>
+                  <td className={styles.tableData}>
+                    {item.driverLicenseId ? item.driverLicenseId : ' '}
+                  </td>
+                  <td className={styles.tableData}>
+                    {item.licensePlate ? item.licensePlate : ' '}
+                  </td>
                 </tr>
               ))}
           </tbody>

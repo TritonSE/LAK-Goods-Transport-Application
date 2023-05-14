@@ -3,7 +3,7 @@
  */
 
 import { ImageSourcePropType } from 'react-native';
-import { API_URL } from '@env';
+import {API_URL } from '@env';
 import { JobData, JobOwnerView, UserData, CreateUserForm, VerificationStatus } from './data';
 
 export const GET_JOBS = `${API_URL}/api/jobs`;

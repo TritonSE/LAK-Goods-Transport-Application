@@ -28,8 +28,7 @@ mongoose.connection.on('error', dbConnectionFailure);
  * Error handler
  */
 const errorHandler = (err, req, res, next) => {
-  console.log("INSIDE ERR HANDLER")
-  console.log(err)
+  console.log(err);
   if (!err) return;
   if (!(err instanceof CustomError)) {
     // All unhandled errors are marked as unknown internal errors
@@ -45,9 +44,8 @@ const errorHandler = (err, req, res, next) => {
       message: err.format(true),
       error: true,
     });
-  }
-  else{
-    // Logging for other error types, such as service error
+  } else {
+    // Logging for other error types (i.e. service errors)
     console.error(err.format(false));
     res.status(err.statusCode).json({
       message: err.format(true),

@@ -21,12 +21,12 @@ export const FIELDS_USER_PERMITTED_TO_UPDATE = [
   'lastName',
   'location',
   'vehicleData',
-  'verificationStatus'
+  'verificationStatus',
 ];
 
 export const VERIFICATION_STATUS_FIELDS = [
   'Not Applied',
-  'Applied',
+  'Needs Review',
   'In Review',
   'Verified',
   'Disapproved',

@@ -2,7 +2,14 @@
 import express from 'express';
 import multer from 'multer';
 
-import { getAllUsers, getUser, getUsers, registerUser, updateUser } from '../services/user';
+import {
+  getAllUsers,
+  getUser,
+  getUsers,
+  registerUser,
+  updateUser,
+  updateDriverRegistrationStatus,
+} from '../services/user';
 import { getSessionUserId } from '../helpers';
 import {
   VERIFICATION_STATUS_FIELDS,
@@ -11,6 +18,36 @@ import {
 
 const routes = express.Router();
 const upload = multer({ storage: multer.memoryStorage() }).array('images');
+
+routes.put(
+  '/update-driver-verification-status',
+  upload,
+  async (req, res, next) => {
+    const userId = req.body.id;
+    console.info('ROUTES: Editing driver verification status', userId);
+
+    try {
+      const { verificationStatus } = req.body;
+      if (
+        verificationStatus &&
+        !VERIFICATION_STATUS_FIELDS.includes(verificationStatus)
+      ) {
+        return res.status(400).json({ error: 'Invalid verification status' });
+      }
+      updateDriverRegistrationStatus(userId, verificationStatus);
+    } catch (e) {
+      next(e);
+      return res
+        .status(500)
+        .json({ error: 'Could not update driver verification status' });
+    }
+
+    return res.status(200).json({
+      message: 'User edited successfully',
+      userId: userId,
+    });
+  }
+);
 
 // getting one of the users by their id
 routes.get('/:userid', async (req, res, next) => {
@@ -44,7 +81,7 @@ routes.post('/get-by-ids', async (req, res, next) => {
     const requestingUserId = getSessionUserId(req);
     users = await getUsers(userIds, requestingUserId);
   } catch (e) {
-    console.log(e)
+    console.log(e);
     next(e);
     return;
   }
@@ -60,7 +97,7 @@ routes.post('/get-all-users', async (req, res, next) => {
     const requestingUserId = getSessionUserId(req);
     users = await getAllUsers(requestingUserId);
   } catch (e) {
-    console.log(e)
+    console.log(e);
     next(e);
     return;
   }
@@ -93,7 +130,6 @@ routes.put('/:userid', upload, async (req, res, next) => {
     const userId = req.params.userid;
 
     user = req.body;
-    console.info("inside 1")
 
     // Validate user object properties
     const {
@@ -125,9 +161,7 @@ routes.put('/:userid', upload, async (req, res, next) => {
     if (vehicleData && verificationStatus === VERIFICATION_STATUS_NOT_APPLIED) {
       user.verificationStatus = 'Applied';
     }
-    console.info("inside 2")
     user = await updateUser(userId, user, req.files || []);
-    console.info("inside 3")
   } catch (e) {
     next(e);
     return res.status(500).json({ error: 'Could not put User' });
