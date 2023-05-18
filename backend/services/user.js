@@ -128,7 +128,7 @@ export async function updateUser(userId, userData, userImages) {
   // Ensure updated fields are only getting updated
   userData = filterObject(userData, FIELDS_USER_PERMITTED_TO_UPDATE);
   if (userData.vehicleData) {
-    const vehicleData = JSON.parse(userData.vehicleData);
+    const vehicleData = userData.vehicleData;
     userData.vehicleData = vehicleData;
     console.log(userData);
     if (userImages) {

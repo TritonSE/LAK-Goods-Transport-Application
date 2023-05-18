@@ -3,6 +3,7 @@ import styles from '@/styles/Dashboard.module.css';
 import 'bootstrap/dist/css/bootstrap.min.css';
 import { Sidebar } from '@/components/sidebar';
 import Select from 'react-select';
+import { API_URL } from '@env';
 
 interface DataItem {
   _id: string;
@@ -50,7 +51,7 @@ export default function App() {
   tabMapping.set('Verified', 3);
   tabMapping.set('Disapproved', 4);
 
-  const USERS_URL = `${process.env.REACT_APP_API_URL}/api/users`;
+  const USERS_URL = `${API_URL}/api/users`;
   const getAllDrivers = async () => {
     try {
       const url = `${USERS_URL}/get-all-users?`;
