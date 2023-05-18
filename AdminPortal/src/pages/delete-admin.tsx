@@ -4,6 +4,7 @@ import { useEffect, useState } from 'react';
 import { Sidebar } from '../components/sidebar';
 import styles from '@/styles/delete-admin.module.css'
 import Image from 'next/image';
+import { Popup } from '@/components/popup';
 
 import PROFILE_LOGO_BG from '../../public/profile-logo-bg.svg'
 import PROFILE_LOGO_PERSON from '../../public/profile-logo-person.svg'
@@ -17,6 +18,7 @@ type AdminUser = {
 
 const DeleteAdminPage: NextPage = () => {
   const router = useRouter();
+  const [showPopup, setShowPopup] = useState(false);
   const [adminUser, setAdminUser] = useState<AdminUser>();
 
   useEffect(() => {
@@ -29,6 +31,14 @@ const DeleteAdminPage: NextPage = () => {
       role: role as string,
     });
   }, [router.query]);
+  
+  const handleDeleteClick = () =>{
+    setShowPopup(true);
+  }
+
+  const handlePopupClose = () => {
+    setShowPopup(false);
+  };
 
   const handleGoBack = () => {
     window.history.back();
@@ -57,8 +67,16 @@ const DeleteAdminPage: NextPage = () => {
             </div>
 
             <div className={styles.button_container}>
-                <button className={styles.delete_button}>Delete Admin User</button>
+                <button className={styles.delete_button} onClick={handleDeleteClick}>Delete Admin User</button>
             </div>
+
+            {showPopup && <Popup
+                name="Delete Confirmation"
+                description="Are you sure you want to delete the admin user?"
+                buttonText="Confirm Delete"
+                onClose={handlePopupClose}
+              />
+            }
         </div>
             
         </div>
