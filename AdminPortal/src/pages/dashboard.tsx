@@ -49,7 +49,7 @@ export default function App() {
   tabMapping.set('In Review', 2);
   tabMapping.set('Verified', 3);
   tabMapping.set('Disapproved', 4);
-
+  // Currently not working
   const USERS_URL = `${process.env.REACT_APP_API_URL}/api/users`;
   const getAllDrivers = async () => {
     try {

@@ -15,7 +15,6 @@ export async function getUser(requestedUserId, requestingUserId) {
   );
 
   let user = await UserModel.findOne({ _id: requestedUserId });
-  console.log(user)
   if (!user)
     throw ServiceError.USER_NOT_FOUND.addContext(
       'requestedUserId - ',
@@ -33,19 +32,13 @@ export async function getUser(requestedUserId, requestingUserId) {
 
 export async function getAllUsers(requestingUserId) {
   console.debug(
-    `SERVICE: getAllUsers service running`
+    `SERVICE: getAllUsers service running: requested by ${requestingUserId}`
   );
-  console.log('AHHHHHHHHHHHHH')
-  let users = await UserModel.find();
+  const users = await UserModel.find();
 
-  if (!users){
-    throw ServiceError.USER_NOT_FOUND.addContext(
-      'getAllUsers failed'
-    );
+  if (!users) {
+    throw ServiceError.USER_NOT_FOUND.addContext('getAllUsers failed');
   }
-  // if (requestedUserId !== requestingUserId) {
-  //   OWNER_LIMITED_FIELDS.forEach((field) => delete user[field]);
-  // }
   return users;
 }
 
@@ -168,8 +161,15 @@ export async function updateDriverRegistrationStatus(
   console.debug(
     `SERVICE: updateDriverRegistrationStatus service running: userId = ${userId}, status = ${verificationStatus}`
   );
-
-  const user = await getUser(userId, userId);
-  user.verificationStatus = verificationStatus;
-  await updateUser(userId, user);
+  try {
+    const userData = await getUser(userId, userId);
+    if (!userData) {
+      throw ServiceError.USER_NOT_FOUND;
+    }
+    const user = userData;
+    user.verificationStatus = verificationStatus;
+    return await UserModel.findOneAndUpdate({ _id: userId }, userData);
+  } catch (e) {
+    throw ServiceError.INVALID_USER_RECEIVED.addContext(e.stack);
+  }
 }
