@@ -126,7 +126,7 @@ export function AddJob({ navigation, route }: AddJobProps) {
     recieverPhoneNumber: () => true,
     date: validateDate,
     picker: validatePickerSelect,
-    image: () => true,
+    image: validateImageUpload,
   };
 
   const validatedFields: Array<ValidatedField> = [
@@ -224,7 +224,7 @@ export function AddJob({ navigation, route }: AddJobProps) {
     body: { [key: string]: any }
   ) => {
     const data = new FormData();
-    if (images !== null && images[0] !== null) {
+    if (images !== null) {
       images.map((image) => {
         if (image !== null) {
           const uriArray = image.uri.split('.');
@@ -269,15 +269,14 @@ export function AddJob({ navigation, route }: AddJobProps) {
       imageIds: convertURIsToIds(imageURIs),
     };
     const formedJob: FormData = createFormData(imageInfo, newJob);
-    dispatch({ type: 'CLEAR_IMAGES' });
     if (formType === 'add' || formType == 'repost') {
       setLoading(true);
       postJob(userId, formedJob).then((response) => {
         setLoading(false);
-        console.log(response);
         if (response == null) {
           return;
         }
+        dispatch({ type: 'CLEAR_IMAGES' });
         const { jobId } = response;
         const updatedJob: JobOwnerView = createUpdateFromId(jobId, newJob);
         route.params.setJobData((prevJobs) => [...prevJobs, updatedJob]);
@@ -296,6 +295,7 @@ export function AddJob({ navigation, route }: AddJobProps) {
         if (response === null) {
           return;
         }
+        dispatch({ type: 'CLEAR_IMAGES' });
         console.log(response);
         const { jobId } = response;
         const updatedJob: JobOwnerView = createUpdateFromId(jobId, newJob);
