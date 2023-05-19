@@ -3,6 +3,7 @@ import styles from '@/styles/Dashboard.module.css';
 import 'bootstrap/dist/css/bootstrap.min.css';
 import { Sidebar } from '@/components/sidebar';
 import Select from 'react-select';
+import { API_URL } from '@env';
 
 interface DataItem {
   _id: string;
