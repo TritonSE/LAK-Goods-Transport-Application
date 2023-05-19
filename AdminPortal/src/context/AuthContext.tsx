@@ -9,7 +9,7 @@ import {
 
 import firebaseConfig from '../../firebase-config.json';
 import React, { createContext, useMemo, useState } from 'react';
-import sha256 from 'crypto-js/sha256';
+// import sha256 from 'crypto-js/sha256';
 // import * as crypto from 'expo-crypto';
 import { FirebaseError } from '@firebase/util';
 import { createNewUser } from '../api';
@@ -97,10 +97,10 @@ export const AuthProvider: React.FC<Props> = ({ children }) => {
 
   const login = async (userEmail: string, userPassword: string): Promise<User | null> => {
     try {
-      const email = userEmail;
-      const password = userPassword;
+      // const email = userEmail;
+      // const password = userPassword;
       const auth = getAuth(app);
-      const userCredential = await signInWithEmailAndPassword(auth, email, password);
+      const userCredential = await signInWithEmailAndPassword(auth, userEmail, userPassword);
       setUser(userCredential.user);
       return userCredential.user;
     } catch (e) {
