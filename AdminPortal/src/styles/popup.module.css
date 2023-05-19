@@ -44,7 +44,7 @@
 }
 
 .okay_button {
-    width: min(200px, 90%);
+    width: 200px;
     height: 48px;
     margin-top: 20px;
 
