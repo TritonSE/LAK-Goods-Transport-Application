@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import styles from '@/styles/Sidebar.module.css';
+import styles from '@/styles/popup.module.css';
 
 type PopupProps = {
     name: string;
@@ -13,9 +13,12 @@ export function Popup({ name, description, buttonText, onClose}: PopupProps) {
     return (
       <div className={styles.container}>
       <div className={styles.popup}>
-        <h2>{name}</h2>
-        <p>{description}</p>
-        <button onClick={onClose}>Close</button>
+        <div className={styles.container}>
+          <div className={styles.close_button}><button onClick={onClose} className={styles.close_button}>X</button></div>
+          <div className={styles.inner_div}><h2 className={styles.header}>{name}</h2></div>
+          <div className={styles.inner_div}>{description}</div>
+          <div><button onClick={onClose} className={styles.okay_button}>Okay</button></div>
+        </div>
       </div>
     </div>
     );

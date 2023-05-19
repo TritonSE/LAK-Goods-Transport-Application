@@ -2,8 +2,19 @@ import React from 'react';
 import styles from '@/styles/add-admin.module.css';
 import { Sidebar } from '../components/sidebar';
 import Link from 'next/link';
+import { Popup } from '@/components/popup';
+import { useState } from 'react';
 
 function AddAdminPage() {
+  const [showPopup, setShowPopup] = useState(false);
+
+  const handleAddClick = () =>{
+    setShowPopup(true);
+  }
+
+  const handlePopupClose = () => {
+    setShowPopup(false);
+  };
   return (
     <>
     <main className={styles.main}>
@@ -22,9 +33,16 @@ function AddAdminPage() {
           <div className={styles.title}>{'Mobile number'}</div>
           <input className={styles.input} type="text"/>
         </div>
-        <Link href="/add-admin">
-            <button className={styles.button2}>{'Add'}</button>
-        </Link>
+        
+        <button className={styles.button2} onClick={handleAddClick}>{'Add'}</button>
+        
+        {showPopup && <Popup
+                name="Admin Added"
+                description="Admin will appear in the system once they successfully login."
+                buttonText="Okay"
+                onClose={handlePopupClose}
+              />
+        }
       </main>
     </>
   );

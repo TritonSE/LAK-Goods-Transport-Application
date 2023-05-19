@@ -67,11 +67,11 @@ const DeleteAdminPage: NextPage = () => {
             </div>
 
             <div className={styles.button_container}>
-                <button className={styles.delete_button} onClick={handleDeleteClick}>Delete Admin User</button>
+                <button className={styles.delete_button} onClick={handleDeleteClick}>Delete Account</button>
             </div>
 
             {showPopup && <Popup
-                name="Delete Confirmation"
+                name="Delete Admin?"
                 description="Are you sure you want to delete the admin user?"
                 buttonText="Confirm Delete"
                 onClose={handlePopupClose}
