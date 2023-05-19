@@ -49,9 +49,11 @@ export default function App() {
   tabMapping.set('In Review', 2);
   tabMapping.set('Verified', 3);
   tabMapping.set('Disapproved', 4);
-  
+
   // Environment variables currently not working
-  const USERS_URL = `${process.env.REACT_APP_API_URL || "http://localhost:3000"}/api/users`;
+  const USERS_URL = `${
+    process.env.REACT_APP_API_URL || 'http://localhost:3000'
+  }/api/users`;
   const getAllDrivers = async () => {
     try {
       const url = `${USERS_URL}/get-all-users?`;
