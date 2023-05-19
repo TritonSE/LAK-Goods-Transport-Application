@@ -24,3 +24,24 @@ export const createNewUser = async (formData: CreateUserForm): Promise<string | 
     return null;
   }
 };
+
+export const deleteUser = async (
+  userId: string
+  
+): Promise<{ userId: string } | null> => {
+  try {
+    const url = `${USERS_URL}/${userId}`;
+
+    const response = await fetch(url, {
+      method: 'DELETE',
+      mode: 'cors',
+      headers: {
+        'content-type': 'application/json',
+      },
+    });
+    const data = await response.json();
+    return { userId: data.userId };
+  } catch {
+    return null;
+  }
+};

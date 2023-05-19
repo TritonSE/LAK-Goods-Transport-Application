@@ -12,7 +12,7 @@ import React, { createContext, useMemo, useState } from 'react';
 // import sha256 from 'crypto-js/sha256';
 // import * as crypto from 'expo-crypto';
 import { FirebaseError } from '@firebase/util';
-import { createNewUser } from '../api';
+import { createNewUser, USERS_URL } from '../api';
 
 /**
  * Converts a phone number to an email to be used as a username for Firebase.
@@ -162,6 +162,7 @@ export const AuthProvider: React.FC<Props> = ({ children }) => {
     }
   };
 
+  
   return (
     <AuthContext.Provider value={{ user, error, clearError, login, logout, signup }}>
       {children}
