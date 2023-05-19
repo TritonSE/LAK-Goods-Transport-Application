@@ -74,6 +74,7 @@ const DeleteAdminPage: NextPage = () => {
                 name="Delete Admin?"
                 description="Are you sure you want to delete the admin user?"
                 buttonText="Confirm Delete"
+                twoButtonStyle={true}
                 onClose={handlePopupClose}
               />
             }

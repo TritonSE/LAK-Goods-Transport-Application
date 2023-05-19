@@ -40,6 +40,7 @@ function AddAdminPage() {
                 name="Admin Added"
                 description="Admin will appear in the system once they successfully login."
                 buttonText="Okay"
+                twoButtonStyle={false}
                 onClose={handlePopupClose}
               />
         }
