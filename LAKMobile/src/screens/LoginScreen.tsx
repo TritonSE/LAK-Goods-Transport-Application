@@ -19,7 +19,7 @@ export function LoginScreen({ navigation }: LoginProps) {
   const auth = useContext(AuthContext);
 
   const validatePhone = (): boolean => {
-    const phoneRegex = new RegExp('^[0-9]{10}$');
+    const phoneRegex = new RegExp(/^(?:\+\d{1,15}|\d{1,16})$/);
     const valid = phoneRegex.test(phoneNumber);
     setPhoneValid(valid);
     return valid;
@@ -84,7 +84,7 @@ export function LoginScreen({ navigation }: LoginProps) {
       <AppButton
         type="link"
         title="Forgot PIN?"
-        onPress={() => navigation.navigate('ForgotPassword')}
+        onPress={() => navigation.navigate('ConfirmPhoneScreen')}
         style={styles.forgotPIN}
       />
 
