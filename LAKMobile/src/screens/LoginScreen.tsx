@@ -36,8 +36,9 @@ export function LoginScreen({ navigation }: LoginProps) {
     setLoginError(null);
     auth.clearError();
     setLoginPressed(true);
-
-    if (validatePhone() && validatePin()) {
+    const _phoneValid = validatePhone();
+    const _pinValid = validatePin();
+    if (_phoneValid && _pinValid) {
       setLoading(true);
       const user = await auth.login(phoneNumber, pin);
       setLoading(false);
