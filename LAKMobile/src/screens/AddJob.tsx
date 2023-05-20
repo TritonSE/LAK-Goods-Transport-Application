@@ -122,8 +122,8 @@ export function AddJob({ navigation, route }: AddJobProps) {
 
   const validators = {
     presence: validatePresence,
-    phoneNumber: () => true,
-    recieverPhoneNumber: () => true,
+    phoneNumber: validatePhoneNumber,
+    recieverPhoneNumber: validatePhoneNumber,
     date: validateDate,
     picker: validatePickerSelect,
     image: validateImageUpload,
@@ -244,8 +244,6 @@ export function AddJob({ navigation, route }: AddJobProps) {
     });
     return data;
   };
-  
-  
 
   const submitJob = async () => {
     // TODO: when submitting, remember to filter out empty strings from imageURIs

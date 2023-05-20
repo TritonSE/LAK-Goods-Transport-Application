@@ -137,30 +137,30 @@ export async function updateJob(userId, jobId, jobData, jobImages) {
     throw ServiceError.JOB_EDIT_PERMISSION_DENIED;
   }
 
-  const incomingImageIds = jobData.imageIds.split(",");
+  const incomingImageIds = jobData.imageIds.split(',');
   // Ensure updated fields are only getting updated
   jobData = filterObject(jobData, FIELDS_OWNER_PERMITTED_TO_UPDATE);
 
   // TODO Find a better way of updating images
 
   // Delete existing images
-  
-  const existingImageIds = originalJob.imageIds.length > 0 ? originalJob.imageIds[0].split(",") : [];  
+
+  const existingImageIds =
+    originalJob.imageIds.length > 0 ? originalJob.imageIds[0].split(',') : [];
 
   await Promise.all(
     existingImageIds.map(async (imageId) => {
       if (!incomingImageIds.includes(imageId)) {
-        console.log("Delete Image")
+        console.log('Delete Image');
         await deleteImage(imageId);
       } else {
-        console.log("Existing Image")
+        console.log('Existing Image');
       }
-      
     })
   );
   // Add new images
-  
-  const newImageIds = incomingImageIds.filter(value => value != "") || [];
+
+  const newImageIds = incomingImageIds.filter((value) => value !== '') || [];
   await Promise.all(
     jobImages.map(async (image) => {
       const imageId = await saveImage(image);

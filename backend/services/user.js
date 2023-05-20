@@ -106,7 +106,7 @@ export async function updateUser(userId, userData, userImages) {
   if (!originalUser) {
     throw ServiceError.USER_NOT_FOUND;
   }
-  
+
   // Ensure updated fields are only getting updated
   userData = filterObject(userData, FIELDS_USER_PERMITTED_TO_UPDATE);
   const incomingImageIds = JSON.parse(userData.vehicleData).imageIds;
@@ -115,22 +115,25 @@ export async function updateUser(userId, userData, userImages) {
     userData.vehicleData = vehicleData;
     if (userImages) {
       // Delete existing images
-      const existingImageIds = originalUser.vehicleData.imageIds.length > 0 ? originalUser.vehicleData.imageIds[0].split(",") : []; 
+      const existingImageIds =
+        originalUser.vehicleData.imageIds.length > 0
+          ? originalUser.vehicleData.imageIds[0].split(',')
+          : [];
       if (existingImageIds) {
         await Promise.all(
           existingImageIds.map(async (imageId) => {
             if (!vehicleData.imageIds.includes(imageId)) {
-              console.log("Deleting Image")
+              console.log('Deleting Image');
               await deleteImage(imageId);
             } else {
-              console.log("Existing Image")
+              console.log('Existing Image');
             }
           })
         );
       }
 
       // Add new images
-      const newImageIds = incomingImageIds ? incomingImageIds : [];
+      const newImageIds = incomingImageIds || [];
       await Promise.all(
         userImages.map(async (image) => {
           const imageId = await saveImage(image);
