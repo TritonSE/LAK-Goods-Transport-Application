@@ -4,26 +4,22 @@
 
 import styles from '@/styles/Home.module.css';
 import { Sidebar } from '../components/sidebar';
-import { useState, useContext } from 'react';
+import { useState, useContext, useMemo } from 'react';
 import { AuthContext } from '../context/AuthContext';
 import { User } from 'firebase/auth';
 
 export default function Profile() {
+
   const [email, setEmail] = useState("");
 	const [password, setPassword] = useState("");
   const [submitted, setSubmitted] = useState(false); // testing
-  const [testUser, setTestUser] = useState<User | null>(null); // testing
 
   const auth = useContext(AuthContext);
 
-  // const handleSubmit = async (e: React.MouseEvent<HTMLButtonElement>) => {
   const handleSubmit = async (e: any): Promise<User | null> => {
     e.preventDefault();
     setSubmitted(!submitted); // testing
     const user = await auth.login(email, password);
-
-    setTestUser(user); // testing
-
     return user;
   }
 
@@ -59,17 +55,20 @@ export default function Profile() {
         </form>
 
         {auth.user == null ?
-          <p>No user</p> :
-          <p>User is {auth.user.email}</p>
+          <p>no auth.user</p> :
+          <p>auth.user is {auth.user.email}</p>
         }
-
-        {testUser == null ? 
-        <>nah</> : <p>{testUser.email}</p>}
 
         {/* testing */}
         {submitted ?
           <p>submitted</p> :
           <p>not submitted</p>
+        }
+
+        {/* testing */}
+        {auth.test ?
+          <p>yeah true</p> :
+          <p>false!</p>
         }
       </main>
     </>

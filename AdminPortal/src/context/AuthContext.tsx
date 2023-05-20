@@ -9,35 +9,12 @@ import {
 
 import firebaseConfig from '../../firebase-config.json';
 import React, { createContext, useMemo, useState } from 'react';
-// import sha256 from 'crypto-js/sha256';
-// import * as crypto from 'expo-crypto';
 import { FirebaseError } from '@firebase/util';
-import { createNewUser } from '../api';
-
-/**
- * Converts a phone number to an email to be used as a username for Firebase.
- */
-// function phoneNumberToEmail(phone: string) {
-//   phone = phone + '';
-//   return 'a' + phone.replace(/\D/g, '') + '@gmail.com';
-// }
-
-// function encrypt(text: string) {
-//   const key = sha256(text);
-//   return key.toString(CryptoJS.enc.Base64);
-// }
-
-/**
- * Converts our PIN to a valid firebase password.
- */
-// async function pinToPass(pin: string) {
-//   pin = 'abc' + pin;
-//   return encrypt(pin);
-// }
 
 export type AuthState = {
   user: User | null;
   error: Error | null;
+  test: boolean; // testing
   clearError: () => void;
   login: (email: string, password: string) => Promise<User | null>;
   logout: () => Promise<void>;
@@ -45,7 +22,6 @@ export type AuthState = {
     firstName: string,
     lastName: string,
     email: string,
-    // location: string,
     password: string
   ) => Promise<User | null>;
 };
@@ -53,6 +29,7 @@ export type AuthState = {
 const init: AuthState = {
   user: null,
   error: null,
+  test: false, // testing
   clearError: () => undefined,
   login: () => {
     return new Promise<User | null>(() => null);
@@ -74,6 +51,7 @@ interface Props {
 export const AuthProvider: React.FC<Props> = ({ children }) => {
   const [user, setUser] = useState<User | null>(null);
   const [error, setError] = useState<Error | null>(null);
+  const [test, setTest] = useState(false);
 
   const clearError = () => {
     setError(null);
@@ -97,8 +75,7 @@ export const AuthProvider: React.FC<Props> = ({ children }) => {
 
   const login = async (userEmail: string, userPassword: string): Promise<User | null> => {
     try {
-      // const email = userEmail;
-      // const password = userPassword;
+      setTest(!test);
       const auth = getAuth(app);
       const userCredential = await signInWithEmailAndPassword(auth, userEmail, userPassword);
       setUser(userCredential.user);
@@ -130,25 +107,14 @@ export const AuthProvider: React.FC<Props> = ({ children }) => {
     firstName: string,
     lastName: string,
     userEmail: string,
-    // location: string,
     userPassword: string
   ): Promise<User | null> => {
     try {
       // First, let's try to save the user credentials in Firebase.
-      const email = userEmail;
-      const password = userPassword;
       const auth = getAuth(app);
-      const userCredential = await createUserWithEmailAndPassword(auth, email, password);
+      const userCredential = await createUserWithEmailAndPassword(auth, userEmail, userPassword);
       const user = userCredential.user;
 
-      // Next, we make a call to save this user in our backend.
-      await createNewUser({
-        userId: user.uid,
-        firstName,
-        lastName,
-        email,
-        // location,
-      });
       setUser(user);
       return userCredential.user;
     } catch (e) {
@@ -163,7 +129,7 @@ export const AuthProvider: React.FC<Props> = ({ children }) => {
   };
 
   return (
-    <AuthContext.Provider value={{ user, error, clearError, login, logout, signup }}>
+    <AuthContext.Provider value={{ user, error, test, clearError, login, logout, signup }}>
       {children}
     </AuthContext.Provider>
   );
