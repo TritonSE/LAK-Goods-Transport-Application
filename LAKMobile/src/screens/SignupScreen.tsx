@@ -76,13 +76,13 @@ export function SignupScreen({ navigation }: SignupProps) {
     auth.clearError();
     setSignupPressed(true);
 
-    validateName();
-    validatePhone();
-    validateLocation();
-    validatePin();
-    validateConfirmPin();
+    const _nameValid = validateName();
+    const _phoneValid = validatePhone();
+    const _locationValid = validateLocation();
+    const _pinValid = validatePin();
+    const _confirmPINValid = validateConfirmPin();
 
-    if (nameValid && phoneValid && locationValid && PINValid && confirmPINValid) {
+    if (_nameValid && _phoneValid && _locationValid && _pinValid && _confirmPINValid) {
       setLoading(true);
       const user = await auth.signup(firstName, lastName, phoneNumber, location, pin);
       setLoading(false);
