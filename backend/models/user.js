@@ -96,6 +96,12 @@ const UserSchema = new Schema(
       enum: VERIFICATION_STATUS_FIELDS,
       default: VERIFICATION_STATUS_NOT_APPLIED,
     },
+    disapprovalReason: {
+      type: String,
+      required: function () {
+        return this.verificationStatus === 'Disapproved';
+      }
+    }
   },
   {
     toObject: {

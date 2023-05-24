@@ -15,7 +15,6 @@ export async function getUser(requestedUserId, requestingUserId) {
   );
 
   let user = await UserModel.findOne({ _id: requestedUserId });
-
   if (!user)
     throw ServiceError.USER_NOT_FOUND.addContext(
       'requestedUserId - ',
@@ -145,7 +144,8 @@ export async function updateUser(userId, userData, userImages) {
 
 export async function updateDriverRegistrationStatus(
   userId,
-  verificationStatus
+  verificationStatus,
+  disapprovalReason
 ) {
   console.debug(
     `SERVICE: updateDriverRegistrationStatus service running: userId = ${userId}, status = ${verificationStatus}`
@@ -153,5 +153,8 @@ export async function updateDriverRegistrationStatus(
 
   const user = await getUser(userId, userId);
   user.verificationStatus = verificationStatus;
+  if(disapprovalReason && verificationStatus === 'Disapproved'){
+    user.disapprovalReason = disapprovalReason;
+  }
   await updateUser(userId, user);
 }
