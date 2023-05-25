@@ -63,7 +63,7 @@ export function LoginScreen({ navigation }: LoginProps) {
           style={bigInputStyle}
           changeAction={setPhoneNumber}
           type="phoneNumber"
-          maxLength={10}
+          maxLength={16} /* longest phone number in E.164 format ([+][country code][number]) is 16 characters*/
           keyboardType="default"
           isValid={!loginPressed || phoneValid}
           errMsg="Valid mobile number required."
