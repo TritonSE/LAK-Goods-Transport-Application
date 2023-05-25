@@ -9,9 +9,8 @@ import { AuthContext } from '../context/AuthContext';
 import { User } from 'firebase/auth';
 
 export default function Profile() {
-
-  const [email, setEmail] = useState("");
-	const [password, setPassword] = useState("");
+  const [email, setEmail] = useState('');
+  const [password, setPassword] = useState('');
   const [submitted, setSubmitted] = useState(false); // testing
 
   const auth = useContext(AuthContext);
@@ -21,7 +20,7 @@ export default function Profile() {
     setSubmitted(!submitted); // testing
     const user = await auth.login(email, password);
     return user;
-  }
+  };
 
   return (
     <>
@@ -29,11 +28,11 @@ export default function Profile() {
         <Sidebar currentPage={'/profile'} />
         <div>{'This is the profile page!'}</div>
 
-        <form className='form' onSubmit={handleSubmit}>
+        <form className="form" onSubmit={handleSubmit}>
           <h2>Login</h2>
           <input
             type="email"
-            placeholder="email" 
+            placeholder="email"
             className="name"
             onChange={(e) => setEmail(e.target.value)}
             value={email}
@@ -41,8 +40,8 @@ export default function Profile() {
 
           <div>
             <input
-              type="password" 
-              placeholder="password" 
+              type="password"
+              placeholder="password"
               className="name"
               onChange={(e) => setPassword(e.target.value)}
               value={password}
@@ -54,22 +53,14 @@ export default function Profile() {
           </div>
         </form>
 
-        {auth.user == null ?
-          <p>no auth.user</p> :
+        {auth.user == null ? (
+          <p>no auth.user</p>
+        ) : (
           <p>auth.user is {auth.user.email}</p>
-        }
+        )}
 
         {/* testing */}
-        {submitted ?
-          <p>submitted</p> :
-          <p>not submitted</p>
-        }
-
-        {/* testing */}
-        {auth.test ?
-          <p>yeah true</p> :
-          <p>false!</p>
-        }
+        {submitted ? <p>submitted</p> : <p>not submitted</p>}
       </main>
     </>
   );

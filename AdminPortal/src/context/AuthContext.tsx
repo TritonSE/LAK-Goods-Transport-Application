@@ -5,7 +5,7 @@ import {
   signInWithEmailAndPassword,
   signOut,
   User,
-  deleteUser
+  deleteUser,
 } from 'firebase/auth';
 
 import firebaseConfig from '../../firebase-config.json';
@@ -15,7 +15,6 @@ import { FirebaseError } from '@firebase/util';
 export type AuthState = {
   user: User | null;
   error: Error | null;
-  test: boolean; // testing
   clearError: () => void;
   login: (email: string, password: string) => Promise<User | null>;
   logout: () => Promise<void>;
@@ -25,12 +24,12 @@ export type AuthState = {
     email: string,
     password: string
   ) => Promise<User | null>;
+  removeUser: (user: User) => Promise<User | null>;
 };
 
 const init: AuthState = {
   user: null,
   error: null,
-  test: false, // testing
   clearError: () => undefined,
   login: () => {
     return new Promise<User | null>(() => null);
@@ -40,6 +39,9 @@ const init: AuthState = {
   },
   signup: () => {
     return new Promise<User | null>(() => undefined);
+  },
+  removeUser: () => {
+    return new Promise<User | null>(() => null);
   },
 };
 
@@ -52,7 +54,6 @@ interface Props {
 export const AuthProvider: React.FC<Props> = ({ children }) => {
   const [user, setUser] = useState<User | null>(null);
   const [error, setError] = useState<Error | null>(null);
-  const [test, setTest] = useState(false);
 
   const clearError = () => {
     setError(null);
@@ -82,7 +83,6 @@ export const AuthProvider: React.FC<Props> = ({ children }) => {
     userPassword: string
   ): Promise<User | null> => {
     try {
-      setTest(!test);
       const auth = getAuth(app);
       const userCredential = await signInWithEmailAndPassword(
         auth,
@@ -115,8 +115,6 @@ export const AuthProvider: React.FC<Props> = ({ children }) => {
   };
 
   const signup = async (
-    firstName: string,
-    lastName: string,
     userEmail: string,
     userPassword: string
   ): Promise<User | null> => {
@@ -125,8 +123,8 @@ export const AuthProvider: React.FC<Props> = ({ children }) => {
       const auth = getAuth(app);
       const userCredential = await createUserWithEmailAndPassword(
         auth,
-        email,
-        password
+        userEmail,
+        userPassword
       );
       const user = userCredential.user;
 
@@ -143,24 +141,12 @@ export const AuthProvider: React.FC<Props> = ({ children }) => {
     }
   };
 
-const removeUser = async (
-  user: User 
-  ): Promise<User | null> => {
+  const removeUser = async (user: User): Promise<User | null> => {
     try {
-      const auth = getAuth(app);
       const currUser = user;
-
-      //delete user in firebase
-      await deleteUser(
-        currUser
-      );
-
-      //delete user in backend
-      //add this later
-      
-      return(user);
-
-    } catch(e){
+      await deleteUser(currUser);
+      return user;
+    } catch (e) {
       if (e instanceof FirebaseError) {
         setFirebaseError(e);
       } else {
@@ -172,7 +158,7 @@ const removeUser = async (
 
   return (
     <AuthContext.Provider
-      value={{ user, error, test, clearError, login, logout, signup }}
+      value={{ user, error, clearError, login, logout, signup, removeUser }}
     >
       {children}
     </AuthContext.Provider>

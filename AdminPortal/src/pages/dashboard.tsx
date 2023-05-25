@@ -7,8 +7,8 @@ import Select, { InputActionMeta } from 'react-select';
 
 const dummyOption = {
   label: 'label',
-  value: 'value'
-}
+  value: 'value',
+};
 
 const data = [
   {
