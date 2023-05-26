@@ -1,13 +1,13 @@
 import { NextPage } from 'next';
 import { useRouter } from 'next/router';
 import { useEffect, useState } from 'react';
-import { Sidebar } from '../components/sidebar';
+import { Sidebar } from '../../components/sidebar';
 import styles from '@/styles/delete-admin.module.css'
 import Image from 'next/image';
 import { Popup } from '@/components/popup';
 
-import PROFILE_LOGO_BG from '../../public/profile-logo-bg.svg'
-import PROFILE_LOGO_PERSON from '../../public/profile-logo-person.svg'
+import PROFILE_LOGO_BG from '../../../public/profile-logo-bg.svg'
+import PROFILE_LOGO_PERSON from '../../../public/profile-logo-person.svg'
 
 type AdminUser = {
   id: string;

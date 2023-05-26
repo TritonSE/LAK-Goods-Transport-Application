@@ -1,6 +1,6 @@
 import React from 'react';
 import styles from '@/styles/add-admin.module.css';
-import { Sidebar } from '../components/sidebar';
+import { Sidebar } from '../../components/sidebar';
 import Link from 'next/link';
 import { Popup } from '@/components/popup';
 import { useState } from 'react';
@@ -18,7 +18,7 @@ function AddAdminPage() {
   return (
     <>
     <main className={styles.main}>
-        <Sidebar currentPage={'/add-admin'} />
+        <Sidebar currentPage={'/admin/add'} />
         <div>
           <Link href="/admin">
               <button className={styles.button}>{'Back'}</button>

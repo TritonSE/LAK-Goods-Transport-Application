@@ -3,7 +3,7 @@
  */
 
 import styles from '@/styles/Admin.module.css';
-import { Sidebar } from '../components/sidebar';
+import { Sidebar } from '../../components/sidebar';
 import Image from 'next/image';
 import React from 'react';
 import Link from 'next/link';
@@ -48,7 +48,7 @@ export default function Admin() {
   
   function handleRowClick(item: AdminUser) {
     router.push({
-      pathname: '/delete-admin',
+      pathname: '/admin/delete',
       query: { id: item.id, name: item.name, phone: item.phone, role: item.role }
     });
   }
@@ -59,7 +59,7 @@ export default function Admin() {
         <Sidebar currentPage={'/admin'} />
         <div className={styles.header}>{'Manage Admin'}</div>
         <div className={styles.rightalign}>
-          <Link href="/add-admin">
+          <Link href="/admin/add">
             <button className={styles.button}>{'Add Admin'}</button>
           </Link>
           <Image src={'/sort.svg'} alt="Sort" width={39} height={30} priority />
