@@ -19,34 +19,31 @@ import {
 const routes = express.Router();
 const upload = multer({ storage: multer.memoryStorage() }).array('images');
 
-routes.put(
-  '/driver-verification-status', upload,
-  async (req, res, next) => {
-    const userId = req.body.id;
-    console.info('ROUTES: Editing driver verification status', userId);
+routes.put('/driver-verification-status', upload, async (req, res, next) => {
+  const userId = req.body.id;
+  console.info('ROUTES: Editing driver verification status', userId);
 
-    try {
-      const { verificationStatus } = req.body;
-      if (
-        verificationStatus &&
-        !VERIFICATION_STATUS_FIELDS.includes(verificationStatus)
-      ) {
-        return res.status(400).json({ error: 'Invalid verification status' });
-      }
-      updateDriverRegistrationStatus(userId, verificationStatus);
-    } catch (e) {
-      next(e);
-      return res
-        .status(500)
-        .json({ error: 'Could not update driver verification status' });
+  try {
+    const { verificationStatus } = req.body;
+    if (
+      verificationStatus &&
+      !VERIFICATION_STATUS_FIELDS.includes(verificationStatus)
+    ) {
+      return res.status(400).json({ error: 'Invalid verification status' });
     }
-
-    return res.status(200).json({
-      message: 'User edited successfully',
-      userId: userId,
-    });
+    updateDriverRegistrationStatus(userId, verificationStatus);
+  } catch (e) {
+    next(e);
+    return res
+      .status(500)
+      .json({ error: 'Could not update driver verification status' });
   }
-);
+
+  return res.status(200).json({
+    message: 'User edited successfully',
+    userId: userId,
+  });
+});
 
 // getting one of the users by their id
 routes.get('/:userid', async (req, res, next) => {
