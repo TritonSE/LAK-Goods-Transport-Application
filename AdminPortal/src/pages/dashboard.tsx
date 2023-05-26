@@ -3,6 +3,7 @@ import styles from '@/styles/Dashboard.module.css';
 import 'bootstrap/dist/css/bootstrap.min.css';
 import { Sidebar } from '@/components/sidebar';
 import Select from 'react-select';
+import { getAllDrivers, updateUser } from '@/api/user';
 
 interface DataItem {
   _id: string;
@@ -49,47 +50,6 @@ export default function App() {
   tabMapping.set('In Review', 2);
   tabMapping.set('Verified', 3);
   tabMapping.set('Disapproved', 4);
-
-  // Environment variables currently not working
-  const USERS_URL = `${process.env.NEXT_PUBLIC_API_URL}/api/users`;
-  const getAllDrivers = async () => {
-    try {
-      const url = `${USERS_URL}/get-all-users?`;
-      const response = await fetch(url, {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        body: '',
-      });
-      let data = await response.json();
-      data = data.users;
-      return data;
-    } catch {
-      return [];
-    }
-  };
-
-  const updateUser = async (userId: string, verificationStatus: Option) => {
-    try {
-      const url = `${USERS_URL}/update-driver-verification-status?`;
-
-      const response = await fetch(url, {
-        method: 'PUT',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify({
-          id: userId,
-          verificationStatus: verificationStatus.value,
-        }),
-      });
-      const data = await response.json();
-      return { userId: data.userId };
-    } catch {
-      return null;
-    }
-  };
 
   useEffect(() => {
     let users = getAllDrivers();
