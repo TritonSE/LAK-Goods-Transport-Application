@@ -1,11 +1,7 @@
-/**
- * Renders the {url}/profile page.
- */
-
 import styles from '@/styles/Home.module.css';
 import { Sidebar } from '../components/sidebar';
-import { useState, useContext, useMemo } from 'react';
-import { AuthContext } from '../context/AuthContext';
+import { useState, useContext } from 'react';
+import { AuthContext, AuthProvider } from '../context/AuthContext';
 import { User } from 'firebase/auth';
 
 export default function Profile() {
@@ -18,12 +14,15 @@ export default function Profile() {
   const handleSubmit = async (e: any): Promise<User | null> => {
     e.preventDefault();
     setSubmitted(!submitted); // testing
+    // console.log("idk what to put here");
     const user = await auth.login(email, password);
+    // console.log(user); // not printing
+    // console.log("nur");  // not printing
     return user;
   };
 
   return (
-    <>
+    <AuthProvider>
       <main className={styles.main}>
         <Sidebar currentPage={'/profile'} />
         <div>{'This is the profile page!'}</div>
@@ -53,15 +52,15 @@ export default function Profile() {
           </div>
         </form>
 
-        {auth.user == null ? (
-          <p>no auth.user</p>
-        ) : (
+        {auth.user ? (
           <p>auth.user is {auth.user.email}</p>
+        ) : (
+          <p>no auth.user</p>
         )}
 
         {/* testing */}
         {submitted ? <p>submitted</p> : <p>not submitted</p>}
       </main>
-    </>
+    </AuthProvider>
   );
 }

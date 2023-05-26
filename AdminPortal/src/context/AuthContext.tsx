@@ -83,7 +83,9 @@ export const AuthProvider: React.FC<Props> = ({ children }) => {
     userPassword: string
   ): Promise<User | null> => {
     try {
+      // console.log("test");  // not printing
       const auth = getAuth(app);
+      // console.log(auth); // not printing
       const userCredential = await signInWithEmailAndPassword(
         auth,
         userEmail,
