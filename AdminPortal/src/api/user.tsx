@@ -1,5 +1,4 @@
-const API_URL = 'http://localhost:3000';
-const USERS_URL = `${API_URL}/api/users`;
+const USERS_URL = `${process.env.REACT_APP_API_URL}/api/users`;
 export const getAllDrivers = async () => {
   try {
     const url = `${USERS_URL}/get-all-users?`;
@@ -23,7 +22,7 @@ export const updateUser = async (
   verificationStatus: Option
 ) => {
   try {
-    const url = `${USERS_URL}/update-driver-verification-status?`;
+    const url = `${USERS_URL}/driver-verification-status?`;
 
     const response = await fetch(url, {
       method: 'PUT',

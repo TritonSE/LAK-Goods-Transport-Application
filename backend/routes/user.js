@@ -20,7 +20,7 @@ const routes = express.Router();
 const upload = multer({ storage: multer.memoryStorage() }).array('images');
 
 routes.put(
-  '/update-driver-verification-status',
+  '/driver-verification-status',
   upload,
   async (req, res, next) => {
     const userId = req.body.id;
