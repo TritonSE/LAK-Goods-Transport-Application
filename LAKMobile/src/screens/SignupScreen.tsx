@@ -27,33 +27,45 @@ export function SignupScreen({ navigation }: SignupProps) {
 
   const [isSignupPressed, setSignupPressed] = useState(false);
 
-  const validateName = () => {
+  const [loading, setLoading] = useState(false);
+
+  const validateName = (): boolean => {
     // only spaces and letters allowed in regex pattern
     const nameRegex = new RegExp('^[A-Z][a-z]+ [A-Z][a-z]+$');
-    setNameValid(nameRegex.test(name));
+    const valid = nameRegex.test(name);
+    setNameValid(valid);
+    return valid;
   };
 
-  const validatePhone = () => {
+  const validatePhone = (): boolean => {
     // phone number must be 10-digit number
-    const phoneRegex = new RegExp('^[0-9]{10}$');
-    setPhoneValid(phoneRegex.test(phoneNumber));
+    const phoneRegex = new RegExp(/^(?:\+\d{1,15}|\d{1,16})$/);
+    const valid = phoneRegex.test(phoneNumber);
+    setPhoneValid(valid);
+    return valid;
   };
 
-  const validateLocation = () => {
+  const validateLocation = (): boolean => {
     // only spaces and letters allowed in regex pattern, and must be non-empty
     const locationRegex = new RegExp('^[A-Za-z][A-Za-z ]*$');
-    setLocationValid(locationRegex.test(location));
+    const valid = locationRegex.test(location);
+    setLocationValid(valid);
+    return valid;
   };
 
-  const validatePin = () => {
+  const validatePin = (): boolean => {
     // must be 4-digit number
     const pinRegex = new RegExp('^[0-9]{4}$');
-    setPINValid(pinRegex.test(pin));
+    const valid = pinRegex.test(pin);
+    setPINValid(valid);
+    return valid;
   };
 
-  const validateConfirmPin = () => {
+  const validateConfirmPin = (): boolean => {
     // pin confirmation must be the same as original pin
-    setConfirmPINValid(pin === confirmPin);
+    const valid = pin === confirmPin;
+    setConfirmPINValid(valid);
+    return valid;
   };
 
   const handleSubmit = async () => {
@@ -64,22 +76,23 @@ export function SignupScreen({ navigation }: SignupProps) {
     auth.clearError();
     setSignupPressed(true);
 
-    validateName();
-    validatePhone();
-    validateLocation();
-    validatePin();
-    validateConfirmPin();
+    const _nameValid = validateName();
+    const _phoneValid = validatePhone();
+    const _locationValid = validateLocation();
+    const _pinValid = validatePin();
+    const _confirmPINValid = validateConfirmPin();
 
-    if (nameValid && phoneValid && locationValid && PINValid && confirmPINValid) {
-      await auth.signup(firstName, lastName, phoneNumber, location, pin);
-      if (auth.user !== null) {
-        console.log(auth.user.uid);
-        navigation.navigate('JobLandingScreen');
-      } else {
-        // Display errors (invalid password, email already in use, etc.)
-        setSignupError(auth.error);
-        console.error(auth.error);
+    if (_nameValid && _phoneValid && _locationValid && _pinValid && _confirmPINValid) {
+      const userTaken = await auth.doesUserExist(phoneNumber);
+      if (userTaken) {
+        setSignupError(new Error('This phone number is already registered. Please log in.'));
+        return;
       }
+      navigation.navigate('PhoneVerificationScreen', {
+        phoneNumber: phoneNumber,
+        mode: 'signup',
+        userData: { firstName, lastName, phoneNumber, location, pin },
+      });
     }
   };
 
@@ -109,7 +122,9 @@ export function SignupScreen({ navigation }: SignupProps) {
           type="phoneNumber"
           isValid={!isSignupPressed || phoneValid}
           errMsg="Valid mobile number required."
-          maxLength={10}
+          maxLength={
+            16
+          } /* longest phone number in E.164 format ([+][country code][number]) is 16 characters*/
           keyboardType="default"
         />
       </LabelWrapper>
@@ -154,7 +169,7 @@ export function SignupScreen({ navigation }: SignupProps) {
       </LabelWrapper>
 
       <AppButton
-        type="primary"
+        type={loading ? 'disabled' : 'primary'}
         title="Create Account"
         onPress={handleSubmit}
         style={styles.submitButton}

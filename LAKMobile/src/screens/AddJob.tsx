@@ -96,6 +96,7 @@ export function AddJob({ navigation, route }: AddJobProps) {
   const [dropoffLocation, setDropoffLocation] = useState('');
   const [dropoffDistrict, setDropoffDistrict] = useState('');
   const [confirmationVisible, setConfirmationVisible] = useState(false);
+  const [loading, setLoading] = useState(false);
 
   //TODO: Abstract text validation to make more DRY
   const validatePresence: Validator = (text: string) => {
@@ -104,7 +105,7 @@ export function AddJob({ navigation, route }: AddJobProps) {
   };
 
   const validatePhoneNumber: Validator = (text: string) => {
-    const valid = (text.startsWith('1') || text.startsWith('7')) && text.length == 8;
+    const valid = text.length == 10;
     return valid;
   };
 
@@ -177,10 +178,12 @@ export function AddJob({ navigation, route }: AddJobProps) {
 
   useEffect(() => {
     getUser(userId, userId).then((user) => {
-      setClientName(user.firstName + ' ' + user.lastName);
-      setPhoneNumber(user.phone || '');
-      setPickupLocation(user.location.split(';')[0] || '');
-      setPickupDistrict(user.location.split(';')[1] || PICKER_DEFAULT);
+      if (user) {
+        setClientName(user.firstName + ' ' + user.lastName);
+        setPhoneNumber(user.phone || '');
+        setPickupLocation(user.location.split(';')[0] || '');
+        setPickupDistrict(user.location.split(';')[1] || PICKER_DEFAULT);
+      }
     });
   }, [userId]);
 
@@ -267,7 +270,9 @@ export function AddJob({ navigation, route }: AddJobProps) {
     const formedJob: FormData = createFormData(imageInfo, newJob);
     dispatch({ type: 'CLEAR_IMAGES' });
     if (formType === 'add' || formType == 'repost') {
+      setLoading(true);
       postJob(userId, formedJob).then((response) => {
+        setLoading(false);
         console.log(response);
         if (response == null) {
           return;
@@ -400,8 +405,7 @@ export function AddJob({ navigation, route }: AddJobProps) {
             maxLength={10}
             type="deliveryDate"
             keyboardType="default"
-            errMsg="Please put in a date or N/A if not applicable"
-            instructionText="put N/A if not applicable"
+            errMsg="Please put in a valid date"
           />
         </LabelWrapper>
 
@@ -513,7 +517,7 @@ export function AddJob({ navigation, route }: AddJobProps) {
         <AppButton
           onPress={submitJob}
           style={[styles.center, { width: '100%' }]}
-          type="primary"
+          type={loading ? 'disabled' : 'primary'}
           title={formType === 'add' ? 'Post Job' : formType === 'edit' ? 'Update' : 'Repost'}
         />
         {formType === 'edit' && (

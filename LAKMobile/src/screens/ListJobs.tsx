@@ -2,13 +2,22 @@ import React, { useState, useEffect, useMemo, useContext } from 'react';
 import { View, FlatList, StyleSheet } from 'react-native';
 import { Picker } from '@react-native-picker/picker';
 import debounce from 'lodash.debounce';
-import { getJobApplicantStatus, getJobs, JobData, JobOwnerView, PAGE_SIZE } from '../api';
+import {
+  getDriverVerificationStatus,
+  getJobApplicantStatus,
+  getJobs,
+  getUser,
+  JobData,
+  JobOwnerView,
+  PAGE_SIZE,
+} from '../api';
 import { JobThumbnail, AppButton, AppTextInput, NoJobs } from '../components';
 import { COLORS } from '../../constants';
 import { PickerStyles, FlatListStyles } from '../styles';
-import { useIsFocused } from '@react-navigation/native';
 import { AuthContext } from '../context/AuthContext';
-import { NoAvailableJobsIcon, NoJobsIcon, NoMatchingJobsIcon, PlusSignIcon } from '../icons';
+import { NoJobsIcon, NoMatchingJobsIcon, PlusSignIcon } from '../icons';
+import { InfoBox } from '../components/InfoBox';
+import { useIsFocused } from '@react-navigation/native';
 
 type ListJobsModes = 'Add' | 'Find';
 type JobTypePickerOption = 'Current Jobs' | 'Completed Jobs' | 'Your Jobs' | 'Finished Jobs';
@@ -30,16 +39,21 @@ export function ListJobs({ navigation, mode }: ListJobsProps) {
   );
   const [searchString, setSearchString] = useState<string | null>(null);
   const [jobs, setJobs] = useState<JobData[] | JobOwnerView[]>([]);
-  const [noJobs, setNoJobs] = useState<boolean>(false);
+
+  const isFocused = useIsFocused();
 
   // NOTE: Page 0 is being used as a null page, but the first page is 1.
   // Added this so that we are able to trigger hooks dependent on `page` when type of screen changes but page number does not
   const [page, setPage] = useState(0);
-
   const [loading, setLoading] = useState(false);
   const [isRefreshing, setRefreshing] = useState(false);
   const [allLoaded, setAllLoaded] = useState(false);
 
+  const [driverRegistrationWarning, setDriverRegistrationWarning] = useState<JSX.Element | null>(
+    null
+  );
+
+  const [noJobsComponent, setNoJobsComponent] = useState<JSX.Element | null>(null);
   const auth = useContext(AuthContext);
 
   useEffect(() => {
@@ -49,6 +63,37 @@ export function ListJobs({ navigation, mode }: ListJobsProps) {
   }, [auth, navigation]);
 
   const userId = auth.user ? auth.user.uid : '';
+
+  // Note: This should refresh every time we have a onFocus...
+  useEffect(() => {
+    if (isFocused) {
+      getUser(userId, userId).then((user) => {
+        if (user) {
+          const driverVerificationStatus = getDriverVerificationStatus(user);
+          if (driverVerificationStatus === 'Not Applied') {
+            setDriverRegistrationWarning(
+              <InfoBox
+                text={'Register as a driver to apply to jobs.'}
+                buttonText={'Register'}
+                onPress={() => navigation.navigate('DriverRegistration')}
+              />
+            );
+          } else if (
+            driverVerificationStatus === 'Applied' ||
+            driverVerificationStatus === 'In Review'
+          ) {
+            setDriverRegistrationWarning(
+              <InfoBox
+                text={
+                  'Your driver registration is under review.\nYou can apply to jobs once approved.'
+                }
+              />
+            );
+          }
+        }
+      });
+    }
+  }, [navigation, userId, isFocused]);
 
   const resetJobsOnPage = () => {
     setJobs([]);
@@ -65,6 +110,79 @@ export function ListJobs({ navigation, mode }: ListJobsProps) {
   useEffect(() => {
     debouncedResetJobs();
   }, [searchString]);
+
+  const handleNoJobsIcon = (
+    jobs: JobData[],
+    mode: ListJobsModes,
+    jobListType: JobTypePickerOption,
+    searchString: string | null
+  ): void => {
+    if (jobs.length === 0) {
+      if (mode === 'Find' && searchString) {
+        setNoJobsComponent(
+          <NoJobs
+            title={'No matching jobs.'}
+            body={'Please try another keyword.'}
+            errorImageType={<NoMatchingJobsIcon />}
+          />
+        );
+        return;
+      }
+      switch (jobListType) {
+        case 'Your Jobs': {
+          setNoJobsComponent(
+            <NoJobs
+              title={'No available jobs.'}
+              body={'There are no job posts at the moment. Please check back later.'}
+              errorImageType={<NoJobsIcon />}
+            />
+          );
+          return;
+        }
+        case 'Finished Jobs': {
+          setNoJobsComponent(
+            <NoJobs
+              title={'No finished jobs.'}
+              body={"You don't have any finished jobs yet."}
+              errorImageType={<NoJobsIcon />}
+            />
+          );
+          return;
+        }
+        case 'Current Jobs': {
+          setNoJobsComponent(
+            <NoJobs
+              title={'No current jobs.'}
+              body={"You don't have any in progress jobs at the moment."}
+              buttonName="Add a Job Now"
+              buttonIcon={<PlusSignIcon />}
+              onButtonClick={() =>
+                navigation.navigate('AddJob', { formType: 'add', setJobData: setJobs })
+              }
+              errorImageType={<NoMatchingJobsIcon />}
+            />
+          );
+          return;
+        }
+        case 'Completed Jobs': {
+          setNoJobsComponent(
+            <NoJobs
+              title={'No completed jobs.'}
+              body={"You don't have any completed jobs at the moment."}
+              errorImageType={<NoJobsIcon />}
+            />
+          );
+          return;
+        }
+        default: {
+          setNoJobsComponent(null);
+          return;
+        }
+      }
+    } else {
+      setNoJobsComponent(null);
+    }
+  };
 
   useEffect(() => {
     // Fetches the job data for last reached page `page`. Enables lazy load on scrolling.
@@ -93,7 +211,9 @@ export function ListJobs({ navigation, mode }: ListJobsProps) {
       const filteredNewJobs = newJobs.filter(
         (newjob) => !jobs.some((job) => job._id === newjob._id)
       );
-      setJobs([...jobs, ...filteredNewJobs]);
+      const jobsToDisplay = [...jobs, ...filteredNewJobs];
+      setJobs(jobsToDisplay);
+      handleNoJobsIcon(jobsToDisplay, mode, jobListType, searchString);
       setLoading(false);
       setRefreshing(false);
     });
@@ -107,43 +227,6 @@ export function ListJobs({ navigation, mode }: ListJobsProps) {
   };
 
   const pickerOptions = mode === 'Add' ? ADD_PICKER_OPTIONS : FIND_PICKER_OPTIONS;
-  let noJobsComponent = null;
-
-  if (jobs.length == 0 && jobListType === 'Your Jobs') {
-    noJobsComponent = (
-      <NoJobs
-        title={'Your job box is empty.'}
-        body={"You don't have any in progress jobs at the moment. Search to find a job."}
-        buttonVisible={false}
-        errorImageType={<NoJobsIcon />}
-      />
-    );
-  } else if (jobs.length == 0 && jobListType === 'Finished Jobs') {
-    noJobsComponent = (
-      <NoJobs
-        title={'No finished jobs.'}
-        body={"You don't have any finished jobs yet."}
-        buttonVisible={false}
-        errorImageType={<NoJobsIcon />}
-      />
-    );
-  } else if (jobs.length == 0 && jobListType === 'Current Jobs') {
-    noJobsComponent = (
-      <NoJobs
-        title={'No current jobs.'}
-        body={"You don't have any in progress jobs at the moment."}
-        buttonVisible={true}
-        buttonName="Add a Job Now"
-        buttonIcon={<PlusSignIcon />}
-        onButtonClick={() =>
-          navigation.navigate('AddJob', { formType: 'add', setJobData: setJobs })
-        }
-        errorImageType={<NoMatchingJobsIcon />}
-      />
-    );
-  } else {
-    noJobsComponent = null;
-  }
 
   return (
     <>
@@ -241,6 +324,7 @@ export function ListJobs({ navigation, mode }: ListJobsProps) {
                       icon="search"
                     />
 
+                    {driverRegistrationWarning}
                     {noJobsComponent}
                   </View>
                 )}

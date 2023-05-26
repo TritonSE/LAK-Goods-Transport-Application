@@ -14,30 +14,36 @@ export function LoginScreen({ navigation }: LoginProps) {
 
   const [loginPressed, setLoginPressed] = useState(false);
   const [loginError, setLoginError] = useState<Error | null>(null);
+  const [loading, setLoading] = useState(false);
 
   const auth = useContext(AuthContext);
 
-  const validatePhone = () => {
-    const phoneRegex = new RegExp('^[0-9]{10}$');
-    setPhoneValid(phoneRegex.test(phoneNumber));
+  const validatePhone = (): boolean => {
+    const phoneRegex = new RegExp(/^(?:\+\d{1,15}|\d{1,16})$/);
+    const valid = phoneRegex.test(phoneNumber);
+    setPhoneValid(valid);
+    return valid;
   };
 
-  const validatePin = () => {
+  const validatePin = (): boolean => {
     const pinRegex = new RegExp('^[0-9]{4}$');
-    setPINValid(pinRegex.test(pin));
+    const valid = pinRegex.test(pin);
+    setPINValid(valid);
+    return valid;
   };
 
   const handleSubmit = async () => {
     setLoginError(null);
     auth.clearError();
     setLoginPressed(true);
+    const _phoneValid = validatePhone();
+    const _pinValid = validatePin();
+    if (_phoneValid && _pinValid) {
+      setLoading(true);
+      const user = await auth.login(phoneNumber, pin);
+      setLoading(false);
 
-    validatePhone();
-    validatePin();
-
-    if (phoneValid && PINValid) {
-      await auth.login(phoneNumber, pin);
-      if (auth.user !== null) {
+      if (user !== null) {
         setPhoneNumber('');
         setPIN('');
         navigation.navigate('JobLandingScreen');
@@ -79,11 +85,17 @@ export function LoginScreen({ navigation }: LoginProps) {
       <AppButton
         type="link"
         title="Forgot PIN?"
-        onPress={() => navigation.navigate('ForgotPassword')}
+        onPress={() => navigation.navigate('ConfirmPhoneScreen')}
         style={styles.forgotPIN}
       />
 
-      <AppButton type="primary" title="Log in" onPress={handleSubmit} style={styles.submitButton} />
+      {/* ternary to check if loading, set type to disabled */}
+      <AppButton
+        type={loading ? 'disabled' : 'primary'}
+        title="Log in"
+        onPress={handleSubmit}
+        style={styles.submitButton}
+      />
 
       <View style={styles.signupPrompt}>
         <AppText>{"Don't have an account?"}</AppText>

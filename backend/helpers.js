@@ -46,3 +46,5 @@ export const validateId = (id) => {
   }
   return mongoose.Types.ObjectId(id);
 };
+
+export const getSessionUserId = (req) => req.query.user;
