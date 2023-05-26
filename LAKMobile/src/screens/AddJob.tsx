@@ -107,8 +107,8 @@ export function AddJob({ navigation, route }: AddJobProps) {
 
   const validatePhoneNumber: Validator = (text: string) => {
     // Makes sure that phone number is in international E.164 format
-    const e164Regex = /^\+?[1-9]\d{1,14}$/;
-    const valid = e164Regex.test(text);
+    const phoneRegex = new RegExp(/^(?:\+\d{1,15}|\d{1,16})$/);
+    const valid = phoneRegex.test(text);
     return valid;
   };
 
