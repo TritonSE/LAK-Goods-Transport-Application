@@ -1,4 +1,4 @@
-const API_URL="http://localhost:3000"
+const API_URL = 'http://localhost:3000';
 const USERS_URL = `${API_URL}/api/users`;
 export const getAllDrivers = async () => {
   try {
@@ -18,7 +18,10 @@ export const getAllDrivers = async () => {
   }
 };
 
-export const updateUser = async (userId: string, verificationStatus: Option) => {
+export const updateUser = async (
+  userId: string,
+  verificationStatus: Option
+) => {
   try {
     const url = `${USERS_URL}/update-driver-verification-status?`;
 
