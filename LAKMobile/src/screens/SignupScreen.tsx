@@ -40,7 +40,7 @@ export function SignupScreen({ navigation }: SignupProps) {
 
   const validatePhone = (): boolean => {
     // phone number must be 10-digit number
-    const phoneRegex = new RegExp('^[0-9]{10}$');
+    const phoneRegex = new RegExp(/^(?:\+\d{1,15}|\d{1,16})$/);
     const valid = phoneRegex.test(phoneNumber);
     setPhoneValid(valid);
     return valid;
@@ -77,24 +77,23 @@ export function SignupScreen({ navigation }: SignupProps) {
     auth.clearError();
     setSignupPressed(true);
 
-    if (
-      validateName() &&
-      validatePhone() &&
-      validateLocation() &&
-      validatePin() &&
-      validateConfirmPin()
-    ) {
-      setLoading(true);
-      const user = await auth.signup(firstName, lastName, phoneNumber, location, pin);
-      setLoading(false);
-      if (user !== null) {
-        console.log(user.uid);
-        navigation.navigate('JobLandingScreen');
-      } else {
-        // Display errors (invalid password, email already in use, etc.)
-        setSignupError(auth.error);
-        console.error(auth.error);
+    const _nameValid = validateName();
+    const _phoneValid = validatePhone();
+    const _locationValid = validateLocation();
+    const _pinValid = validatePin();
+    const _confirmPINValid = validateConfirmPin();
+
+    if (_nameValid && _phoneValid && _locationValid && _pinValid && _confirmPINValid) {
+      const userTaken = await auth.doesUserExist(phoneNumber);
+      if (userTaken) {
+        setSignupError(new Error('This phone number is already registered. Please log in.'));
+        return;
       }
+      navigation.navigate('PhoneVerificationScreen', {
+        phoneNumber: phoneNumber,
+        mode: 'signup',
+        userData: { firstName, lastName, phoneNumber, location, pin },
+      });
     }
   };
 
