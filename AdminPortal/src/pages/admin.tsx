@@ -76,7 +76,7 @@ export default function Admin() {
             <tbody className={styles.tablebody}>
 
               {data.map((item) => (
-                  <tr key={JSON.stringify(item)} onClick={() => handleRowClick(item)}>
+                  <tr key={JSON.stringify(item.phone)} onClick={() => handleRowClick(item)}>
                     <td>{item.name}</td>
                     <td>{item.phone}</td>
                     <td>{item.role}</td>
