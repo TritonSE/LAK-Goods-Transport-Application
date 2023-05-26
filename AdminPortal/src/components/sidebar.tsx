@@ -39,7 +39,7 @@ export function Sidebar({ currentPage }: SidebarProps) {
 
             <button type="button" className={styles.sidebarButton}>
               <a
-                href="./ratings"
+                href="./driver"
                 className={
                   currentPage === '/ratings' ? styles.active : styles.buttonText
                 }
