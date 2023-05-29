@@ -66,7 +66,10 @@ export function PhoneVerificationScreen({ navigation, route }: PhoneVerification
       const success = await auth.verifyPhone(verificationID, verificationCode);
       setLoading(false);
       if (success) {
-        navigation.navigate('ResetPassword');
+        navigation.navigate('ResetPassword', 
+        {
+          statusResetPassword: 'logged_out',
+        });
       } else {
         setDisplayError(auth.error?.message || '');
       }
