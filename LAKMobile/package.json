@@ -13,6 +13,7 @@
   },
   "dependencies": {
     "@expo/config-plugins": "^5.0.2",
+    "@firebase/auth": "^0.23.2",
     "@react-native-picker/picker": "2.4.8",
     "@react-navigation/material-top-tabs": "^6.3.0",
     "@react-navigation/native": "^6.0.10",

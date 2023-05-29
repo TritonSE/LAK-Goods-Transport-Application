@@ -87,10 +87,7 @@ export async function registerUser(userData, imageFiles) {
       ...(driverLicenseId === undefined ? {} : { vehicleData: vehicleData }),
       verificationStatus: 'Not Applied',
     });
-  } catch (e) {
-    throw ServiceError.INVALID_USER_RECEIVED.addContext(e.stack);
-  }
-  try {
+    console.log(user);
     const response = await user.save();
     return response;
   } catch (e) {
