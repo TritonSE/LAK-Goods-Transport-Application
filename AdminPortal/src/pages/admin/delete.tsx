@@ -12,7 +12,7 @@ import PROFILE_LOGO_PERSON from '../../../public/profile-logo-person.svg'
 type AdminUser = {
   id: string;
   name: string;
-  phone: string;
+  email: string;
   role: string;
 };
 
@@ -22,12 +22,12 @@ const DeleteAdminPage: NextPage = () => {
   const [adminUser, setAdminUser] = useState<AdminUser>();
 
   useEffect(() => {
-    const { id, name, phone, role } = router.query;
+    const { id, name, email, role } = router.query;
 
     setAdminUser({
       id: id as string,
       name: name as string,
-      phone: phone as string,
+      email: email as string,
       role: role as string,
     });
   }, [router.query]);
@@ -61,7 +61,7 @@ const DeleteAdminPage: NextPage = () => {
                 <>
                     <p className={styles.role}>{adminUser.role}</p>
                     <p className={styles.name}>{adminUser.name}</p>
-                    <p className={styles.phone}>{adminUser.phone}</p>
+                    <p className={styles.email}>{adminUser.email}</p>
                 </>
                 )}        
             </div>

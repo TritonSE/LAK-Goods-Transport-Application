@@ -13,7 +13,7 @@ import { useRouter } from 'next/router';
 interface AdminUser {
   id: number;
   name: string;
-  phone: string;
+  email: string;
   role: string;
 }
 
@@ -23,25 +23,25 @@ export default function Admin() {
     {
       id: 1,
       name: 'Thinley Choden',
-      phone: '+1 (234) 567-8910',
+      email: 'thinleychoden@gmail.com',
       role: 'Primary Admin',
     },
     {
       id: 2,
       name: 'Carly Shay',
-      phone: '+1 (234) 567-8910',
+      email: 'carlyshay@gmail.com',
       role: 'Secondary Admin',
     },
     {
       id: 3,
       name: 'Spencer Shay',
-      phone: '+1 (234) 567-8910',
+      email: 'spencershay@gmail.com',
       role: 'Secondary Admin',
     },
     {
       id: 4,
       name: 'Freddie Benson',
-      phone: '+1 (234) 567-8910',
+      email: 'freddiebenson@gmail.com',
       role: 'Secondary Admin',
     },
   ];
@@ -49,7 +49,7 @@ export default function Admin() {
   function handleRowClick(item: AdminUser) {
     router.push({
       pathname: '/admin/delete',
-      query: { id: item.id, name: item.name, phone: item.phone, role: item.role }
+      query: { id: item.id, name: item.name, email: item.email, role: item.role }
     });
   }
 
@@ -69,7 +69,7 @@ export default function Admin() {
             <thead className={styles.tableheader}>
               <tr>
                 <th>Name</th>
-                <th>Mobile Number</th>
+                <th>Email</th>
                 <th>Role</th>
               </tr>
             </thead>
@@ -78,7 +78,7 @@ export default function Admin() {
               {data.map((item) => (
                   <tr key={JSON.stringify(item)} onClick={() => handleRowClick(item)}>
                     <td>{item.name}</td>
-                    <td>{item.phone}</td>
+                    <td>{item.email}</td>
                     <td>{item.role}</td>
                   </tr>
               ))}

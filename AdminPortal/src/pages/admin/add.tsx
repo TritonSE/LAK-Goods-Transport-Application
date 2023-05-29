@@ -25,17 +25,18 @@ function AddAdminPage() {
           </Link>
         </div>
         <div className={styles.header}>{'Add Admin'}</div>
-        <div>
-          <div className={styles.title}>{'Name'}</div>
-          <input className={styles.input} type="text"/>
-        </div>
-        <div>
-          <div className={styles.title}>{'Mobile number'}</div>
-          <input className={styles.input} type="text"/>
-        </div>
-        
-        <button className={styles.button2} onClick={handleAddClick}>{'Add'}</button>
-        
+        <form>
+          <div>
+            <div className={styles.title}>{'Name'}</div>
+            <input className={styles.input} type="text" required/>
+          </div>
+          <div>
+            <div className={styles.title}>{'Email'}</div>
+            <input className={styles.input} type="email" required/>
+          </div>
+          
+          <button className={styles.button2} onClick={handleAddClick}>{'Add'}</button>
+        </form>
         {showPopup && <Popup
                 name="Admin Added"
                 description="Admin will appear in the system once they successfully login."

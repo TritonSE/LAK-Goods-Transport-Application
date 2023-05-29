@@ -10,7 +10,7 @@ const data = [
     id: 1,
     dateApplied: '2022-01-01',
     name: 'John Doe',
-    mobileNumber: '+1 123 456 7890',
+    emailID: 'johndoe@gmail.com',
     licenseID: 'A1234567',
     licensePlate: 'ABC-123',
     isChecked: false,
@@ -19,7 +19,7 @@ const data = [
     id: 2,
     dateApplied: '2022-02-01',
     name: 'Jane Doe',
-    mobileNumber: '+1 987 654 3210',
+    emailID: 'janedoe@gmail.com',
     licenseID: 'B2345678',
     licensePlate: 'DEF-456',
     isChecked: false,
@@ -28,7 +28,7 @@ const data = [
     id: 3,
     dateApplied: '2022-03-01',
     name: 'Jim Smith',
-    mobileNumber: '+1 111 222 3333',
+    emailID: 'jimsmith@gmail.com',
     licenseID: 'C3456789',
     licensePlate: 'GHI-789',
     isChecked: false,
@@ -37,7 +37,7 @@ const data = [
     id: 4,
     dateApplied: '2022-01-01',
     name: 'John Doe',
-    mobileNumber: '+1 123 456 7890',
+    emailID: 'johndoe@gmail.com',
     licenseID: 'A1234567',
     licensePlate: 'ABC-123',
     isChecked: false,
@@ -46,7 +46,7 @@ const data = [
     id: 5,
     dateApplied: '2022-02-01',
     name: 'Jane Doe',
-    mobileNumber: '+1 987 654 3210',
+    emailID: 'janedoe@gmail.com',
     licenseID: 'B2345678',
     licensePlate: 'DEF-456',
     isChecked: false,
@@ -57,7 +57,7 @@ interface DataItem {
   id: number;
   dateApplied: string;
   name: string;
-  mobileNumber: string;
+  emailID: string;
   licenseID: string;
   licensePlate: string;
   isChecked: boolean;
@@ -104,7 +104,7 @@ export default function App() {
       id: 1,
       dateApplied: '2022-01-01',
       name: 'Hello 1',
-      mobileNumber: '+1 123 456 7890',
+      emailID: 'hello1@gmail.com',
       licenseID: 'A1234567',
       licensePlate: 'ABC-123',
       isChecked: false,
@@ -114,7 +114,7 @@ export default function App() {
       id: 2,
       dateApplied: '2022-02-01',
       name: 'Hello 2',
-      mobileNumber: '+1 987 654 3210',
+      emailID: 'hello2@gmail.com',
       licenseID: 'B2345678',
       licensePlate: 'DEF-456',
       isChecked: false,
@@ -124,7 +124,7 @@ export default function App() {
       id: 3,
       dateApplied: '2022-03-01',
       name: 'Hello 3',
-      mobileNumber: '+1 111 222 3333',
+      emailID: 'hello3@gmail.com',
       licenseID: 'C3456789',
       licensePlate: 'GHI-789',
       isChecked: false,
@@ -134,7 +134,7 @@ export default function App() {
       id: 4,
       dateApplied: '2022-01-01',
       name: 'Hello 4',
-      mobileNumber: '+1 123 456 7890',
+      emailID: 'hello4@gmail.com',
       licenseID: 'A1234567',
       licensePlate: 'ABC-123',
       isChecked: false,
@@ -144,7 +144,7 @@ export default function App() {
       id: 5,
       dateApplied: '2022-02-01',
       name: 'Hello 5',
-      mobileNumber: '+1 987 654 3210',
+      emailID: 'hello5@gmail.com',
       licenseID: 'B2345678',
       licensePlate: 'DEF-456',
       isChecked: false,
@@ -290,7 +290,7 @@ export default function App() {
               </th>
               <th className={styles.tableHeadItem}>Date Applied</th>
               <th className={styles.tableHeadItem}>Name</th>
-              <th className={styles.tableHeadItem}>Mobile Number</th>
+              <th className={styles.tableHeadItem}>Email ID</th>
               <th className={styles.tableHeadItem}>License ID</th>
               <th className={styles.tableHeadItem}>License Plate #</th>
             </tr>
@@ -310,7 +310,7 @@ export default function App() {
                   </td>
                   <td className={styles.tableData}>{item.dateApplied}</td>
                   <td className={styles.tableData}>{item.name}</td>
-                  <td className={styles.tableData}>{item.mobileNumber}</td>
+                  <td className={styles.tableData}>{item.emailID}</td>
                   <td className={styles.tableData}>{item.licenseID}</td>
                   <td className={styles.tableData}>{item.licensePlate}</td>
                 </tr>
