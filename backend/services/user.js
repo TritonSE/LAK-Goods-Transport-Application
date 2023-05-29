@@ -4,6 +4,7 @@
 import UserModel, {
   OWNER_LIMITED_FIELDS,
   FIELDS_USER_PERMITTED_TO_UPDATE,
+  VERIFICATION_STATUS_NOT_APPLIED,
 } from '../models/user';
 import { ServiceError } from '../errors';
 import { saveImage, deleteImage } from './image';
@@ -132,7 +133,16 @@ export async function updateUser(userId, userData, userImages) {
 
       userData.vehicleData.imageIds = newImageIds;
     }
+
+    console.log(userData.verificationStatus);
+    if (originalUser.verificationStatus === VERIFICATION_STATUS_NOT_APPLIED) {
+      console.log('here');
+      userData.verificationStatus = 'Applied';
+    }
+
+    console.log(userData);
   }
+
   try {
     return await UserModel.findOneAndUpdate({ _id: userId }, userData);
   } catch (e) {
