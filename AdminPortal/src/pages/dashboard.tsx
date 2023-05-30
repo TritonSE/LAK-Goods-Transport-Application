@@ -4,6 +4,7 @@ import 'bootstrap/dist/css/bootstrap.min.css';
 import { Sidebar } from '@/components/sidebar';
 import Select from 'react-select';
 import { getAllDrivers, updateUser } from '@/api/user';
+import Papa from 'papaparse';
 
 interface DataItem {
   _id: string;
@@ -133,6 +134,20 @@ export default function App() {
     );
   };
 
+  const handleExportToCSVClick = (): void => {
+    const data = items.filter(item => item.verificationStatus === activeTab).map(item => [item.firstName, item.lastName, item.phone])
+    const fields = ['First Name', 'Last Name', 'Phone Number']
+    // console.log(data)
+    const csv = Papa.unparse({data, fields})
+    var csvData = new Blob([csv], {type: 'text/csv;charset=utf-8;'});
+    const a = document.createElement('a');
+    a.href = URL.createObjectURL(csvData);
+    a.download = 'Driver Registration ' + activeTab + ' CSV'
+    document.body.appendChild(a);
+    a.click();
+    document.body.removeChild(a);
+  };
+
   return (
     <div className={styles.page}>
       <Sidebar currentPage="Dashboard"></Sidebar>
@@ -193,7 +208,8 @@ export default function App() {
             blurInputOnSelect={true}
           />
 
-          <button className={styles.exportButton}>Export to CSV File</button>
+          <button className={styles.exportButton}
+          onClick = {() => handleExportToCSVClick()}>Export to CSV File</button>
         </div>
 
         <table>
