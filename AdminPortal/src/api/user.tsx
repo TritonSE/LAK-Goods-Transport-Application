@@ -1,4 +1,4 @@
-const USERS_URL = `${process.env.REACT_APP_API_URL}/api/users`;
+const USERS_URL = `${process.env.NEXT_PUBLIC_API_URL}/api/users`;
 export const getAllDrivers = async () => {
   try {
     const url = `${USERS_URL}/get-all-users?`;
