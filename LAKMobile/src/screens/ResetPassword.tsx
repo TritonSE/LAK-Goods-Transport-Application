@@ -1,4 +1,4 @@
-import React, { useState, useContext } from 'react';
+import React, { useState, useContext, useEffect } from 'react';
 import { StyleSheet, TextInput, View } from 'react-native';
 import { LabelWrapper, AppButton, ScreenHeader, AppTextInput, AppText } from '../components';
 import { COLORS } from '../../constants';
@@ -46,10 +46,14 @@ export function ResetPassword({ navigation, route }: ResetPasswordProps) {
           statusResetSuccess: route.params.statusResetPassword
         });
       } else {
-        setErrorUpdating('Unable to successfully reset PIN.');
+        setErrorUpdating('There was an error in resetting your PIN, please try again.');
       }
     }
   };
+
+  useEffect(() => {
+    validatePin();
+  }, [newPIN, confirmPIN])
 
 
 
@@ -66,7 +70,6 @@ export function ResetPassword({ navigation, route }: ResetPasswordProps) {
           type="pin"
           maxLength={4}
           keyboardType="numeric"
-          errMsg="Valid PIN required."
         />
       </LabelWrapper>
 
@@ -79,9 +82,16 @@ export function ResetPassword({ navigation, route }: ResetPasswordProps) {
           type="pin"
           maxLength={4}
           keyboardType="numeric"
-          errMsg="Valid PIN required."
         />
       </LabelWrapper>
+
+        { PINValid ? (
+          <AppText style={styles.errText}/> /* dummy element to prevent elements jumping */
+        ): (
+          <AppText style={styles.errText}> 
+            PINs must be valid and match.
+          </AppText>
+        )}
 
         <AppText style={styles.errText}>
           {errorUpdating}
