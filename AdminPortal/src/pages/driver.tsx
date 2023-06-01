@@ -19,29 +19,29 @@ export default function Ratings() {
                     <tr>
                         <td>
                             <h3>License ID</h3>
-                            <input placeholder="AY1678342"></input>
+                            <input placeholder="    AY1678342"></input>
                         </td>
                         <td>
                             <h3>License Plate #</h3>
-                            <input placeholder="AY1678342"></input>
+                            <input placeholder="    AY1678342"></input>
                         </td>
                         <td>
                             <h3>Type</h3>
-                            <input placeholder="Lorem"></input>
+                            <input placeholder="    Lorem"></input>
                         </td>
                     </tr>
                     <tr>
                         <td>
                             <h3>Make</h3>
-                            <input placeholder="Lorem"></input>
+                            <input placeholder="    Lorem"></input>
                         </td>
                         <td>
                             <h3>Model</h3>
-                            <input placeholder="Lorem"></input>
+                            <input placeholder="    Lorem"></input>
                         </td>
                         <td>
                             <h3>Color</h3>
-                            <input placeholder="Lorem"></input>
+                            <input placeholder="    Lorem"></input>
                         </td>
                     </tr>
                 </tbody>
