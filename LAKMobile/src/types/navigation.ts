@@ -20,7 +20,7 @@ export type RootStackParamList = {
     };
   };
   ResetSuccess: {
-    statusResetSuccess: 'logged_out' | 'logged_in'
+    statusResetSuccess: 'logged_out' | 'logged_in';
   };
   JobApplicant: {
     jobData: JobOwnerView;

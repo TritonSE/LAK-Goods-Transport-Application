@@ -1,31 +1,26 @@
 import React, { useState, useContext, useEffect } from 'react';
-import { StyleSheet, TextInput, View } from 'react-native';
+import { StyleSheet, View } from 'react-native';
 import { LabelWrapper, AppButton, ScreenHeader, AppTextInput, AppText } from '../components';
 import { COLORS } from '../../constants';
 import { ResetPasswordProps } from '../types/navigation';
 
 import { AuthContext } from '../context/AuthContext';
 
-
 export function ResetPassword({ navigation, route }: ResetPasswordProps) {
-
-
   const auth = useContext(AuthContext);
 
-  const [newPIN, setNewPIN] = useState('')
-  const [confirmPIN, setConfirmPIN] = useState('')
+  const [newPIN, setNewPIN] = useState('');
+  const [confirmPIN, setConfirmPIN] = useState('');
 
   const [PINValid, setPINValid] = useState(false);
 
-
   const [errorUpdating, setErrorUpdating] = useState('');
-
 
   const validatePin = (): boolean => {
     const pinRegex = new RegExp('^[0-9]{4}$');
 
     const validNew = pinRegex.test(newPIN);
-    const validConfirm = pinRegex.test(confirmPIN)
+    const validConfirm = pinRegex.test(confirmPIN);
 
     const bothValid = validNew && validConfirm && newPIN === confirmPIN;
 
@@ -43,7 +38,7 @@ export function ResetPassword({ navigation, route }: ResetPasswordProps) {
       const successfulUpdate = await auth.updatePwd(newPIN);
       if (successfulUpdate) {
         navigation.navigate('ResetSuccess', {
-          statusResetSuccess: route.params.statusResetPassword
+          statusResetSuccess: route.params.statusResetPassword,
         });
       } else {
         setErrorUpdating('There was an error in resetting your PIN, please try again.');
@@ -53,16 +48,14 @@ export function ResetPassword({ navigation, route }: ResetPasswordProps) {
 
   useEffect(() => {
     validatePin();
-  }, [newPIN, confirmPIN])
-
-
+  }, [newPIN, confirmPIN]);
 
   return (
     <View style={styles.container}>
       <ScreenHeader showArrow={true}>Forgot Pin?</ScreenHeader>
       <View style={marginTop} />
       <LabelWrapper label="New 4 digit pin">
-      <AppTextInput
+        <AppTextInput
           value={newPIN}
           isValid={PINValid}
           style={smallInputStyle}
@@ -74,7 +67,7 @@ export function ResetPassword({ navigation, route }: ResetPasswordProps) {
       </LabelWrapper>
 
       <LabelWrapper label="Confirm 4 digit pin">
-      <AppTextInput
+        <AppTextInput
           value={confirmPIN}
           isValid={PINValid}
           style={smallInputStyle}
@@ -85,17 +78,13 @@ export function ResetPassword({ navigation, route }: ResetPasswordProps) {
         />
       </LabelWrapper>
 
-        { PINValid ? (
-          <AppText style={styles.errText}/> /* dummy element to prevent elements jumping */
-        ): (
-          <AppText style={styles.errText}> 
-            PINs must be valid and match.
-          </AppText>
-        )}
+      {PINValid ? (
+        <AppText style={styles.errText} /> /* dummy element to prevent elements jumping */
+      ) : (
+        <AppText style={styles.errText}>PINs must be valid and match.</AppText>
+      )}
 
-        <AppText style={styles.errText}>
-          {errorUpdating}
-        </AppText>
+      <AppText style={styles.errText}>{errorUpdating}</AppText>
 
       <AppButton
         type="primary"

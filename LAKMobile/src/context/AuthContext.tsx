@@ -265,7 +265,6 @@ export const AuthProvider: React.FC<Props> = ({ children }) => {
     }
   };
 
-
   const updatePwd = async (newPin: string): Promise<boolean> => {
     const auth = getAuth(app);
     const newPassword = await pinToPass(newPin);
@@ -280,11 +279,10 @@ export const AuthProvider: React.FC<Props> = ({ children }) => {
       console.log('Password updated');
       return true;
     } catch (e) {
-      setFirebaseError(e as FirebaseError | Error)
+      setFirebaseError(e as FirebaseError | Error);
       console.log('Error updating password:', error);
       return false;
     }
-
   };
 
   return (
