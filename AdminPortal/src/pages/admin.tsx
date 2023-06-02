@@ -9,7 +9,6 @@ import React from 'react';
 import Link from 'next/link';
 import { useRouter } from 'next/router';
 
-
 interface AdminUser {
   id: number;
   name: string;
@@ -45,11 +44,16 @@ export default function Admin() {
       role: 'Secondary Admin',
     },
   ];
-  
+
   function handleRowClick(item: AdminUser) {
     router.push({
       pathname: '/delete-admin',
-      query: { id: item.id, name: item.name, phone: item.phone, role: item.role }
+      query: {
+        id: item.id,
+        name: item.name,
+        phone: item.phone,
+        role: item.role,
+      },
     });
   }
 
@@ -74,13 +78,15 @@ export default function Admin() {
               </tr>
             </thead>
             <tbody className={styles.tablebody}>
-
               {data.map((item) => (
-                  <tr key={JSON.stringify(item.phone)} onClick={() => handleRowClick(item)}>
-                    <td>{item.name}</td>
-                    <td>{item.phone}</td>
-                    <td>{item.role}</td>
-                  </tr>
+                <tr
+                  key={JSON.stringify(item.phone)}
+                  onClick={() => handleRowClick(item)}
+                >
+                  <td>{item.name}</td>
+                  <td>{item.phone}</td>
+                  <td>{item.role}</td>
+                </tr>
               ))}
             </tbody>
           </table>

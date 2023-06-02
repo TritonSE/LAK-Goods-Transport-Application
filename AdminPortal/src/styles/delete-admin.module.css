@@ -1,116 +1,109 @@
-.outer{
-    margin-left: 300px;
-    height: 100vh;
-    margin-right: 75px;
+.outer {
+  margin-left: 300px;
+  height: 100vh;
+  margin-right: 75px;
 }
 
 .back_button {
-    position: absolute;
-    left: 312px;
-    top: 80px;
-  
-    border: none;
-    outline: none;
-  
-    font-family: 'Lato';
-    font-style: normal;
-    font-weight: 700;
-    font-size: 24px;
-    line-height: 29px;
-  
-    color: black;
-    background-color: transparent;
-  }
-  
-  .back_button:hover {
-    cursor: pointer;
-  }
-  
-  .delete_button{
-    width: 341px;
-    height: 48px;
+  position: absolute;
+  left: 312px;
+  top: 80px;
+  border: none;
+  outline: none;
+  font-family: Lato;
+  font-style: normal;
+  font-weight: 700;
+  font-size: 24px;
+  line-height: 29px;
+  color: black;
+  background-color: transparent;
+}
 
-    background: #FFFFFF;
-    box-shadow: 0px 1.14815px 11.4815px rgba(0, 0, 0, 0.12);
-    border: none;
+.back_button:hover {
+  cursor: pointer;
+}
 
-    font-style: normal;
-    font-weight: 700;
-    font-size: 20.6667px;
-    line-height: 24px;
+.delete_button {
+  width: 341px;
+  height: 48px;
+  background: #fff;
+  box-shadow: 0 1.14815px 11.4815px rgb(0 0 0 / 12%);
+  border: none;
+  font-style: normal;
+  font-weight: 700;
+  font-size: 20.6667px;
+  line-height: 24px;
 
-    /* Maroon */
-    color: #94100C;
+  /* Maroon */
+  color: #94100c;
+}
 
-  }
+.button_container {
+  margin-left: 250px;
+}
 
-  .button_container{
-    margin-left: 250px;
-  }
+.delete_button:hover {
+  cursor: pointer;
+}
 
-  .delete_button:hover {
-    cursor: pointer;
-  }
+.record {
+  display: flex;
+  align-items: center;
+  gap: 50px;
+  position: absolute;
+  top: 200px;
+  left: 312px;
+}
 
-  .record {
-    display: flex;
-    align-items: center;
-    gap: 50px;
-    position: absolute;
-    top: 200px;
-    left: 312px;
-  }
-  
-  
-  .logo {
-    position: relative;
-  }
-  
-  .PROFILE_LOGO_BG {
-    position: relative;
-    z-index: 1;
-  }
-  
-  .PROFILE_LOGO_PERSON {
-    position: absolute;
-    top: 50%;
-    left: 50%;
-    transform: translate(-50%, -50%);
-    z-index: 2;
-  }
-  
-  .role{
-    font-family: 'Lato';
-    font-style: normal;
-    font-weight: 400;
-    font-size: 24px;
-    line-height: 29px;
-    /* identical to box height */
-    
-    
-    color: #000000;
-  }
+.logo {
+  position: relative;
+}
 
-  .name{
-    font-family: 'Lato';
-    font-style: normal;
-    font-weight: 700;
-    font-size: 48px;
-    line-height: 58px;
-    /* identical to box height */
-    
-    
-    color: #000000;
-  }
+.PROFILE_LOGO_BG {
+  position: relative;
+  z-index: 1;
+}
 
-  .phone{
-    font-family: 'Lato';
-font-style: normal;
-font-weight: 400;
-font-size: 24px;
-line-height: 29px;
-/* identical to box height */
+.PROFILE_LOGO_PERSON {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  z-index: 2;
+}
 
+.role {
+  font-family: Lato;
+  font-style: normal;
+  font-weight: 400;
+  font-size: 24px;
+  line-height: 29px;
 
-color: #545454;
-  }
+  /* identical to box height */
+
+  color: #000;
+}
+
+.name {
+  font-family: Lato;
+  font-style: normal;
+  font-weight: 700;
+  font-size: 48px;
+  line-height: 58px;
+
+  /* identical to box height */
+
+  color: #000;
+}
+
+.phone {
+  font-family: Lato;
+  font-style: normal;
+  font-weight: 400;
+  font-size: 24px;
+  line-height: 29px;
+
+  /* identical to box height */
+
+  color: #545454;
+}

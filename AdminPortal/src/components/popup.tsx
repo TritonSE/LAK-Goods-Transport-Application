@@ -9,7 +9,13 @@ type PopupProps = {
   onClose: () => void;
 };
 
-export function Popup({ name, description, buttonText, twoButtonStyle, onClose }: PopupProps) {
+export function Popup({
+  name,
+  description,
+  buttonText,
+  twoButtonStyle,
+  onClose,
+}: PopupProps) {
   return (
     <div className={styles.container}>
       <div className={styles.popup}>
@@ -43,6 +49,4 @@ export function Popup({ name, description, buttonText, twoButtonStyle, onClose }
       </div>
     </div>
   );
-};
-
-  
+}
