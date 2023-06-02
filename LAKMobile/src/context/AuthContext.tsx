@@ -10,6 +10,7 @@ import {
   linkWithCredential,
   fetchSignInMethodsForEmail,
   EmailAuthProvider,
+  updatePassword,
 } from 'firebase/auth';
 
 import firebaseConfig from '../../firebase-config.json';
@@ -55,6 +56,7 @@ export type AuthState = {
   ) => Promise<User | null>;
   sendSMSCode: (phone: string, recaptcha: ApplicationVerifier, mode: string) => Promise<string>;
   verifyPhone: (verificationId: string, verificationCode: string) => Promise<boolean>;
+  updatePIN: (newPassword: string) => Promise<boolean>;
 };
 
 const init: AuthState = {
@@ -67,6 +69,7 @@ const init: AuthState = {
   registerUser: () => new Promise<User | null>(() => undefined),
   sendSMSCode: () => new Promise<string>(() => ''),
   verifyPhone: () => new Promise<boolean>(() => false),
+  updatePIN: () => new Promise<boolean>(() => false),
 };
 
 export const AuthContext = createContext<AuthState>(init);
@@ -262,6 +265,24 @@ export const AuthProvider: React.FC<Props> = ({ children }) => {
     }
   };
 
+  const updatePIN = async (newPin: string): Promise<boolean> => {
+    const auth = getAuth(app);
+    const newPassword = await pinToPass(newPin);
+
+    const user = auth.currentUser;
+
+    if (!user) {
+      return false;
+    }
+    try {
+      await updatePassword(user, newPassword);
+      return true;
+    } catch (e) {
+      setFirebaseError(e as FirebaseError | Error);
+      return false;
+    }
+  };
+
   return (
     <AuthContext.Provider
       value={{
@@ -274,6 +295,7 @@ export const AuthProvider: React.FC<Props> = ({ children }) => {
         registerUser,
         sendSMSCode,
         verifyPhone,
+        updatePIN,
       }}
     >
       {children}

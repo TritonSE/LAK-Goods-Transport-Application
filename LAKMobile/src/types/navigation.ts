@@ -4,7 +4,9 @@ import { JobData, JobOwnerView } from '../api';
 export type RootStackParamList = {
   Login: undefined;
   Signup: undefined;
-  ResetPassword: undefined;
+  ResetPassword: {
+    statusResetPassword: 'logged_out' | 'logged_in';
+  };
   ConfirmPhoneScreen: undefined;
   PhoneVerificationScreen: {
     phoneNumber: string;
@@ -17,7 +19,9 @@ export type RootStackParamList = {
       pin: string;
     };
   };
-  ResetSuccess: undefined;
+  ResetSuccess: {
+    statusResetSuccess: 'logged_out' | 'logged_in';
+  };
   JobApplicant: {
     jobData: JobOwnerView;
     setJobData: React.Dispatch<React.SetStateAction<JobData[] | JobOwnerView[]>>;

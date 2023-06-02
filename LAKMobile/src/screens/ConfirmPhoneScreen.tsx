@@ -3,6 +3,7 @@ import { StyleSheet, View } from 'react-native';
 import { AppText, LabelWrapper, AppButton, ScreenHeader, AppTextInput } from '../components';
 import { COLORS } from '../../constants';
 import { ConfirmPhoneScreenProps } from '../types/navigation';
+import { InternationalPhoneInput } from '../components/InternationalPhoneInput';
 
 export function ConfirmPhoneScreen({ navigation }: ConfirmPhoneScreenProps) {
   const [phoneNumber, setPhoneNumber] = useState<string>('');
@@ -28,15 +29,8 @@ export function ConfirmPhoneScreen({ navigation }: ConfirmPhoneScreenProps) {
           Please enter the mobile number associated with your account.
         </AppText>
 
-        <LabelWrapper label="Mobile Number">
-          <AppTextInput
-            value={phoneNumber}
-            style={smallInputStyle}
-            changeAction={setPhoneNumber}
-            keyboardType="numeric"
-            isValid={phoneValid}
-            errMsg="Please enter a valid phone number."
-          />
+        <LabelWrapper label="Your Phone Number">
+          <InternationalPhoneInput setPhoneNumber={setPhoneNumber} />
         </LabelWrapper>
 
         <AppButton
