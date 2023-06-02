@@ -1,5 +1,6 @@
 import styles from '@/styles/Driver.module.css';
 import { Sidebar } from '../components/sidebar';
+import Image from 'next/image';
 
 export default function Ratings() {
   return (
@@ -19,29 +20,29 @@ export default function Ratings() {
                     <tr>
                         <td>
                             <h3>License ID</h3>
-                            <input placeholder="    AY1678342"></input>
+                            <input placeholder="AY1678342"></input>
                         </td>
                         <td>
                             <h3>License Plate #</h3>
-                            <input placeholder="    AY1678342"></input>
+                            <input placeholder="AY1678342"></input>
                         </td>
                         <td>
                             <h3>Type</h3>
-                            <input placeholder="    Lorem"></input>
+                            <input placeholder="Lorem"></input>
                         </td>
                     </tr>
                     <tr>
                         <td>
                             <h3>Make</h3>
-                            <input placeholder="    Lorem"></input>
+                            <input placeholder="Lorem"></input>
                         </td>
                         <td>
                             <h3>Model</h3>
-                            <input placeholder="    Lorem"></input>
+                            <input placeholder="Lorem"></input>
                         </td>
                         <td>
                             <h3>Color</h3>
-                            <input placeholder="    Lorem"></input>
+                            <input placeholder="Lorem"></input>
                         </td>
                     </tr>
                 </tbody>
@@ -49,7 +50,14 @@ export default function Ratings() {
         </div>
         <div className={styles.photo}>
             <h3>Photo</h3>
-            <div className={styles.imageholder}></div>
+            <div className={styles.imageholder}>
+            <Image
+                src={'/placeholdercar.svg'}
+                width={389}
+                height={238}
+                alt="Placeholder Car"
+              />
+            </div>
         </div>
         
       </main>

@@ -8,78 +8,56 @@
 .header {
     margin-top: 61px;
     flex: 1;   
- 
     align-content: center;
     justify-content: center;
-
-
-  
 }
 
 .header h2 {
-   
     margin-left: 25px; 
-
     width: 215px;
     height: 43px;
     left: 312px;
     top: 170px;
-
     font-family: 'Lato';
     font-style: normal;
     font-weight: 700;
     font-size: 32px;
     line-height: 43px;
-   
 }
 
 .header h4 {
     margin-left: 30px; 
-
     margin-top: 16px;
- 
-
     font-family: 'Roboto';
     font-style: normal;
     font-weight: 400;
     font-size: 24px;
     line-height: 28px;
-    
-
     color: #8B8B8B;
-
-
 }
 
 .table {
     margin-top: 44px;
-      width: 100%;
-      height: 100%;
-      flex: 5;
-      margin-bottom: 40px;
-
-
-   
-  }
+    width: 100%;
+    height: 100%;
+    flex: 5;
+    margin-bottom: 40px;
+}
 
 
 
 .table h3 {
-    margin-left: 25px; 
-
+    margin-left: 25px;
     margin-bottom: 10px;
-
     left: 4.81%;
     right: 54.42%;
     top: 26%;
     bottom: 26%;
-
     font-family: 'Lato';
     font-style: normal;
     font-weight: 700;
     font-size: 20px;
     line-height: 24px;
-
 }
 
 .backbutton {
@@ -88,12 +66,10 @@
     flex: 1;
     left: 312px;
     top: 80px;
-
     font-family: 'Lato';
     font-weight: 700;
     font-size: 22px;
     line-height: 28.8px;
-
 }
 
 .photo {
@@ -101,41 +77,31 @@
 }
 
 .table input {
- 
-
     margin-left: 25px; 
     left: 6.81%;
-
-
     font-family: 'Lato';
     font-style: normal;
     font-weight: 400;
     font-size: 20px;
     line-height: 24px;
-
     height: 50px;
     width: 260px;
     margin-bottom: 51px;
-
 }
 
 .imageholder {
     margin-left: 25px; 
-
     width: 389px;
     height: 283.28px;
-    background-color: yellow;
+    background-color: darkgray;
 }
 
 .photo h3 {
     margin-left: 25px; 
     margin-bottom: 16px;
-
-
     font-family: 'Lato';
     font-style: normal;
     font-weight: 700;
     font-size: 20px;
     line-height: 24px;
-
 }
