@@ -88,7 +88,6 @@ export async function registerUser(userData, imageFiles) {
       ...(driverLicenseId === undefined ? {} : { vehicleData: vehicleData }),
       verificationStatus: 'Not Applied',
     });
-    console.log(user);
     const response = await user.save();
     return response;
   } catch (e) {
@@ -98,7 +97,6 @@ export async function registerUser(userData, imageFiles) {
 
 export async function updateUser(userId, userData, userImages) {
   console.debug(`SERVICE: updateUser service runnning: userId - ${userId}`);
-  console.log(userData, userImages);
   // Retrieve original user
   const originalUser = await UserModel.findById(userId);
   if (!originalUser) {
@@ -110,7 +108,6 @@ export async function updateUser(userId, userData, userImages) {
   if (userData.vehicleData) {
     const vehicleData = JSON.parse(userData.vehicleData);
     userData.vehicleData = vehicleData;
-    console.log(userData);
     if (userImages) {
       // Delete existing images
       const existingImageIds = originalUser.imageIds;
@@ -134,13 +131,9 @@ export async function updateUser(userId, userData, userImages) {
       userData.vehicleData.imageIds = newImageIds;
     }
 
-    console.log(userData.verificationStatus);
     if (originalUser.verificationStatus === VERIFICATION_STATUS_NOT_APPLIED) {
-      console.log('here');
       userData.verificationStatus = 'Applied';
     }
-
-    console.log(userData);
   }
 
   try {
