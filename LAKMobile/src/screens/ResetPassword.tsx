@@ -29,13 +29,10 @@ export function ResetPassword({ navigation, route }: ResetPasswordProps) {
   };
 
   const handleSubmit = async () => {
-    console.log('\nAuth', auth);
     const valid = validatePin();
-    console.log(valid);
     const user = auth.user;
-    console.log('\n User', user);
     if (user !== null && valid) {
-      const successfulUpdate = await auth.updatePwd(newPIN);
+      const successfulUpdate = await auth.updatePIN(newPIN);
       if (successfulUpdate) {
         navigation.navigate('ResetSuccess', {
           statusResetSuccess: route.params.statusResetPassword,
@@ -51,48 +48,50 @@ export function ResetPassword({ navigation, route }: ResetPasswordProps) {
   }, [newPIN, confirmPIN]);
 
   return (
-    <View style={styles.container}>
-      <ScreenHeader showArrow={true}>Forgot Pin?</ScreenHeader>
-      <View style={marginTop} />
-      <LabelWrapper label="New 4 digit pin">
-        <AppTextInput
-          value={newPIN}
-          isValid={PINValid}
-          style={smallInputStyle}
-          changeAction={setNewPIN}
-          type="pin"
-          maxLength={4}
-          keyboardType="numeric"
+    <>
+      <ScreenHeader showArrow={true}>Forgot PIN?</ScreenHeader>
+      <View style={styles.container}>
+        <View style={marginTop} />
+        <LabelWrapper label="New 4 digit PIN">
+          <AppTextInput
+            value={newPIN}
+            isValid={PINValid}
+            style={smallInputStyle}
+            changeAction={setNewPIN}
+            type="pin"
+            maxLength={4}
+            keyboardType="numeric"
+          />
+        </LabelWrapper>
+
+        <LabelWrapper label="Confirm 4 digit PIN">
+          <AppTextInput
+            value={confirmPIN}
+            isValid={PINValid}
+            style={smallInputStyle}
+            changeAction={setConfirmPIN}
+            type="pin"
+            maxLength={4}
+            keyboardType="numeric"
+          />
+        </LabelWrapper>
+
+        {PINValid ? (
+          <AppText style={styles.errText} /> /* dummy element to prevent elements jumping */
+        ) : (
+          <AppText style={styles.errText}>PINs must be valid and match.</AppText>
+        )}
+
+        <AppText style={styles.errText}>{errorUpdating}</AppText>
+
+        <AppButton
+          type="primary"
+          title="Reset PIN"
+          onPress={handleSubmit}
+          style={styles.submitButton}
         />
-      </LabelWrapper>
-
-      <LabelWrapper label="Confirm 4 digit pin">
-        <AppTextInput
-          value={confirmPIN}
-          isValid={PINValid}
-          style={smallInputStyle}
-          changeAction={setConfirmPIN}
-          type="pin"
-          maxLength={4}
-          keyboardType="numeric"
-        />
-      </LabelWrapper>
-
-      {PINValid ? (
-        <AppText style={styles.errText} /> /* dummy element to prevent elements jumping */
-      ) : (
-        <AppText style={styles.errText}>PINs must be valid and match.</AppText>
-      )}
-
-      <AppText style={styles.errText}>{errorUpdating}</AppText>
-
-      <AppButton
-        type="primary"
-        title="Reset Pin"
-        onPress={handleSubmit}
-        style={styles.submitButton}
-      />
-    </View>
+      </View>
+    </>
   );
 }
 

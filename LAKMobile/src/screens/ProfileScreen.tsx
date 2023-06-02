@@ -109,7 +109,7 @@ export function ProfileScreen({ navigation, route }: ProfileScreenProps) {
           <View style={styles.center}>
             <AppButton
               type="secondary"
-              title="Change pin"
+              title="Change PIN"
               onPress={() =>
                 navigation.navigate('ResetPassword', {
                   statusResetPassword: 'logged_in',

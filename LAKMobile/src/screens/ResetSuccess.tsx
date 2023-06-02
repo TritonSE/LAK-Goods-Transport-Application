@@ -14,15 +14,14 @@ export function ResetSuccess({ navigation, route }: ResetSuccessProps) {
   };
 
   return (
-    <View style={styles.container}>
-      <ScreenHeader showArrow={true}>Reset Pin</ScreenHeader>
+    <>
+      <ScreenHeader showArrow={true}>Reset PIN</ScreenHeader>
+      <View style={styles.container}>
+        <AppText style={headerText}>Reset PIN was successful!</AppText>
 
-      <AppText style={headerText}>
-        Reset pin successful! You have X reset(s) left this month.
-      </AppText>
-
-      <AppButton type="primary" title="Okay" onPress={routeToPage} style={styles.submitButton} />
-    </View>
+        <AppButton type="primary" title="Okay" onPress={routeToPage} style={styles.submitButton} />
+      </View>
+    </>
   );
 }
 

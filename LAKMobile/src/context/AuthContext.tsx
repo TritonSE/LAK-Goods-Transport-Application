@@ -56,7 +56,7 @@ export type AuthState = {
   ) => Promise<User | null>;
   sendSMSCode: (phone: string, recaptcha: ApplicationVerifier, mode: string) => Promise<string>;
   verifyPhone: (verificationId: string, verificationCode: string) => Promise<boolean>;
-  updatePwd: (newPassword: string) => Promise<boolean>;
+  updatePIN: (newPassword: string) => Promise<boolean>;
 };
 
 const init: AuthState = {
@@ -69,7 +69,7 @@ const init: AuthState = {
   registerUser: () => new Promise<User | null>(() => undefined),
   sendSMSCode: () => new Promise<string>(() => ''),
   verifyPhone: () => new Promise<boolean>(() => false),
-  updatePwd: () => new Promise<boolean>(() => false),
+  updatePIN: () => new Promise<boolean>(() => false),
 };
 
 export const AuthContext = createContext<AuthState>(init);
@@ -265,7 +265,7 @@ export const AuthProvider: React.FC<Props> = ({ children }) => {
     }
   };
 
-  const updatePwd = async (newPin: string): Promise<boolean> => {
+  const updatePIN = async (newPin: string): Promise<boolean> => {
     const auth = getAuth(app);
     const newPassword = await pinToPass(newPin);
 
@@ -276,11 +276,9 @@ export const AuthProvider: React.FC<Props> = ({ children }) => {
     }
     try {
       await updatePassword(user, newPassword);
-      console.log('Password updated');
       return true;
     } catch (e) {
       setFirebaseError(e as FirebaseError | Error);
-      console.log('Error updating password:', error);
       return false;
     }
   };
@@ -297,7 +295,7 @@ export const AuthProvider: React.FC<Props> = ({ children }) => {
         registerUser,
         sendSMSCode,
         verifyPhone,
-        updatePwd,
+        updatePIN,
       }}
     >
       {children}
