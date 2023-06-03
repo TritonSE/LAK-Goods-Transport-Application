@@ -5,8 +5,10 @@ import firebaseConfig from '../../../firebase-config.json';
 
 admin.initializeApp(firebaseConfig);
 
-
-export default async function handler(req: NextApiRequest, res: NextApiResponse) {
+export default async function handler(
+  req: NextApiRequest,
+  res: NextApiResponse
+) {
   const auth = admin.auth();
   const email = req.body.email;
   const curUser = await auth.getUserByEmail(email);
