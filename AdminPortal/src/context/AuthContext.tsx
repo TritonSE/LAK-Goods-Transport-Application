@@ -6,7 +6,10 @@ import {
   signOut,
   User,
   deleteUser,
+  updateProfile,
 } from 'firebase/auth';
+
+import * as admin from 'firebase-admin';
 
 import firebaseConfig from '../../firebase-config.json';
 import React, { createContext, useMemo, useState } from 'react';
@@ -24,7 +27,7 @@ export type AuthState = {
     email: string,
     password: string
   ) => Promise<User | null>;
-  removeUser: (user: User) => Promise<User | null>;
+  removeUser: (email: string) => Promise<User | null>;
 };
 
 const init: AuthState = {
@@ -117,6 +120,8 @@ export const AuthProvider: React.FC<Props> = ({ children }) => {
   };
 
   const signup = async (
+    firstName: string,
+    lastName: string,
     userEmail: string,
     userPassword: string
   ): Promise<User | null> => {
@@ -129,8 +134,10 @@ export const AuthProvider: React.FC<Props> = ({ children }) => {
         userPassword
       );
       const user = userCredential.user;
-
       setUser(user);
+      updateProfile(user, {
+        displayName: firstName + ' ' + lastName,
+      });
       return userCredential.user;
     } catch (e) {
       if (e instanceof FirebaseError) {
@@ -143,11 +150,17 @@ export const AuthProvider: React.FC<Props> = ({ children }) => {
     }
   };
 
-  const removeUser = async (user: User): Promise<User | null> => {
+  const removeUser = async (email: string): Promise<User | null> => {
     try {
-      const currUser = user;
-      await deleteUser(currUser);
-      return user;
+      /*const admin = require('firebase-admin');
+      admin.initializeApp();
+      const auth = admin.auth();
+      const curUser = auth.getUserByEmail(email);
+      const uid = curUser.uid;
+      auth.deleteUser(uid);
+
+      return curUser;*/
+      return null;
     } catch (e) {
       if (e instanceof FirebaseError) {
         setFirebaseError(e);

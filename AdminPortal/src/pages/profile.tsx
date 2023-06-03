@@ -2,60 +2,151 @@ import styles from '@/styles/Home.module.css';
 import { Sidebar } from '../components/sidebar';
 import { useState, useContext } from 'react';
 import { AuthContext, AuthProvider } from '../context/AuthContext';
-import { User } from 'firebase/auth';
+import { User, getAuth } from 'firebase/auth';
 
 export default function Profile() {
-  const [email, setEmail] = useState('');
-  const [password, setPassword] = useState('');
-  const [submitted, setSubmitted] = useState(false); // testing
+  const [loginEmail, setLoginEmail] = useState('');
+  const [loginPassword, setLoginPassword] = useState('');
+  const [firstName, setFirstName] = useState(' ');
+  const [lastName, setLastName] = useState(' ');
+  const [signupEmail, setSignupEmail] = useState('');
+  const [signupPassword, setSignupPassword] = useState('');
+  const [deleteUserEmail, setDeleteUserEmail] = useState('');
 
   const auth = useContext(AuthContext);
 
-  const handleSubmit = async (e: any): Promise<User | null> => {
+  const login = async (e: any): Promise<User | null> => {
     e.preventDefault();
-    setSubmitted(!submitted); // testing
-    // console.log("idk what to put here");
-    console.log(auth.login(email, password), 'test', auth.login);
-    const user = await auth.login(email, password);
-    // console.log(user); // not printing
-    // console.log("nur");  // not printing
+    console.log('trying to login');
+    const user = await auth.login(loginEmail, loginPassword);
+    console.log(user);
     return user;
   };
+
+  const signup = async (e: any): Promise<User | null> => {
+    e.preventDefault();
+    console.log('trying to signup');
+    const user = await auth.signup(
+      firstName,
+      lastName,
+      signupEmail,
+      signupPassword
+    );
+    console.log(user);
+    return user;
+  };
+
+  const logout = async (e: any) => {
+    e.preventDefault();
+    console.log('trying to log out');
+    auth.logout();
+  };
+
+  const deleteUser = async (e: any): Promise<User | null> => {
+    e.preventDefault();
+    console.log('trying to delete user');
+    const user = await auth.removeUser(deleteUserEmail);
+    return user;
+  };
+
+  /*const deleteUser = async () => {
+    await auth.deleteUser();
+   }*/
 
   return (
     <main className={styles.main}>
       <Sidebar currentPage={'/profile'} />
       <div>{'This is the profile page!'}</div>
-
-      <form className="form" onSubmit={handleSubmit}>
+      {/* LOGIN  */}
+      <form className="form" onSubmit={login}>
         <h2>Login</h2>
         <input
           type="email"
           placeholder="email"
           className="name"
-          onChange={(e) => setEmail(e.target.value)}
-          value={email}
+          onChange={(e) => setLoginEmail(e.target.value)}
+          value={loginEmail}
         />
 
-        <div>
-          <input
-            type="password"
-            placeholder="password"
-            className="name"
-            onChange={(e) => setPassword(e.target.value)}
-            value={password}
-          />
-        </div>
+        <input
+          type="password"
+          placeholder="password"
+          className="name"
+          onChange={(e) => setLoginPassword(e.target.value)}
+          value={loginPassword}
+        />
 
         <div className="login-button">
-          <button onClick={handleSubmit}>Sign in</button>
+          <button onClick={login}>Login</button>
         </div>
       </form>
 
-      {auth.user ? <p>auth.user is {auth.user.email}</p> : <p>no auth.user</p>}
+      {/* SIGNUP */}
+      <form className="form" onSubmit={signup}>
+        <h2>Sign up</h2>
+        <input
+          type="text"
+          placeholder="First name"
+          className="name"
+          onChange={(e) => setFirstName(e.target.value)}
+          value={firstName}
+        />
 
-      {/* testing */}
-      {submitted ? <p>submitted</p> : <p>not submitted</p>}
+        <input
+          type="text"
+          placeholder="Last name"
+          className="name"
+          onChange={(e) => setLastName(e.target.value)}
+          value={lastName}
+        />
+
+        <input
+          type="email"
+          placeholder="email"
+          className="name"
+          onChange={(e) => setSignupEmail(e.target.value)}
+          value={signupEmail}
+        />
+
+        <input
+          type="password"
+          placeholder="password"
+          className="name"
+          onChange={(e) => setSignupPassword(e.target.value)}
+          value={signupPassword}
+        />
+
+        <div className="login-button">
+          <button onClick={signup}>Sign up</button>
+        </div>
+      </form>
+
+      {/* LOGOUT */}
+      <div className="login-button">
+        <button onClick={logout}>Log out</button>
+      </div>
+
+      {/* DELETE USER */}
+      <form className="form" onSubmit={login}>
+        <h2>Delete user</h2>
+        <input
+          type="email"
+          placeholder="email"
+          className="name"
+          onChange={(e) => setDeleteUserEmail(e.target.value)}
+          value={deleteUserEmail}
+        />
+        <div className="login-button">
+          <button onClick={deleteUser}>Delete User</button>
+        </div>
+      </form>
+      {auth.user ? (
+        <p>
+          auth.user is {auth.user.displayName} {auth.user.email}
+        </p>
+      ) : (
+        <p>no auth.user</p>
+      )}
     </main>
   );
 }

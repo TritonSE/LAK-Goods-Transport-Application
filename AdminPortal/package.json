@@ -20,6 +20,7 @@
     "eslint-config-next": "13.1.4",
     "expo-crypto": "^12.2.2",
     "firebase": "^9.21.0",
+    "firebase-admin": "^11.9.0",
     "next": "^13.4.1",
     "react": "18.2.0",
     "react-bootstrap": "^2.7.1",
