@@ -27,7 +27,7 @@ export type AuthState = {
     email: string,
     password: string
   ) => Promise<User | null>;
-  removeUser: (email: string) => Promise<User | null>;
+  removeUser: () => {};
 };
 
 const init: AuthState = {
@@ -150,17 +150,11 @@ export const AuthProvider: React.FC<Props> = ({ children }) => {
     }
   };
 
-  const removeUser = async (email: string): Promise<User | null> => {
+  const removeUser = async () => {
     try {
-      /*const admin = require('firebase-admin');
-      admin.initializeApp();
-      const auth = admin.auth();
-      const curUser = auth.getUserByEmail(email);
-      const uid = curUser.uid;
-      auth.deleteUser(uid);
-
-      return curUser;*/
-      return null;
+      if (user) {
+        deleteUser(user);
+      }
     } catch (e) {
       if (e instanceof FirebaseError) {
         setFirebaseError(e);

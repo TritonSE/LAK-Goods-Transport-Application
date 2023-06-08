@@ -11,7 +11,6 @@ export default function Profile() {
   const [lastName, setLastName] = useState(' ');
   const [signupEmail, setSignupEmail] = useState('');
   const [signupPassword, setSignupPassword] = useState('');
-  const [deleteUserEmail, setDeleteUserEmail] = useState('');
 
   const auth = useContext(AuthContext);
 
@@ -42,16 +41,11 @@ export default function Profile() {
     auth.logout();
   };
 
-  const deleteUser = async (e: any): Promise<User | null> => {
+  const deleteUser = async (e: any) => {
     e.preventDefault();
     console.log('trying to delete user');
-    const user = await auth.removeUser(deleteUserEmail);
-    return user;
+    const user = await auth.removeUser();
   };
-
-  /*const deleteUser = async () => {
-    await auth.deleteUser();
-   }*/
 
   return (
     <main className={styles.main}>
@@ -129,13 +123,6 @@ export default function Profile() {
       {/* DELETE USER */}
       <form className="form" onSubmit={login}>
         <h2>Delete user</h2>
-        <input
-          type="email"
-          placeholder="email"
-          className="name"
-          onChange={(e) => setDeleteUserEmail(e.target.value)}
-          value={deleteUserEmail}
-        />
         <div className="login-button">
           <button onClick={deleteUser}>Delete User</button>
         </div>
