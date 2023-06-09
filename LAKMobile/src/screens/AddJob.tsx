@@ -10,6 +10,7 @@ import { AddJobProps } from '../types/navigation';
 import { AuthContext } from '../context/AuthContext';
 import { ImageUploadContext } from '../context/ImageUploadContext';
 import { ImageUploadArea } from '../components/ImageUploadArea';
+import { InternationalPhoneInput } from '../components/InternationalPhoneInput';
 
 const PICKER_DEFAULT = '-- Select a district --';
 const LOCATIONS = [
@@ -105,7 +106,9 @@ export function AddJob({ navigation, route }: AddJobProps) {
   };
 
   const validatePhoneNumber: Validator = (text: string) => {
-    const valid = text.length == 10;
+    // Makes sure that phone number is in international E.164 format
+    const phoneRegex = new RegExp(/^(?:\+\d{1,15}|\d{1,16})$/);
+    const valid = phoneRegex.test(text);
     return valid;
   };
 
@@ -358,18 +361,8 @@ export function AddJob({ navigation, route }: AddJobProps) {
           />
         </LabelWrapper>
 
-        <LabelWrapper label="Your Phone number">
-          <AppTextInput
-            value={phoneNumber}
-            changeAction={setPhoneNumber}
-            isValid={isValid[fieldNames.phoneNumber]}
-            style={isValid['phoneNumber'] ? [inputStyle2, styles.spacer] : inputStyleErr}
-            placeholder="Ex. 17113456"
-            icon="phone-in-talk"
-            keyboardType="numeric"
-            type="phoneNumber"
-            errMsg="Please insert a valid phone number"
-          />
+        <LabelWrapper label="Your Phone Number">
+          <InternationalPhoneInput setPhoneNumber={setPhoneNumber} />
         </LabelWrapper>
 
         <LabelWrapper label="Receiver name">
@@ -384,15 +377,7 @@ export function AddJob({ navigation, route }: AddJobProps) {
         </LabelWrapper>
 
         <LabelWrapper label="Receiver phone number">
-          <AppTextInput
-            value={receiverPhoneNumber}
-            changeAction={setReceiverPhoneNumber}
-            style={[inputStyleFull, styles.spacer]}
-            placeholder="Ex. 17113456"
-            icon="phone-in-talk"
-            keyboardType="numeric"
-            type="recieverPhoneNumber"
-          />
+          <InternationalPhoneInput setPhoneNumber={setReceiverPhoneNumber} />
         </LabelWrapper>
 
         <LabelWrapper label="Date to be delivered">

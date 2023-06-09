@@ -4,22 +4,24 @@ import { AppText, AppButton, ScreenHeader } from '../components';
 import { COLORS } from '../../constants';
 import { ResetSuccessProps } from '../types/navigation';
 
-export function ResetSuccess({ navigation }: ResetSuccessProps) {
+export function ResetSuccess({ navigation, route }: ResetSuccessProps) {
+  const routeToPage = () => {
+    if (route.params.statusResetSuccess == 'logged_out') {
+      navigation.navigate('Login');
+    } else if (route.params.statusResetSuccess == 'logged_in') {
+      navigation.navigate('JobLandingScreen');
+    }
+  };
+
   return (
-    <View style={styles.container}>
-      <ScreenHeader showArrow={true}>Reset Pin</ScreenHeader>
+    <>
+      <ScreenHeader showArrow={true}>Reset PIN</ScreenHeader>
+      <View style={styles.container}>
+        <AppText style={headerText}>Reset PIN was successful!</AppText>
 
-      <AppText style={headerText}>
-        Reset pin successful! You have X reset(s) left this month.
-      </AppText>
-
-      <AppButton
-        type="primary"
-        title="Okay"
-        onPress={() => navigation.navigate('Login')}
-        style={styles.submitButton}
-      />
-    </View>
+        <AppButton type="primary" title="Okay" onPress={routeToPage} style={styles.submitButton} />
+      </View>
+    </>
   );
 }
 
