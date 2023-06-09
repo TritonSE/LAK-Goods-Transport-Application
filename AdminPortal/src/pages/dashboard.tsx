@@ -51,14 +51,14 @@ export default function App() {
   tabMapping.set('Verified', 3);
   tabMapping.set('Disapproved', 4);
 
-  useEffect(() => {
-    let users = getAllDrivers();
-    users.then((value) => {
-      setItems(value);
-    });
-  }, []);
-
   const [items, setItems] = useState<DataItem[]>([]);
+
+  useEffect(() => {
+    (async () => {
+      const users = await getAllDrivers();
+      setItems(users);
+    })();
+  }, []);
 
   const customStyle = {
     control: (styles: ControlStyles) => ({
