@@ -15,7 +15,7 @@
   display: flex;
   flex-direction: column;
   justify-content: space-between;
-  overflow: scroll;
+  text-decoration: none;
 }
 
 .sidebarButton {
@@ -36,6 +36,7 @@
   white-space: nowrap;
   font-family: Lato, sans-serif;
   cursor: pointer;
+  text-decoration: none;
 }
 
 .active {
@@ -69,6 +70,7 @@
   font-size: 30px;
   display: flex;
   align-items: center;
+  text-decoration: none;
 }
 
 .sidebarProfile {

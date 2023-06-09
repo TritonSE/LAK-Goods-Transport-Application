@@ -4,6 +4,7 @@
 import UserModel, {
   OWNER_LIMITED_FIELDS,
   FIELDS_USER_PERMITTED_TO_UPDATE,
+  VERIFICATION_STATUS_NOT_APPLIED,
 } from '../models/user';
 import { ServiceError } from '../errors';
 import { saveImage, deleteImage } from './image';
@@ -98,10 +99,6 @@ export async function registerUser(userData, imageFiles) {
       ...(driverLicenseId === undefined ? {} : { vehicleData: vehicleData }),
       verificationStatus: 'Not Applied',
     });
-  } catch (e) {
-    throw ServiceError.INVALID_USER_RECEIVED.addContext(e.stack);
-  }
-  try {
     const response = await user.save();
     return response;
   } catch (e) {
@@ -111,7 +108,6 @@ export async function registerUser(userData, imageFiles) {
 
 export async function updateUser(userId, userData, userImages) {
   console.debug(`SERVICE: updateUser service runnning: userId - ${userId}`);
-  console.log(userData, userImages);
   // Retrieve original user
   const originalUser = await UserModel.findById(userId);
   if (!originalUser) {
@@ -123,7 +119,6 @@ export async function updateUser(userId, userData, userImages) {
   if (userData.vehicleData) {
     const { vehicleData } = userData;
     userData.vehicleData = vehicleData;
-    console.log(userData);
     if (userImages) {
       // Delete existing images
       const existingImageIds = originalUser.imageIds;
@@ -146,7 +141,12 @@ export async function updateUser(userId, userData, userImages) {
 
       userData.vehicleData.imageIds = newImageIds;
     }
+
+    if (originalUser.verificationStatus === VERIFICATION_STATUS_NOT_APPLIED) {
+      userData.verificationStatus = 'Applied';
+    }
   }
+
   try {
     return await UserModel.findOneAndUpdate({ _id: userId }, userData);
   } catch (e) {
