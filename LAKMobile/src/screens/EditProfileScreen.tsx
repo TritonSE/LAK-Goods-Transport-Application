@@ -29,6 +29,7 @@ export function EditProfileScreen({ navigation, route }: EditProfileScreenProps)
   const [location, setLocation] = useState('');
   const [district, setDistrict] = useState('');
   const [driverLicenseId, setDriverLicenseId] = useState('');
+  const [dateApplied, setDateApplied] = useState('');
   const [vehicleType, setVehicleType] = useState('');
   const [vehicleModel, setVehicleModel] = useState('');
   const [vehicleMake, setVehicleMake] = useState('');
@@ -75,6 +76,7 @@ export function EditProfileScreen({ navigation, route }: EditProfileScreenProps)
     setLocation(profileData?.location.split(';')[0] || '');
     setDistrict(profileData?.location.split(';')[1] || PICKER_LOCATION_DEFAULT);
     setDriverLicenseId(profileData?.driverLicenseId || '');
+    setDateApplied(profileData?.dateApplied || '');
     if (profileData?.vehicleData) {
       setVehicleType(profileData.vehicleData.vehicleType || PICKER_TYPE_DEFAULT);
       setVehicleModel(profileData.vehicleData.vehicleModel || '');
@@ -130,6 +132,7 @@ export function EditProfileScreen({ navigation, route }: EditProfileScreenProps)
       firstName: userName.split(' ')[0].trim(),
       lastName: userName.split(' ')[1].trim(),
       location: formattedLocation,
+      dateApplied: dateApplied,
     };
     if (driverLicenseId != '') {
       updatedUser.driverLicenseId = driverLicenseId;

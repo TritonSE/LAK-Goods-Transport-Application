@@ -48,6 +48,7 @@ export interface UserData {
   lastName: string;
   location: string;
   driverLicenseId?: string; // Hidden when anyone else other than the user viewing
+  dateApplied: string;
   vehicleData?: VehicleData;
   verificationStatus?: VerificationStatus;
 }

@@ -27,6 +27,8 @@ export function DriverRegistration({ navigation }: DriverRegistrationProps) {
   const [phoneNumber, setPhoneNumber] = useState('');
   const [location, setLocation] = useState('');
   const [driverLicenseId, setDriverLicenseId] = useState('');
+  const current = new Date();
+  const dateApplied = `${current.getDate()}/${current.getMonth()+1}/${current.getFullYear()}`;
   const [vehicleType, setVehicleType] = useState('');
   const [vehicleModel, setVehicleModel] = useState('');
   const [vehicleMake, setVehicleMake] = useState('');
@@ -111,6 +113,7 @@ export function DriverRegistration({ navigation }: DriverRegistrationProps) {
         firstName: userName.split(' ')[0].trim(),
         lastName: userName.split(' ')[1].trim(),
         location: location,
+        dateApplied: dateApplied,
       };
       if (driverLicenseId != '') {
         updatedUser.driverLicenseId = driverLicenseId;
