@@ -29,10 +29,13 @@ export function EditProfileScreen({ navigation, route }: EditProfileScreenProps)
   const [location, setLocation] = useState('');
   const [district, setDistrict] = useState('');
   const [driverLicenseId, setDriverLicenseId] = useState('');
+  const [dateApplied, setDateApplied] = useState('');
   const [vehicleType, setVehicleType] = useState('');
   const [vehicleModel, setVehicleModel] = useState('');
   const [vehicleMake, setVehicleMake] = useState('');
   const [vehicleColor, setVehicleColor] = useState('');
+  const [vehicleLicensePlateNumber, setVehicleLicensePlateNumber] = useState('');
+  const current = new Date();
 
   const PICKER_LOCATION_DEFAULT = '-- Select a district --';
   const PICKER_TYPE_DEFAULT = '-- Pick a type --';
@@ -74,11 +77,13 @@ export function EditProfileScreen({ navigation, route }: EditProfileScreenProps)
     setLocation(profileData?.location.split(';')[0] || '');
     setDistrict(profileData?.location.split(';')[1] || PICKER_LOCATION_DEFAULT);
     setDriverLicenseId(profileData?.driverLicenseId || '');
+    setDateApplied(profileData?.dateApplied || `${current.getDate()}/${current.getMonth()+1}/${current.getFullYear()}`);
     if (profileData?.vehicleData) {
       setVehicleType(profileData.vehicleData.vehicleType || PICKER_TYPE_DEFAULT);
       setVehicleModel(profileData.vehicleData.vehicleModel || '');
       setVehicleMake(profileData.vehicleData.vehicleMake || '');
       setVehicleColor(profileData.vehicleData.vehicleColor || '');
+      setVehicleLicensePlateNumber(profileData.vehicleData.vehicleLicensePlateNumber || '');
       dispatch({ type: 'SET_IMAGES', payload: profileData.vehicleData.imageIds });
     }
   }, [profileData]);
@@ -116,6 +121,7 @@ export function EditProfileScreen({ navigation, route }: EditProfileScreenProps)
       vehicleModel: vehicleModel.trim(),
       vehicleMake: vehicleMake.trim(),
       vehicleColor: vehicleColor.trim(),
+      vehicleLicensePlateNumber: vehicleLicensePlateNumber.trim(),
       imageIds: imageURIs.filter((value) => value !== ''),
     };
     let formattedLocation = location;
@@ -127,7 +133,9 @@ export function EditProfileScreen({ navigation, route }: EditProfileScreenProps)
       firstName: userName.split(' ')[0].trim(),
       lastName: userName.split(' ')[1].trim(),
       location: formattedLocation,
+      dateApplied: dateApplied,
     };
+    console.log(updatedUser);
     if (driverLicenseId != '') {
       updatedUser.driverLicenseId = driverLicenseId;
       updatedUser.vehicleData = updatedVehicleData;
@@ -242,6 +250,17 @@ export function EditProfileScreen({ navigation, route }: EditProfileScreenProps)
                 defaultValue={profileData?.vehicleData?.vehicleColor}
                 value={vehicleColor}
                 onChangeText={(value) => setVehicleColor(value)}
+              />
+            </LabelWrapper>
+
+            <LabelWrapper label="License Plate Number">
+              <TextInput
+                editable={false}
+                style={smallInputStyle}
+                keyboardType="default"
+                defaultValue={profileData?.vehicleData?.vehicleLicensePlateNumber}
+                value={vehicleLicensePlateNumber}
+                onChangeText={(value) => setVehicleLicensePlateNumber(value)}
               />
             </LabelWrapper>
 

@@ -102,7 +102,6 @@ export async function updateUser(userId, userData, userImages) {
   if (!originalUser) {
     throw ServiceError.USER_NOT_FOUND;
   }
-
   // Ensure updated fields are only getting updated
   userData = filterObject(userData, FIELDS_USER_PERMITTED_TO_UPDATE);
   if (userData.vehicleData) {
@@ -136,6 +135,7 @@ export async function updateUser(userId, userData, userImages) {
     }
   }
 
+  console.log(userData)
   try {
     return await UserModel.findOneAndUpdate({ _id: userId }, userData);
   } catch (e) {

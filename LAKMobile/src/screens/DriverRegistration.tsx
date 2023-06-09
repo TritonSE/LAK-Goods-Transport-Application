@@ -27,10 +27,13 @@ export function DriverRegistration({ navigation }: DriverRegistrationProps) {
   const [phoneNumber, setPhoneNumber] = useState('');
   const [location, setLocation] = useState('');
   const [driverLicenseId, setDriverLicenseId] = useState('');
+  const [dateApplied, setDateApplied] = useState('');
+  const current = new Date();
   const [vehicleType, setVehicleType] = useState('');
   const [vehicleModel, setVehicleModel] = useState('');
   const [vehicleMake, setVehicleMake] = useState('');
   const [vehicleColor, setVehicleColor] = useState('');
+  const [vehicleLicensePlateNumber, setVehicleLicensePlateNumber] = useState('');
   const [alertVisible, setAlertVisible] = useState(false);
   const PICKER_TYPE_DEFAULT = '-- Pick type --';
 
@@ -48,11 +51,13 @@ export function DriverRegistration({ navigation }: DriverRegistrationProps) {
     setPhoneNumber(profileData?.phone || '');
     setLocation(profileData?.location || '');
     setDriverLicenseId(profileData?.driverLicenseId || '');
+    setDateApplied(`${current.getDate()}/${current.getMonth()+1}/${current.getFullYear()}`);
     if (profileData?.vehicleData) {
       setVehicleType(profileData.vehicleData.vehicleType || PICKER_TYPE_DEFAULT);
       setVehicleModel(profileData.vehicleData.vehicleModel || '');
       setVehicleMake(profileData.vehicleData.vehicleMake || '');
       setVehicleColor(profileData.vehicleData.vehicleColor || '');
+      setVehicleLicensePlateNumber(profileData.vehicleData.vehicleLicensePlateNumber || '');
       dispatch({ type: 'SET_IMAGES', payload: profileData.vehicleData.imageIds });
     }
   }, [profileData]);
@@ -99,6 +104,7 @@ export function DriverRegistration({ navigation }: DriverRegistrationProps) {
         vehicleModel: vehicleModel.trim(),
         vehicleMake: vehicleMake.trim(),
         vehicleColor: vehicleColor.trim(),
+        vehicleLicensePlateNumber: vehicleLicensePlateNumber.trim(),
         imageIds: imageURIs.filter((value) => value !== ''),
       };
 
@@ -107,6 +113,7 @@ export function DriverRegistration({ navigation }: DriverRegistrationProps) {
         firstName: userName.split(' ')[0].trim(),
         lastName: userName.split(' ')[1].trim(),
         location: location,
+        dateApplied: dateApplied,
       };
       if (driverLicenseId != '') {
         updatedUser.driverLicenseId = driverLicenseId;
@@ -214,6 +221,15 @@ export function DriverRegistration({ navigation }: DriverRegistrationProps) {
             onChangeText={(value) => setVehicleColor(value)}
           />
         </LabelWrapper>
+
+        <LabelWrapper label="License Plate Number">
+            <TextInput
+              style={smallInputStyle}
+              keyboardType="default"
+              defaultValue={profileData?.vehicleData?.vehicleLicensePlateNumber}
+              onChangeText={(value) => setVehicleLicensePlateNumber(value)}
+            />
+          </LabelWrapper>
 
         <LabelWrapper label="Photo of Vehicle">
           <ImageUploadArea />

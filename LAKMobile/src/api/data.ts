@@ -38,6 +38,7 @@ export interface VehicleData {
   vehicleModel: string;
   vehicleMake: string;
   vehicleColor: string;
+  vehicleLicensePlateNumber: string;
   imageIds: string[];
 }
 
@@ -47,6 +48,7 @@ export interface UserData {
   lastName: string;
   location: string;
   driverLicenseId?: string; // Hidden when anyone else other than the user viewing
+  dateApplied: string;
   vehicleData?: VehicleData;
   verificationStatus?: VerificationStatus;
 }
