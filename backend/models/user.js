@@ -52,6 +52,10 @@ const VehicleInformationSchema = new Schema({
     type: String,
     required: true,
   },
+  vehicleLicensePlateNumber: {
+    type: String,
+    required: true,
+  },
   imageIds: [
     {
       type: String,
@@ -85,6 +89,10 @@ const UserSchema = new Schema(
     driverLicenseId: {
       type: String,
       required: false,
+    },
+    dateApplied: {
+      type: String,
+      required: true,
     },
     vehicleData: {
       type: VehicleInformationSchema,

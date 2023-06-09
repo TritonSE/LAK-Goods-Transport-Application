@@ -135,8 +135,8 @@ export default function App() {
   };
 
   const handleExportToCSVClick = (): void => {
-    const data = items.filter(item => item.verificationStatus === activeTab).map(item => [item.firstName, item.lastName, item.phone])
-    const fields = ['First Name', 'Last Name', 'Phone Number']
+    const data = items.filter(item => item.verificationStatus === activeTab).map(item => [item.firstName, item.lastName, item.phone, item.driverLicenseId])
+    const fields = ['First Name', 'Last Name', 'Phone Number', 'Driver License ID']
     // console.log(data)
     const csv = Papa.unparse({data, fields})
     var csvData = new Blob([csv], {type: 'text/csv;charset=utf-8;'});
