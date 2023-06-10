@@ -43,6 +43,13 @@ const errorHandler = (err, req, res, next) => {
       message: err.format(true),
       error: true,
     });
+  } else {
+    // Logging for other error types (i.e. service errors)
+    console.error(err.format(false));
+    res.status(err.statusCode).json({
+      message: err.format(true),
+      error: true,
+    });
   }
 };
 
