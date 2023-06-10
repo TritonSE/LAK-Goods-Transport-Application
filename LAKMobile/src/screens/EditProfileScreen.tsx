@@ -77,7 +77,10 @@ export function EditProfileScreen({ navigation, route }: EditProfileScreenProps)
     setLocation(profileData?.location.split(';')[0] || '');
     setDistrict(profileData?.location.split(';')[1] || PICKER_LOCATION_DEFAULT);
     setDriverLicenseId(profileData?.driverLicenseId || '');
-    setDateApplied(profileData?.dateApplied || `${current.getDate()}/${current.getMonth()+1}/${current.getFullYear()}`);
+    setDateApplied(
+      profileData?.dateApplied ||
+        `${current.getDate()}/${current.getMonth() + 1}/${current.getFullYear()}`
+    );
     if (profileData?.vehicleData) {
       setVehicleType(profileData.vehicleData.vehicleType || PICKER_TYPE_DEFAULT);
       setVehicleModel(profileData.vehicleData.vehicleModel || '');
@@ -135,7 +138,6 @@ export function EditProfileScreen({ navigation, route }: EditProfileScreenProps)
       location: formattedLocation,
       dateApplied: dateApplied,
     };
-    console.log(updatedUser);
     if (driverLicenseId != '') {
       updatedUser.driverLicenseId = driverLicenseId;
       updatedUser.vehicleData = updatedVehicleData;

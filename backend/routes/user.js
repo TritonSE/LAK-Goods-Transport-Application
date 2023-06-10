@@ -161,7 +161,6 @@ routes.put('/:userid', upload, async (req, res, next) => {
     message: 'User edited successfully',
     userId: user._id,
   });
-
 });
 
 export default routes;

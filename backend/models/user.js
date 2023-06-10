@@ -90,7 +90,7 @@ const UserSchema = new Schema(
       type: String,
       required: false,
     },
-    dateApplied:  {
+    dateApplied: {
       type: String,
       required: false,
     },

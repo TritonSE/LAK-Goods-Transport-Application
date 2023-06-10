@@ -51,7 +51,7 @@ export function DriverRegistration({ navigation }: DriverRegistrationProps) {
     setPhoneNumber(profileData?.phone || '');
     setLocation(profileData?.location || '');
     setDriverLicenseId(profileData?.driverLicenseId || '');
-    setDateApplied(`${current.getDate()}/${current.getMonth()+1}/${current.getFullYear()}`);
+    setDateApplied(`${current.getDate()}/${current.getMonth() + 1}/${current.getFullYear()}`);
     if (profileData?.vehicleData) {
       setVehicleType(profileData.vehicleData.vehicleType || PICKER_TYPE_DEFAULT);
       setVehicleModel(profileData.vehicleData.vehicleModel || '');
@@ -223,13 +223,13 @@ export function DriverRegistration({ navigation }: DriverRegistrationProps) {
         </LabelWrapper>
 
         <LabelWrapper label="License Plate Number">
-            <TextInput
-              style={smallInputStyle}
-              keyboardType="default"
-              defaultValue={profileData?.vehicleData?.vehicleLicensePlateNumber}
-              onChangeText={(value) => setVehicleLicensePlateNumber(value)}
-            />
-          </LabelWrapper>
+          <TextInput
+            style={smallInputStyle}
+            keyboardType="default"
+            defaultValue={profileData?.vehicleData?.vehicleLicensePlateNumber}
+            onChangeText={(value) => setVehicleLicensePlateNumber(value)}
+          />
+        </LabelWrapper>
 
         <LabelWrapper label="Photo of Vehicle">
           <ImageUploadArea />

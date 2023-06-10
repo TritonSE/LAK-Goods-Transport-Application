@@ -146,7 +146,6 @@ export async function updateUser(userId, userData, userImages) {
     }
   }
 
-  console.log(userData)
   try {
     return await UserModel.findOneAndUpdate({ _id: userId }, userData);
   } catch (e) {
