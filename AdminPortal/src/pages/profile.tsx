@@ -16,34 +16,28 @@ export default function Profile() {
 
   const login = async (e: any): Promise<User | null> => {
     e.preventDefault();
-    console.log('trying to login');
     const user = await auth.login(loginEmail, loginPassword);
-    console.log(user);
     return user;
   };
 
   const signup = async (e: any): Promise<User | null> => {
     e.preventDefault();
-    console.log('trying to signup');
     const user = await auth.signup(
       firstName,
       lastName,
       signupEmail,
       signupPassword
     );
-    console.log(user);
     return user;
   };
 
   const logout = async (e: any) => {
     e.preventDefault();
-    console.log('trying to log out');
     auth.logout();
   };
 
   const deleteUser = async (e: any) => {
     e.preventDefault();
-    console.log('trying to delete user');
     const user = await auth.removeUser();
   };
 
