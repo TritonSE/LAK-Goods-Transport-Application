@@ -15,6 +15,7 @@ export function InternationalPhoneInput({ setPhoneNumber }: InternationalPhoneIn
       }}
       containerStyle={{
         backgroundColor: 'transparent',
+        marginBottom: 14,
       }}
       textContainerStyle={{
         borderWidth: 1,

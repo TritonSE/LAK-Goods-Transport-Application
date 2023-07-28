@@ -89,6 +89,17 @@ export function ListJobs({ navigation, mode }: ListJobsProps) {
                 }
               />
             );
+          } else if (
+            driverVerificationStatus === 'Disapproved' ||
+            driverVerificationStatus === 'Suspended'
+          ) {
+            setDriverRegistrationWarning(
+              <InfoBox
+                text={
+                  'Your driver registration has been declined. If you believe there was a mistake with approving your application, please contact admin at: laktaa.bhutan@gmail.com'
+                }
+              />
+            );
           }
         }
       });
