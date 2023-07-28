@@ -4,6 +4,7 @@
 import UserModel, {
   OWNER_LIMITED_FIELDS,
   FIELDS_USER_PERMITTED_TO_UPDATE,
+  VERIFICATION_STATUS_NOT_APPLIED,
 } from '../models/user';
 import { ServiceError } from '../errors';
 import { saveImage, deleteImage } from './image';
@@ -15,7 +16,6 @@ export async function getUser(requestedUserId, requestingUserId) {
   );
 
   let user = await UserModel.findOne({ _id: requestedUserId });
-
   if (!user)
     throw ServiceError.USER_NOT_FOUND.addContext(
       'requestedUserId - ',
@@ -29,6 +29,18 @@ export async function getUser(requestedUserId, requestingUserId) {
   }
 
   return user;
+}
+
+export async function getAllUsers(requestingUserId) {
+  console.debug(
+    `SERVICE: getAllUsers service running: requested by ${requestingUserId}`
+  );
+  const users = await UserModel.find();
+
+  if (!users) {
+    throw ServiceError.USER_NOT_FOUND.addContext('getAllUsers failed');
+  }
+  return users;
 }
 
 export async function getUsers(userIds, requestingUserId) {
@@ -87,10 +99,6 @@ export async function registerUser(userData, imageFiles) {
       ...(driverLicenseId === undefined ? {} : { vehicleData: vehicleData }),
       verificationStatus: 'Not Applied',
     });
-  } catch (e) {
-    throw ServiceError.INVALID_USER_RECEIVED.addContext(e.stack);
-  }
-  try {
     const response = await user.save();
     return response;
   } catch (e) {
@@ -100,7 +108,6 @@ export async function registerUser(userData, imageFiles) {
 
 export async function updateUser(userId, userData, userImages) {
   console.debug(`SERVICE: updateUser service runnning: userId - ${userId}`);
-  console.log(userData, userImages);
   // Retrieve original user
   const originalUser = await UserModel.findById(userId);
   if (!originalUser) {
@@ -110,9 +117,8 @@ export async function updateUser(userId, userData, userImages) {
   // Ensure updated fields are only getting updated
   userData = filterObject(userData, FIELDS_USER_PERMITTED_TO_UPDATE);
   if (userData.vehicleData) {
-    const vehicleData = JSON.parse(userData.vehicleData);
+    const { vehicleData } = userData;
     userData.vehicleData = vehicleData;
-    console.log(userData);
     if (userImages) {
       // Delete existing images
       const existingImageIds = originalUser.imageIds;
@@ -135,7 +141,12 @@ export async function updateUser(userId, userData, userImages) {
 
       userData.vehicleData.imageIds = newImageIds;
     }
+
+    if (originalUser.verificationStatus === VERIFICATION_STATUS_NOT_APPLIED) {
+      userData.verificationStatus = 'Applied';
+    }
   }
+
   try {
     return await UserModel.findOneAndUpdate({ _id: userId }, userData);
   } catch (e) {
@@ -150,8 +161,15 @@ export async function updateDriverRegistrationStatus(
   console.debug(
     `SERVICE: updateDriverRegistrationStatus service running: userId = ${userId}, status = ${verificationStatus}`
   );
-
-  const user = await getUser(userId, userId);
-  user.verificationStatus = verificationStatus;
-  await updateUser(userId, user);
+  try {
+    const userData = await getUser(userId, userId);
+    if (!userData) {
+      throw ServiceError.USER_NOT_FOUND;
+    }
+    const user = userData;
+    user.verificationStatus = verificationStatus;
+    return await UserModel.findOneAndUpdate({ _id: userId }, userData);
+  } catch (e) {
+    throw ServiceError.INVALID_USER_RECEIVED.addContext(e.stack);
+  }
 }

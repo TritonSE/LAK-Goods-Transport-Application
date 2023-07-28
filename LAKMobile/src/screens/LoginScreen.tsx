@@ -1,9 +1,10 @@
 import React, { useContext, useState } from 'react';
 import { StyleSheet, Text, View } from 'react-native';
-import { AppText, LabelWrapper, AppButton, AppTextInput } from '../components';
+import { AppText, LabelWrapper, AppButton, AppTextInput, ScreenHeader } from '../components';
 import { COLORS } from '../../constants';
 import { LoginProps } from '../types/navigation';
 import { AuthContext } from '../context/AuthContext';
+import { InternationalPhoneInput } from '../components/InternationalPhoneInput';
 
 export function LoginScreen({ navigation }: LoginProps) {
   const [phoneNumber, setPhoneNumber] = useState('');
@@ -19,7 +20,7 @@ export function LoginScreen({ navigation }: LoginProps) {
   const auth = useContext(AuthContext);
 
   const validatePhone = (): boolean => {
-    const phoneRegex = new RegExp('^[0-9]{10}$');
+    const phoneRegex = new RegExp(/^(?:\+\d{1,15}|\d{1,16})$/);
     const valid = phoneRegex.test(phoneNumber);
     setPhoneValid(valid);
     return valid;
@@ -36,8 +37,9 @@ export function LoginScreen({ navigation }: LoginProps) {
     setLoginError(null);
     auth.clearError();
     setLoginPressed(true);
-
-    if (validatePhone() && validatePin()) {
+    const _phoneValid = validatePhone();
+    const _pinValid = validatePin();
+    if (_phoneValid && _pinValid) {
       setLoading(true);
       const user = await auth.login(phoneNumber, pin);
       setLoading(false);
@@ -54,58 +56,54 @@ export function LoginScreen({ navigation }: LoginProps) {
   };
 
   return (
-    <View style={styles.container}>
-      <Text style={styles.errText}>{loginPressed && loginError ? loginError.message : ''}</Text>
-      <LabelWrapper label="Mobile Number">
-        <AppTextInput
-          value={phoneNumber}
-          style={bigInputStyle}
-          changeAction={setPhoneNumber}
-          type="phoneNumber"
-          maxLength={10}
-          keyboardType="default"
-          isValid={!loginPressed || phoneValid}
-          errMsg="Valid mobile number required."
-        />
-      </LabelWrapper>
+    <>
+      <ScreenHeader>Login</ScreenHeader>
+      <View style={styles.container}>
+        <Text style={styles.errText}>{loginPressed && loginError ? loginError.message : ''}</Text>
+        <LabelWrapper label="Mobile Number">
+          <InternationalPhoneInput setPhoneNumber={setPhoneNumber} />
+        </LabelWrapper>
 
-      <LabelWrapper label="4 Digit PIN">
-        <AppTextInput
-          value={pin}
-          style={smallInputStyle}
-          changeAction={setPIN}
-          type="pin"
-          isValid={!loginPressed || PINValid}
-          maxLength={4}
-          keyboardType="numeric"
-          errMsg="Valid PIN required."
-        />
-      </LabelWrapper>
-      <AppButton
-        type="link"
-        title="Forgot PIN?"
-        onPress={() => navigation.navigate('ForgotPassword')}
-        style={styles.forgotPIN}
-      />
-
-      {/* ternary to check if loading, set type to disabled */}
-      <AppButton
-        type={loading ? 'disabled' : 'primary'}
-        title="Log in"
-        onPress={handleSubmit}
-        style={styles.submitButton}
-      />
-
-      <View style={styles.signupPrompt}>
-        <AppText>{"Don't have an account?"}</AppText>
+        <LabelWrapper label="4 Digit PIN">
+          <AppTextInput
+            value={pin}
+            style={smallInputStyle}
+            changeAction={setPIN}
+            type="pin"
+            isValid={!loginPressed || PINValid}
+            maxLength={4}
+            keyboardType="numeric"
+            errMsg="Valid PIN required."
+          />
+        </LabelWrapper>
         <AppButton
           type="link"
-          title="Sign up here."
-          onPress={() => navigation.navigate('Signup')}
-          style={styles.signupLink}
+          title="Forgot PIN?"
+          onPress={() => navigation.navigate('ConfirmPhoneScreen')}
+          style={styles.forgotPIN}
         />
+
+        {/* ternary to check if loading, set type to disabled */}
+        <AppButton
+          type={loading ? 'disabled' : 'primary'}
+          title="Log in"
+          onPress={handleSubmit}
+          style={styles.submitButton}
+        />
+
+        <View style={styles.signupPrompt}>
+          <AppText>{"Don't have an account?"}</AppText>
+          <AppButton
+            type="link"
+            title="Sign up here."
+            onPress={() => navigation.navigate('Signup')}
+            style={styles.signupLink}
+          />
+        </View>
+
+        <AppText>{'If you have any questions, contact us at laktaa.bhutan@gmail.com'}</AppText>
       </View>
-    </View>
+    </>
   );
 }
 
@@ -113,7 +111,9 @@ const styles = StyleSheet.create({
   container: {
     width: '100%',
     padding: 32,
-    flex: 1,
+    paddingRight: 32,
+    paddingTop: '20%',
+    display: 'flex',
     alignItems: 'flex-start',
     justifyContent: 'center',
   },
@@ -143,6 +143,7 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     alignItems: 'center',
     justifyContent: 'flex-start',
+    marginBottom: '10%',
   },
 
   signupLink: {
