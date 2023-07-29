@@ -1,11 +1,9 @@
 import { initializeApp } from '@firebase/app';
 import {
   getAuth,
-  createUserWithEmailAndPassword,
   signInWithEmailAndPassword,
   signOut,
   User,
-  deleteUser,
 } from 'firebase/auth';
 
 import firebaseConfig from '../../firebase-config.json';
@@ -20,8 +18,6 @@ export type AuthState = {
   clearError: () => void;
   login: (email: string, password: string) => Promise<User | Error>;
   logout: () => Promise<void>;
-  createAccount: (email: string, password: string) => Promise<User | null>;
-  removeAccount: () => {};
 };
 
 const init: AuthState = {
@@ -33,12 +29,6 @@ const init: AuthState = {
   },
   logout: () => {
     return new Promise<void>(() => undefined);
-  },
-  createAccount: () => {
-    return new Promise<User | null>(() => undefined);
-  },
-  removeAccount: () => {
-    return new Promise<User | null>(() => null);
   },
 };
 
@@ -137,49 +127,6 @@ export const AuthProvider: React.FC<Props> = ({ children }) => {
     }
   };
 
-  const createAccount = async (
-    userEmail: string,
-    userPassword: string
-  ): Promise<User | null> => {
-    try {
-      clearError();
-      // First, let's try to save the user credentials in Firebase.
-      const auth = getAuth(app);
-      const userCredential = await createUserWithEmailAndPassword(
-        auth,
-        userEmail,
-        userPassword
-      );
-      const user = userCredential.user;
-      setUser(user);
-      return userCredential.user;
-    } catch (e) {
-      if (e instanceof FirebaseError) {
-        setFirebaseError(e);
-      } else {
-        setError(e as Error);
-      }
-      setUser(null);
-      return null;
-    }
-  };
-
-  const removeAccount = async () => {
-    try {
-      clearError();
-      if (user) {
-        deleteUser(user);
-      }
-    } catch (e) {
-      if (e instanceof FirebaseError) {
-        setFirebaseError(e);
-      } else {
-        setError(e as Error);
-      }
-      return null;
-    }
-  };
-
   return (
     <AuthContext.Provider
       value={{
@@ -188,8 +135,6 @@ export const AuthProvider: React.FC<Props> = ({ children }) => {
         clearError,
         login,
         logout,
-        createAccount,
-        removeAccount,
       }}
     >
       {children}
