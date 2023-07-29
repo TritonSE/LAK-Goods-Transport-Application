@@ -3,8 +3,8 @@
   "version": "1.0.0",
   "main": "node_modules/expo/AppEntry.js",
   "scripts": {
-    "start": "adb reverse tcp:3000 tcp:3000 && expo start -c",
-    "android": "adb reverse tcp:3000 tcp:3000 && expo start -c --android",
+    "start": "adb reverse tcp:8080 tcp:8080 && expo start -c",
+    "android": "adb reverse tcp:8080 tcp:8080 && expo start -c --android",
     "ios": "expo start --ios",
     "web": "expo start --web",
     "eject": "expo eject",

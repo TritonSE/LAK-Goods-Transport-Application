@@ -131,7 +131,6 @@ routes.put('/:userid', upload, async (req, res, next) => {
       phone,
       location,
       driverLicenseId,
-      dateApplied,
       vehicleData,
       verificationStatus,
     } = user;
@@ -152,15 +151,15 @@ routes.put('/:userid', upload, async (req, res, next) => {
       return res.status(400).json({ error: 'Invalid verification status' });
     }
     user = await updateUser(userId, user, req.files || []);
+
+    return res.status(200).json({
+      message: 'User edited successfully',
+      userId: user._id,
+    });
   } catch (e) {
     next(e);
     return res.status(500).json({ error: 'Could not put User' });
   }
-
-  return res.status(200).json({
-    message: 'User edited successfully',
-    userId: user._id,
-  });
 });
 
 export default routes;
