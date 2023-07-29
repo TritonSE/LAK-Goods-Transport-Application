@@ -34,7 +34,6 @@ export function EditProfileScreen({ navigation, route }: EditProfileScreenProps)
   const [vehicleModel, setVehicleModel] = useState('');
   const [vehicleMake, setVehicleMake] = useState('');
   const [vehicleColor, setVehicleColor] = useState('');
-  const [vehicleLicensePlateNumber, setVehicleLicensePlateNumber] = useState('');
   const current = new Date();
 
   const PICKER_LOCATION_DEFAULT = '-- Select a district --';
@@ -86,7 +85,6 @@ export function EditProfileScreen({ navigation, route }: EditProfileScreenProps)
       setVehicleModel(profileData.vehicleData.vehicleModel || '');
       setVehicleMake(profileData.vehicleData.vehicleMake || '');
       setVehicleColor(profileData.vehicleData.vehicleColor || '');
-      setVehicleLicensePlateNumber(profileData.vehicleData.vehicleLicensePlateNumber || '');
       dispatch({ type: 'SET_IMAGES', payload: profileData.vehicleData.imageIds });
     }
   }, [profileData]);
@@ -124,7 +122,6 @@ export function EditProfileScreen({ navigation, route }: EditProfileScreenProps)
       vehicleModel: vehicleModel.trim(),
       vehicleMake: vehicleMake.trim(),
       vehicleColor: vehicleColor.trim(),
-      vehicleLicensePlateNumber: vehicleLicensePlateNumber.trim(),
       imageIds: imageURIs.filter((value) => value !== ''),
     };
     let formattedLocation = location;
@@ -252,17 +249,6 @@ export function EditProfileScreen({ navigation, route }: EditProfileScreenProps)
                 defaultValue={profileData?.vehicleData?.vehicleColor}
                 value={vehicleColor}
                 onChangeText={(value) => setVehicleColor(value)}
-              />
-            </LabelWrapper>
-
-            <LabelWrapper label="License Plate Number">
-              <TextInput
-                editable={false}
-                style={smallInputStyle}
-                keyboardType="default"
-                defaultValue={profileData?.vehicleData?.vehicleLicensePlateNumber}
-                value={vehicleLicensePlateNumber}
-                onChangeText={(value) => setVehicleLicensePlateNumber(value)}
               />
             </LabelWrapper>
 
