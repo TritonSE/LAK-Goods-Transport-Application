@@ -27,6 +27,8 @@ export function DriverRegistration({ navigation }: DriverRegistrationProps) {
   const [phoneNumber, setPhoneNumber] = useState('');
   const [location, setLocation] = useState('');
   const [driverLicenseId, setDriverLicenseId] = useState('');
+  const [dateApplied, setDateApplied] = useState('');
+  const current = new Date();
   const [vehicleType, setVehicleType] = useState('');
   const [vehicleModel, setVehicleModel] = useState('');
   const [vehicleMake, setVehicleMake] = useState('');
@@ -48,6 +50,7 @@ export function DriverRegistration({ navigation }: DriverRegistrationProps) {
     setPhoneNumber(profileData?.phone || '');
     setLocation(profileData?.location || '');
     setDriverLicenseId(profileData?.driverLicenseId || '');
+    setDateApplied(`${current.getDate()}/${current.getMonth() + 1}/${current.getFullYear()}`);
     if (profileData?.vehicleData) {
       setVehicleType(profileData.vehicleData.vehicleType || PICKER_TYPE_DEFAULT);
       setVehicleModel(profileData.vehicleData.vehicleModel || '');
@@ -107,6 +110,7 @@ export function DriverRegistration({ navigation }: DriverRegistrationProps) {
         firstName: userName.split(' ')[0].trim(),
         lastName: userName.split(' ')[1].trim(),
         location: location,
+        dateApplied: dateApplied,
       };
       if (driverLicenseId != '') {
         updatedUser.driverLicenseId = driverLicenseId;

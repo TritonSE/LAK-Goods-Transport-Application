@@ -86,6 +86,10 @@ const UserSchema = new Schema(
       type: String,
       required: false,
     },
+    dateApplied: {
+      type: String,
+      required: false,
+    },
     vehicleData: {
       type: VehicleInformationSchema,
       required: function () {
