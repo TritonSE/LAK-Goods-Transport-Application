@@ -38,7 +38,6 @@ export interface VehicleData {
   vehicleModel: string;
   vehicleMake: string;
   vehicleColor: string;
-  vehicleLicensePlateNumber: string;
   imageIds: string[];
 }
 

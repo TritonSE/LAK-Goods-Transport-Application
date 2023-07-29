@@ -33,7 +33,6 @@ export function DriverRegistration({ navigation }: DriverRegistrationProps) {
   const [vehicleModel, setVehicleModel] = useState('');
   const [vehicleMake, setVehicleMake] = useState('');
   const [vehicleColor, setVehicleColor] = useState('');
-  const [vehicleLicensePlateNumber, setVehicleLicensePlateNumber] = useState('');
   const [alertVisible, setAlertVisible] = useState(false);
   const PICKER_TYPE_DEFAULT = '-- Pick type --';
 
@@ -57,7 +56,6 @@ export function DriverRegistration({ navigation }: DriverRegistrationProps) {
       setVehicleModel(profileData.vehicleData.vehicleModel || '');
       setVehicleMake(profileData.vehicleData.vehicleMake || '');
       setVehicleColor(profileData.vehicleData.vehicleColor || '');
-      setVehicleLicensePlateNumber(profileData.vehicleData.vehicleLicensePlateNumber || '');
       dispatch({ type: 'SET_IMAGES', payload: profileData.vehicleData.imageIds });
     }
   }, [profileData]);
@@ -104,7 +102,6 @@ export function DriverRegistration({ navigation }: DriverRegistrationProps) {
         vehicleModel: vehicleModel.trim(),
         vehicleMake: vehicleMake.trim(),
         vehicleColor: vehicleColor.trim(),
-        vehicleLicensePlateNumber: vehicleLicensePlateNumber.trim(),
         imageIds: imageURIs.filter((value) => value !== ''),
       };
 
@@ -219,15 +216,6 @@ export function DriverRegistration({ navigation }: DriverRegistrationProps) {
             keyboardType="default"
             defaultValue={profileData?.vehicleData?.vehicleColor}
             onChangeText={(value) => setVehicleColor(value)}
-          />
-        </LabelWrapper>
-
-        <LabelWrapper label="License Plate Number">
-          <TextInput
-            style={smallInputStyle}
-            keyboardType="default"
-            defaultValue={profileData?.vehicleData?.vehicleLicensePlateNumber}
-            onChangeText={(value) => setVehicleLicensePlateNumber(value)}
           />
         </LabelWrapper>
 

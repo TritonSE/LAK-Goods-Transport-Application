@@ -52,10 +52,6 @@ const VehicleInformationSchema = new Schema({
     type: String,
     required: true,
   },
-  vehicleLicensePlateNumber: {
-    type: String,
-    required: false,
-  },
   imageIds: [
     {
       type: String,
