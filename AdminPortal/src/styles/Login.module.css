@@ -43,18 +43,14 @@
   background: #fff;
   color: black;
   border: 1.25px solid #c4c4c4;
-  height: 38px;
-  width: 27vw;
+  padding: 1rem;
+  width: 100%;
   border-radius: 5px;
-}
-
-.emailInput {
-  padding-left: 10px;
+  font-size: 1rem;
 }
 
 .passwordInput {
   margin-top: 15px;
-  padding-left: 10px;
 }
 
 .loginButton {
@@ -65,44 +61,7 @@
   color: white;
   border-radius: 5px;
   cursor: pointer;
-}
-
-.rememberUserAndForgotPassword {
-  display: flex;
-  margin-top: 18px;
-}
-
-.keepSignedIn {
-  display: flex;
-  align-items: center;
-}
-
-.checkbox {
-  box-sizing: border-box;
-  width: 16.5px;
-  height: 16.5px;
-  border: 1.25px solid #000;
-  margin: 0 7px 0 0;
-  cursor: pointer;
-}
-
-.keepSignedInText {
-  font-style: normal;
-  font-weight: 400;
-  font-size: 16.5px;
-  line-height: 20px;
-  color: black;
-  letter-spacing: 0.2px;
-}
-
-.forgotPasswordText {
-  font-style: normal;
-  font-weight: 400;
-  font-size: 16.5px;
-  line-height: 20px;
-  color: black;
-  margin-left: auto;
-  letter-spacing: 0.2px;
+  font-size: 1rem;
 }
 
 .passwordLogo {
@@ -111,4 +70,9 @@
   cursor: pointer;
   margin-left: -30px;
   padding-top: 4px;
+}
+
+.error {
+  color: red;
+  margin-top: 1rem;
 }

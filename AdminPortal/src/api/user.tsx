@@ -1,3 +1,5 @@
+import { Option } from '@/pages/dashboard';
+
 const USERS_URL = `${process.env.NEXT_PUBLIC_API_URL}/api/users`;
 export const getAllDrivers = async () => {
   try {
@@ -10,6 +12,7 @@ export const getAllDrivers = async () => {
       body: '',
     });
     let data = await response.json();
+    console.log(data);
     data = data.users;
     return data;
   } catch {

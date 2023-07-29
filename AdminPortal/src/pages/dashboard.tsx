@@ -1,9 +1,11 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useContext } from 'react';
 import styles from '@/styles/Dashboard.module.css';
 import 'bootstrap/dist/css/bootstrap.min.css';
 import { Sidebar } from '@/components/sidebar';
 import Select from 'react-select';
 import { getAllDrivers, updateUser } from '@/api/user';
+import { authCookieSet } from '@/context/AuthContext';
+import { useRouter } from 'next/router';
 
 interface DataItem {
   _id: string;
@@ -17,7 +19,7 @@ interface DataItem {
   verificationStatus: String;
 }
 
-interface Option {
+export interface Option {
   label: string;
   value: string;
 }
@@ -26,15 +28,31 @@ interface ControlStyles {
   [key: string]: unknown;
 }
 
-export default function App() {
-  const options = [
-    { value: 'Needs Review', label: 'Needs Review' },
-    { value: 'In Review', label: 'In Review' },
-    { value: 'Verified', label: 'Verified' },
-    { value: 'Disapproved', label: 'Disapproved' },
-  ];
+const DRIVER_REGISTRATION_STATUSES = [
+  'Not Applied',
+  'Applied',
+  'In Review',
+  'Verified',
+  'Disapproved',
+  'Suspended',
+];
 
-  const [activeTab, setActiveTab] = useState<string>('Needs Review');
+export default function App() {
+  const router = useRouter();
+  useEffect(() => {
+    if (!authCookieSet()) {
+      router.push('/login');
+    }
+  });
+
+  const options = DRIVER_REGISTRATION_STATUSES.map((status) => ({
+    value: status,
+    label: status,
+  }));
+
+  const [activeTab, setActiveTab] = useState<string>(
+    DRIVER_REGISTRATION_STATUSES[0]
+  );
 
   const [selectAllClicked, setSelectAllClicked]: [
     boolean,
@@ -43,13 +61,6 @@ export default function App() {
 
   // for the dropdown
   const [selected, setSelected] = useState<Option | null>(null);
-
-  // mapping the tabs to an integer key
-  const tabMapping = new Map();
-  tabMapping.set('Needs Review', 1);
-  tabMapping.set('In Review', 2);
-  tabMapping.set('Verified', 3);
-  tabMapping.set('Disapproved', 4);
 
   const [items, setItems] = useState<DataItem[]>([]);
 
@@ -71,7 +82,6 @@ export default function App() {
 
   //Switch to a different tab
   const handleTabClick = (tab: string) => {
-    console.log('Select all clicked is', selectAllClicked);
     setSelectAllClicked(false);
     setActiveTab((prev) => {
       const newItems = items.map((item) =>
@@ -82,28 +92,30 @@ export default function App() {
     });
   };
 
-  const handleDropdownClick = (selectedOption: Option) => {
-    setSelected(selectedOption);
-    items.map((item) => {
-      if (item.isChecked) {
-        //Modify driver verification status
-        updateUser(item._id, selectedOption);
-      }
-    });
+  const handleDropdownClick = (selectedOption: Option | null) => {
+    if (selectedOption) {
+      setSelected(selectedOption);
+      items.map((item) => {
+        if (item.isChecked) {
+          //Modify driver verification status
+          updateUser(item._id, selectedOption);
+        }
+      });
 
-    setItems(
-      items.map((item) =>
-        item.isChecked === true
-          ? {
-              ...item,
-              isChecked: false,
-              verificationStatus: selectedOption.label,
-            }
-          : item
-      )
-    );
+      setItems(
+        items.map((item) =>
+          item.isChecked === true
+            ? {
+                ...item,
+                isChecked: false,
+                verificationStatus: selectedOption.label,
+              }
+            : item
+        )
+      );
 
-    setSelectAllClicked(false);
+      setSelectAllClicked(false);
+    }
   };
 
   const handleSelectAll = (): void => {
@@ -140,46 +152,19 @@ export default function App() {
         <h1 className={styles.title}>Driver Registration</h1>
 
         <div className={styles.tabs}>
-          <button
-            className={
-              activeTab !== 'Needs Review'
-                ? styles.tabsButton
-                : styles.tabsButtonSelected
-            }
-            onClick={() => handleTabClick('Needs Review')}
-          >
-            Needs Review
-          </button>
-          <button
-            className={
-              activeTab !== 'In Review'
-                ? styles.tabsButton
-                : styles.tabsButtonSelected
-            }
-            onClick={() => handleTabClick('In Review')}
-          >
-            In Review
-          </button>
-          <button
-            className={
-              activeTab !== 'Verified'
-                ? styles.tabsButton
-                : styles.tabsButtonSelected
-            }
-            onClick={() => handleTabClick('Verified')}
-          >
-            Verified
-          </button>
-          <button
-            className={
-              activeTab !== 'Disapproved'
-                ? styles.tabsButton
-                : styles.tabsButtonSelected
-            }
-            onClick={() => handleTabClick('Disapproved')}
-          >
-            Disapproved
-          </button>
+          {DRIVER_REGISTRATION_STATUSES.map((status) => (
+            <button
+              key={status}
+              className={
+                activeTab !== status
+                  ? styles.tabsButton
+                  : styles.tabsButtonSelected
+              }
+              onClick={() => handleTabClick(status)}
+            >
+              {status}
+            </button>
+          ))}
         </div>
 
         <hr className={styles.horizontalLine}></hr>
@@ -193,10 +178,10 @@ export default function App() {
             blurInputOnSelect={true}
           />
 
-          <button className={styles.exportButton}>Export to CSV File</button>
+          <button className={styles.exportButton}>Export to CSV</button>
         </div>
 
-        <table>
+        <table className={styles.table}>
           <thead className={styles.tableHead}>
             <tr>
               <th className={styles.tableHeadItem}>
@@ -228,17 +213,17 @@ export default function App() {
                     ></input>
                   </td>
                   <td className={styles.tableData}>
-                    {item.dateApplied ? item.dateApplied : ' '}
+                    {item.dateApplied ? item.dateApplied : 'N/A'}
                   </td>
                   <td className={styles.tableData}>
                     {item.firstName + ' ' + item.lastName}
                   </td>
                   <td className={styles.tableData}>{item.phone}</td>
                   <td className={styles.tableData}>
-                    {item.driverLicenseId ? item.driverLicenseId : ' '}
+                    {item.driverLicenseId ? item.driverLicenseId : 'N/A'}
                   </td>
                   <td className={styles.tableData}>
-                    {item.licensePlate ? item.licensePlate : ' '}
+                    {item.licensePlate ? item.licensePlate : 'N/A'}
                   </td>
                 </tr>
               ))}
