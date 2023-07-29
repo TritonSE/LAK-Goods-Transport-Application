@@ -7,7 +7,7 @@ import { COLORS } from '../../constants';
 import { AppButton, AppText, ScreenHeader, LabelWrapper, ModalAlert } from '../components';
 import { getUser, updateUser, UserData, VehicleData } from '../api';
 import { AuthContext } from '../context/AuthContext';
-import { ImageUploadContext } from '../context/ImageUploadContext';
+import { ImageUploadContext, convertURIsToIds } from '../context/ImageUploadContext';
 import { ImageUploadArea } from '../components/ImageUploadArea';
 
 export function DriverRegistration({ navigation }: DriverRegistrationProps) {
@@ -99,7 +99,7 @@ export function DriverRegistration({ navigation }: DriverRegistrationProps) {
         vehicleModel: vehicleModel.trim(),
         vehicleMake: vehicleMake.trim(),
         vehicleColor: vehicleColor.trim(),
-        imageIds: imageURIs.filter((value) => value !== ''),
+        imageIds: convertURIsToIds(imageURIs),
       };
 
       const updatedUser: UserData = {

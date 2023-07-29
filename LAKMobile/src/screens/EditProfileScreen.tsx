@@ -8,7 +8,7 @@ import { AuthContext } from '../context/AuthContext';
 import { AppButton, AppText, ScreenHeader, LabelWrapper } from '../components';
 import { PublicProfilePicDefault } from '../icons';
 import { EditProfileScreenProps } from '../types/navigation';
-import { ImageUploadContext } from '../context/ImageUploadContext';
+import { ImageUploadContext, convertURIsToIds } from '../context/ImageUploadContext';
 import { ImageUploadArea } from '../components/ImageUploadArea';
 
 export function EditProfileScreen({ navigation, route }: EditProfileScreenProps) {
@@ -88,7 +88,7 @@ export function EditProfileScreen({ navigation, route }: EditProfileScreenProps)
     body: { [key: string]: string }
   ) => {
     const data = new FormData();
-    if (images !== null && images[0] !== null) {
+    if (images !== null) {
       images.map((image) => {
         if (image !== null) {
           const uriArray = image.uri.split('.');
@@ -116,7 +116,7 @@ export function EditProfileScreen({ navigation, route }: EditProfileScreenProps)
       vehicleModel: vehicleModel.trim(),
       vehicleMake: vehicleMake.trim(),
       vehicleColor: vehicleColor.trim(),
-      imageIds: imageURIs.filter((value) => value !== ''),
+      imageIds: convertURIsToIds(imageURIs),
     };
     let formattedLocation = location;
     if (district !== PICKER_LOCATION_DEFAULT) {
@@ -246,7 +246,7 @@ export function EditProfileScreen({ navigation, route }: EditProfileScreenProps)
             </LabelWrapper>
 
             <LabelWrapper label="Vehicle Photo">
-              <ImageUploadArea disabled={true} />
+              <ImageUploadArea disabled={false} />
             </LabelWrapper>
           </View>
         )}

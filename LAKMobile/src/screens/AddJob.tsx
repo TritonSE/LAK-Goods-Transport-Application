@@ -8,7 +8,7 @@ import { COLORS } from '../../constants';
 import { JobOwnerView, postJob, updateJob, deleteJob, getUser } from '../api';
 import { AddJobProps } from '../types/navigation';
 import { AuthContext } from '../context/AuthContext';
-import { ImageUploadContext } from '../context/ImageUploadContext';
+import { ImageUploadContext, convertURIsToIds } from '../context/ImageUploadContext';
 import { ImageUploadArea } from '../components/ImageUploadArea';
 import { InternationalPhoneInput } from '../components/InternationalPhoneInput';
 
@@ -227,7 +227,7 @@ export function AddJob({ navigation, route }: AddJobProps) {
     body: { [key: string]: any }
   ) => {
     const data = new FormData();
-    if (images !== null && images[0] !== null) {
+    if (images !== null) {
       images.map((image) => {
         if (image !== null) {
           const uriArray = image.uri.split('.');
@@ -245,7 +245,6 @@ export function AddJob({ navigation, route }: AddJobProps) {
     Object.keys(body).forEach((key) => {
       data.append(key, body[key]);
     });
-
     return data;
   };
 
@@ -268,18 +267,17 @@ export function AddJob({ navigation, route }: AddJobProps) {
       pickupDistrict: pickupDistrict.trim(),
       dropoffLocation: dropoffLocation.trim(),
       dropoffDistrict: dropoffDistrict.trim(),
-      imageIds: imageURIs.filter((value) => value !== ''),
+      imageIds: convertURIsToIds(imageURIs),
     };
     const formedJob: FormData = createFormData(imageInfo, newJob);
-    dispatch({ type: 'CLEAR_IMAGES' });
     if (formType === 'add' || formType == 'repost') {
       setLoading(true);
       postJob(userId, formedJob).then((response) => {
         setLoading(false);
-        console.log(response);
         if (response == null) {
           return;
         }
+        dispatch({ type: 'CLEAR_IMAGES' });
         const { jobId } = response;
         const updatedJob: JobOwnerView = createUpdateFromId(jobId, newJob);
         route.params.setJobData((prevJobs) => [...prevJobs, updatedJob]);
@@ -294,11 +292,11 @@ export function AddJob({ navigation, route }: AddJobProps) {
       if (!route.params.jobData) {
         return;
       }
-
       updateJob(userId, route.params.jobData._id, formedJob).then((response) => {
         if (response === null) {
           return;
         }
+        dispatch({ type: 'CLEAR_IMAGES' });
         console.log(response);
         const { jobId } = response;
         const updatedJob: JobOwnerView = createUpdateFromId(jobId, newJob);

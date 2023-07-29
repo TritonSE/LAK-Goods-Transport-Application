@@ -123,11 +123,9 @@ export async function createJob(userId, jobData, jobImages) {
  * @param {list} jobImages
  */
 export async function updateJob(userId, jobId, jobData, jobImages) {
-  console.debug(
-    `SERVICE: updateJob service runnning: jobId - ${jobId}, userId - ${userId}, jobData - ${JSON.stringify(
-      jobData
-    )}, jobImages - files`
-  );
+  // console.debug(
+  //   `SERVICE: updateJob service runnning: jobId - ${jobId}, userId - ${userId}, jobData - ${jobData}, jobImages - files`
+  // );
   // Retrieve original job
   const originalJob = await JobModel.findById(jobId);
   if (!originalJob) {
@@ -139,20 +137,30 @@ export async function updateJob(userId, jobId, jobData, jobImages) {
     throw ServiceError.JOB_EDIT_PERMISSION_DENIED;
   }
 
+  const incomingImageIds = jobData.imageIds.split(',');
   // Ensure updated fields are only getting updated
   jobData = filterObject(jobData, FIELDS_OWNER_PERMITTED_TO_UPDATE);
 
   // TODO Find a better way of updating images
 
   // Delete existing images
-  const existingImageIds = originalJob.imageIds;
+
+  const existingImageIds =
+    originalJob.imageIds.length > 0 ? originalJob.imageIds[0].split(',') : [];
+
   await Promise.all(
     existingImageIds.map(async (imageId) => {
-      await deleteImage(imageId);
+      if (!incomingImageIds.includes(imageId)) {
+        console.log('Delete Image');
+        await deleteImage(imageId);
+      } else {
+        console.log('Existing Image');
+      }
     })
   );
   // Add new images
-  const newImageIds = [];
+
+  const newImageIds = incomingImageIds.filter((value) => value !== '') || [];
   await Promise.all(
     jobImages.map(async (image) => {
       const imageId = await saveImage(image);

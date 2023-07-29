@@ -4,6 +4,7 @@
  * images uploaded by the user to our backend.
  */
 import React, { createContext, Reducer, useReducer, useState } from 'react';
+import { imageIdToSource } from '../api';
 import * as ImagePicker from 'expo-image-picker';
 
 const MAX_IMAGES = 3;
@@ -57,6 +58,12 @@ interface Props {
   children: React.ReactNode;
 }
 
+export const convertURIsToIds = (uris) => {
+  uris = uris.filter((value) => value !== '').map((uri) => uri.split('/').slice(-1)[0]);
+  uris = uris.filter((value) => value.split('.').length < 2).map((uri) => uri);
+  return uris;
+};
+
 export const ImageUploadProvider: React.FC<Props> = ({ children }) => {
   const reducer: ImagesReducer = (state, action): ImagesReducerState => {
     let newState = state.slice();
@@ -82,6 +89,10 @@ export const ImageUploadProvider: React.FC<Props> = ({ children }) => {
         // This should take a list of preexisting images on the backend and add them to the state.
         // Note: We might be able to store the imageIDs under the imageURIs.
         // Then, under the backend, we need to check if the imageIDs already exist and not delete them if so.
+        newState = action.payload.map((imageId) => imageIdToSource(imageId).uri);
+        while (newState.length < 3) {
+          newState.push('');
+        }
         break;
       case 'CLEAR_IMAGES':
         newState = new Array(MAX_IMAGES).fill('');
