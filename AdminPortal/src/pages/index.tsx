@@ -1,10 +1,14 @@
-import Dashboard from './dashboard';
-import { AuthProvider } from '../context/AuthContext';
+import { authCookieSet } from '@/context/AuthContext';
+import { useRouter } from 'next/router';
+import { useEffect } from 'react';
 
 export default function Home() {
-  return (
-    <AuthProvider>
-      <Dashboard />
-    </AuthProvider>
-  );
+  const router = useRouter();
+  useEffect(() => {
+    if (!authCookieSet) {
+      router.push('/login');
+    } else {
+      router.push('/dashboard');
+    }
+  }, [router]);
 }

@@ -18,31 +18,26 @@
 
 .title {
   position: relative;
-  margin-top: 100px;
+  margin-top: 5%;
   font-family: Lato, sans-serif;
   font-style: normal;
   font-weight: 700;
-  font-size: 48px;
-  line-height: 58px;
+  font-size: 40px;
   color: #000;
 }
 
 .tabs {
   display: flex;
   position: relative;
-  margin-top: 2px;
-  gap: 54px;
-  height: 72px;
-  width: 834;
-  margin-bottom: 21px;
+  gap: 50px;
+  height: 70px;
 }
 
 .tabsButton {
   font-family: Lato, sans-serif;
   font-style: normal;
   font-weight: 400;
-  font-size: 24px;
-  line-height: 29px;
+  font-size: 20px;
   color: #000;
   border: none;
   background-color: transparent;
@@ -53,8 +48,7 @@
   font-family: Lato, sans-serif;
   font-style: normal;
   font-weight: 700;
-  font-size: 24px;
-  line-height: 29px;
+  font-size: 20px;
   border: none;
   background-color: transparent;
   cursor: pointer;
@@ -65,7 +59,7 @@
 
 .horizontalLine {
   border: 1px solid #c4c4c4;
-  margin-bottom: 22px;
+  margin: 20px 0;
 }
 
 .dropdownAndExportBar {
@@ -75,50 +69,35 @@
   justify-content: space-between;
 }
 
-.dropdown {
-  background-color: transparent;
-  color: black;
-  border: 1.7857px solid #c4c4c4;
-  height: 100%;
-  font-family: Lato, sans-serif;
-  font-style: normal;
-  font-weight: 400;
-  font-size: 24px;
-  line-height: 29px;
-}
-
-.dropdown:hover {
-  background-color: #c4c4c4;
-  border: 1.7857px solid #c4c4c4;
-}
-
 .exportButton {
-  right: auto;
-  width: 232px;
+  display: flex;
+  align-items: center;
+  width: fit-content;
+  padding: 1rem;
   background: #94100c;
   color: white;
   border-radius: 4px;
-  font-family: Lato, sans-serif;
-  font-style: normal;
   font-weight: 700;
-  font-size: 24px;
-  line-height: 29px;
+  font-size: 20px;
+  border: none;
+  box-shadow: 0 4px 5px gray;
+}
+
+.table {
+  border: none;
+  border-collapse: collapse;
 }
 
 .tableHead {
   background-color: #94100c;
-  height: 74px;
 }
 
 .tableHeadItem {
   color: white;
-  font-family: Lato, sans-serif;
-  font-style: normal;
   font-weight: 400;
-  font-size: 24px;
-  line-height: 29px;
+  font-size: 20px;
   text-align: left;
-  padding-left: 20px;
+  padding: 1rem;
 }
 
 .tableBody {
@@ -126,15 +105,9 @@
 }
 
 .tableData {
-  padding: 20px;
-  font-family: Lato, sans-serif;
-  font-style: normal;
-  font-weight: 400;
+  border: none;
+  padding: 1rem;
   font-size: 20px;
-  line-height: 24px;
   text-align: left;
-}
-
-.tableData:not(:last-child) {
-  border-right: 1px solid black;
+  background: white;
 }

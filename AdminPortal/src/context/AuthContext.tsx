@@ -6,28 +6,22 @@ import {
   signOut,
   User,
   deleteUser,
-  updateProfile,
 } from 'firebase/auth';
 
-import * as admin from 'firebase-admin';
-
 import firebaseConfig from '../../firebase-config.json';
-import React, { createContext, useMemo, useState } from 'react';
+import React, { createContext, useEffect, useMemo, useState } from 'react';
 import { FirebaseError } from '@firebase/util';
+import { deleteCookie, getCookie, hasCookie, setCookie } from 'cookies-next';
 
+const AUTH_COOKIE = 'lak-admin-user';
 export type AuthState = {
   user: User | null;
   error: Error | null;
   clearError: () => void;
-  login: (email: string, password: string) => Promise<User | null>;
+  login: (email: string, password: string) => Promise<User | Error>;
   logout: () => Promise<void>;
-  signup: (
-    firstName: string,
-    lastName: string,
-    email: string,
-    password: string
-  ) => Promise<User | null>;
-  removeUser: () => {};
+  createAccount: (email: string, password: string) => Promise<User | null>;
+  removeAccount: () => {};
 };
 
 const init: AuthState = {
@@ -35,15 +29,15 @@ const init: AuthState = {
   error: null,
   clearError: () => undefined,
   login: () => {
-    return new Promise<User | null>(() => null);
+    return new Promise<User | Error>(() => new Error());
   },
   logout: () => {
     return new Promise<void>(() => undefined);
   },
-  signup: () => {
+  createAccount: () => {
     return new Promise<User | null>(() => undefined);
   },
-  removeUser: () => {
+  removeAccount: () => {
     return new Promise<User | null>(() => null);
   },
 };
@@ -53,28 +47,51 @@ export const AuthContext = createContext<AuthState>(init);
 interface Props {
   children: React.ReactNode;
 }
+export const authCookieSet = (): boolean => {
+  return hasCookie(AUTH_COOKIE);
+};
 
 export const AuthProvider: React.FC<Props> = ({ children }) => {
   const [user, setUser] = useState<User | null>(null);
   const [error, setError] = useState<Error | null>(null);
 
+  useEffect(() => {
+    try {
+      if (user === null) {
+        const userCookie = getCookie(AUTH_COOKIE) as string;
+        const user = JSON.parse(userCookie) as User;
+        setUser(user);
+      }
+    } catch (e) {
+      console.error(e);
+    }
+  }, [user]);
+
   const clearError = () => {
     setError(null);
   };
 
-  const setFirebaseError = (e: FirebaseError): void => {
+  const setFirebaseError = (e: FirebaseError): Error => {
     // We map firebase errors to more useful errors for us to display to the user.
-    if (e.code === 'auth/wrong-password')
+    if (e.code === 'auth/wrong-password') {
       setError(new Error('Password is incorrect'));
-    else if (e.code === 'auth/user-not-found')
+      return new Error('Password is incorrect');
+    } else if (e.code === 'auth/user-not-found') {
       setError(new Error('User does not exist'));
-    else if (e.code === 'auth/invalid-email')
+      return new Error('User does not exist');
+    } else if (e.code === 'auth/invalid-email') {
       setError(new Error('Invalid email provided'));
-    else if (e.code === 'auth/invalid-password')
+      return new Error('Invalid email provided');
+    } else if (e.code === 'auth/invalid-password') {
       setError(new Error('Password must be more than 6 characters in length'));
-    else if (e.code === 'auth/email-already-in-use')
+      return new Error('Password must be more than 6 characters in length');
+    } else if (e.code === 'auth/email-already-in-use') {
       setError(new Error('This user already has an account. Please log in'));
-    else setError(new Error(e.message));
+      return new Error('This user already has an account. Please log in');
+    } else {
+      setError(new Error(e.message));
+      return new Error(e.message);
+    }
   };
 
   const app = useMemo(() => {
@@ -84,8 +101,9 @@ export const AuthProvider: React.FC<Props> = ({ children }) => {
   const login = async (
     userEmail: string,
     userPassword: string
-  ): Promise<User | null> => {
+  ): Promise<User | Error> => {
     try {
+      clearError();
       const auth = getAuth(app);
       const userCredential = await signInWithEmailAndPassword(
         auth,
@@ -93,37 +111,38 @@ export const AuthProvider: React.FC<Props> = ({ children }) => {
         userPassword
       );
       setUser(userCredential.user);
+      setCookie(AUTH_COOKIE, JSON.stringify(userCredential.user));
       return userCredential.user;
     } catch (e) {
+      setUser(null);
       if (e instanceof FirebaseError) {
-        setFirebaseError(e);
+        return setFirebaseError(e);
       } else {
         setError(e as Error);
+        return e as Error;
       }
-      setUser(null);
-      return null;
     }
   };
 
   const logout = async (): Promise<void> => {
     try {
+      clearError();
       const auth = getAuth(app);
       await signOut(auth);
       setUser(null);
-      setError(null);
+      deleteCookie(AUTH_COOKIE);
     } catch (e) {
       setError(e as Error);
       setUser(null);
     }
   };
 
-  const signup = async (
-    firstName: string,
-    lastName: string,
+  const createAccount = async (
     userEmail: string,
     userPassword: string
   ): Promise<User | null> => {
     try {
+      clearError();
       // First, let's try to save the user credentials in Firebase.
       const auth = getAuth(app);
       const userCredential = await createUserWithEmailAndPassword(
@@ -133,9 +152,6 @@ export const AuthProvider: React.FC<Props> = ({ children }) => {
       );
       const user = userCredential.user;
       setUser(user);
-      updateProfile(user, {
-        displayName: firstName + ' ' + lastName,
-      });
       return userCredential.user;
     } catch (e) {
       if (e instanceof FirebaseError) {
@@ -148,8 +164,9 @@ export const AuthProvider: React.FC<Props> = ({ children }) => {
     }
   };
 
-  const removeUser = async () => {
+  const removeAccount = async () => {
     try {
+      clearError();
       if (user) {
         deleteUser(user);
       }
@@ -165,7 +182,15 @@ export const AuthProvider: React.FC<Props> = ({ children }) => {
 
   return (
     <AuthContext.Provider
-      value={{ user, error, clearError, login, logout, signup, removeUser }}
+      value={{
+        user,
+        error,
+        clearError,
+        login,
+        logout,
+        createAccount,
+        removeAccount,
+      }}
     >
       {children}
     </AuthContext.Provider>

@@ -1,0 +1,41 @@
+.main {
+  display: flex;
+  flex-direction: column;
+  text-align: left;
+  min-height: 100vh;
+  padding-left: 312px;
+  min-width: 700px;
+  background: #f9f9f9;
+}
+
+.container {
+  margin-top: 5%;
+  display: flex;
+  width: fit-content;
+  border-radius: 10px;
+  padding: 2rem;
+  flex-direction: row;
+  gap: 2rem;
+  box-shadow: 0 0 5px gray;
+}
+
+.profileIcon {
+  width: 100px;
+}
+
+.emailHeader {
+  font-size: 20px;
+}
+
+.email {
+  font-size: 36px;
+  margin: 1rem 0;
+}
+
+.signOut {
+  font-size: 20px;
+  padding: 0.5rem;
+  border-radius: 10px;
+  color: white;
+  background-color: #94100c;
+}

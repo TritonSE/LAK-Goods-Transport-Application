@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useContext, useState } from 'react';
 import Image from 'next/image';
 
 import LAKTAAlogo from '../../public/Logo.svg';
@@ -6,9 +6,27 @@ import eyeOpenLogo from '../../public/open-eye.svg';
 import eyeClosedLogo from '../../public/closed-eye.svg';
 
 import styles from '@/styles/Login.module.css';
+import { AuthContext } from '@/context/AuthContext';
+import { useRouter } from 'next/router';
 
 export default function Login() {
+  const auth = useContext(AuthContext);
+  const router = useRouter();
   const [showPassword, setShowPassword] = useState(false);
+  const [email, setEmail] = useState('');
+  const [error, setError] = useState<string | undefined>('');
+  const [password, setPassword] = useState('');
+
+  const login = async () => {
+    setError('');
+    const user = await auth.login(email, password);
+    console.log('here');
+    if (user instanceof Error) {
+      setError(auth.error?.message);
+    } else {
+      router.push('/dashboard');
+    }
+  };
 
   return (
     <div className={styles.outer}>
@@ -22,6 +40,8 @@ export default function Login() {
                 type="email"
                 placeholder="Email"
                 className={`${styles.textInputField} ${styles.emailInput}`}
+                value={email}
+                onChange={(e) => setEmail(e.target.value)}
                 required
               />
               <p>
@@ -29,6 +49,8 @@ export default function Login() {
                   placeholder="Password"
                   className={`${styles.textInputField} ${styles.passwordInput}`}
                   type={showPassword ? 'text' : 'password'}
+                  value={password}
+                  onChange={(e) => setPassword(e.target.value)}
                   required
                 />
 
@@ -41,22 +63,15 @@ export default function Login() {
               </p>
             </div>
 
-            <div className={styles.rememberUserAndForgotPassword}>
-              <div className={styles.keepSignedIn}>
-                <input className={styles.checkbox} type="checkbox" />
-                <span className={styles.keepSignedInText}>
-                  Keep me signed in
-                </span>
-              </div>
-              <a href="#" className={styles.forgotPasswordText}>
-                Forgot password
-              </a>
-            </div>
-
-            <button type="submit" className={styles.loginButton}>
+            <button
+              type="button"
+              onClick={login}
+              className={styles.loginButton}
+            >
               Login
             </button>
           </form>
+          <div className={styles.error}>{error}</div>
         </div>
       </div>
     </div>
