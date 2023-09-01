@@ -38,7 +38,7 @@ export const getAllDrivers = async () => {
   }
 };
 
-export const updateUser = async (
+export const updateUserStatus = async (
   userId: string,
   verificationStatus: Option
 ) => {
@@ -70,6 +70,32 @@ export const getUser = async (userId: string): Promise<UserData | null> => {
     data = data.user as UserData;
     return data;
   } catch {
+    return null;
+  }
+};
+
+export const getImageURL = (imageId: string): string => {
+  return `${process.env.NEXT_PUBLIC_API_URL}/api/images/${imageId}`;
+};
+
+export const updateUser = async (
+  userId: string,
+  user: UserData
+): Promise<{ userId: string } | null> => {
+  try {
+    console.log(user);
+    const url = `${USERS_URL}/${userId}`;
+    const response = await fetch(url, {
+      method: 'PUT',
+      headers: {
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify(user),
+    });
+    const data = await response.json();
+    return { userId: data.userId };
+  } catch (error) {
+    console.error(error);
     return null;
   }
 };

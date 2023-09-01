@@ -21,3 +21,62 @@
   background-color: transparent;
   font-size: 20px;
 }
+
+.headerContainer {
+  margin: 2rem 0;
+}
+
+.subheader {
+  font-weight: 400;
+  margin-top: 1rem;
+}
+
+.form {
+  margin-top: 1rem;
+  display: flex;
+  gap: 4rem;
+  flex-wrap: wrap;
+}
+
+.formLabel {
+  max-width: 400px;
+  width: 25%;
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+}
+
+.textInput {
+  padding: 1rem;
+  font-size: 1rem;
+  border-radius: 4px;
+  border: 1px solid #c4c4c4;
+}
+
+.vehiclePhotos {
+  margin-top: 2rem;
+}
+
+.photoContainer {
+  margin-top: 1rem;
+  display: flex;
+  flex-wrap: wrap;
+  gap: 2rem;
+}
+
+.image {
+  height: 200px;
+}
+
+.submit {
+  padding: 1rem;
+  font-size: 1rem;
+  border-radius: 10px;
+  align-self: flex-end;
+  height: fit-content;
+  margin-top: 1rem;
+  background-color: #94100c;
+  color: white;
+  border: 0;
+  box-shadow: 2px 2px 5px #c4c4c4;
+}

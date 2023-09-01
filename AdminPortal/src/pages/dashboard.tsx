@@ -3,7 +3,7 @@ import styles from '@/styles/Dashboard.module.css';
 import 'bootstrap/dist/css/bootstrap.min.css';
 import { Sidebar } from '@/components/sidebar';
 import Select from 'react-select';
-import { getAllDrivers, updateUser } from '@/api/user';
+import { getAllDrivers, updateUserStatus } from '@/api/user';
 import { authCookieSet } from '@/context/AuthContext';
 import { useRouter } from 'next/router';
 
@@ -98,7 +98,7 @@ export default function App() {
       items.map((item) => {
         if (item.isChecked) {
           //Modify driver verification status
-          updateUser(item._id, selectedOption);
+          updateUserStatus(item._id, selectedOption);
         }
       });
 
