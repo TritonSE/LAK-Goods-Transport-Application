@@ -115,6 +115,7 @@ export async function updateUser(userId, userData, userImages) {
   }
   // Ensure updated fields are only getting updated
   userData = filterObject(userData, FIELDS_USER_PERMITTED_TO_UPDATE);
+  console.log(userData);
   if (userData.vehicleData) {
     const { vehicleData } = userData;
     userData.vehicleData = vehicleData;
@@ -137,7 +138,6 @@ export async function updateUser(userId, userData, userImages) {
           newImageIds.push(imageId);
         })
       );
-
       userData.vehicleData.imageIds = newImageIds;
     } else {
       userData.vehicleData.imageIds = originalUser?.vehicleData.imageIds || [];
@@ -149,6 +149,7 @@ export async function updateUser(userId, userData, userImages) {
   }
 
   try {
+    console.log(userData);
     return await UserModel.findOneAndUpdate({ _id: userId }, userData);
   } catch (e) {
     throw ServiceError.INVALID_USER_RECEIVED.addContext(e.stack);

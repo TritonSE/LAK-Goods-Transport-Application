@@ -3,7 +3,7 @@ import styles from '@/styles/Dashboard.module.css';
 import 'bootstrap/dist/css/bootstrap.min.css';
 import { Sidebar } from '@/components/sidebar';
 import Select from 'react-select';
-import { getAllDrivers, updateUser } from '@/api/user';
+import { getAllDrivers, updateUserStatus } from '@/api/user';
 import { authCookieSet } from '@/context/AuthContext';
 import { useRouter } from 'next/router';
 
@@ -98,7 +98,7 @@ export default function App() {
       items.map((item) => {
         if (item.isChecked) {
           //Modify driver verification status
-          updateUser(item._id, selectedOption);
+          updateUserStatus(item._id, selectedOption);
         }
       });
 
@@ -147,7 +147,7 @@ export default function App() {
 
   return (
     <div className={styles.page}>
-      <Sidebar currentPage="Dashboard"></Sidebar>
+      <Sidebar currentPage="/dashboard"></Sidebar>
       <div className={styles.outer}>
         <h1 className={styles.title}>Driver Registration</h1>
 
@@ -196,14 +196,16 @@ export default function App() {
               <th className={styles.tableHeadItem}>Name</th>
               <th className={styles.tableHeadItem}>Mobile Number</th>
               <th className={styles.tableHeadItem}>License ID</th>
-              <th className={styles.tableHeadItem}>License Plate #</th>
             </tr>
           </thead>
           <tbody className={styles.tableBody}>
             {items
               .filter((item) => item.verificationStatus === activeTab)
               .map((item) => (
-                <tr key={item._id}>
+                <tr
+                  key={item._id}
+                  onClick={() => router.push(`/driver?userId=${item._id}`)}
+                >
                   <td className={styles.tableData}>
                     <input
                       type="checkbox"
@@ -213,17 +215,14 @@ export default function App() {
                     ></input>
                   </td>
                   <td className={styles.tableData}>
-                    {item.dateApplied ? item.dateApplied : 'N/A'}
+                    {item.dateApplied || 'N/A'}
                   </td>
                   <td className={styles.tableData}>
                     {item.firstName + ' ' + item.lastName}
                   </td>
                   <td className={styles.tableData}>{item.phone}</td>
                   <td className={styles.tableData}>
-                    {item.driverLicenseId ? item.driverLicenseId : 'N/A'}
-                  </td>
-                  <td className={styles.tableData}>
-                    {item.licensePlate ? item.licensePlate : 'N/A'}
+                    {item.driverLicenseId || 'N/A'}
                   </td>
                 </tr>
               ))}

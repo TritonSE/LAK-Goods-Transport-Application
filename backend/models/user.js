@@ -20,6 +20,8 @@ export const FIELDS_USER_PERMITTED_TO_UPDATE = [
   'firstName',
   'lastName',
   'location',
+  'driverLicenseId',
+  'dateApplied',
   'vehicleData',
   'verificationStatus',
 ];
