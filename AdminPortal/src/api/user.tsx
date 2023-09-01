@@ -1,6 +1,24 @@
 import { Option } from '@/pages/dashboard';
 
+export interface UserData {
+  phone: string;
+  firstName: string;
+  lastName: string;
+  location: string;
+  driverLicenseId?: string; // Hidden when anyone else other than the user viewing
+  dateApplied: string;
+  vehicleData?: {
+    vehicleType: string;
+    vehicleModel: string;
+    vehicleMake: string;
+    vehicleColor: string;
+    imageIds: string[];
+  };
+  verificationStatus?: string;
+}
+
 const USERS_URL = `${process.env.NEXT_PUBLIC_API_URL}/api/users`;
+
 export const getAllDrivers = async () => {
   try {
     const url = `${USERS_URL}/get-all-users?`;
@@ -39,6 +57,18 @@ export const updateUser = async (
     });
     const data = await response.json();
     return { userId: data.userId };
+  } catch {
+    return null;
+  }
+};
+
+export const getUser = async (userId: string): Promise<UserData | null> => {
+  try {
+    const url = `${USERS_URL}/${userId}`;
+    const response = await fetch(url);
+    let data = await response.json();
+    data = data.user as UserData;
+    return data;
   } catch {
     return null;
   }

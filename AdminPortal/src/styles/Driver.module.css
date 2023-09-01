@@ -1,0 +1,23 @@
+.main {
+  display: flex;
+  flex-direction: column;
+  text-align: left;
+  min-height: 100vh;
+  padding-left: 312px;
+  min-width: 700px;
+  background: #f9f9f9;
+}
+
+.container {
+  display: flex;
+  flex-direction: column;
+  height: 100%;
+  margin-top: 5%;
+}
+
+.back {
+  width: fit-content;
+  border: 0;
+  background-color: transparent;
+  font-size: 20px;
+}
