@@ -131,10 +131,10 @@ routes.put('/:userid', upload, async (req, res, next) => {
       phone,
       location,
       driverLicenseId,
-      dateApplied,
       vehicleData,
       verificationStatus,
     } = user;
+
     if (!firstName || !lastName || !phone || !location) {
       return res
         .status(400)

@@ -118,7 +118,7 @@ export async function updateUser(userId, userData, userImages) {
   if (userData.vehicleData) {
     const { vehicleData } = userData;
     userData.vehicleData = vehicleData;
-    if (userImages) {
+    if (userImages.length) {
       // Delete existing images
       const existingImageIds = originalUser.imageIds;
       if (existingImageIds) {
@@ -139,6 +139,8 @@ export async function updateUser(userId, userData, userImages) {
       );
 
       userData.vehicleData.imageIds = newImageIds;
+    } else {
+      userData.vehicleData.imageIds = originalUser?.vehicleData.imageIds || [];
     }
 
     if (originalUser.verificationStatus === VERIFICATION_STATUS_NOT_APPLIED) {
