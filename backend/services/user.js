@@ -115,12 +115,10 @@ export async function updateUser(userId, userData, userImages) {
   }
   // Ensure updated fields are only getting updated
   userData = filterObject(userData, FIELDS_USER_PERMITTED_TO_UPDATE);
-  console.log(userData);
   if (userData.vehicleData) {
     const { vehicleData } = userData;
-    userData.vehicleData = JSON.parse(vehicleData);
-
-    if (userImages) {
+    userData.vehicleData = vehicleData;
+    if (userImages.length) {
       // Delete existing images
       const existingImageIds = originalUser.imageIds;
       if (existingImageIds) {
@@ -140,6 +138,8 @@ export async function updateUser(userId, userData, userImages) {
         })
       );
       userData.vehicleData.imageIds = newImageIds;
+    } else {
+      userData.vehicleData.imageIds = originalUser?.vehicleData.imageIds || [];
     }
 
     if (originalUser.verificationStatus === VERIFICATION_STATUS_NOT_APPLIED) {

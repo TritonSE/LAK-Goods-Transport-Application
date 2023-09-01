@@ -134,6 +134,7 @@ routes.put('/:userid', upload, async (req, res, next) => {
       vehicleData,
       verificationStatus,
     } = user;
+
     if (!firstName || !lastName || !phone || !location) {
       return res
         .status(400)

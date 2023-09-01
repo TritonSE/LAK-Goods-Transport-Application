@@ -28,7 +28,7 @@ export const FIELDS_USER_PERMITTED_TO_UPDATE = [
 
 export const VERIFICATION_STATUS_FIELDS = [
   'Not Applied',
-  'Needs Review',
+  'Applied',
   'In Review',
   'Verified',
   'Disapproved',
