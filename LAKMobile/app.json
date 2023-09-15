@@ -13,7 +13,9 @@
     "updates": {
       "fallbackToCacheTimeout": 0
     },
-    "assetBundlePatterns": ["**/*"],
+    "assetBundlePatterns": [
+      "**/*"
+    ],
     "ios": {
       "supportsTablet": true
     },
@@ -21,7 +23,11 @@
       "adaptiveIcon": {
         "foregroundImage": "./assets/adaptive-icon.png",
         "backgroundColor": "#FFFFFF"
-      }
+      },
+      "permissions": [
+        "android.permission.RECORD_AUDIO"
+      ],
+      "package": "com.laktaa.LAKMobile"
     },
     "web": {
       "favicon": "./assets/favicon.png"
@@ -34,6 +40,11 @@
           "cameraPermission": "Access your camera to take a photo for a job listing"
         }
       ]
-    ]
+    ],
+    "extra": {
+      "eas": {
+        "projectId": "ea2d84c4-38d2-40cc-b8ae-e9590e1d6441"
+      }
+    }
   }
 }
