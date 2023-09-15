@@ -13,7 +13,6 @@ import {
   updatePassword,
 } from 'firebase/auth';
 
-import firebaseConfig from '../../firebase-config.json';
 import React, { createContext, useMemo, useState } from 'react';
 import * as crypto from 'expo-crypto';
 import { FirebaseError } from '@firebase/util';
@@ -39,6 +38,19 @@ async function pinToPass(pin: string) {
   pin = 'abc' + pin;
   return await encrypt(pin);
 }
+
+export function getFirebaseConfig() {
+  return {
+    apiKey: process.env.FIREBASE_API_KEY,
+    authDomain: process.env.FIREBASE_AUTH_DOMAIN,
+    projectId: process.env.FIREBASE_PROJECT_ID,
+    storageBucket: process.env.FIREBASE_STORAGE_BUCKET,
+    messagingSenderId: process.env.FIREBASE_MESSAGING_SENDER_ID,
+    appId: process.env.FIREBASE_APP_ID,
+  };
+}
+
+const firebaseConfig = getFirebaseConfig();
 
 export type AuthState = {
   user: User | null;
@@ -241,21 +253,21 @@ export const AuthProvider: React.FC<Props> = ({ children }) => {
 
       // reload to refresh the user token
       // then link the newly created email identifier with the existing phone number identifier within Firebase
-      user.reload().then(async () => {
-        const combinedCredential = await linkWithCredential(user, credential);
+      await user.reload();
 
-        const updatedUser = combinedCredential.user;
+      const combinedCredential = await linkWithCredential(user, credential);
 
-        // Next, we make a call to save this user in our backend.
-        await createNewUser({
-          userId: updatedUser.uid,
-          firstName,
-          lastName,
-          phone,
-          location,
-        });
-        setUser(updatedUser);
+      const updatedUser = combinedCredential.user;
+
+      // Next, we make a call to save this user in our backend.
+      await createNewUser({
+        userId: updatedUser.uid,
+        firstName,
+        lastName,
+        phone,
+        location,
       });
+      setUser(updatedUser);
 
       return user;
     } catch (e) {

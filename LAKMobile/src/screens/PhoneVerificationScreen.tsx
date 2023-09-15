@@ -3,9 +3,8 @@ import { StyleSheet, View } from 'react-native';
 import { AppText, LabelWrapper, AppButton, ScreenHeader, AppTextInput } from '../components';
 import { COLORS } from '../../constants';
 import { PhoneVerificationScreenProps } from '../types/navigation';
-import { AuthContext } from '../context/AuthContext';
+import { AuthContext, getFirebaseConfig } from '../context/AuthContext';
 import { FirebaseRecaptchaVerifierModal } from 'expo-firebase-recaptcha';
-import firebaseConfig from '../../firebase-config.json';
 
 export function PhoneVerificationScreen({ navigation, route }: PhoneVerificationScreenProps) {
   const auth = useContext(AuthContext);
@@ -82,7 +81,7 @@ export function PhoneVerificationScreen({ navigation, route }: PhoneVerification
         <AppText style={styles.errText}>{displayError} </AppText>
         <FirebaseRecaptchaVerifierModal
           ref={recaptchaVerifier}
-          firebaseConfig={firebaseConfig}
+          firebaseConfig={getFirebaseConfig()}
           attemptInvisibleVerification={false}
         />
         <AppText style={headerText}>
